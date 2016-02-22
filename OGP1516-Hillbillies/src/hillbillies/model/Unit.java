@@ -2,21 +2,22 @@ package hillbillies.model;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: write tests for everything
+
 /**
  * 
  * @author
  *
  */
-public class Unit { //TODO: put (x,y,z) into a list or...
+public class Unit {
 	
-	Unit_Constants constants = new Unit_Constants();
-	int World_x = constants.WORLD_X - 1;
-	int World_y = constants.WORLD_Y - 1;
-	int World_z = constants.WORLD_Z - 1;
+	int World_x = 50 - 1;
+	int World_y = 50 - 1;
+	int World_z = 50 - 1;
 	private double x_pos;
 	private double y_pos;
 	private double z_pos;
-	private String name;
+//	private String name;
 	private int weight;
 	private int strength;
 	private int agility;
@@ -31,10 +32,23 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	private static int max_val = 200;
 	private int curr_min_val;
 	private int curr_max_val;
-	// afronden naar bovenste integer, dus + 1??
-	private int max_hitpoints_stamina = (this.getWeight()*this.getToughness())/50;;
+//	public int max_hitpoints_stamina = (int) Math.ceil((this.getWeight()*this.getToughness())/50);
 
 	//TODO: think about int vs double
+	/**
+	 * 
+	 * @param location
+	 * @param name
+	 * @param weight
+	 * @param strength
+	 * @param agility
+	 * @param toughness
+	 * @param hitpoints
+	 * @param stamina
+	 * @param orientation
+	 * @param flag
+	 * @throws IllegalPositionException
+	 */
 	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException {
 		this.setLocation(location);
 //		setName(name);
@@ -47,10 +61,28 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		setOrientation(orientation);
 	}
 	
+	/**
+	 * 
+	 * @param location
+	 * @param name
+	 * @param weight
+	 * @param strength
+	 * @param agility
+	 * @param toughness
+	 * @param hitpoints
+	 * @param stamina
+	 * @param orientation
+	 * @throws IllegalPositionException
+	 */
 	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation) throws IllegalPositionException {
 		this(location, name, weight, strength, agility, toughness, hitpoints, stamina, orientation, true);
 	}
 	
+	/**
+	 * 
+	 * @param location
+	 * @throws IllegalPositionException
+	 */
 	public void setLocation(List<Double> location) throws IllegalPositionException{
 		if (!isValidPosition(location))
 			throw new IllegalPositionException(location);
@@ -59,11 +91,20 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		this.z_pos = location.get(2);
 	}
 	
+	/**
+	 * 
+	 * @param location
+	 * @return
+	 */
 	private boolean isValidPosition(List<Double> location) {
 		return ((location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
 				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<Integer> getOccupiedCube() {
 		List<Integer> position = new ArrayList<Integer>();
 		List<Double> location = this.getLocation();
@@ -73,6 +114,10 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		return(position);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public List<Double> getLocation() {
 		List<Double> position = new ArrayList<Double>();
 		position.add(this.x_pos);
@@ -95,6 +140,7 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 			curr_min_val = min_val;
 			curr_max_val = max_val;
 		}
+		
 		if (weight >= (this.getStrength()+this.getAgility())/2){
 			if (weight < curr_min_val) 
 				this.weight = curr_min_val;
@@ -106,7 +152,6 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		
 		else{
 			this.weight = (this.getStrength()+this.getAgility())/2;
-			
 		}
 
 	}
@@ -202,6 +247,7 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		else if (toughness > curr_max_val)
 			this.toughness = curr_max_val; 
 	}
+	
 	/**
 	 * 
 	 * @return
@@ -209,6 +255,7 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	public int getToughness(){
 		return this.toughness;
 	}
+	
 	/**
 	 * 
 	 * @param flag
@@ -225,12 +272,31 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		return this.flag;
 	}
 	
-	public boolean isValidHitpoints(int hitpoints){
-		return ((hitpoints >= 0) && (hitpoints <= max_hitpoints_stamina));
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getMaxHitpointsStamina() {
+		 return (int) Math.ceil((((double) this.getWeight())*((double) this.getToughness()))/50);
 	}
 	
-	public boolean isValidStamina(int stamina){
-		return ((stamina >= 0) && (stamina <= max_hitpoints_stamina));
+	/**
+	 * 
+	 * @param hitpoints
+	 * @return
+	 */
+	public boolean hasValidHitpoints(int hitpoints){
+		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpointsStamina()));
+	}
+	
+	/**
+	 * 
+	 * @param stamina
+	 * @return
+	 */
+	public boolean hasValidStamina(int stamina){
+		return ((stamina >= 0) && (stamina <= this.getMaxHitpointsStamina()));
 	}
 	
 	/**
@@ -240,7 +306,7 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	 * @pre
 	 */
 	public void setHitpoints(int hitpoints){
-		assert isValidHitpoints(hitpoints);
+		assert this.hasValidHitpoints(hitpoints);
 		this.hitpoints = hitpoints;
 	}
 	
@@ -259,7 +325,7 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	 * @pre
 	 */
 	public void setStamina(int stamina){
-		assert isValidStamina(stamina);
+		assert this.hasValidStamina(stamina);
 		this.stamina = stamina;
 	}
 	
@@ -286,11 +352,5 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	public float getOrientation(){
 		return this.orientation;
 	}
-
-	
-	
-	
-	
-	
 	
 }

@@ -61,12 +61,23 @@ public class UnitTest {
 	}
 	
 	@Test
-	public  void getLocation_Correct() throws IllegalPositionException {
+	public void getLocation_Correct() throws IllegalPositionException {
 		List<Double> location = new ArrayList<Double>();
-		 location.add((double) 49); location.add((double) 10.001); location.add((double) 0);
+		location.add((double) 49); location.add((double) 10.001); location.add((double) 0);
 		Unit unit = new Unit(location, null, 0, 0, 0, 0, 0, 0, 0);
-		assertEquals(unit.getLocation().get(0), 49, Util.DEFAULT_EPSILON);
-		assertEquals(unit.getLocation().get(1), 10.001, Util.DEFAULT_EPSILON);
-		assertEquals(unit.getLocation().get(2), 0, Util.DEFAULT_EPSILON);
+		assertEquals(49, unit.getLocation().get(0), Util.DEFAULT_EPSILON);
+		assertEquals(10.001, unit.getLocation().get(1), Util.DEFAULT_EPSILON);
+		assertEquals(0, unit.getLocation().get(2), Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setHitpoints_Check() throws IllegalPositionException {
+		List<Double> location = new ArrayList<Double>();
+		location.add((double) 0); location.add((double) 0); location.add((double) 0);
+		Unit unit = new Unit(location, null, 0, 0, 0, 0, 0, 0, 0);
+		unit.setWeight(198);
+		unit.setToughness(21);
+		unit.setHitpoints(84);
+		assertEquals(84, unit.getHitpoints());
 	}
 }
