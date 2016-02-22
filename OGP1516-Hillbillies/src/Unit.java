@@ -17,24 +17,23 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	private double z_pos;
 //	private String name;
 	private int weight;
-//	private float strength;
-//	private float agility;
+	private int strength;
+	private int agility;
 //	private float toughness;
 	private boolean flag;
-	private static int init_min_weight = 25;
-	private static int init_max_weight = 100;
-	private static int min_weight = 1;
-	private static int max_weight = 200;
-	private int curr_min_weight;
-	private int curr_max_weight;
+	private static int init_min_val = 25;
+	private static int init_max_val = 100;
+	private static int min_val = 1;
+	private static int max_val = 200;
+	private int curr_min_val;
+	private int curr_max_val;
 
 	public Unit(double x, double y, double z, String name, int weight, int strength, int agility, int toughness, boolean flag) throws IllegalPositionException {
 		this.setLocation(x,  y,  z);
 //		this.name = name;
 		setWeight(weight);
-		
-//		this.strength = strength;
-//		this.agility = agility;
+		setStrength(strength);
+		setAgility(agility);
 //		this.toughness = toughness;
 	}
 	
@@ -74,20 +73,20 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	public void setWeight(int weight){
 		if (this.flag = false){
 			setFlag(true);
-			int curr_min_weight = init_min_weight;
-			int curr_max_weight = init_max_weight;
+			curr_min_val = init_min_val;
+			curr_max_val = init_max_val;
 		}
 		else {
-			int curr_min_weight = min_weight;
-			int curr_max_weight = max_weight;
+			curr_min_val = min_val;
+			curr_max_val = max_val;
 		}
 		if (weight >= (this.getStrength()+this.getAgility())/2){
-			if (weight < curr_min_weight) 
-				this.weight = curr_min_weight;
-			else if ((weight >= curr_min_weight) && (weight <= curr_max_weight))
+			if (weight < curr_min_val) 
+				this.weight = curr_min_val;
+			else if ((weight >= curr_min_val) && (weight <= curr_max_val))
 				this.weight = weight;
-			else if (weight > curr_max_weight)
-				this.weight = curr_max_weight; 
+			else if (weight > curr_max_val)
+				this.weight = curr_max_val; 
 		}
 		
 		else{
@@ -105,6 +104,33 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	public int getWeight(){
 		return this.weight;
 	}	
+	
+	public int getStrength(){
+		return this.strength;
+	}
+	
+	public void setStrength(int strength){
+		if (this.flag = false){
+			setFlag(true);
+			curr_min_val = init_min_val;
+			curr_max_val = init_max_val;
+		}
+		else {
+			curr_min_val = min_val;
+			curr_max_val = max_val;
+		}
+
+		if ( strength < curr_min_val) 
+			this.strength = curr_min_val;
+		else if ((strength >= curr_min_val) && (strength <= curr_max_val))
+			this.strength = strength;
+		else if (strength > curr_max_val)
+			this.strength = curr_max_val; 
+	}
+	
+	public int getAgility(){
+		return this.agility;
+	}
 	
 	public void setFlag(boolean flag){
 		this.flag = flag;
