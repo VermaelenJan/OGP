@@ -1,3 +1,5 @@
+import java.util.List;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 
@@ -6,16 +8,12 @@ public class IllegalPositionException extends Exception {
 	private final double x;
 	private final double y;
 	private final double z;
+	
+	public IllegalPositionException(List<Double> location) {
+		this.x = location.get(0);
+		this.y = location.get(1);
+		this.z = location.get(2);	}
 
-	
-	public IllegalPositionException(double x, double y, double z) {
-	
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		
-	}
-	
 	@Basic @Immutable
 	public double getXpos() {
 		return this.x;

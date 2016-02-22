@@ -33,8 +33,9 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	// afronden naar bovenste integer, dus + 1??
 	private int max_hitpoints_stamina = (this.getWeight()*this.getToughness())/50;;
 
-	public Unit(double x, double y, double z, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException {
-		this.setLocation(x,  y,  z);
+	//TODO: think about int vs double
+	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException {
+		this.setLocation(location);
 //		setName(name);
 		setWeight(weight);
 		setStrength(strength);
@@ -45,16 +46,21 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		setOrientation(orientation);
 	}
 	
-	public void setLocation(double x, double y, double z) throws IllegalPositionException{
-		if (!isValidPosition(x, y, z))
-			throw new IllegalPositionException(x, y, z);
-		this.x_pos = x;
-		this.y_pos = y;
-		this.z_pos = z;
+	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation) throws IllegalPositionException {
+		this(location, name, weight, strength, agility, toughness, hitpoints, stamina, orientation, true);
 	}
 	
-	private boolean isValidPosition(double x, double y, double z) {
-		return ((x <= World_x) && (y <= World_y) && (z <= World_z) && (x >= 0) && (y >= 0) && (z >= 0));
+	public void setLocation(List<Double> location) throws IllegalPositionException{
+		if (!isValidPosition(location))
+			throw new IllegalPositionException(location);
+		this.x_pos = location.get(0);
+		this.y_pos = location.get(1);
+		this.z_pos = location.get(2);
+	}
+	
+	private boolean isValidPosition(List<Double> location) {
+		return ((location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
+				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
 	}
 
 	public List<Integer> getOccupiedCube() {
@@ -219,11 +225,11 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	}
 	
 	public boolean isValidHitpoints(int hitpoints){
-		return ((hitpoints >= 0) && (hitpoints <= max_hitpoints_stamina))
+		return ((hitpoints >= 0) && (hitpoints <= max_hitpoints_stamina));
 	}
 	
 	public boolean isValidStamina(int stamina){
-		return ((stamina >= 0) && (stamina <= max_hitpoints_stamina))
+		return ((stamina >= 0) && (stamina <= max_hitpoints_stamina));
 	}
 	
 	/**
