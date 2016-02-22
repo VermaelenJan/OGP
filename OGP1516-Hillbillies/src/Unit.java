@@ -58,6 +58,10 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		return(position);
 	}
 	
+	public void Nothing(){
+		
+	}
+	
 	
 	//dkdk
 	
