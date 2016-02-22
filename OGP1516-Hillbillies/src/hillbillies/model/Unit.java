@@ -32,7 +32,6 @@ public class Unit {
 	private static int max_val = 200;
 	private int curr_min_val;
 	private int curr_max_val;
-//	public int max_hitpoints_stamina = (int) Math.ceil((this.getWeight()*this.getToughness())/50);
 
 	//TODO: think about int vs double
 	/**
