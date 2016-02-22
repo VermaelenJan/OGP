@@ -20,11 +20,19 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 //	private float strength;
 //	private float agility;
 //	private float toughness;
+	private boolean flag;
+	private static int init_min_weight = 25;
+	private static int init_max_weight = 100;
+	private static int min_weight = 1;
+	private static int max_weight = 200;
+	private int curr_min_weight;
+	private int curr_max_weight;
 
-	public Unit(double x, double y, double z, String name, int weight, int strength, int agility, int toughness) throws IllegalPositionException {
+	public Unit(double x, double y, double z, String name, int weight, int strength, int agility, int toughness, boolean flag) throws IllegalPositionException {
 		this.setLocation(x,  y,  z);
 //		this.name = name;
-		this.weight = weight;
+		setWeight(weight);
+		
 //		this.strength = strength;
 //		this.agility = agility;
 //		this.toughness = toughness;
@@ -64,12 +72,30 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	 * @param weight
 	 */
 	public void setWeight(int weight){
-		if (weight < 1)
-			this.weight = 1;
-		else if ((weight >= 1) && (weight < 200))
-			this.weight = weight;
-		else if (weight > 200)
-			this.weight = 200;
+		if (this.flag = false){
+			setFlag(true);
+			int curr_min_weight = init_min_weight;
+			int curr_max_weight = init_max_weight;
+		}
+		else {
+			int curr_min_weight = min_weight;
+			int curr_max_weight = max_weight;
+		}
+		if (weight >= (this.getStrength()+this.getAgility())/2){
+			if (weight < curr_min_weight) 
+				this.weight = curr_min_weight;
+			else if ((weight >= curr_min_weight) && (weight <= curr_max_weight))
+				this.weight = weight;
+			else if (weight > curr_max_weight)
+				this.weight = curr_max_weight; 
+		}
+		
+		else{
+			this.weight = (this.getStrength()+this.getAgility())/2;
+			
+		}
+// T0D0 add getstrength getagility
+
 	}
 	
 	/**
@@ -79,6 +105,15 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	public int getWeight(){
 		return this.weight;
 	}	
+	
+	public void setFlag(boolean flag){
+		this.flag = flag;
+	}
+	
+	public boolean getFlag(){
+		return this.flag;
+	}
+	
 	
 	
 }
