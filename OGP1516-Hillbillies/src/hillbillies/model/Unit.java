@@ -17,7 +17,7 @@ public class Unit {
 	private double x_pos;
 	private double y_pos;
 	private double z_pos;
-//	private String name;
+	private String name;
 	private int weight;
 	private int strength;
 	private int agility;
@@ -125,6 +125,49 @@ public class Unit {
 		return(position);
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 */
+	public void setName(String name) throws IllegalNameException{
+		if (!isValidName(name))
+			throw new IllegalNameException(name);
+		this.name = name;
+	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	private boolean isValidName(String name){
+		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (hasValidCharacters(name)));
+	}
+	
+	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	private boolean hasValidCharacters(String name){
+		for (char c : name.toCharArray()){
+			if ( (! Character.isLetter(c)) || (! (c == ' ') ) || (! (c == '"')) || (! (c == '\'')) )
+				return false;
+		}
+		
+		return true;
+				
+		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getName(){
+		return this.name;
+	}
 	/**
 	 * 
 	 * @param weight
@@ -351,5 +394,10 @@ public class Unit {
 	public float getOrientation(){
 		return this.orientation;
 	}
+	
+	public void advanceTime(float duration){
+		
+	}
+	
 	
 }
