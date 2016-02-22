@@ -16,15 +16,15 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	private double y_pos;
 	private double z_pos;
 //	private String name;
-//	private float weight;
+	private int weight;
 //	private float strength;
 //	private float agility;
 //	private float toughness;
 
-	public Unit(double x, double y, double z, String name, float weight, float strength, float agility, float toughness) throws IllegalPositionException {
+	public Unit(double x, double y, double z, String name, int weight, int strength, int agility, int toughness) throws IllegalPositionException {
 		this.setLocation(x,  y,  z);
 //		this.name = name;
-//		this.weight = weight;
+		this.weight = weight;
 //		this.strength = strength;
 //		this.agility = agility;
 //		this.toughness = toughness;
@@ -58,8 +58,26 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 		return(position);
 	}
 	
-	public void Something(){
-		
+	/**
+	 * 
+	 * @param weight
+	 */
+	public void setWeight(int weight){
+		if (weight < 1)
+			this.weight = 1;
+		else if ((weight >= 1) && (weight < 200))
+			this.weight = weight;
+		else if (weight > 200)
+			this.weight = 200;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getWeight(){
+		return this.weight;
+	}	
+	
 	
 }
