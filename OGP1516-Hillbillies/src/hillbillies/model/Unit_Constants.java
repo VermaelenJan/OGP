@@ -1,3 +1,4 @@
+package hillbillies.model;
 import be.kuleuven.cs.som.annotate.Value;
 
 /**

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import hillbillies.model.IllegalPositionException;
+import hillbillies.model.Unit;
 import ogp.framework.util.Util;
 
 public class UnitTest {
