@@ -44,9 +44,10 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 
 	public List<Integer> getOccupiedCube() {
 		List<Integer> position = new ArrayList<Integer>();
-		position.add((int) this.x_pos);
-		position.add((int) this.y_pos);
-		position.add((int) this.z_pos);
+		List<Double> location = this.getLocation();
+		position.add(location.get(0).intValue());
+		position.add(location.get(1).intValue());
+		position.add(location.get(2).intValue());
 		return(position);
 	}
 	

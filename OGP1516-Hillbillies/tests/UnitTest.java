@@ -29,13 +29,23 @@ public class UnitTest {
 	}	
 	
 	@Test
-	public void getOccupiedCube_Correct() throws IllegalPositionException {
-		Unit unit = new Unit(0.1, 1.1, 2.1, null, 0, 0, 0, 0);
+	public void getOccupiedCube_Correct_1() throws IllegalPositionException {
+		Unit unit = new Unit(0.9, 1.9, 2.9, null, 0, 0, 0, 0);
 		List<Integer> cube = unit.getOccupiedCube();
 		assertEquals(0, cube.get(0), Util.DEFAULT_EPSILON);
 		assertEquals(1, cube.get(1), Util.DEFAULT_EPSILON);
 		assertEquals(2, cube.get(2), Util.DEFAULT_EPSILON);
 
+	}
+	
+	@Test
+	public void getOccupiedCube_Correct_2() throws IllegalPositionException {
+		Unit unit = new Unit(0.1, 1.1, 2.1, null, 0, 0, 0, 0);
+		List<Integer> cube = unit.getOccupiedCube();
+		assertEquals(0, cube.get(0), Util.DEFAULT_EPSILON);
+		assertEquals(1, cube.get(1), Util.DEFAULT_EPSILON);
+		assertEquals(2, cube.get(2), Util.DEFAULT_EPSILON);
+		
 	}
 	
 	@Test
