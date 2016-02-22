@@ -37,16 +37,47 @@ public class Unit {
 	/**
 	 * 
 	 * @param location
+	 *			The location for this new unit.
 	 * @param name
+	 * 			The name for this new unit.
 	 * @param weight
+	 * 			The weight for this new unit.
 	 * @param strength
+	 * 			The strength for this new unit.
 	 * @param agility
+	 * 			The agility for this new unit.
 	 * @param toughness
+	 * 			The toughness for this new unit.
 	 * @param hitpoints
+	 * 			The hitpoints for this new unit.
 	 * @param stamina
+	 * 			The stamina for this new unit.
 	 * @param orientation
+	 * 			The orientation for this new unit.
 	 * @param flag
+	 * 			The true/false flag for initiation for this new unit.
+	 * @post The location of this new unit is equal to the given location.
+	 * 			| new.getLocation() == location
+	 * @post The name of this new unit is equal to the given name.
+	 * 			| new.getName() == name
+	 * @effect the given weight is set as the weight of this new unit.
+	 * 			| setWeight(weight)
+	 * @effect the given strength is set as the strength of this new unit.
+	 * 			| setStrength(strength)
+	 * @effect the given agility is set as the agility of this new unit.
+	 * 			| setAgility(agility)
+	 * @effect the given toughness is set as the toughness of this new unit.
+	 * 			| setToughness(toughness)
+	 * @effect the given hitpoints are set as the hitpoints of this new unit.
+	 * 			| setHitpoints(hitpoints)
+	 * @effect the given stamina is set as the stamina of this new unit.
+	 * 			| setStamina(stamina)
+	 * @effect the given orientation is set as the orientation of this new unit.
+	 * 			| setOrientation(orientation)
 	 * @throws IllegalPositionException
+	 * 			The given position is not a valid position for a unit.
+	 * 			| ! canHaveAsPosition(position)
+	 * 
 	 */
 	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException {
 		this.setLocation(location);
@@ -80,10 +111,13 @@ public class Unit {
 	/**
 	 * 
 	 * @param location
+	 * 			The location to set.
 	 * @throws IllegalPositionException
+	 * 			the location is not a valid location for a unit.
+	 * 			| !canHaveAsPosition(location)
 	 */
 	public void setLocation(List<Double> location) throws IllegalPositionException{
-		if (!isValidPosition(location))
+		if (!canHaveAsPosition(location))
 			throw new IllegalPositionException(location);
 		this.x_pos = location.get(0);
 		this.y_pos = location.get(1);
@@ -93,9 +127,13 @@ public class Unit {
 	/**
 	 * 
 	 * @param location
-	 * @return
+	 * 			The location to check.
+	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
+	 * 			are smaller than the world_x, world_y and world_z values and the x,y and z value are greater than 0.
+	 * 			| result == (location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
+				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
 	 */
-	private boolean isValidPosition(List<Double> location) {
+	private  boolean canHaveAsPosition(List<Double> location) {
 		return ((location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
 				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
 	}
@@ -140,8 +178,8 @@ public class Unit {
 	 * @param name
 	 * @return
 	 */
-	private boolean isValidName(String name){
-		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (hasValidCharacters(name)));
+	private static boolean isValidName(String name){
+		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (isValidCharacter(name)));
 	}
 	
 	
@@ -150,7 +188,7 @@ public class Unit {
 	 * @param name
 	 * @return
 	 */
-	private boolean hasValidCharacters(String name){
+	private static boolean isValidCharacter(String name){
 		for (char c : name.toCharArray()){
 			if ( (! Character.isLetter(c)) || (! (c == ' ') ) || (! (c == '"')) || (! (c == '\'')) )
 				return false;
