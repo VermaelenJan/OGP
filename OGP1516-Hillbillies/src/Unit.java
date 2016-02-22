@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -38,19 +39,19 @@ public class Unit { //TODO: put (x,y,z) into a list or...
 	}
 	
 	private boolean isValidPosition(double x, double y, double z) {
-		return ((x <= World_x) && (y <= World_y) && (z <= World_z));
+		return ((x <= World_x) && (y <= World_y) && (z <= World_z) && (x >= 0) && (y >= 0) && (z >= 0));
 	}
 
-	public ArrayList<Integer> getOccupiedCube() {
-		ArrayList<Integer> position = new ArrayList<Integer>();
+	public List<Integer> getOccupiedCube() {
+		List<Integer> position = new ArrayList<Integer>();
 		position.add((int) this.x_pos);
 		position.add((int) this.y_pos);
 		position.add((int) this.z_pos);
 		return(position);
 	}
 	
-	public ArrayList<Double> getLocation() {
-		ArrayList<Double> position = new ArrayList<Double>();
+	public List<Double> getLocation() {
+		List<Double> position = new ArrayList<Double>();
 		position.add(this.x_pos);
 		position.add(this.y_pos);
 		position.add(this.z_pos);
