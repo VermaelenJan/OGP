@@ -4,6 +4,7 @@ import java.util.List;
 
 //TODO: write tests for everything
 //TODO: CONSTANTS, randomMethods,... 
+//TODO: fix flag
 /**
  * 
  * @author
@@ -25,7 +26,6 @@ public class Unit {
 	private int hitpoints;
 	private int stamina;
 	private float orientation;
-	private boolean flag;
 	private static int init_min_val = 25;
 	private static int init_max_val = 100;
 	private static int min_val = 1;
@@ -54,8 +54,6 @@ public class Unit {
 	 * 			The stamina for this new unit.
 	 * @param orientation
 	 * 			The orientation for this new unit.
-	 * @param flag
-	 * 			The true/false flag for initiation for this new unit.
 	 * @post The location of this new unit is equal to the given location.
 	 * 			| new.getLocation() == location
 	 * @post The name of this new unit is equal to the given name.
@@ -83,34 +81,16 @@ public class Unit {
 	 * 
 	 */
 	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
-			int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException, IllegalNameException {
+			int hitpoints, int stamina, float orientation) throws IllegalPositionException, IllegalNameException {
 		setLocation(location);
 		setName(name);
-		setWeight(weight);
-		setStrength(strength);
-		setAgility(agility);
-		setToughness(toughness);
+		setWeight(weight, true);
+		setStrength(strength, true);
+		setAgility(agility, true);
+		setToughness(toughness, true);
 		setHitpoints(hitpoints);
 		setStamina(stamina);
 		setOrientation(orientation);
-	}
-	
-	/**
-	 * 
-	 * @param location
-	 * @param name
-	 * @param weight
-	 * @param strength
-	 * @param agility
-	 * @param toughness
-	 * @param hitpoints
-	 * @param stamina
-	 * @param orientation
-	 * @throws IllegalPositionException
-	 * @throws IllegalNameException 
-	 */
-	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation) throws IllegalPositionException, IllegalNameException {
-		this(location, name, weight, strength, agility, toughness, hitpoints, stamina, orientation, true);
 	}
 	
 	/**
@@ -213,9 +193,8 @@ public class Unit {
 	 * 
 	 * @param weight
 	 */
-	public void setWeight(int weight){
-		if (this.flag = false){
-			setFlag(true);
+	private void setWeight(int weight, boolean flag){
+		if (flag){
 			curr_min_val = init_min_val;
 			curr_max_val = init_max_val;
 		}
@@ -223,7 +202,7 @@ public class Unit {
 			curr_min_val = min_val;
 			curr_max_val = max_val;
 		}
-		
+
 		if (weight >= (this.getStrength()+this.getAgility())/2){
 			if (weight < curr_min_val) 
 				this.weight = curr_min_val;
@@ -237,6 +216,14 @@ public class Unit {
 			this.weight = (this.getStrength()+this.getAgility())/2;
 		}
 
+	}
+	
+	/**
+	 * 
+	 * @param weight
+	 */
+	public void setWeight(int weight) {
+		setWeight(weight, false);
 	}
 	
 	/**
@@ -259,9 +246,8 @@ public class Unit {
 	 * 
 	 * @param strength
 	 */
-	public void setStrength(int strength){
-		if (this.flag = false){
-			setFlag(true);
+	private void setStrength(int strength, boolean flag){
+		if (flag){
 			curr_min_val = init_min_val;
 			curr_max_val = init_max_val;
 		}
@@ -280,11 +266,18 @@ public class Unit {
 	
 	/**
 	 * 
+	 * @param strength
+	 */
+	public void setStrength(int strength) {
+		setStrength(strength, false);
+	}
+	
+	/**
+	 * 
 	 * @param agility
 	 */
-	public void setAgility(int agility){
-		if (this.flag = false){
-			setFlag(true);
+	private void setAgility(int agility, boolean flag){
+		if (flag){
 			curr_min_val = init_min_val;
 			curr_max_val = init_max_val;
 		}
@@ -300,6 +293,15 @@ public class Unit {
 		else if (agility > curr_max_val)
 			this.agility = curr_max_val; 
 	}
+	
+	/**
+	 * 
+	 * @param agility
+	 */
+	public void setAgility(int agility) {
+		setAgility(agility, false);
+	}
+	
 	/**
 	 * 
 	 * @return
@@ -312,9 +314,8 @@ public class Unit {
 	 * 
 	 * @param toughness
 	 */
-	public void setToughness(int toughness){
-		if (this.flag = false){
-			setFlag(true);
+	private void setToughness(int toughness, boolean flag){
+		if (flag){
 			curr_min_val = init_min_val;
 			curr_max_val = init_max_val;
 		}
@@ -333,34 +334,26 @@ public class Unit {
 	
 	/**
 	 * 
+	 * @param toughness
+	 */
+	public void setToughness(int toughness) {
+		setToughness(toughness, false);
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public int getToughness(){
 		return this.toughness;
 	}
-	
-	/**
-	 * 
-	 * @param flag
-	 */
-	public void setFlag(boolean flag){
-		this.flag = flag;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean getFlag(){
-		return this.flag;
-	}
-	
+
 
 	/**
 	 * 
 	 * @return
 	 */
-	public int getMaxHitpointsStamina() {
+	private int getMaxHitpointsStamina() {
 		 return (int) Math.ceil((((double) this.getWeight())*((double) this.getToughness()))/50);
 	}
 	
@@ -369,7 +362,7 @@ public class Unit {
 	 * @param hitpoints
 	 * @return
 	 */
-	public boolean hasValidHitpoints(int hitpoints){
+	private boolean hasValidHitpoints(int hitpoints){
 		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpointsStamina()));
 	}
 	
@@ -378,7 +371,7 @@ public class Unit {
 	 * @param stamina
 	 * @return
 	 */
-	public boolean hasValidStamina(int stamina){
+	private boolean hasValidStamina(int stamina){
 		return ((stamina >= 0) && (stamina <= this.getMaxHitpointsStamina()));
 	}
 	
