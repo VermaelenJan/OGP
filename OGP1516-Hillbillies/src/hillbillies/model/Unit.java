@@ -32,6 +32,8 @@ public class Unit {
 	private static int max_val = 200;
 	private int curr_min_val;
 	private int curr_max_val;
+	private boolean sprinting;
+	private double velocity;
 
 	//TODO: think about int vs double
 	/**
@@ -436,7 +438,42 @@ public class Unit {
 	 * 
 	 * @param duration
 	 */
-	public void advanceTime(double duration){
+	public void advanceTime(double x, double y , double z ,double dt){
 		
 	}
+	
+	private double getBaseSpeed(){
+		return 1.5*(this.getStrength()+this.getAgility())/(2*this.getWeight());
+	}
+	
+	private double getWalkingSpeed(double target_z){
+		if (this.getLocation().get(2)-target_z == -1){
+			return 0.5*this.getBaseSpeed();
+		}
+		else if (this.getLocation().get(2)- target_z == 1){
+			return 1.2*this.getBaseSpeed();
+		}
+		else{
+			return this.getBaseSpeed();
+		}
+	}
+	
+	public List<Double> getCurrentSpeed(List<Double> target) {
+		double distance = Math.sqrt(Math.pow((target.get(0)-this.getLocation().get(0)),2)+Math.pow((target.get(1)-this.getLocation().get(1)),2)
+				+ Math.pow((target.get(2)-this.getLocation().get(2)),2));
+		if (sprinting){
+			velocity = this.getWalkingSpeed(target.get(2))*2;
+		}
+		else{
+			velocity = this.getWalkingSpeed(target.get(2));
+		}
+		List<Double> current_speed = new ArrayList<Double>();
+		current_speed.add(velocity*(target.get(0)-this.getLocation().get(0))/distance);
+		current_speed.add(velocity*(target.get(1)-this.getLocation().get(1))/distance);
+		current_speed.add(velocity*(target.get(2)-this.getLocation().get(2))/distance);
+		return current_speed;
+	}
+	
+	
+	
 }
