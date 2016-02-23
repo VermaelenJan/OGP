@@ -25,7 +25,7 @@ public class Unit {
 	private int toughness;
 	private int hitpoints;
 	private int stamina;
-	private float orientation;
+	private double orientation;
 	private static int init_min_val = 25;
 	private static int init_max_val = 100;
 	private static int min_val = 1;
@@ -81,7 +81,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
-			int hitpoints, int stamina, float orientation) throws IllegalPositionException, IllegalNameException {
+			int hitpoints, int stamina, double orientation) throws IllegalPositionException, IllegalNameException {
 		setLocation(location);
 		setName(name);
 		setWeight(weight, true);
@@ -93,6 +93,10 @@ public class Unit {
 		setOrientation(orientation);
 	}
 	
+	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
+			int hitpoints, int stamina) throws IllegalPositionException, IllegalNameException {
+		this(location, name, weight, strength, agility, toughness, hitpoints, stamina, Math.PI/2);
+	}	
 	/**
 	 * 
 	 * @param location
@@ -166,7 +170,6 @@ public class Unit {
 	private static boolean isValidName(String name){
 		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (areValidCharacters(name)));
 	}
-	d
 	
 	/**
 	 * 
@@ -417,15 +420,15 @@ public class Unit {
 	 * 
 	 * @param orientation
 	 */
-	public void setOrientation(float orientation){
-		this.orientation = orientation;
+	public void setOrientation(double orientation){
+		this.orientation = orientation%(2*Math.PI);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public float getOrientation(){
+	public double getOrientation(){
 		return this.orientation;
 	}
 	
@@ -433,7 +436,7 @@ public class Unit {
 	 * 
 	 * @param duration
 	 */
-	public void advanceTime(float duration){
+	public void advanceTime(double duration){
 		
 	}
 }
