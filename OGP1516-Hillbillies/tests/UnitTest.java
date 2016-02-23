@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import hillbillies.model.IllegalNameException;
@@ -11,8 +12,16 @@ import hillbillies.model.Unit;
 import ogp.framework.util.Util;
 
 public class UnitTest {
-
-	private static final String ValidName = "This 's a \"test\"";
+	
+	private static String ValidName;
+	private static List<Double> ValidLocation;
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	ValidName = "This 's a \"test\"";
+	ValidLocation = new ArrayList<Double>(); 
+	ValidLocation.add((double) 0); ValidLocation.add((double) 24.5); ValidLocation.add((double) 49);
+	}
 
 	@Test
 	public void constructor_Legal() throws IllegalPositionException, IllegalNameException {
@@ -39,18 +48,24 @@ public class UnitTest {
 		new Unit(location, ValidName, 0, 0, 0, 0, 0, 0, 0);
 	}	
 	
+	@Test
+	public void constructor_Legal_Name() throws IllegalPositionException, IllegalNameException {
+		new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0, 0, 0);
+	}
+	
 	@Test (expected=IllegalNameException.class)
 	public void constructor_Illegal_NameChars() throws IllegalPositionException, IllegalNameException {
-		List<Double> location = new ArrayList<Double>();
-		location.add((double) 10); location.add((double) 10); location.add((double) 10);
-		new Unit(location, "N0 v@lid name", 0, 0, 0, 0, 0, 0, 0);
+		new Unit(ValidLocation, "N0 v@lid name", 0, 0, 0, 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalNameException.class)
 	public void constructor_Illegal_NameCapt() throws IllegalPositionException, IllegalNameException {
-		List<Double> location = new ArrayList<Double>();
-		location.add((double) 10); location.add((double) 10); location.add((double) 10);
-		new Unit(location, "no valid name", 0, 0, 0, 0, 0, 0, 0);
+		new Unit(ValidLocation, "no valid name", 0, 0, 0, 0, 0, 0, 0);
+	}
+	
+	@Test (expected=IllegalNameException.class)
+	public void constructor_Illegal_NameLength() throws IllegalPositionException, IllegalNameException {
+		new Unit(ValidLocation, "T", 0, 0, 0, 0, 0, 0, 0);
 	}
 	
 	@Test
@@ -88,9 +103,7 @@ public class UnitTest {
 	
 	@Test
 	public void setHitpoints_Check() throws IllegalPositionException, IllegalNameException {
-		List<Double> location = new ArrayList<Double>();
-		location.add((double) 0); location.add((double) 0); location.add((double) 0);
-		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, 0, 0, 0);
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0, 0, 0);
 		unit.setWeight(198);
 		unit.setToughness(21);
 		unit.setHitpoints(84);

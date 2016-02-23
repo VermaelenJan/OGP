@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: write tests for everything
+//TODO: CONSTANTS, randomMethods,... 
 /**
  * 
  * @author
@@ -77,13 +78,13 @@ public class Unit {
 	 * 			The given position is not a valid position for a unit.
 	 * 			| ! canHaveAsPosition(position) //TODO: add this.?
 	 * @throws IllegalNameException 
-	 * 			The given name is not allowed.	
+	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
 	 * 
 	 */
 	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
 			int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException, IllegalNameException {
-		this.setLocation(location);
+		setLocation(location);
 		setName(name);
 		setWeight(weight);
 		setStrength(strength);
