@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: write tests for everything
-
 /**
  * 
  * @author
@@ -76,12 +75,16 @@ public class Unit {
 	 * 			| setOrientation(orientation)
 	 * @throws IllegalPositionException
 	 * 			The given position is not a valid position for a unit.
-	 * 			| ! canHaveAsPosition(position)
+	 * 			| ! canHaveAsPosition(position) //TODO: add this.?
+	 * @throws IllegalNameException 
+	 * 			The given name is not allowed.	
+	 * 			| ! isValidName(name)
 	 * 
 	 */
-	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException {
+	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
+			int hitpoints, int stamina, float orientation, boolean flag) throws IllegalPositionException, IllegalNameException {
 		this.setLocation(location);
-//		setName(name);
+		setName(name);
 		setWeight(weight);
 		setStrength(strength);
 		setAgility(agility);
@@ -103,8 +106,9 @@ public class Unit {
 	 * @param stamina
 	 * @param orientation
 	 * @throws IllegalPositionException
+	 * @throws IllegalNameException 
 	 */
-	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation) throws IllegalPositionException {
+	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, int hitpoints, int stamina, float orientation) throws IllegalPositionException, IllegalNameException {
 		this(location, name, weight, strength, agility, toughness, hitpoints, stamina, orientation, true);
 	}
 	
@@ -179,7 +183,7 @@ public class Unit {
 	 * @return
 	 */
 	private static boolean isValidName(String name){
-		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (isValidCharacter(name)));
+		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (hasAllValidCharacters(name)));
 	}
 	
 	
@@ -188,15 +192,13 @@ public class Unit {
 	 * @param name
 	 * @return
 	 */
-	private static boolean isValidCharacter(String name){
+	private static boolean hasAllValidCharacters(String name){
 		for (char c : name.toCharArray()){
-			if ( (! Character.isLetter(c)) || (! (c == ' ') ) || (! (c == '"')) || (! (c == '\'')) )
+			if ( (! Character.isLetter(c)) && (! (c == ' ') ) && (! (c == '"')) && (! (c == '\'')) )
 				return false;
 		}
 		
-		return true;
-				
-		
+		return true;	
 	}
 	
 	/**
@@ -433,9 +435,11 @@ public class Unit {
 		return this.orientation;
 	}
 	
+	/**
+	 * 
+	 * @param duration
+	 */
 	public void advanceTime(float duration){
 		
 	}
-	
-	
 }
