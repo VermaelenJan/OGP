@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class Unit {
 	
-	int World_x = 50 - 1;
-	int World_y = 50 - 1;
-	int World_z = 50 - 1;
+	static int World_x = 50 - 1;
+	static int World_y = 50 - 1;
+	static int World_z = 50 - 1;
 	private double x_pos;
 	private double y_pos;
 	private double z_pos;
@@ -25,7 +25,7 @@ public class Unit {
 	private int toughness;
 	private int hitpoints;
 	private int stamina;
-	private double orientation;
+	private float orientation;
 	private static int init_min_val = 25;
 	private static int init_max_val = 100;
 	private static int min_val = 1;
@@ -81,7 +81,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
-			int hitpoints, int stamina, double orientation) throws IllegalPositionException, IllegalNameException {
+			int hitpoints, int stamina, float orientation) throws IllegalPositionException, IllegalNameException {
 		setLocation(location);
 		setName(name);
 		setWeight(weight, true);
@@ -91,11 +91,6 @@ public class Unit {
 		setHitpoints(hitpoints);
 		setStamina(stamina);
 		setOrientation(orientation);
-	}
-	
-	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
-			int hitpoints, int stamina) throws IllegalPositionException, IllegalNameException{
-		this(location, name, weight, strength, agility, toughness, hitpoints, stamina, Math.PI/2);
 	}
 	
 	/**
@@ -123,7 +118,7 @@ public class Unit {
 	 * 			| result == (location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
 				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
 	 */
-	private  boolean canHaveAsPosition(List<Double> location) {
+	private boolean canHaveAsPosition(List<Double> location) {
 		return ((location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
 				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
 	}
@@ -169,16 +164,16 @@ public class Unit {
 	 * @return
 	 */
 	private static boolean isValidName(String name){
-		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (hasAllValidCharacters(name)));
+		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (areValidCharacters(name)));
 	}
-	
+	d
 	
 	/**
 	 * 
 	 * @param name
 	 * @return
 	 */
-	private static boolean hasAllValidCharacters(String name){
+	private static boolean areValidCharacters(String name){
 		for (char c : name.toCharArray()){
 			if ( (! Character.isLetter(c)) && (! (c == ' ') ) && (! (c == '"')) && (! (c == '\'')) )
 				return false;
@@ -422,7 +417,7 @@ public class Unit {
 	 * 
 	 * @param orientation
 	 */
-	public void setOrientation(double orientation){
+	public void setOrientation(float orientation){
 		this.orientation = orientation;
 	}
 	
@@ -430,7 +425,7 @@ public class Unit {
 	 * 
 	 * @return
 	 */
-	public double getOrientation(){
+	public float getOrientation(){
 		return this.orientation;
 	}
 	
