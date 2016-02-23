@@ -438,7 +438,17 @@ public class Unit {
 	 * 
 	 * @param duration
 	 */
-	public void advanceTime(double x, double y , double z ,double dt){
+	// TODO exceptions(zowel opgave als location)!!!!!!!!!!!!!!!!! jaaa eric, we weten het.
+	
+	public void advanceTime(List<Double> target,double dt){
+		List<Double> new_loc = new ArrayList<Double>();
+		new_loc.add(this.getLocation().get(0)+ this.getCurrentSpeed(target).get(0)*dt);
+		new_loc.add(this.getLocation().get(1)+ this.getCurrentSpeed(target).get(1)*dt);
+		new_loc.add(this.getLocation().get(2)+ this.getCurrentSpeed(target).get(2)*dt);
+		try {
+			this.setLocation(new_loc);
+		} catch (IllegalPositionException e) {}
+		
 		
 	}
 	
@@ -459,8 +469,8 @@ public class Unit {
 	}
 	
 	public List<Double> getCurrentSpeed(List<Double> target) {
-		double distance = Math.sqrt(Math.pow((target.get(0)-this.getLocation().get(0)),2)+Math.pow((target.get(1)-this.getLocation().get(1)),2)
-				+ Math.pow((target.get(2)-this.getLocation().get(2)),2));
+		double distance = this.getDistanceTo(target);
+
 		if (sprinting){
 			velocity = this.getWalkingSpeed(target.get(2))*2;
 		}
@@ -471,7 +481,20 @@ public class Unit {
 		current_speed.add(velocity*(target.get(0)-this.getLocation().get(0))/distance);
 		current_speed.add(velocity*(target.get(1)-this.getLocation().get(1))/distance);
 		current_speed.add(velocity*(target.get(2)-this.getLocation().get(2))/distance);
+		
 		return current_speed;
+	}
+	
+	public double getDistanceTo(List<Double> target) {
+		double distance = Math.sqrt(Math.pow((target.get(0)-this.getLocation().get(0)),2)+Math.pow((target.get(1)-this.getLocation().get(1)),2)
+		+ Math.pow((target.get(2)-this.getLocation().get(2)),2));
+		return distance;
+	}
+	
+	private boolean Arrived(List<Double>target,double dt){
+		
+		return (this.getDistanceTo(target) < dt*Math.sqrt((Math.pow((this.getCurrentSpeed(target).get(0) ), 2))) +
+				Math.pow((this.getCurrentSpeed(target).get(1) ), 2));				
 	}
 	
 	
