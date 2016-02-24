@@ -494,7 +494,7 @@ public class Unit {
 	private boolean Arrived(List<Double>target,double dt){
 		
 		return (this.getDistanceTo(target) < dt*Math.sqrt((Math.pow((this.getCurrentSpeed(target).get(0) ), 2))) +
-				Math.pow((this.getCurrentSpeed(target).get(1) ), 2));				
+				Math.pow((this.getCurrentSpeed(target).get(1) ), 2));	
 	}
 	
 	
