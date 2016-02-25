@@ -1,12 +1,14 @@
 package hillbillies.model;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import javax.naming.InsufficientResourcesException;
+
 
 //TODO: write tests for everything
 //TODO: CONSTANTS, randomMethods,... 
 //TODO: fix flag
+//TODO: setters in exceptions
 /**
  * 
  * @author
@@ -42,9 +44,20 @@ public class Unit {
 	// Target
 	private List<Double> target = null;
 	
+	// Working
+	private boolean working;
+	private float time_remainder_to_work;
+	
+	// Attack
+	private float attack_time;
+	
 	//TODO set/get/check moving
 	private boolean isMoving ;
+	private List<Integer> global_target;
 	
+	
+	// Random
+	Random random = new Random();
 
 	//TODO: think about int vs double
 	/**
@@ -369,8 +382,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
-	private int getMaxHitpointsStamina() {
-		 return (int) Math.ceil((((double) this.getWeight())*((double) this.getToughness()))/50);
+	private double getMaxHitpointsStamina() {
+		 return (double) Math.ceil((((double) this.getWeight())*((double) this.getToughness()))/50);
 	}
 	
 	/**
@@ -471,11 +484,20 @@ public class Unit {
 			if ((isSprinting()) && (getStamina()>0)){
 				setStamina(getStamina()- dt*10);
 			}
+			
+			this.setOrientation(Math.atan2(this.getCurrentSpeed().get(1),this.getCurrentSpeed().get(0)));
+		
+		}
+		if (isWorking()){
+			setTimeRemainderToWork(this.getTimeRemainderToWork()-(float)dt);	
+			if (this.getTimeRemainderToWork() < 0){
+				stopWorking();
+			}
 		}
 		
-		this.setOrientation(Math.atan2(this.getCurrentSpeed().get(1),this.getCurrentSpeed().get(0)));
-		
-		
+		if (isAttacking()){
+			setAttackTime(getAttackTime() - (float)(dt));
+		}
 	}
 		
 	
@@ -569,10 +591,155 @@ public class Unit {
 	}
 	
 			
-	public void moveTo() throws IllegalPositionException {
+	public void moveTo(List<Integer>end_target) throws IllegalPositionException {
+		
+		global_target = end_target;
+		
+		int x_cur = this.getOccupiedCube().get(0);
+		int y_cur = this.getOccupiedCube().get(1);
+		int z_cur = this.getOccupiedCube().get(2);
+		
+		int x_tar = end_target.get(0);
+		int y_tar = end_target.get(1);
+		int z_tar = end_target.get(2);
 				
+		while ((x_cur == x_tar)){
+			int x_res;
+			int y_res;
+			int z_res;
+			
+			// x
+			if (x_cur == x_tar){
+				x_res = 0;
+			}
+			else if (x_cur < x_tar){
+				x_res = 1;
+			}
+			else{
+				x_res = -1;
+			}
+			
+			// y 
+			if (y_cur == y_tar){
+				y_res = 0;
+			}
+			else if (y_cur < y_tar){
+				y_res = 1;
+			}
+			else{
+				y_res = -1;
+			}
+			
+			// z
+			if (z_cur == z_tar){
+				z_res = 0;
+			}
+			else if (z_cur < z_tar){
+				z_res = 1;
+			}
+			else{
+				z_res = -1;
+			}
+			
+
+			moveToAdjacent(x_res, y_res,z_res);
+		}
+			
+
 	}
 	
+	public void work(){
+		startWorking();
+	}
+	
+	private void startWorking(){
+		working = true;
+		setTimeRemainderToWork((float) 500/getStrength());
+	}
+	
+	private void stopWorking(){
+		working = false;
+
+	}
+	
+	public boolean isWorking(){
+		return working;
+	}
+	
+	private void setTimeRemainderToWork(float time){
+		time_remainder_to_work = time;
+	}
+	
+	private float getTimeRemainderToWork(){
+		return time_remainder_to_work;
+	}
+	
+	
+	public void attack(Unit other) throws IllegalAttackPosititonException {
+		if (!this.canHaveAsAttackPosition(other.getOccupiedCube())) {
+			throw new IllegalAttackPosititonException(other.getOccupiedCube());
+		}
+		
+		setAttackTime(1);
+		
+	}
+	
+	public void defend(Unit other){
+		double possibility_dodge = (double)(0.2*this.getAgility()/other.getAgility());
+		if (getDefendSucces(possibility_dodge)){
+			setRandomLocation();
+		}
+		
+		else{
+			double possibility_block = (double)(0.25*(this.getStrength()+this.getAgility()/(other.getStrength()+other.getAgility())));
+			
+			if ( ! getDefendSucces(possibility_block)){
+				this.setHitpoints(this.getHitpoints()-(double)(other.getStrength()/10));
+			}
+								
+			
+
+		}
+		
+	}
+	
+	private void setRandomLocation(){
+		try {
+			this.setLocation(randomPosition(this.getLocation()));
+		} catch (IllegalPositionException e) {
+			setRandomLocation();
+		}
+	}
+	
+	private List<Double> randomPosition(List<Double>curr_loc){
+		List<Double> new_loc = new ArrayList<Double>();
+		new_loc.add(curr_loc.get(0)+ (random.nextDouble()*2-1) );
+		new_loc.add(curr_loc.get(1)+ (random.nextDouble()*2-1) );
+		new_loc.add(curr_loc.get(2));
+		return new_loc;
+	}
+	
+	private boolean canHaveAsAttackPosition(List<Integer>attack_cube_position){
+		return((Math.abs(this.getOccupiedCube().get(0)-attack_cube_position.get(0)) <=1) && 
+				(Math.abs(this.getOccupiedCube().get(1)-attack_cube_position.get(1)) <=1) &&
+				(Math.abs(this.getOccupiedCube().get(2)-attack_cube_position.get(2)) <=1));	
+	}
+	
+	public boolean isAttacking(){
+		return (this.getAttackTime() > 0);
+	}
+	
+	private void setAttackTime(float time){
+		attack_time = time;
+	}
+	
+	private float getAttackTime(){
+		return attack_time;
+	}
+	
+	private boolean getDefendSucces(double x){
+		return (random.nextDouble() < x);
+	}
 	
 	
 	
