@@ -2,6 +2,8 @@ package hillbillies.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.InsufficientResourcesException;
+
 //TODO: write tests for everything
 //TODO: CONSTANTS, randomMethods,... 
 //TODO: fix flag
@@ -12,9 +14,9 @@ import java.util.List;
  */
 public class Unit {
 	
-	static int World_x = 50 - 1;
-	static int World_y = 50 - 1;
-	static int World_z = 50 - 1;
+	static int WORLD_X = 50;
+	static int WORLD_Y = 50;
+	static int WORLD_Z = 50;
 	private double x_pos;
 	private double y_pos;
 	private double z_pos;
@@ -23,8 +25,10 @@ public class Unit {
 	private int strength;
 	private int agility;
 	private int toughness;
-	private int hitpoints;
-	private int stamina;
+	
+	private double hitpoints;
+	private double stamina;
+	
 	private double orientation;
 	private static int init_min_val = 25;
 	private static int init_max_val = 100;
@@ -34,6 +38,13 @@ public class Unit {
 	private int curr_max_val;
 	private boolean sprinting;
 	private double velocity;
+	private double CUBE_LENGTH = 1;
+	// Target
+	private List<Double> target = null;
+	
+	//TODO set/get/check moving
+	private boolean isMoving ;
+	
 
 	//TODO: think about int vs double
 	/**
@@ -125,7 +136,7 @@ public class Unit {
 				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
 	 */
 	private boolean canHaveAsPosition(List<Double> location) {
-		return ((location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
+		return ((location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
 				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
 	}
 
@@ -367,7 +378,7 @@ public class Unit {
 	 * @param hitpoints
 	 * @return
 	 */
-	private boolean hasValidHitpoints(int hitpoints){
+	private boolean hasValidHitpoints(double hitpoints){
 		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpointsStamina()));
 	}
 	
@@ -376,7 +387,7 @@ public class Unit {
 	 * @param stamina
 	 * @return
 	 */
-	private boolean hasValidStamina(int stamina){
+	private boolean hasValidStamina(double stamina){
 		return ((stamina >= 0) && (stamina <= this.getMaxHitpointsStamina()));
 	}
 	
@@ -386,7 +397,7 @@ public class Unit {
 	 * 
 	 * @pre
 	 */
-	public void setHitpoints(int hitpoints){
+	public void setHitpoints(double hitpoints){
 		assert this.hasValidHitpoints(hitpoints);
 		this.hitpoints = hitpoints;
 	}
@@ -395,7 +406,7 @@ public class Unit {
 	 * 
 	 * @return
 	 */
-	public int getHitpoints(){
+	public double getHitpoints(){
 		return this.hitpoints;
 	}
 	
@@ -405,7 +416,7 @@ public class Unit {
 	 * 
 	 * @pre
 	 */
-	public void setStamina(int stamina){
+	public void setStamina(double stamina){
 		assert this.hasValidStamina(stamina);
 		this.stamina = stamina;
 	}
@@ -414,7 +425,7 @@ public class Unit {
 	 * 
 	 * @return
 	 */
-	public int getStamina(){
+	public double getStamina(){
 		return this.stamina;
 	}
 	
@@ -440,17 +451,33 @@ public class Unit {
 	 */
 	// TODO exceptions(zowel opgave als location)!!!!!!!!!!!!!!!!! jaaa eric, we weten het.
 	
-	public void advanceTime(List<Double> target,double dt){
-		List<Double> new_loc = new ArrayList<Double>();
-		new_loc.add(this.getLocation().get(0)+ this.getCurrentSpeed(target).get(0)*dt);
-		new_loc.add(this.getLocation().get(1)+ this.getCurrentSpeed(target).get(1)*dt);
-		new_loc.add(this.getLocation().get(2)+ this.getCurrentSpeed(target).get(2)*dt);
-		try {
-			this.setLocation(new_loc);
-		} catch (IllegalPositionException e) {}
+	public void advanceTime(double dt){
+		if (isMoving() && this.Arrived(dt)){
+			stopMoving();
+			try {
+				this.setLocation(target);
+			} catch (IllegalPositionException e) {}
+
+		}
+		if (isMoving()){
+			List<Double> new_loc = new ArrayList<Double>();
+			new_loc.add(this.getLocation().get(0)+ this.getCurrentSpeed().get(0)*dt);
+			new_loc.add(this.getLocation().get(1)+ this.getCurrentSpeed().get(1)*dt);
+			new_loc.add(this.getLocation().get(2)+ this.getCurrentSpeed().get(2)*dt);
+			try {
+				this.setLocation(new_loc);
+			} catch (IllegalPositionException e) {}
+			
+			if ((isSprinting()) && (getStamina()>0)){
+				setStamina(getStamina()- dt*10);
+			}
+		}
+		
+		this.setOrientation(Math.atan2(this.getCurrentSpeed().get(1),this.getCurrentSpeed().get(0)));
 		
 		
 	}
+		
 	
 	private double getBaseSpeed(){
 		return 1.5*(this.getStrength()+this.getAgility())/(2*this.getWeight());
@@ -468,10 +495,10 @@ public class Unit {
 		}
 	}
 	
-	public List<Double> getCurrentSpeed(List<Double> target) {
-		double distance = this.getDistanceTo(target);
+	public List<Double> getCurrentSpeed() {
+		double distance = this.getDistanceToTarget();
 
-		if (sprinting){
+		if (isSprinting()){
 			velocity = this.getWalkingSpeed(target.get(2))*2;
 		}
 		else{
@@ -485,17 +512,68 @@ public class Unit {
 		return current_speed;
 	}
 	
-	public double getDistanceTo(List<Double> target) {
+	public void startSprinting(){
+		sprinting = true;
+	}
+	
+	public void stopSprinting(){
+		sprinting = false;
+	}
+	
+	public boolean isSprinting(){
+		return sprinting;
+	}
+	
+	private void startMoving(){
+		isMoving = true;
+	}
+	
+	private void stopMoving(){
+		isMoving = false;
+		stopSprinting();
+	}
+	
+	public boolean isMoving(){
+		return isMoving;
+	}
+	
+	public double getDistanceToTarget() {
 		double distance = Math.sqrt(Math.pow((target.get(0)-this.getLocation().get(0)),2)+Math.pow((target.get(1)-this.getLocation().get(1)),2)
 		+ Math.pow((target.get(2)-this.getLocation().get(2)),2));
 		return distance;
 	}
 	
-	private boolean Arrived(List<Double>target,double dt){
+	private boolean Arrived(double dt){
 		
-		return (this.getDistanceTo(target) < dt*Math.sqrt((Math.pow((this.getCurrentSpeed(target).get(0) ), 2))) +
-				Math.pow((this.getCurrentSpeed(target).get(1) ), 2));	
+		return (this.getDistanceToTarget() < dt*Math.sqrt((Math.pow((this.getCurrentSpeed().get(0) ), 2))) +
+				Math.pow((this.getCurrentSpeed().get(1) ), 2));	
 	}
+	
+	// TODO show exception if try to move in more than 1 block
+	
+	public void moveToAdjacent(int dx,int dy,int dz) throws IllegalPositionException{
+
+		List<Double> current_target = new ArrayList<Double>();
+		List<Integer> current_cube = getOccupiedCube();
+			
+		current_target.add((double)(current_cube.get(0)+ dx + CUBE_LENGTH/2));
+		current_target.add((double)(current_cube.get(1)+ dy + CUBE_LENGTH/2));
+		current_target.add((double)(current_cube.get(2)+ dz + CUBE_LENGTH/2));
+		
+		if (! canHaveAsPosition(current_target)){			
+			throw new IllegalPositionException(current_target);
+		}
+		startMoving();
+		
+		target = current_target;
+	}
+	
+			
+	public void moveTo() throws IllegalPositionException {
+				
+	}
+	
+	
 	
 	
 	
