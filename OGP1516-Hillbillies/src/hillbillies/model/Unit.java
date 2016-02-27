@@ -63,7 +63,7 @@ public class Unit {
 	
 	//TODO set/get/check moving
 	private boolean isMoving ;
-//	private List<Integer> global_target;
+	private List<Integer> global_target;
 	
 	
 	// Random
@@ -116,8 +116,12 @@ public class Unit {
 	 * 			| ! isValidName(name)
 	 * 
 	 */
-	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness, 
+	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
+		List<Double> location = new ArrayList<Double>();
+		location.add(CubeLocation.get(0)+CUBE_LENGTH/2);
+		location.add(CubeLocation.get(1)+CUBE_LENGTH/2);
+		location.add(CubeLocation.get(2)+CUBE_LENGTH/2);
 		setLocation(location);
 		setName(name);
 		setWeight(weight, true);
@@ -129,9 +133,9 @@ public class Unit {
 		setOrientation(orientation);
 	}
 	
-	public Unit(List<Double> location, String name, int weight, int strength, int agility, int toughness)
+	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness)
 			throws IllegalPositionException, IllegalNameException {
-		this(location, name, weight, strength, agility, toughness,Math.PI/2);
+		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
 	}	
 	/**
 	 * 
@@ -392,8 +396,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
-	private double getMaxHitpointsStamina() {
-		 return (double) Math.ceil((((double) this.getWeight())*((double) this.getToughness()))/50);
+	public int getMaxHitpointsStamina() {
+		 return (int) Math.ceil((((double) this.getWeight())*((double) this.getToughness()))/50);
 	}
 	
 	/**
@@ -481,9 +485,6 @@ public class Unit {
 			setAttackTime(getAttackTime() - (float)(dt));
 			if (getAttackTime()<= 0){
 				setAttackTime(0);
-//				try {
-//					moveTo(global_target);
-//				} catch (IllegalPositionException e) {}
 			}
 		}
 		
@@ -498,29 +499,24 @@ public class Unit {
 		
 		else if (isResting()){
 			setTimeResting(getTimeResting() + (float) dt);
-			double new_hitpoints = (getHitpoints()+ (double)(getToughness()/200))*dt/0.2;
-			double new_stamina = (getStamina() + (double)(getToughness()/100))*dt/0.2;
+			double new_hitpoints = getHitpoints() + ((double)getToughness()/200)*dt/0.2;
+			double new_stamina = getStamina() + ((double) getToughness()/100)*dt/0.2;
 			if (new_hitpoints< getMaxHitpointsStamina()){
 				setHitpoints(new_hitpoints);
 			}
 			else if (new_stamina < getMaxHitpointsStamina()){
 				setHitpoints(getMaxHitpointsStamina());
-				setStamina(new_stamina);
-				
+				setStamina(new_stamina);				
 			}
 			
 			else{
-				setStamina(getMaxHitpointsStamina());
-			}
-			
-			if (isDefaultBehaviourEnabled() && getStamina() == getMaxHitpointsStamina()){
+				this.setStamina(getMaxHitpointsStamina());
 				stopResting();
 			}
+
 		}
-		
 
 		
-
 		else if (isMoving()){
 			
 			if (this.Arrived(dt)){
@@ -528,6 +524,17 @@ public class Unit {
 				try {
 					this.setLocation(target);
 				} catch (IllegalPositionException e) {}
+				
+				if (! ( (this.getOccupiedCube().get(0) == global_target.get(0)) &&
+						(this.getOccupiedCube().get(1) == global_target.get(1)) &&
+						(this.getOccupiedCube().get(2) == global_target.get(2)) ) ) {
+					
+					try {
+						moveTo(global_target);
+					} catch (IllegalPositionException e) {}
+					
+				}
+
 			}
 			
 			else{
@@ -539,13 +546,20 @@ public class Unit {
 					this.setLocation(new_loc);
 				} catch (IllegalPositionException e) {}
 				
-				if ((isSprinting()) && (getStamina()>0)){
-					setStamina(getStamina()- dt*10);
-				}
-				else{
-					stopSprinting();
-				}
+				if (isSprinting()) {
 				
+					if (getStamina()>0){
+						setStamina(getStamina()- dt*10);
+					}
+					else if (getStamina() <= 0){
+						stopSprinting();
+					}
+				}
+				else if (isDefaultBehaviourEnabled()) {
+					if (random.nextDouble() <= 0.01) {
+						startSprinting();
+					}
+				}
 				this.setOrientation(Math.atan2(this.getCurrentSpeed().get(1),this.getCurrentSpeed().get(0)));
 			}
 						
@@ -555,10 +569,15 @@ public class Unit {
 		if (getTimeSinceRest() > 180){
 			startResting();
 		}
+		
+		else if (isDefaultBehaviourEnabled()) {
+			newDefaultBehaviour();
+		}
 	}
 	
 	private boolean canHaveAsHavingRecoverdOneHp(){
-		return (getTimeResting() > (float)(1/(this.toughness/200)/0.2));
+		return (getTimeResting() > ((double) 1/(((double) this.getToughness()/200.0)/0.2)));
+
 	}
 		
 	
@@ -616,7 +635,7 @@ public class Unit {
 	
 	private void stopMoving(){
 		isMoving = false;
-		stopSprinting();
+		//stopSprinting(); (Hill kept stopping sprinting)
 	}
 	
 	public boolean isMoving(){
@@ -624,6 +643,9 @@ public class Unit {
 	}
 	
 	public double getDistanceToTarget() {
+		if (target == null) {
+			return (double) 0;
+		}
 		double distance = Math.sqrt(Math.pow((target.get(0)-this.getLocation().get(0)),2)+Math.pow((target.get(1)-this.getLocation().get(1)),2)
 		+ Math.pow((target.get(2)-this.getLocation().get(2)),2));
 		return distance;
@@ -631,8 +653,15 @@ public class Unit {
 	
 	private boolean Arrived(double dt){
 		
-		return (this.getDistanceToTarget() < dt*Math.sqrt((Math.pow((this.getCurrentSpeed().get(0) ), 2))) +
-				Math.pow((this.getCurrentSpeed().get(1) ), 2));	
+		return (this.getDistanceToTarget() < dt*getCurrentSpeedMag());	
+	}
+	
+	public double getCurrentSpeedMag() {
+		if (!isMoving()) {
+			return (double) 0;
+		}
+		return Math.sqrt((Math.pow((this.getCurrentSpeed().get(0) ), 2))) +
+		Math.pow((this.getCurrentSpeed().get(1) ), 2);
 	}
 	
 	// TODO show exception if try to move in more than 1 block
@@ -649,6 +678,7 @@ public class Unit {
 		if (! canHaveAsPosition(current_target)){			
 			throw new IllegalPositionException(current_target);
 		}
+		
 		startMoving();
 		
 		target = current_target;
@@ -656,9 +686,7 @@ public class Unit {
 	
 			
 	public void moveTo(List<Integer>end_target) throws IllegalPositionException {
-		
-//		global_target = end_target;
-		
+		global_target = end_target;
 		int x_cur = this.getOccupiedCube().get(0);
 		int y_cur = this.getOccupiedCube().get(1);
 		int z_cur = this.getOccupiedCube().get(2);
@@ -666,8 +694,8 @@ public class Unit {
 		int x_tar = end_target.get(0);
 		int y_tar = end_target.get(1);
 		int z_tar = end_target.get(2);
-				
-		while ((x_cur == x_tar)){
+		
+		if (x_cur != x_tar || y_cur != y_tar || z_cur != z_tar){
 			int x_res;
 			int y_res;
 			int z_res;
@@ -704,12 +732,8 @@ public class Unit {
 			else{
 				z_res = -1;
 			}
-			
-
 			moveToAdjacent(x_res, y_res,z_res);
 		}
-			
-
 	}
 	
 	public void work(){
@@ -740,49 +764,59 @@ public class Unit {
 	
 	
 	public void attack(Unit other) throws IllegalAttackPosititonException {
-		if (!this.canHaveAsAttackPosition(other.getOccupiedCube())) {
-			throw new IllegalAttackPosititonException(other.getOccupiedCube());
-		}
-		
-		stopResting();	
-		
-//		stopMoving();
-		
-		double orient_attack = Math.atan2(other.getLocation().get(1)-this.getLocation().get(1),
-				other.getLocation().get(0)-this.getLocation().get(0));
-		double orient_defend = Math.atan2(this.getLocation().get(1)-other.getLocation().get(1),
-				this.getLocation().get(0)-other.getLocation().get(0));
-		
-		this.setOrientation(orient_attack);
-		other.setOrientation(orient_defend);
+		if (this != other) {
+			if (!this.canHaveAsAttackPosition(other.getOccupiedCube())) {
+				throw new IllegalAttackPosititonException(other.getOccupiedCube());
+			}
 			
-		setAttackTime(1);
-		
+			if (isResting()) {
+				stopResting();	
+			}
+			
+//			stopMoving();
+			
+			double orient_attack = Math.atan2(other.getLocation().get(1)-this.getLocation().get(1),
+					other.getLocation().get(0)-this.getLocation().get(0));
+			double orient_defend = Math.atan2(this.getLocation().get(1)-other.getLocation().get(1),
+					this.getLocation().get(0)-other.getLocation().get(0));
+			
+			this.setOrientation(orient_attack);
+			other.setOrientation(orient_defend);
+				
+			setAttackTime(1);
+		}
 	}
 	
 	public void defend(Unit other){
 		
+		if (isResting()) {
 		stopResting();
+		}
 		
-		double possibility_dodge = (double)(0.2*this.getAgility()/other.getAgility());
+		double possibility_dodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
 		if (getDefendSucces(possibility_dodge)){
 			setRandomLocation();
+			System.out.println("dodged");
 		}
 		
 		else{
-			double possibility_block = (double)(0.25*(this.getStrength()+this.getAgility()/(other.getStrength()+other.getAgility())));
+			double possibility_block = (double)(0.25*(((double) this.getStrength()+ (double) this.getAgility())/
+					((double) ((double) other.getStrength()+(double) other.getAgility()))));
 			
 			if ( ! getDefendSucces(possibility_block)){
-				this.setHitpoints(this.getHitpoints()-(double)(other.getStrength()/10));
+				System.out.println("block failed, taking damage");
+				this.setHitpoints(this.getHitpoints()-(double)( (double) other.getStrength()/10));
+				if (getHitpoints() < 0) {
+					setHitpoints(0);
+				}
 			}
-								
+			else {System.out.println("blocked");};
 			
-
 		}
 		
 	}
 	
-	private void setRandomLocation(){
+	private void setRandomLocation(){ //TODO: nakijken
 		try {
 			this.setLocation(randomPosition(this.getLocation()));
 		} catch (IllegalPositionException e) {
@@ -795,6 +829,9 @@ public class Unit {
 		new_loc.add(curr_loc.get(0)+ (random.nextDouble()*2-1) );
 		new_loc.add(curr_loc.get(1)+ (random.nextDouble()*2-1) );
 		new_loc.add(curr_loc.get(2));
+		if (curr_loc == new_loc) {
+			return randomPosition(curr_loc);
+		}
 		return new_loc;
 	}
 	
@@ -817,7 +854,7 @@ public class Unit {
 	}
 	
 	private boolean getDefendSucces(double x){
-		return (random.nextDouble() < x);
+		return (random.nextDouble() <= x);
 	}
 	
 	public void rest(){
@@ -884,11 +921,12 @@ public class Unit {
 		this.default_behaviour = false;
 	}
 	
-	// TODO getRandomPosition
 	private void newDefaultBehaviour(){
 		int possible_task = random.nextInt(3);
 		if (possible_task == 0){
-			moveTo(getRandomPosition());
+			try {
+				moveTo(getRandomPosition());
+			} catch (IllegalPositionException e) {}
 		}
 		else if (possible_task == 1){
 			work();
@@ -899,8 +937,11 @@ public class Unit {
 		}
 	}
 	
-	public List<Double> getRandomPosition(){
-		return null;
-		// TODO
+	public List<Integer> getRandomPosition(){
+		List<Integer> rand_loc = new ArrayList<Integer>();
+		rand_loc.add(random.nextInt(WORLD_X-1));
+		rand_loc.add(random.nextInt(WORLD_Y-1));
+		rand_loc.add(random.nextInt(WORLD_Z-1));
+		return rand_loc;
 	}
 }
