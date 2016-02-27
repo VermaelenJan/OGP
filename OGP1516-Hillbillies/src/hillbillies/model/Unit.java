@@ -5,13 +5,15 @@ import java.util.Random;
 
 
 
+
+
 //TODO: write tests for everything
 //TODO: CONSTANTS, randomMethods,... 
 //TODO: fix flag
 //TODO: setters in exceptions
 /**
  * 
- * @author
+ * @author Maxime en Jan
  *
  */
 public class Unit {
@@ -57,6 +59,7 @@ public class Unit {
 	private float time_resting = Float.MAX_VALUE;
 	private double start_hitpoints;
 	private double start_stamina;
+	private float periodic_rest;
 	
 	// Default Behaviour
 	private boolean default_behaviour;
@@ -64,6 +67,11 @@ public class Unit {
 	//TODO set/get/check moving
 	private boolean isMoving ;
 	private List<Integer> global_target;
+	
+	
+	private double new_hitpoints;
+	private double new_stamina;
+
 	
 	
 	// Random
@@ -131,6 +139,7 @@ public class Unit {
 		setHitpoints(getMaxHitpointsStamina());
 		setStamina(getMaxHitpointsStamina());
 		setOrientation(orientation);
+		
 	}
 	
 	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness)
@@ -232,6 +241,8 @@ public class Unit {
 	public String getName(){
 		return this.name;
 	}
+	
+
 	/**
 	 * 
 	 * @param weight
@@ -260,6 +271,7 @@ public class Unit {
 		}
 
 	}
+	
 	
 	/**
 	 * 
@@ -481,6 +493,12 @@ public class Unit {
 	public void advanceTime(double dt){
 		
 		
+		setTimeSinceRest(getTimeSinceRest() + (float)dt);
+		if (getTimeSinceRest() > 180){
+			startResting();
+		}
+		
+		
 		if (isAttacking()){
 			setAttackTime(getAttackTime() - (float)(dt));
 			if (getAttackTime()<= 0){
@@ -498,9 +516,18 @@ public class Unit {
 		
 		
 		else if (isResting()){
+			setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
 			setTimeResting(getTimeResting() + (float) dt);
-			double new_hitpoints = getHitpoints() + ((double)getToughness()/200)*dt/0.2;
-			double new_stamina = getStamina() + ((double) getToughness()/100)*dt/0.2;
+			
+			if (getTimePeriodicRest() >= 0.2){
+				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
+				int nb_times_period = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
+				new_hitpoints = getHitpoints() + ((double)getToughness()/200)*(double)(nb_times_period);
+				new_stamina = getStamina() + ((double) getToughness()/100)*(double)(nb_times_period);
+				
+			}
+
+			
 			if (new_hitpoints< getMaxHitpointsStamina()){
 				setHitpoints(new_hitpoints);
 			}
@@ -567,11 +594,18 @@ public class Unit {
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
 		}
-		setTimeSinceRest(getTimeSinceRest() + (float)dt);
-		if (getTimeSinceRest() > 180){
-			startResting();
-		}
+
 	}
+	
+	private void setTimePeriodicRest(float time){
+		this.periodic_rest = time;
+	}
+	
+	private float getTimePeriodicRest(){
+		return this.periodic_rest;
+	}
+	
+	
 	
 	private boolean canHaveAsHavingRecoverdOneHp(){
 		return (getTimeResting() > ((double) 1/(((double) this.getToughness()/200.0)/0.2)));
