@@ -210,8 +210,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isAttacking(Unit unit) throws ModelException {
-		unit.isAttacking();
-		return false;
+		return unit.isAttacking();
 	}
 
 	@Override
