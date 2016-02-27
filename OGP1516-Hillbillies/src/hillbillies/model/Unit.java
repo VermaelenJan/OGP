@@ -54,7 +54,7 @@ public class Unit {
 	// Rest
 	private boolean resting;
 	private float time_since_rest;
-	private float time_resting;
+	private float time_resting = Float.MAX_VALUE;
 	private double start_hitpoints;
 	private double start_stamina;
 	
@@ -518,14 +518,13 @@ public class Unit {
 
 		
 		else if (isMoving()){
-			
 			if (this.Arrived(dt)){
 				stopMoving();
 				try {
 					this.setLocation(target);
 				} catch (IllegalPositionException e) {}
-				
-				if (! ( (this.getOccupiedCube().get(0) == global_target.get(0)) &&
+				if (!(global_target == null) &&
+						!((this.getOccupiedCube().get(0) == global_target.get(0)) &&
 						(this.getOccupiedCube().get(1) == global_target.get(1)) &&
 						(this.getOccupiedCube().get(2) == global_target.get(2)) ) ) {
 					
@@ -548,7 +547,7 @@ public class Unit {
 				
 				if (isSprinting()) {
 				
-					if (getStamina()>0){
+					if (getStamina() - dt*10 >0){
 						setStamina(getStamina()- dt*10);
 					}
 					else if (getStamina() <= 0){
@@ -565,13 +564,12 @@ public class Unit {
 						
 		}
 		
+		else if (isDefaultBehaviourEnabled()) {
+			newDefaultBehaviour();
+		}
 		setTimeSinceRest(getTimeSinceRest() + (float)dt);
 		if (getTimeSinceRest() > 180){
 			startResting();
-		}
-		
-		else if (isDefaultBehaviourEnabled()) {
-			newDefaultBehaviour();
 		}
 	}
 	
@@ -660,8 +658,8 @@ public class Unit {
 		if (!isMoving()) {
 			return (double) 0;
 		}
-		return Math.sqrt((Math.pow((this.getCurrentSpeed().get(0) ), 2))) +
-		Math.pow((this.getCurrentSpeed().get(1) ), 2);
+		return Math.sqrt(((Math.pow((this.getCurrentSpeed().get(0) ), 2))) +
+		Math.pow((this.getCurrentSpeed().get(1) ), 2));
 	}
 	
 	// TODO show exception if try to move in more than 1 block
