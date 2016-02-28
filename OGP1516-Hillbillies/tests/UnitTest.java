@@ -50,37 +50,37 @@ public class UnitTest {
 		new Unit(location, ValidName, 0, 0, 0, 0);
 	}	
 	
+	// SETLOCATION ==> private
+//	@Test
+//	public void getOccupiedCube_Correct_1() throws IllegalPositionException, IllegalNameException {
+//		List<Integer> location = new ArrayList<Integer>();
+//		location.add(0); location.add(0); location.add(0);
+//		
+//		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
+//		
+//		List<Double> location1 = new ArrayList<Double>();
+//		location1.add((double) 0.1); location1.add((double) 2.1); location1.add((double) 4.9);
+//		unit.setLocation(location1);
+//		
+//		List<Integer> cube = unit.getOccupiedCube();
+//		assertEquals(0, cube.get(0), Util.DEFAULT_EPSILON);
+//		assertEquals(2, cube.get(1), Util.DEFAULT_EPSILON);
+//		assertEquals(4, cube.get(2), Util.DEFAULT_EPSILON);
+//	}
 	
-	@Test
-	public void getOccupiedCube_Correct_1() throws IllegalPositionException, IllegalNameException {
-		List<Integer> location = new ArrayList<Integer>();
-		location.add(0); location.add(0); location.add(0);
-		
-		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
-		
-		List<Double> location1 = new ArrayList<Double>();
-		location1.add((double) 0.1); location1.add((double) 2.1); location1.add((double) 4.9);
-		unit.setLocation(location1);
-		
-		List<Integer> cube = unit.getOccupiedCube();
-		assertEquals(0, cube.get(0), Util.DEFAULT_EPSILON);
-		assertEquals(2, cube.get(1), Util.DEFAULT_EPSILON);
-		assertEquals(4, cube.get(2), Util.DEFAULT_EPSILON);
-
-	}
-	
-	@Test
-	public void getLocation_Correct() throws IllegalPositionException, IllegalNameException {
-		List<Integer> initLoc = new ArrayList<Integer>();
-		initLoc.add(0); initLoc.add(0); initLoc.add(0);
-		List<Double> location = new ArrayList<Double>();
-		location.add((double) 49); location.add((double) 10.001); location.add((double) 0);
-		Unit unit = new Unit(initLoc, ValidName, 0, 0, 0, 0);
-		unit.setLocation(location);
-		assertEquals(49, unit.getLocation().get(0), Util.DEFAULT_EPSILON);
-		assertEquals(10.001, unit.getLocation().get(1), Util.DEFAULT_EPSILON);
-		assertEquals(0, unit.getLocation().get(2), Util.DEFAULT_EPSILON);
-	}
+	// SETLOCATION ==> private
+//	@Test
+//	public void getLocation_Correct() throws IllegalPositionException, IllegalNameException {
+//		List<Integer> initLoc = new ArrayList<Integer>();
+//		initLoc.add(0); initLoc.add(0); initLoc.add(0);
+//		List<Double> location = new ArrayList<Double>();
+//		location.add((double) 49); location.add((double) 10.001); location.add((double) 0);
+//		Unit unit = new Unit(initLoc, ValidName, 0, 0, 0, 0);
+//		unit.setLocation(location);
+//		assertEquals(49, unit.getLocation().get(0), Util.DEFAULT_EPSILON);
+//		assertEquals(10.001, unit.getLocation().get(1), Util.DEFAULT_EPSILON);
+//		assertEquals(0, unit.getLocation().get(2), Util.DEFAULT_EPSILON);
+//	}
 	
 	// Name testing 
 	

@@ -107,8 +107,8 @@ public class Unit {
 	 * 			| setToughness(toughness)
 	 * @effect the given hitpoints are set as the hitpoints of this new unit.
 	 * 			| setHitpoints(hitpoints)
-	 * @effect the given stamina is set as the stamina of this new unit.
-	 * 			| setStamina(stamina)
+	 * @effect the given stamina is set as the stamina of this new unit. 		//TODO: CHECK IF THIS IS POSSIBLE "setStamina(stamina)" if object is not yet created
+	 * 			| setStamina(stamina)													--> setter has to be raw? OVERAL CHECKEN (cfr. mariage.java)
 	 * @effect the given orientation is set as the orientation of this new unit.
 	 * 			| setOrientation(orientation)
 	 * @throws IllegalPositionException
@@ -149,7 +149,7 @@ public class Unit {
 	 * 			the location is not a valid location for a unit.
 	 * 			| !canHaveAsPosition(location)
 	 */
-	public void setLocation(List<Double> location) throws IllegalPositionException{
+	private void setLocation(List<Double> location) throws IllegalPositionException{
 		if (!canHaveAsPosition(location))
 			throw new IllegalPositionException(location);
 		this.x_pos = location.get(0);
@@ -511,6 +511,7 @@ public class Unit {
 		
 		
 		else if (isResting()){
+
 			setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
 			setTimeResting(getTimeResting() + (float) dt);
 			
@@ -567,11 +568,11 @@ public class Unit {
 				} catch (IllegalPositionException e) {}
 				
 				if (isSprinting()) {
-				
-					if (getStamina() - dt*10 >0){
+					if (getStamina() - dt*10 > 0){
 						setStamina(getStamina()- dt*10);
 					}
-					else if (getStamina() <= 0){
+					else {
+						setStamina(0);
 						stopSprinting();
 					}
 				}
@@ -612,7 +613,6 @@ public class Unit {
 	}
 	
 	private double getWalkingSpeed(double target_z){
-		System.out.println(target_z);
 		if (this.getLocation().get(2)-target_z < 0){
 			return 0.5*this.getBaseSpeed();
 		}
