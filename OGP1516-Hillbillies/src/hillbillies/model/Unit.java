@@ -690,9 +690,13 @@ public class Unit {
 		Math.pow((this.getCurrentSpeed().get(1) ), 2) + Math.pow((this.getCurrentSpeed().get(2)), 2));
 	}
 	
+	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException {
+		moveToAdjacent(dx, dy, dz, false);
+	}
+	
 	// TODO show exception if try to move in more than 1 block
 	
-	public void moveToAdjacent(int dx,int dy,int dz) throws IllegalPositionException{
+	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException{
 
 		List<Double> current_target = new ArrayList<Double>();
 		List<Integer> current_cube = getOccupiedCube();
@@ -709,6 +713,13 @@ public class Unit {
 		}
 		
 		target = current_target;
+		if (! calledBy_moveTo) {
+			List<Integer> current_target_cube = new ArrayList<Integer>();
+			current_target_cube.add(current_cube.get(0)+ dx);
+			current_target_cube.add(current_cube.get(1)+ dy);
+			current_target_cube.add(current_cube.get(2)+ dz);
+			global_target = current_target_cube;
+		}
 	}
 	
 			
@@ -759,7 +770,7 @@ public class Unit {
 			else{
 				z_res = -1;
 			}
-			moveToAdjacent(x_res, y_res,z_res);
+			moveToAdjacent(x_res, y_res,z_res, true);
 		}
 	}
 	
