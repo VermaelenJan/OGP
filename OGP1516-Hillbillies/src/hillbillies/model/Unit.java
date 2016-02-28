@@ -518,15 +518,14 @@ public class Unit {
 				
 				int nb_times_period = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
 				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
-				System.out.println(nb_times_period);
 				double new_hitpoints = getHitpoints() + ((double)getToughness()/200)*(double)(nb_times_period);
 				double new_stamina = getStamina() + ((double) getToughness()/100)*(double)(nb_times_period);
 				
 				
-				if (new_hitpoints< getMaxHitpointsStamina()){
+				if (new_hitpoints <= getMaxHitpointsStamina()){
 					setHitpoints(new_hitpoints);
 				}
-				else if (new_stamina < getMaxHitpointsStamina()){
+				else if (new_stamina <= getMaxHitpointsStamina()){
 					setHitpoints(getMaxHitpointsStamina());
 					setStamina(new_stamina);				
 				}
@@ -613,10 +612,11 @@ public class Unit {
 	}
 	
 	private double getWalkingSpeed(double target_z){
-		if (this.getLocation().get(2)-target_z == -1){
+		System.out.println(target_z);
+		if (this.getLocation().get(2)-target_z < 0){
 			return 0.5*this.getBaseSpeed();
 		}
-		else if (this.getLocation().get(2)- target_z == 1){
+		else if (this.getLocation().get(2)- target_z > 0){
 			return 1.2*this.getBaseSpeed();
 		}
 		else{
@@ -679,7 +679,6 @@ public class Unit {
 	}
 	
 	private boolean Arrived(double dt){
-		
 		return (this.getDistanceToTarget() < dt*getCurrentSpeedMag());	
 	}
 	
@@ -687,8 +686,8 @@ public class Unit {
 		if (!isMoving()) {
 			return (double) 0;
 		}
-		return Math.sqrt(((Math.pow((this.getCurrentSpeed().get(0) ), 2))) +
-		Math.pow((this.getCurrentSpeed().get(1) ), 2));
+		return Math.sqrt(Math.pow((this.getCurrentSpeed().get(0) ), 2) +
+		Math.pow((this.getCurrentSpeed().get(1) ), 2) + Math.pow((this.getCurrentSpeed().get(2)), 2));
 	}
 	
 	// TODO show exception if try to move in more than 1 block
@@ -705,8 +704,9 @@ public class Unit {
 		if (! canHaveAsPosition(current_target)){			
 			throw new IllegalPositionException(current_target);
 		}
-		
-		startMoving();
+		if (! (dx == 0 && dy == 0 && dz ==0)) {
+			startMoving();
+		}
 		
 		target = current_target;
 	}
@@ -802,45 +802,50 @@ public class Unit {
 			
 //			stopMoving();
 			
-			double orient_attack = Math.atan2(other.getLocation().get(1)-this.getLocation().get(1),
-					other.getLocation().get(0)-this.getLocation().get(0));
-			double orient_defend = Math.atan2(this.getLocation().get(1)-other.getLocation().get(1),
-					this.getLocation().get(0)-other.getLocation().get(0));
-			
-			this.setOrientation(orient_attack);
-			other.setOrientation(orient_defend);
+			setOrientationInFight(other);
 				
 			setAttackTime(1);
 		}
 	}
+
+	private void setOrientationInFight(Unit other) {
+		double orient_unit_this = Math.atan2(other.getLocation().get(1)-this.getLocation().get(1),
+				other.getLocation().get(0)-this.getLocation().get(0));
+		double orient_unit_other = Math.atan2(this.getLocation().get(1)-other.getLocation().get(1),
+				this.getLocation().get(0)-other.getLocation().get(0));
+		
+		this.setOrientation(orient_unit_this);
+		other.setOrientation(orient_unit_other);
+	}
 	
 	public void defend(Unit other){
-		
-		if (isResting()) {
-		stopResting();
-		}
-		
-		double possibility_dodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
-		if (getDefendSucces(possibility_dodge)){
-			setRandomLocation();
-			System.out.println("dodged");
-		}
-		
-		else{
-			double possibility_block = (double)(0.25*(((double) this.getStrength()+ (double) this.getAgility())/
-					((double) ((double) other.getStrength()+(double) other.getAgility()))));
-			
-			if ( ! getDefendSucces(possibility_block)){
-				System.out.println("block failed, taking damage");
-				this.setHitpoints(this.getHitpoints()-(double)( (double) other.getStrength()/10));
-				if (getHitpoints() < 0) {
-					setHitpoints(0);
-				}
+		if (this != other) {
+			if (isResting()) {
+			stopResting();
 			}
-			else {System.out.println("blocked");};
 			
+			double possibility_dodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
+			if (getDefendSucces(possibility_dodge)){
+				setRandomLocation();
+				setOrientationInFight(other);
+				System.out.println("dodged");
+			}
+			
+			else{
+				double possibility_block = (double)(0.25*(((double) this.getStrength()+ (double) this.getAgility())/
+						((double) ((double) other.getStrength()+(double) other.getAgility()))));
+				
+				if ( ! getDefendSucces(possibility_block)){
+					System.out.println("block failed, taking damage");
+					this.setHitpoints(this.getHitpoints()-(double)( (double) other.getStrength()/10));
+					if (getHitpoints() < 0) {
+						setHitpoints(0);
+					}
+				}
+				else {System.out.println("blocked");};
+				
+			}
 		}
-		
 	}
 	
 	private void setRandomLocation(){ //TODO: nakijken
