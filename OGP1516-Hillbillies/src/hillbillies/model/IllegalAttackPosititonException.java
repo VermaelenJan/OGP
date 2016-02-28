@@ -8,13 +8,27 @@ import be.kuleuven.cs.som.annotate.Immutable;
 public class IllegalAttackPosititonException extends Exception {
 	
 	/**
-	 * 
+	 * Variables registering the x,y and z value of the unit to attack.
 	 */
-
 	private final double x;
 	private final double y;
 	private final double z;
 
+	/**
+	 * 
+	 * @param	location
+	 * 			The location involved in this new illegal attack position exception.
+	 * 			The location has an x, y and z value stored in a list.
+	 * @post	The x value of this new illegal attack position exception is equal to 
+	 * 			the given x value on index 0 of the list location.
+	 * 			| new.getXpos() == location.get(0)
+	 * @post	The y value of this new illegal attack position exception is equal to 
+	 * 			the given y value on index 1 of the list location.
+	 * 			| new.getYpos() == location.get(1)
+	 * @post	The z value of this new illegal attack position exception is equal to 
+	 * 			the given z value on index 2 of the list location.
+	 * 			| new.getZpos() == location.get(2)
+	 */
 	public IllegalAttackPosititonException(List<Integer> location) {
 		this.x = location.get(0);
 		this.y = location.get(1);
@@ -23,7 +37,7 @@ public class IllegalAttackPosititonException extends Exception {
 	
 	/**
 	 * 
-	 * @return
+	 * Return the x value of the unit to attack involved in this illegal attack position exception.
 	 */
 	@Basic @Immutable
 	public double getXpos() {
@@ -32,7 +46,7 @@ public class IllegalAttackPosititonException extends Exception {
 	
 	/**
 	 * 
-	 * @return
+	 * Return the y value of the unit to attack involved in this illegal attack position exception.
 	 */
 	@Basic @Immutable
 	public double getYpos() {
@@ -41,7 +55,7 @@ public class IllegalAttackPosititonException extends Exception {
 
 	/**
 	 * 
-	 * @return
+	 * Return the z value of the unit to attack involved in this illegal attack position exception.
 	 */
 	@Basic @Immutable
 	public double getZpos() {
