@@ -69,11 +69,6 @@ public class Unit {
 	private List<Integer> global_target;
 	
 	
-	private double new_hitpoints;
-	private double new_stamina;
-
-	
-	
 	// Random
 	Random random = new Random();
 
@@ -520,27 +515,27 @@ public class Unit {
 			setTimeResting(getTimeResting() + (float) dt);
 			
 			if (getTimePeriodicRest() >= 0.2){
-				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
-				int nb_times_period = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
-				new_hitpoints = getHitpoints() + ((double)getToughness()/200)*(double)(nb_times_period);
-				new_stamina = getStamina() + ((double) getToughness()/100)*(double)(nb_times_period);
 				
+				int nb_times_period = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
+				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
+				System.out.println(nb_times_period);
+				double new_hitpoints = getHitpoints() + ((double)getToughness()/200)*(double)(nb_times_period);
+				double new_stamina = getStamina() + ((double) getToughness()/100)*(double)(nb_times_period);
+				
+				
+				if (new_hitpoints< getMaxHitpointsStamina()){
+					setHitpoints(new_hitpoints);
+				}
+				else if (new_stamina < getMaxHitpointsStamina()){
+					setHitpoints(getMaxHitpointsStamina());
+					setStamina(new_stamina);				
+				}
+				else{
+					this.setHitpoints(getMaxHitpointsStamina());
+					this.setStamina(getMaxHitpointsStamina());
+					stopResting();
+				}	
 			}
-
-			
-			if (new_hitpoints< getMaxHitpointsStamina()){
-				setHitpoints(new_hitpoints);
-			}
-			else if (new_stamina < getMaxHitpointsStamina()){
-				setHitpoints(getMaxHitpointsStamina());
-				setStamina(new_stamina);				
-			}
-			
-			else{
-				this.setStamina(getMaxHitpointsStamina());
-				stopResting();
-			}
-
 		}
 
 		
