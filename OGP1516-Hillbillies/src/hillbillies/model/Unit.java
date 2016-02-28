@@ -252,7 +252,7 @@ public class Unit {
 			curr_max_val = max_val;
 		}
 
-		if (weight >= (this.getStrength()+this.getAgility())/2){
+		if (weight >= (getStrength()+getAgility())/2){
 			if (weight < curr_min_val) 
 				this.weight = curr_min_val;
 			else if ((weight >= curr_min_val) && (weight <= curr_max_val))
@@ -262,7 +262,7 @@ public class Unit {
 		}
 		
 		else{
-			this.weight = (this.getStrength()+this.getAgility())/2;
+			this.weight = (getStrength()+getAgility())/2;
 		}
 
 	}
@@ -404,7 +404,7 @@ public class Unit {
 	 * @return
 	 */
 	public int getMaxHitpointsStamina() {
-		 return (int) Math.ceil((((double) this.getWeight())*((double) this.getToughness()))/50);
+		 return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
 	}
 	
 	/**
@@ -413,7 +413,7 @@ public class Unit {
 	 * @return
 	 */
 	private boolean hasValidHitpoints(double hitpoints){
-		return ((hitpoints >= 0) && (hitpoints <= this.getMaxHitpointsStamina()));
+		return ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()));
 	}
 	
 	/**
@@ -422,7 +422,7 @@ public class Unit {
 	 * @return
 	 */
 	private boolean hasValidStamina(double stamina){
-		return ((stamina >= 0) && (stamina <= this.getMaxHitpointsStamina()));
+		return ((stamina >= 0) && (stamina <= getMaxHitpointsStamina()));
 	}
 	
 	/**
@@ -431,8 +431,8 @@ public class Unit {
 	 * 
 	 * @pre
 	 */
-	public void setHitpoints(double hitpoints){
-		assert this.hasValidHitpoints(hitpoints);
+	private void setHitpoints(double hitpoints){
+		assert hasValidHitpoints(hitpoints);
 		this.hitpoints = hitpoints;
 	}
 	
@@ -450,8 +450,8 @@ public class Unit {
 	 * 
 	 * @pre
 	 */
-	public void setStamina(double stamina){
-		assert this.hasValidStamina(stamina);
+	private void setStamina(double stamina){
+		assert hasValidStamina(stamina);
 		this.stamina = stamina;
 	}
 	
@@ -467,7 +467,7 @@ public class Unit {
 	 * 
 	 * @param orientation
 	 */
-	public void setOrientation(double orientation){
+	private void setOrientation(double orientation){
 		this.orientation = orientation%(2*Math.PI);
 	}
 	
@@ -503,8 +503,8 @@ public class Unit {
 		
 		
 		else if (isWorking() && canHaveAsHavingRecoverdOneHp()){
-			setTimeRemainderToWork(this.getTimeRemainderToWork()-(float)dt);	
-			if (this.getTimeRemainderToWork() < 0){
+			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
+			if (getTimeRemainderToWork() < 0){
 				stopWorking();
 			}
 		}
@@ -531,8 +531,8 @@ public class Unit {
 					setStamina(new_stamina);				
 				}
 				else{
-					this.setHitpoints(getMaxHitpointsStamina());
-					this.setStamina(getMaxHitpointsStamina());
+					setHitpoints(getMaxHitpointsStamina());
+					setStamina(getMaxHitpointsStamina());
 					stopResting();
 				}	
 			}
@@ -540,15 +540,15 @@ public class Unit {
 
 		
 		else if (isMoving()){
-			if (this.Arrived(dt)){
+			if (Arrived(dt)){
 				stopMoving();
 				try {
-					this.setLocation(target);
+					setLocation(target);
 				} catch (IllegalPositionException e) {}
 				if (!(global_target == null) &&
-						!((this.getOccupiedCube().get(0) == global_target.get(0)) &&
-						(this.getOccupiedCube().get(1) == global_target.get(1)) &&
-						(this.getOccupiedCube().get(2) == global_target.get(2)) ) ) {
+						!((getOccupiedCube().get(0) == global_target.get(0)) &&
+						(getOccupiedCube().get(1) == global_target.get(1)) &&
+						(getOccupiedCube().get(2) == global_target.get(2)) ) ) {
 					
 					try {
 						moveTo(global_target);
@@ -560,11 +560,11 @@ public class Unit {
 			
 			else{
 				List<Double> new_loc = new ArrayList<Double>();
-				new_loc.add(this.getLocation().get(0)+ this.getCurrentSpeed().get(0)*dt);
-				new_loc.add(this.getLocation().get(1)+ this.getCurrentSpeed().get(1)*dt);
-				new_loc.add(this.getLocation().get(2)+ this.getCurrentSpeed().get(2)*dt);
+				new_loc.add(getLocation().get(0)+ this.getCurrentSpeed().get(0)*dt);
+				new_loc.add(getLocation().get(1)+ this.getCurrentSpeed().get(1)*dt);
+				new_loc.add(getLocation().get(2)+ this.getCurrentSpeed().get(2)*dt);
 				try {
-					this.setLocation(new_loc);
+					setLocation(new_loc);
 				} catch (IllegalPositionException e) {}
 				
 				if (isSprinting()) {
@@ -581,7 +581,7 @@ public class Unit {
 						startSprinting();
 					}
 				}
-				this.setOrientation(Math.atan2(this.getCurrentSpeed().get(1),this.getCurrentSpeed().get(0)));
+				setOrientation(Math.atan2(getCurrentSpeed().get(1),getCurrentSpeed().get(0)));
 			}
 						
 		}
@@ -603,40 +603,40 @@ public class Unit {
 	
 	
 	private boolean canHaveAsHavingRecoverdOneHp(){
-		return (getTimeResting() > ((double) 1/(((double) this.getToughness()/200.0)/0.2)));
+		return (getTimeResting() > ((double) 1/(((double) getToughness()/200.0)/0.2)));
 
 	}
 		
 	
 	private double getBaseSpeed(){
-		return 1.5*(this.getStrength()+this.getAgility())/(2*this.getWeight());
+		return 1.5*(getStrength()+getAgility())/(2*getWeight());
 	}
 	
 	private double getWalkingSpeed(double target_z){
-		if (this.getLocation().get(2)-target_z < 0){
-			return 0.5*this.getBaseSpeed();
+		if (getLocation().get(2)-target_z < 0){
+			return 0.5*getBaseSpeed();
 		}
-		else if (this.getLocation().get(2)- target_z > 0){
-			return 1.2*this.getBaseSpeed();
+		else if (getLocation().get(2)- target_z > 0){
+			return 1.2*getBaseSpeed();
 		}
 		else{
-			return this.getBaseSpeed();
+			return getBaseSpeed();
 		}
 	}
 	
 	public List<Double> getCurrentSpeed() {
-		double distance = this.getDistanceToTarget();
+		double distance = getDistanceToTarget();
 
 		if (isSprinting()){
-			velocity = this.getWalkingSpeed(target.get(2))*2;
+			velocity = getWalkingSpeed(target.get(2))*2;
 		}
 		else{
-			velocity = this.getWalkingSpeed(target.get(2));
+			velocity = getWalkingSpeed(target.get(2));
 		}
 		List<Double> current_speed = new ArrayList<Double>();
-		current_speed.add(velocity*(target.get(0)-this.getLocation().get(0))/distance);
-		current_speed.add(velocity*(target.get(1)-this.getLocation().get(1))/distance);
-		current_speed.add(velocity*(target.get(2)-this.getLocation().get(2))/distance);
+		current_speed.add(velocity*(target.get(0)-getLocation().get(0))/distance);
+		current_speed.add(velocity*(target.get(1)-getLocation().get(1))/distance);
+		current_speed.add(velocity*(target.get(2)-getLocation().get(2))/distance);
 		
 		return current_speed;
 	}
@@ -669,25 +669,25 @@ public class Unit {
 		return isMoving;
 	}
 	
-	public double getDistanceToTarget() {
+	private double getDistanceToTarget() {
 		if (target == null) {
 			return (double) 0;
 		}
-		double distance = Math.sqrt(Math.pow((target.get(0)-this.getLocation().get(0)),2)+Math.pow((target.get(1)-this.getLocation().get(1)),2)
-		+ Math.pow((target.get(2)-this.getLocation().get(2)),2));
+		double distance = Math.sqrt(Math.pow((target.get(0)-getLocation().get(0)),2)+Math.pow((target.get(1)-getLocation().get(1)),2)
+		+ Math.pow((target.get(2)-getLocation().get(2)),2));
 		return distance;
 	}
 	
 	private boolean Arrived(double dt){
-		return (this.getDistanceToTarget() < dt*getCurrentSpeedMag());	
+		return (getDistanceToTarget() < dt*getCurrentSpeedMag());	
 	}
 	
 	public double getCurrentSpeedMag() {
 		if (!isMoving()) {
 			return (double) 0;
 		}
-		return Math.sqrt(Math.pow((this.getCurrentSpeed().get(0) ), 2) +
-		Math.pow((this.getCurrentSpeed().get(1) ), 2) + Math.pow((this.getCurrentSpeed().get(2)), 2));
+		return Math.sqrt(Math.pow((getCurrentSpeed().get(0) ), 2) +
+		Math.pow((getCurrentSpeed().get(1) ), 2) + Math.pow((getCurrentSpeed().get(2)), 2));
 	}
 	
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException {
@@ -725,9 +725,9 @@ public class Unit {
 			
 	public void moveTo(List<Integer>end_target) throws IllegalPositionException {
 		global_target = end_target;
-		int x_cur = this.getOccupiedCube().get(0);
-		int y_cur = this.getOccupiedCube().get(1);
-		int z_cur = this.getOccupiedCube().get(2);
+		int x_cur = getOccupiedCube().get(0);
+		int y_cur = getOccupiedCube().get(1);
+		int z_cur = getOccupiedCube().get(2);
 		
 		int x_tar = end_target.get(0);
 		int y_tar = end_target.get(1);
@@ -807,15 +807,15 @@ public class Unit {
 				throw new IllegalAttackPosititonException(other.getOccupiedCube());
 			}
 			
-			if (isResting()) {
-				stopResting();	
+			if (this.isResting()) {
+				this.stopResting();	
 			}
 			
 //			stopMoving();
 			
-			setOrientationInFight(other);
+			this.setOrientationInFight(other);
 				
-			setAttackTime(1);
+			this.setAttackTime(1);
 		}
 	}
 
@@ -831,14 +831,14 @@ public class Unit {
 	
 	public void defend(Unit other){
 		if (this != other) {
-			if (isResting()) {
-			stopResting();
+			if (this.isResting()) {
+			this.stopResting();
 			}
 			
 			double possibility_dodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
 			if (getDefendSucces(possibility_dodge)){
-				setRandomLocation();
-				setOrientationInFight(other);
+				this.setRandomLocation();
+				this.setOrientationInFight(other);
 				System.out.println("dodged");
 			}
 			
@@ -849,8 +849,8 @@ public class Unit {
 				if ( ! getDefendSucces(possibility_block)){
 					System.out.println("block failed, taking damage");
 					this.setHitpoints(this.getHitpoints()-(double)( (double) other.getStrength()/10));
-					if (getHitpoints() < 0) {
-						setHitpoints(0);
+					if (this.getHitpoints() < 0) {
+						this.setHitpoints(0);
 					}
 				}
 				else {System.out.println("blocked");};
@@ -861,7 +861,7 @@ public class Unit {
 	
 	private void setRandomLocation(){ //TODO: nakijken
 		try {
-			this.setLocation(randomPosition(this.getLocation()));
+			setLocation(randomPosition(getLocation()));
 		} catch (IllegalPositionException e) {
 			setRandomLocation();
 		}
@@ -885,15 +885,15 @@ public class Unit {
 	}
 	
 	public boolean isAttacking(){
-		return (this.getAttackTime() > 0);
+		return (getAttackTime() > 0);
 	}
 	
 	private void setAttackTime(float time){
-		attack_time = time;
+		this.attack_time = time;
 	}
 	
 	private float getAttackTime(){
-		return attack_time;
+		return this.attack_time;
 	}
 	
 	private boolean getDefendSucces(double x){
@@ -955,14 +955,14 @@ public class Unit {
 		return this.start_stamina;
 	}
 	public boolean isDefaultBehaviourEnabled(){
-		return this.default_behaviour;
+		return default_behaviour;
 	}
 	public void startDefaultBehaviour(){
-		this.default_behaviour = true;
+		default_behaviour = true;
 	}
 	
 	public void stopDefaultBehaviour(){
-		this.default_behaviour = false;
+		default_behaviour = false;
 	}
 	
 	private void newDefaultBehaviour(){
@@ -981,7 +981,7 @@ public class Unit {
 		}
 	}
 	
-	public List<Integer> getRandomPosition(){
+	private List<Integer> getRandomPosition(){
 		List<Integer> rand_loc = new ArrayList<Integer>();
 		rand_loc.add(random.nextInt(WORLD_X-1));
 		rand_loc.add(random.nextInt(WORLD_Y-1));
