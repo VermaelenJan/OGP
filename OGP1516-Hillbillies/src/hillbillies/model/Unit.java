@@ -923,6 +923,7 @@ public class Unit {
 		}
 		resting = false;
 		setTimeSinceRest(0);
+		setTimeResting(Float.MAX_VALUE); //TODO: dit controleren! (op bugs)
 	}
 	
 	private void setTimeSinceRest(float time){
