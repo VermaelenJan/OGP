@@ -22,6 +22,8 @@ public class UnitTest {
 	ValidLocation = new ArrayList<Integer>(); 
 	ValidLocation.add((int) 0); ValidLocation.add((int) 24); ValidLocation.add((int) 49);
 	}
+	
+	// Position tests
 
 	@Test
 	public void constructor_Legal() throws IllegalPositionException, IllegalNameException {
@@ -48,25 +50,6 @@ public class UnitTest {
 		new Unit(location, ValidName, 0, 0, 0, 0);
 	}	
 	
-	@Test
-	public void constructor_Legal_Name() throws IllegalPositionException, IllegalNameException {
-		new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
-	}
-	
-	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameChars() throws IllegalPositionException, IllegalNameException {
-		new Unit(ValidLocation, "N0 v@lid name", 0, 0, 0, 0);
-	}
-	
-	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameCapt() throws IllegalPositionException, IllegalNameException {
-		new Unit(ValidLocation, "no valid name", 0, 0, 0, 0);
-	}
-	
-	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameLength() throws IllegalPositionException, IllegalNameException {
-		new Unit(ValidLocation, "T", 0, 0, 0, 0);
-	}
 	
 	@Test
 	public void getOccupiedCube_Correct_1() throws IllegalPositionException, IllegalNameException {
@@ -98,6 +81,47 @@ public class UnitTest {
 		assertEquals(10.001, unit.getLocation().get(1), Util.DEFAULT_EPSILON);
 		assertEquals(0, unit.getLocation().get(2), Util.DEFAULT_EPSILON);
 	}
+	
+	// Name testing 
+	
+	@Test
+	public void constructor_Legal_Name() throws IllegalPositionException, IllegalNameException {
+		new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+	}
+	
+	@Test (expected=IllegalNameException.class)
+	public void constructor_Illegal_NameChars() throws IllegalPositionException, IllegalNameException {
+		new Unit(ValidLocation, "N0 v@lid name", 0, 0, 0, 0);
+	}
+	
+	@Test (expected=IllegalNameException.class)
+	public void constructor_Illegal_NameCapt() throws IllegalPositionException, IllegalNameException {
+		new Unit(ValidLocation, "no valid name", 0, 0, 0, 0);
+	}
+	
+	@Test (expected=IllegalNameException.class)
+	public void constructor_Illegal_NameLength() throws IllegalPositionException, IllegalNameException {
+		new Unit(ValidLocation, "T", 0, 0, 0, 0);
+	}
+	
+	// Weight tests
+	
+	@Test
+	public void setWeight_check() throws IllegalPositionException, IllegalNameException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setWeight(250);
+		assertEquals(200, unit.getWeight(),Util.DEFAULT_EPSILON);
+	}
+	
+//	@Test
+//	public void setProperties() throws IllegalPositionException, IllegalNameException {
+//		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+//		unit.setWeight(50);
+//		unit.setToughness(60);
+//		
+//	}
+	
+	// Hitpoints tests
 	
 	@Test
 	public void setHitpoints_Check() throws IllegalPositionException, IllegalNameException {
