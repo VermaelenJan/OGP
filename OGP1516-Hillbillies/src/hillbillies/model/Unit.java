@@ -41,10 +41,10 @@ public class Unit {
 	private double stamina;	
 	private double orientation;
 	
-	private static int init_min_val = 25;
-	private static int init_max_val = 100;
-	private static int min_val = 1;
-	private static int max_val = 200;
+	private static int INIT_MIN_VAL = 25;
+	private static int INIT_MAX_VAL = 100;
+	private static int MIN_VAL = 1;
+	private static int MAX_VAL = 200;
 	private int curr_min_val;
 	private int curr_max_val;
 	
@@ -272,12 +272,12 @@ public class Unit {
 	@Raw @Model
 	private void setWeight(int weight, boolean flag){
 		if (flag){
-			curr_min_val = init_min_val;
-			curr_max_val = init_max_val;
+			curr_min_val = INIT_MIN_VAL;
+			curr_max_val = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = min_val;
-			curr_max_val = max_val;
+			curr_min_val = MIN_VAL;
+			curr_max_val = MAX_VAL;
 		}
 
 		if (weight >= (getStrength()+getAgility())/2){
@@ -334,12 +334,12 @@ public class Unit {
 	@Raw @Model
 	private void setStrength(int strength, boolean flag){
 		if (flag){
-			curr_min_val = init_min_val;
-			curr_max_val = init_max_val;
+			curr_min_val = INIT_MIN_VAL;
+			curr_max_val = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = min_val;
-			curr_max_val = max_val;
+			curr_min_val = MIN_VAL;
+			curr_max_val = MAX_VAL;
 		}
 
 		if ( strength < curr_min_val) 
@@ -368,12 +368,12 @@ public class Unit {
 	@Raw @Model
 	private void setAgility(int agility, boolean flag){
 		if (flag){
-			curr_min_val = init_min_val;
-			curr_max_val = init_max_val;
+			curr_min_val = INIT_MIN_VAL;
+			curr_max_val = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = min_val;
-			curr_max_val = max_val;
+			curr_min_val = MIN_VAL;
+			curr_max_val = MAX_VAL;
 		}
 
 		if ( agility < curr_min_val) 
@@ -412,12 +412,12 @@ public class Unit {
 	@Raw @Model
 	private void setToughness(int toughness, boolean flag){
 		if (flag){
-			curr_min_val = init_min_val;
-			curr_max_val = init_max_val;
+			curr_min_val = INIT_MIN_VAL;
+			curr_max_val = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = min_val;
-			curr_max_val = max_val;
+			curr_min_val = MIN_VAL;
+			curr_max_val = MAX_VAL;
 		}
 
 		if ( toughness < curr_min_val) 
