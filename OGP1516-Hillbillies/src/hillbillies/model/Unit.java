@@ -567,16 +567,17 @@ public class Unit {
 		
 		
 		if (isAttacking()){
+			
+			stopWorking();
+			stopResting();
+						
 			setAttackTime(getAttackTime() - (float)(dt));
 			if (getAttackTime()<= 0){
 				setAttackTime(0);
 			}
 		}
 		
-		
-
-		
-		
+			
 		else if (isResting()){
 
 			setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
@@ -744,7 +745,10 @@ public class Unit {
 		if ( isResting() && (canHaveRecoverdOneHp())){
 			stopResting();
 		}
-		isMoving = true;
+		stopWorking();
+		if (!isAttacking()){
+			isMoving = true;
+		}
 	}
 	
 	@Model 
@@ -753,8 +757,14 @@ public class Unit {
 		//stopSprinting(); (Hill kept stopping sprinting)
 	}
 	
-	public boolean isMoving(){
+	@Basic @Model
+	private boolean isMoving(){
 		return isMoving;
+	}
+	
+	@Basic
+	public boolean isActualMoving(){
+		return (isMoving() && !isWorking() && !isResting() && !isAttacking());
 	}
 	
 	@Model
@@ -912,7 +922,8 @@ public class Unit {
 				this.stopResting();	
 			}
 			
-//			stopMoving();
+			stopWorking();
+
 			
 			this.setOrientationInFight(other);
 				
@@ -938,11 +949,13 @@ public class Unit {
 			this.stopResting();
 			}
 			
+			stopWorking();
+			
 			double possibility_dodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
 			if (getDefendSucces(possibility_dodge)){
 				this.setRandomLocation();
 				this.setOrientationInFight(other);
-				System.out.println("dodged");
+
 			}
 			
 			else{
@@ -950,13 +963,13 @@ public class Unit {
 						((double) ((double) other.getStrength()+(double) other.getAgility()))));
 				
 				if ( ! getDefendSucces(possibility_block)){
-					System.out.println("block failed, taking damage");
+
 					this.setHitpoints(this.getHitpoints()-(double)( (double) other.getStrength()/10));
 					if (this.getHitpoints() < 0) {
 						this.setHitpoints(0);
 					}
 				}
-				else {System.out.println("blocked");};
+
 				
 			}
 		}
@@ -1024,8 +1037,8 @@ public class Unit {
 	private void startResting(){
 		setTimeResting(0);
 		resting = true;
-		//stopWorking();
-		//stopMoving();
+		stopWorking();
+
 		setStartHitpoints(getHitpoints());
 		setStartStamina(getStamina());
 	}
