@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.IllegalAdjacentPositionException;
 import hillbillies.model.IllegalAdvanceTimeException;
 import hillbillies.model.IllegalNameException;
 import hillbillies.model.IllegalPositionException;
@@ -27,7 +28,7 @@ public class UnitTest {
 	// Position tests
 
 	@Test
-	public void constructor_Legal() throws IllegalPositionException, IllegalNameException {
+	public void constructor_Legal() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
 		List <Integer> location = new ArrayList<Integer>();
 		location.add(10); location.add(20); location.add( 30);
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
@@ -38,14 +39,14 @@ public class UnitTest {
 	}
 
 	@Test (expected=IllegalPositionException.class)
-	public void constructor_Illegal_OutOfWorld_Pos() throws IllegalPositionException, IllegalNameException {
+	public void constructor_Illegal_OutOfWorld_Pos() throws IllegalPositionException, IllegalNameException,IllegalAdjacentPositionException {
 		List<Integer> location = new ArrayList<Integer>();
 		location.add(0); location.add(0); location.add(50);
 		new Unit(location, ValidName, 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalPositionException.class)
-	public void constructor_Illegal_OutOfWorld_Neg() throws IllegalPositionException, IllegalNameException {
+	public void constructor_Illegal_OutOfWorld_Neg() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
 		List<Integer> location = new ArrayList<Integer>();
 		location.add(10); location.add(10); location.add(-1);
 		new Unit(location, ValidName, 0, 0, 0, 0);
@@ -86,29 +87,29 @@ public class UnitTest {
 	// Name testing 
 	
 	@Test
-	public void constructor_Legal_Name() throws IllegalPositionException, IllegalNameException {
+	public void constructor_Legal_Name() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
 		new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameChars() throws IllegalPositionException, IllegalNameException {
+	public void constructor_Illegal_NameChars() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
 		new Unit(ValidLocation, "N0 v@lid name", 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameCapt() throws IllegalPositionException, IllegalNameException {
+	public void constructor_Illegal_NameCapt() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
 		new Unit(ValidLocation, "no valid name", 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameLength() throws IllegalPositionException, IllegalNameException {
+	public void constructor_Illegal_NameLength() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
 		new Unit(ValidLocation, "T", 0, 0, 0, 0);
 	}
 	
 	// Weight tests
 	
 	@Test
-	public void setWeight_check() throws IllegalPositionException, IllegalNameException {
+	public void setWeight_check() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
 		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
 		unit.setWeight(250);
 		assertEquals(200, unit.getWeight(),Util.DEFAULT_EPSILON);
@@ -134,7 +135,7 @@ public class UnitTest {
 //	}
 	
 	@Test
-	public void someBiggerTest() throws IllegalPositionException, IllegalNameException, IllegalAdvanceTimeException {
+	public void someBiggerTest() throws IllegalPositionException, IllegalNameException, IllegalAdvanceTimeException , IllegalAdjacentPositionException {
 		List <Integer> location = new ArrayList<Integer>();
 		location.add(10); location.add(20); location.add( 30);
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, 0);

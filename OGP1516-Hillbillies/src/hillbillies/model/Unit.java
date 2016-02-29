@@ -626,7 +626,7 @@ public class Unit {
 					
 					try {
 						moveTo(global_target);
-					} catch (IllegalPositionException e) {}
+					} catch (IllegalPositionException | IllegalAdjacentPositionException e) {}
 					
 				}
 
@@ -792,14 +792,19 @@ public class Unit {
 	}
 	
 	
-	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException {
+	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException , IllegalAdjacentPositionException {
 		moveToAdjacent(dx, dy, dz, false);
 	}
 	
 	// TODO show exception if try to move in more than 1 block, add new exception
 	
 	@Model
-	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException{
+	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
+																					IllegalAdjacentPositionException{
+		
+		if (! isValidAdjacentMovement(dx,dy,dz)){
+			throw new IllegalAdjacentPositionException(dx,dy,dz);
+		}
 
 		List<Double> current_target = new ArrayList<Double>();
 		List<Integer> current_cube = getOccupiedCube();
@@ -826,7 +831,7 @@ public class Unit {
 	}
 	
 			
-	public void moveTo(List<Integer>end_target) throws IllegalPositionException {
+	public void moveTo(List<Integer>end_target) throws IllegalPositionException, IllegalAdjacentPositionException {
 		global_target = end_target;
 		int x_cur = getOccupiedCube().get(0);
 		int y_cur = getOccupiedCube().get(1);
@@ -875,6 +880,11 @@ public class Unit {
 			}
 			moveToAdjacent(x_res, y_res,z_res, true);
 		}
+	}
+	
+	private static boolean isValidAdjacentMovement(int dx, int dy, int dz){
+		
+		return ((dx == 0 || dx == 1) && (dy == 0 || dy == 1)&& (dz == 0 || dz == 1));
 	}
 	
 	public void work(){
@@ -1114,7 +1124,7 @@ public class Unit {
 		if (possible_task == 0){
 			try {
 				moveTo(getRandomPosition());
-			} catch (IllegalPositionException e) {}
+			} catch (IllegalPositionException | IllegalAdjacentPositionException e) {}
 		}
 		else if (possible_task == 1){
 			work();
