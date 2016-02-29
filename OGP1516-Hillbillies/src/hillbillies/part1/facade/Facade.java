@@ -3,6 +3,7 @@ package hillbillies.part1.facade;
 import java.util.ArrayList;
 import java.util.List;
 
+import hillbillies.model.IllegalAdvanceTimeException;
 import hillbillies.model.IllegalAttackPosititonException;
 import hillbillies.model.IllegalNameException;
 import hillbillies.model.IllegalPositionException;
@@ -126,7 +127,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public void advanceTime(Unit unit, double dt) throws ModelException {
-		unit.advanceTime(dt);
+		try {
+			unit.advanceTime(dt);
+		} catch (IllegalAdvanceTimeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

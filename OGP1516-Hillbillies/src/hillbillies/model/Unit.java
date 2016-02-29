@@ -3,14 +3,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
+import be.kuleuven.cs.som.annotate.Model;
+import be.kuleuven.cs.som.annotate.Raw;
+
 
 
 
 
 //TODO: write tests for everything
 //TODO: CONSTANTS, randomMethods,... 
-//TODO: fix flag
-//TODO: setters in exceptions
 /**
  * 
  * @author Maxime en Jan
@@ -18,31 +21,36 @@ import java.util.Random;
  */
 public class Unit {
 	
+	// WORLD DIMENSIONS
 	static int WORLD_X = 50;
 	static int WORLD_Y = 50;
 	static int WORLD_Z = 50;
+	private double CUBE_LENGTH = 1;
+	
+	
 	private double x_pos;
 	private double y_pos;
 	private double z_pos;
+	
 	private String name;
 	private int weight;
 	private int strength;
 	private int agility;
 	private int toughness;
-	
 	private double hitpoints;
-	private double stamina;
-	
+	private double stamina;	
 	private double orientation;
+	
 	private static int init_min_val = 25;
 	private static int init_max_val = 100;
 	private static int min_val = 1;
 	private static int max_val = 200;
 	private int curr_min_val;
 	private int curr_max_val;
+	
 	private boolean sprinting;
 	private double velocity;
-	private double CUBE_LENGTH = 1;
+
 	// Target
 	private List<Double> target = null;
 	
@@ -64,7 +72,7 @@ public class Unit {
 	// Default Behaviour
 	private boolean default_behaviour;
 	
-	//TODO set/get/check moving
+	// Moving
 	private boolean isMoving ;
 	private List<Integer> global_target;
 	
@@ -72,7 +80,7 @@ public class Unit {
 	// Random
 	Random random = new Random();
 
-	//TODO: think about int vs double
+
 	/**
 	 * 
 	 * @param location
@@ -107,18 +115,20 @@ public class Unit {
 	 * 			| setToughness(toughness)
 	 * @effect the given hitpoints are set as the hitpoints of this new unit.
 	 * 			| setHitpoints(hitpoints)
-	 * @effect the given stamina is set as the stamina of this new unit. 		//TODO: CHECK IF THIS IS POSSIBLE "setStamina(stamina)" if object is not yet created
-	 * 			| setStamina(stamina)													--> setter has to be raw? OVERAL CHECKEN (cfr. mariage.java)
+	 * @effect the given stamina is set as the stamina of this new unit. 		
+	 * 			| setStamina(stamina)													
 	 * @effect the given orientation is set as the orientation of this new unit.
 	 * 			| setOrientation(orientation)
 	 * @throws IllegalPositionException
 	 * 			The given position is not a valid position for a unit.
-	 * 			| ! canHaveAsPosition(position) //TODO: add this.?
+	 * 			| ! canHaveAsPosition(position)w
 	 * @throws IllegalNameException 
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
 	 * 
 	 */
+	
+	@Raw
 	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
 		List<Double> location = new ArrayList<Double>();
@@ -137,6 +147,7 @@ public class Unit {
 		
 	}
 	
+	@Raw
 	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness)
 			throws IllegalPositionException, IllegalNameException {
 		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
@@ -149,6 +160,8 @@ public class Unit {
 	 * 			the location is not a valid location for a unit.
 	 * 			| !canHaveAsPosition(location)
 	 */
+	
+	@Raw @Model
 	private void setLocation(List<Double> location) throws IllegalPositionException{
 		if (!canHaveAsPosition(location))
 			throw new IllegalPositionException(location);
@@ -166,6 +179,8 @@ public class Unit {
 	 * 			| result == (location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
 				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
 	 */
+	
+	@Raw @Model
 	private boolean canHaveAsPosition(List<Double> location) {
 		return ((location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
 				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
@@ -175,6 +190,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic @Raw
 	public List<Integer> getOccupiedCube() {
 		List<Integer> position = new ArrayList<Integer>();
 		List<Double> location = this.getLocation();
@@ -188,6 +205,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic @Raw
 	public List<Double> getLocation() {
 		List<Double> position = new ArrayList<Double>();
 		position.add(this.x_pos);
@@ -200,6 +219,8 @@ public class Unit {
 	 * 
 	 * @param name
 	 */
+	
+	@Raw
 	public void setName(String name) throws IllegalNameException{
 		if (!isValidName(name))
 			throw new IllegalNameException(name);
@@ -211,6 +232,8 @@ public class Unit {
 	 * @param name
 	 * @return
 	 */
+	
+	@Model
 	private static boolean isValidName(String name){
 		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (areValidCharacters(name)));
 	}
@@ -220,6 +243,7 @@ public class Unit {
 	 * @param name
 	 * @return
 	 */
+	@Model
 	private static boolean areValidCharacters(String name){
 		for (char c : name.toCharArray()){
 			if ( (! Character.isLetter(c)) && (! (c == ' ') ) && (! (c == '"')) && (! (c == '\'')) )
@@ -233,6 +257,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic @Raw 
 	public String getName(){
 		return this.name;
 	}
@@ -242,6 +268,8 @@ public class Unit {
 	 * 
 	 * @param weight
 	 */
+	
+	@Raw @Model
 	private void setWeight(int weight, boolean flag){
 		if (flag){
 			curr_min_val = init_min_val;
@@ -272,6 +300,8 @@ public class Unit {
 	 * 
 	 * @param weight
 	 */
+	
+	@Raw
 	public void setWeight(int weight) {
 		setWeight(weight, false);
 	}
@@ -280,6 +310,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic @Raw
 	public int getWeight(){
 		return this.weight;
 	}	
@@ -288,6 +320,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic 
 	public int getStrength(){
 		return this.strength;
 	}
@@ -296,6 +330,8 @@ public class Unit {
 	 * 
 	 * @param strength
 	 */
+	
+	@Raw @Model
 	private void setStrength(int strength, boolean flag){
 		if (flag){
 			curr_min_val = init_min_val;
@@ -318,6 +354,8 @@ public class Unit {
 	 * 
 	 * @param strength
 	 */
+	
+	@Raw
 	public void setStrength(int strength) {
 		setStrength(strength, false);
 	}
@@ -326,6 +364,8 @@ public class Unit {
 	 * 
 	 * @param agility
 	 */
+	
+	@Raw @Model
 	private void setAgility(int agility, boolean flag){
 		if (flag){
 			curr_min_val = init_min_val;
@@ -348,6 +388,8 @@ public class Unit {
 	 * 
 	 * @param agility
 	 */
+	
+	@Raw
 	public void setAgility(int agility) {
 		setAgility(agility, false);
 	}
@@ -356,6 +398,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic
 	public int getAgility(){
 		return this.agility;
 	}
@@ -364,6 +408,8 @@ public class Unit {
 	 * 
 	 * @param toughness
 	 */
+	
+	@Raw @Model
 	private void setToughness(int toughness, boolean flag){
 		if (flag){
 			curr_min_val = init_min_val;
@@ -386,6 +432,8 @@ public class Unit {
 	 * 
 	 * @param toughness
 	 */
+	
+	@Raw
 	public void setToughness(int toughness) {
 		setToughness(toughness, false);
 	}
@@ -394,6 +442,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic @Raw
 	public int getToughness(){
 		return this.toughness;
 	}
@@ -403,6 +453,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic @Raw
 	public int getMaxHitpointsStamina() {
 		 return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
 	}
@@ -412,6 +464,8 @@ public class Unit {
 	 * @param hitpoints
 	 * @return
 	 */
+	
+	@Raw 
 	private boolean hasValidHitpoints(double hitpoints){
 		return ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()));
 	}
@@ -421,6 +475,8 @@ public class Unit {
 	 * @param stamina
 	 * @return
 	 */
+	
+	@Raw
 	private boolean hasValidStamina(double stamina){
 		return ((stamina >= 0) && (stamina <= getMaxHitpointsStamina()));
 	}
@@ -431,6 +487,8 @@ public class Unit {
 	 * 
 	 * @pre
 	 */
+	
+	@Raw
 	private void setHitpoints(double hitpoints){
 		assert hasValidHitpoints(hitpoints);
 		this.hitpoints = hitpoints;
@@ -440,6 +498,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic  
 	public double getHitpoints(){
 		return this.hitpoints;
 	}
@@ -450,6 +510,8 @@ public class Unit {
 	 * 
 	 * @pre
 	 */
+	
+	@Raw @Model
 	private void setStamina(double stamina){
 		assert hasValidStamina(stamina);
 		this.stamina = stamina;
@@ -459,6 +521,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic 
 	public double getStamina(){
 		return this.stamina;
 	}
@@ -467,6 +531,8 @@ public class Unit {
 	 * 
 	 * @param orientation
 	 */
+	
+	@Raw @Model
 	private void setOrientation(double orientation){
 		this.orientation = orientation%(2*Math.PI);
 	}
@@ -475,6 +541,8 @@ public class Unit {
 	 * 
 	 * @return
 	 */
+	
+	@Basic 
 	public double getOrientation(){
 		return this.orientation;
 	}
@@ -485,8 +553,12 @@ public class Unit {
 	 */
 	// TODO exceptions(zowel opgave als location)!!!!!!!!!!!!!!!!! jaaa eric, we weten het.
 	
-	public void advanceTime(double dt){
+	
+	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
 		
+		if (! isValidAdvanceTime(dt)){
+			throw new IllegalAdvanceTimeException(dt);
+		}
 		
 		setTimeSinceRest(getTimeSinceRest() + (float)dt);
 		if (getTimeSinceRest() > 180){
@@ -502,12 +574,7 @@ public class Unit {
 		}
 		
 		
-		else if (isWorking() && canHaveAsHavingRecoverdOneHp()){
-			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
-			if (getTimeRemainderToWork() < 0){
-				stopWorking();
-			}
-		}
+
 		
 		
 		else if (isResting()){
@@ -523,10 +590,10 @@ public class Unit {
 				double new_stamina = getStamina() + ((double) getToughness()/100)*(double)(nb_times_period);
 				
 				
-				if (new_hitpoints < getMaxHitpointsStamina()){
+				if (new_hitpoints <= getMaxHitpointsStamina()){
 					setHitpoints(new_hitpoints);
 				}
-				else if (new_stamina < getMaxHitpointsStamina()){
+				else if (new_stamina <= getMaxHitpointsStamina()){
 					setHitpoints(getMaxHitpointsStamina());
 					setStamina(new_stamina);				
 				}
@@ -534,11 +601,17 @@ public class Unit {
 					setHitpoints(getMaxHitpointsStamina());
 					setStamina(getMaxHitpointsStamina());
 					stopResting();
-				}	
+				}
+			}
+		}
+				
+		else if (isWorking() && canHaveRecoverdOneHp()){
+			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
+			if (getTimeRemainderToWork() < 0){
+				stopWorking();
 			}
 		}
 
-		
 		else if (isMoving()){
 			if (Arrived(dt)){
 				stopMoving();
@@ -586,32 +659,43 @@ public class Unit {
 						
 		}
 		
+
+		
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
 		}
 
 	}
 	
+	@Model
+	private static boolean isValidAdvanceTime(double dt){
+
+		return ((dt >=0)&&(dt <= 0.2));
+		
+	}
+	
+	@Model
 	private void setTimePeriodicRest(float time){
 		this.periodic_rest = time;
 	}
 	
+	@Basic @Model
 	private float getTimePeriodicRest(){
 		return this.periodic_rest;
 	}
 	
-	
-	
-	private boolean canHaveAsHavingRecoverdOneHp(){
+	@Model
+	private boolean canHaveRecoverdOneHp(){
 		return (getTimeResting() > ((double) 1/(((double) getToughness()/200.0)/0.2)));
 
 	}
 		
-	
+	@Basic @Model
 	private double getBaseSpeed(){
 		return 1.5*(getStrength()+getAgility())/(2*getWeight());
 	}
 	
+	@Basic @Model
 	private double getWalkingSpeed(double target_z){
 		if (getLocation().get(2)-target_z < 0){
 			return 0.5*getBaseSpeed();
@@ -624,6 +708,7 @@ public class Unit {
 		}
 	}
 	
+	@Basic
 	public List<Double> getCurrentSpeed() {
 		double distance = getDistanceToTarget();
 
@@ -641,6 +726,7 @@ public class Unit {
 		return current_speed;
 	}
 	
+	
 	public void startSprinting(){
 		sprinting = true;
 	}
@@ -653,13 +739,15 @@ public class Unit {
 		return sprinting;
 	}
 	
+	@Model 
 	private void startMoving(){
-		if ( isResting() && (canHaveAsHavingRecoverdOneHp())){
+		if ( isResting() && (canHaveRecoverdOneHp())){
 			stopResting();
 		}
 		isMoving = true;
 	}
 	
+	@Model 
 	private void stopMoving(){
 		isMoving = false;
 		//stopSprinting(); (Hill kept stopping sprinting)
@@ -669,6 +757,7 @@ public class Unit {
 		return isMoving;
 	}
 	
+	@Model
 	private double getDistanceToTarget() {
 		if (target == null) {
 			return (double) 0;
@@ -678,10 +767,12 @@ public class Unit {
 		return distance;
 	}
 	
+	@Model
 	private boolean Arrived(double dt){
 		return (getDistanceToTarget() < dt*getCurrentSpeedMag());	
 	}
 	
+	@Basic
 	public double getCurrentSpeedMag() {
 		if (!isMoving()) {
 			return (double) 0;
@@ -690,12 +781,14 @@ public class Unit {
 		Math.pow((getCurrentSpeed().get(1) ), 2) + Math.pow((getCurrentSpeed().get(2)), 2));
 	}
 	
+	
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException {
 		moveToAdjacent(dx, dy, dz, false);
 	}
 	
-	// TODO show exception if try to move in more than 1 block
+	// TODO show exception if try to move in more than 1 block, add new exception
 	
+	@Model
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException{
 
 		List<Double> current_target = new ArrayList<Double>();
@@ -776,26 +869,34 @@ public class Unit {
 	
 	public void work(){
 		startWorking();
+		
 	}
 	
+	@Model
 	private void startWorking(){
+		if ( isResting() && (canHaveRecoverdOneHp())){
+			stopResting();
+		}
 		working = true;
 		setTimeRemainderToWork((float) 500/getStrength());
 	}
 	
+	@Model
 	private void stopWorking(){
 		working = false;
 
 	}
-	
+	@Basic
 	public boolean isWorking(){
 		return working;
 	}
 	
+	@Model
 	private void setTimeRemainderToWork(float time){
 		time_remainder_to_work = time;
 	}
 	
+	@Model 
 	private float getTimeRemainderToWork(){
 		return time_remainder_to_work;
 	}
@@ -818,7 +919,8 @@ public class Unit {
 			this.setAttackTime(1);
 		}
 	}
-
+	
+	@Model 
 	private void setOrientationInFight(Unit other) {
 		double orient_unit_this = Math.atan2(other.getLocation().get(1)-this.getLocation().get(1),
 				other.getLocation().get(0)-this.getLocation().get(0));
@@ -828,6 +930,7 @@ public class Unit {
 		this.setOrientation(orient_unit_this);
 		other.setOrientation(orient_unit_other);
 	}
+	
 	
 	public void defend(Unit other){
 		if (this != other) {
@@ -859,7 +962,8 @@ public class Unit {
 		}
 	}
 	
-	private void setRandomLocation(){ //TODO: nakijken
+	@Model 
+	private void setRandomLocation(){
 		try {
 			setLocation(randomPosition(getLocation()));
 		} catch (IllegalPositionException e) {
@@ -867,6 +971,7 @@ public class Unit {
 		}
 	}
 	
+	@Model
 	private List<Double> randomPosition(List<Double>curr_loc){
 		List<Double> new_loc = new ArrayList<Double>();
 		new_loc.add(curr_loc.get(0)+ (random.nextDouble()*2-1) );
@@ -878,85 +983,110 @@ public class Unit {
 		return new_loc;
 	}
 	
+	@Model
 	private boolean canHaveAsAttackPosition(List<Integer>attack_cube_position){
 		return((Math.abs(this.getOccupiedCube().get(0)-attack_cube_position.get(0)) <=1) && 
 				(Math.abs(this.getOccupiedCube().get(1)-attack_cube_position.get(1)) <=1) &&
 				(Math.abs(this.getOccupiedCube().get(2)-attack_cube_position.get(2)) <=1));	
 	}
 	
+	@Basic
 	public boolean isAttacking(){
 		return (getAttackTime() > 0);
 	}
 	
+	@Model
 	private void setAttackTime(float time){
 		this.attack_time = time;
 	}
 	
+	@Basic @Model
 	private float getAttackTime(){
 		return this.attack_time;
 	}
 	
+	@Basic @Model
 	private boolean getDefendSucces(double x){
 		return (random.nextDouble() <= x);
 	}
+	
 	
 	public void rest(){
 		startResting();
 	}
 	
+	@Basic 
 	public boolean isResting(){
 		return resting;
 	}
-		
+	
+	@Model
 	private void startResting(){
 		setTimeResting(0);
 		resting = true;
-		stopWorking();
-		stopMoving();
+		//stopWorking();
+		//stopMoving();
 		setStartHitpoints(getHitpoints());
 		setStartStamina(getStamina());
 	}
+	
+	@Model
 	private void stopResting(){
-		if (! canHaveAsHavingRecoverdOneHp()){
+		if (! canHaveRecoverdOneHp()){
 			setHitpoints(getStartHitpoints());
 			setStamina(getStartStamina());
 		}
 		resting = false;
 		setTimeSinceRest(0);
-		setTimeResting(Float.MAX_VALUE); //TODO: dit controleren! (op bugs)
+		setTimeResting(Float.MAX_VALUE);
 	}
 	
+	@Model
 	private void setTimeSinceRest(float time){
 		this.time_since_rest = time;
 	}
 	
+	@Model
 	private float getTimeSinceRest(){
 		return this.time_since_rest;
 	}
 	
+	@Model
 	private void setTimeResting(float time) {
 		this.time_resting = time;
 	}
 	
+	@Basic @Model
 	private float getTimeResting() {
 		return this.time_resting;
 	}
 	
+	@Model
 	private void setStartHitpoints(double hitpoints){
 		this.start_hitpoints = hitpoints;
 	}
+	
+	@Basic @Model
 	private double getStartHitpoints(){
 		return this.start_hitpoints;
 	}
+	
+	@Model
 	private void setStartStamina(double stamina){
 		this.start_stamina = stamina;
 	}
+	
+	@Basic @Model
 	private double getStartStamina(){
 		return this.start_stamina;
 	}
+	
+	@Basic
 	public boolean isDefaultBehaviourEnabled(){
 		return default_behaviour;
 	}
+	
+	
 	public void startDefaultBehaviour(){
 		default_behaviour = true;
 	}
@@ -965,6 +1095,7 @@ public class Unit {
 		default_behaviour = false;
 	}
 	
+	@Model
 	private void newDefaultBehaviour(){
 		int possible_task = random.nextInt(3);
 		if (possible_task == 0){
@@ -981,6 +1112,7 @@ public class Unit {
 		}
 	}
 	
+	@Model
 	private List<Integer> getRandomPosition(){
 		List<Integer> rand_loc = new ArrayList<Integer>();
 		rand_loc.add(random.nextInt(WORLD_X-1));

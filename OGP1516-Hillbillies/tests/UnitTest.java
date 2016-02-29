@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.IllegalAdvanceTimeException;
 import hillbillies.model.IllegalNameException;
 import hillbillies.model.IllegalPositionException;
 import hillbillies.model.Unit;
@@ -133,7 +134,7 @@ public class UnitTest {
 //	}
 	
 	@Test
-	public void someBiggerTest() throws IllegalPositionException, IllegalNameException {
+	public void someBiggerTest() throws IllegalPositionException, IllegalNameException, IllegalAdvanceTimeException {
 		List <Integer> location = new ArrayList<Integer>();
 		location.add(10); location.add(20); location.add( 30);
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, 0);
