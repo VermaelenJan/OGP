@@ -123,14 +123,14 @@ public class UnitTest {
 	
 	// Hitpoints tests
 	
-	@Test
-	public void setHitpoints_Check() throws IllegalPositionException, IllegalNameException {
-		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
-		unit.setWeight(198);
-		unit.setToughness(21);
-		unit.setHitpoints(84);
-		assertEquals(84, unit.getHitpoints(), Util.DEFAULT_EPSILON);
-	}
+//	@Test
+//	public void setHitpoints_Check() throws IllegalPositionException, IllegalNameException {
+//		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+//		unit.setWeight(198);
+//		unit.setToughness(21);
+//		unit.setHitpoints(84);
+//		assertEquals(84, unit.getHitpoints(), Util.DEFAULT_EPSILON);
+//	}
 	
 	@Test
 	public void someBiggerTest() throws IllegalPositionException, IllegalNameException {

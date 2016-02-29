@@ -523,10 +523,10 @@ public class Unit {
 				double new_stamina = getStamina() + ((double) getToughness()/100)*(double)(nb_times_period);
 				
 				
-				if (new_hitpoints <= getMaxHitpointsStamina()){
+				if (new_hitpoints < getMaxHitpointsStamina()){
 					setHitpoints(new_hitpoints);
 				}
-				else if (new_stamina <= getMaxHitpointsStamina()){
+				else if (new_stamina < getMaxHitpointsStamina()){
 					setHitpoints(getMaxHitpointsStamina());
 					setStamina(new_stamina);				
 				}
