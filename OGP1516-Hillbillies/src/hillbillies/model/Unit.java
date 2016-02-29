@@ -626,7 +626,12 @@ public class Unit {
 					
 					try {
 						moveTo(global_target);
-					} catch (IllegalPositionException | IllegalAdjacentPositionException e) {}
+					} catch (IllegalPositionException e) {} catch (IllegalAdjacentPositionException e) {
+
+						e.printStackTrace();
+					}
+					
+					
 					
 				}
 
@@ -882,9 +887,9 @@ public class Unit {
 		}
 	}
 	
-	private static boolean isValidAdjacentMovement(int dx, int dy, int dz){
+	private boolean isValidAdjacentMovement(int dx, int dy, int dz){
 		
-		return ((dx == 0 || dx == 1) && (dy == 0 || dy == 1)&& (dz == 0 || dz == 1));
+		return (((dx == 0) || (dx == 1) || (dx == -1)) && ((dy == 0) || (dy == 1) || (dy == -1) )&& ((dz == 0) || (dz == 1) || dz == -1));
 	}
 	
 	public void work(){
@@ -1124,7 +1129,10 @@ public class Unit {
 		if (possible_task == 0){
 			try {
 				moveTo(getRandomPosition());
-			} catch (IllegalPositionException | IllegalAdjacentPositionException e) {}
+			} catch (IllegalPositionException e) {} catch (IllegalAdjacentPositionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if (possible_task == 1){
 			work();

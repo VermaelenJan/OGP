@@ -135,7 +135,9 @@ public class Facade implements IFacade {
 	public void moveToAdjacent(Unit unit, int dx, int dy, int dz) throws ModelException {
 		try {
 			unit.moveToAdjacent(dx,  dy,  dz);
-		} catch (IllegalPositionException | IllegalAdjacentPositionException e) {
+		} catch (IllegalPositionException e) {
+			throw new ModelException("Error text:", e);
+		} catch (IllegalAdjacentPositionException e) {
 			throw new ModelException("Error text:", e);
 		}
 	}
@@ -178,8 +180,11 @@ public class Facade implements IFacade {
 		target.add(cube[0]); target.add(cube[1]); target.add(cube[2]);
 		try {
 			unit.moveTo(target);
-		} catch (IllegalPositionException | IllegalAdjacentPositionException e) {
-			// TODO Auto-generated catch block
+		} catch (IllegalPositionException e) {
+//			throw new ModelException("Error text", e);
+			e.printStackTrace();
+		} catch (IllegalAdjacentPositionException e) {
+//			throw new ModelException("Error text", e);
 			e.printStackTrace();
 		}
 		
