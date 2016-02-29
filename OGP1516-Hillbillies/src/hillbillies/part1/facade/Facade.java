@@ -10,8 +10,6 @@ import hillbillies.model.IllegalPositionException;
 import hillbillies.model.Unit;
 import ogp.framework.util.ModelException;
 
-//TODO: complete
-
 public class Facade implements IFacade {
 
 	@Override
@@ -23,11 +21,9 @@ public class Facade implements IFacade {
 		try {
 			unit = new Unit(position, name, weight, strength, agility, toughness);
 		} catch (IllegalPositionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ModelException("Error text:", e);
 		} catch (IllegalNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ModelException("Error text:", e);
 		}
 		return unit;
 	}
@@ -56,8 +52,7 @@ public class Facade implements IFacade {
 		try {
 			unit.setName(newName);
 		} catch (IllegalNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ModelException("Error text:", e);
 		}
 	}
 
@@ -130,8 +125,7 @@ public class Facade implements IFacade {
 		try {
 			unit.advanceTime(dt);
 		} catch (IllegalAdvanceTimeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ModelException("Error text:", e);
 		}
 		
 	}
@@ -141,8 +135,7 @@ public class Facade implements IFacade {
 		try {
 			unit.moveToAdjacent(dx,  dy,  dz);
 		} catch (IllegalPositionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ModelException("Error text:", e);
 		}
 	}
 
@@ -208,8 +201,7 @@ public class Facade implements IFacade {
 			attacker.attack(defender);
 			defender.defend(attacker);
 		} catch (IllegalAttackPosititonException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ModelException("Error text:", e);
 		}
 		
 	}
