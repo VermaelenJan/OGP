@@ -17,12 +17,16 @@ public class UnitTest {
 	
 	private static String ValidName;
 	private static List<Integer> ValidLocation;
+	private static Unit unit_test2;
+
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	ValidName = "This 's a \"test\"";
 	ValidLocation = new ArrayList<Integer>(); 
 	ValidLocation.add((int) 0); ValidLocation.add((int) 24); ValidLocation.add((int) 49);
+	unit_test2 = new Unit(ValidLocation, ValidName,60 ,50 ,70 ,90 );
+
 	}
 	
 	// Position tests
@@ -39,14 +43,14 @@ public class UnitTest {
 	}
 
 	@Test (expected=IllegalPositionException.class)
-	public void constructor_Illegal_OutOfWorld_Pos() throws IllegalPositionException, IllegalNameException,IllegalAdjacentPositionException {
+	public void constructor_OutOfWorldPos() throws IllegalPositionException, IllegalNameException,IllegalAdjacentPositionException {
 		List<Integer> location = new ArrayList<Integer>();
 		location.add(0); location.add(0); location.add(50);
 		new Unit(location, ValidName, 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalPositionException.class)
-	public void constructor_Illegal_OutOfWorld_Neg() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
+	public void constructor_OutOfWorldNeg() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
 		List<Integer> location = new ArrayList<Integer>();
 		location.add(10); location.add(10); location.add(-1);
 		new Unit(location, ValidName, 0, 0, 0, 0);
@@ -84,36 +88,218 @@ public class UnitTest {
 //		assertEquals(0, unit.getLocation().get(2), Util.DEFAULT_EPSILON);
 //	}
 	
-	// Name testing 
+	// Name tests
 	
 	@Test
-	public void constructor_Legal_Name() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+	public void constructor_LegalName() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
 		new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameChars() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+	public void constructor_IllegalNameChars() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
 		new Unit(ValidLocation, "N0 v@lid name", 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameCapt() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
+	public void constructor_IllegalNameCapt() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
 		new Unit(ValidLocation, "no valid name", 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalNameException.class)
-	public void constructor_Illegal_NameLength() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
+	public void constructor_IllegalNameLength() throws IllegalPositionException, IllegalNameException, IllegalAdjacentPositionException {
 		new Unit(ValidLocation, "T", 0, 0, 0, 0);
 	}
 	
-	// Weight tests
+	// Weight (and Agility,Strength) tests based on white box testing.
 	
 	@Test
-	public void setWeight_check() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+	public void setWeight_BelowAfterConstr() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setAgility(0);
+		unit.setStrength(0);
+		unit.setWeight(-20);
+		assertEquals(1,unit.getWeight(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setWeight_BelowConstr() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setWeight(-20);
+		assertEquals(25,unit.getWeight(),Util.DEFAULT_EPSILON);
+	}
+	
+	
+	@Test
+	public void setWeight_Below() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setStrength(50);
+		unit.setAgility(50);
+		unit.setWeight(-20);
+		assertEquals(50, unit.getWeight(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setWeight_Betweenboundaries() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setWeight(70);
+		assertEquals(70, unit.getWeight(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setWeight_MaxValue() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setWeight(200);
+		assertEquals(200, unit.getWeight(),Util.DEFAULT_EPSILON);
+	}
+	
+	
+	@Test
+	public void setWeight_Overflow() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
 		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
 		unit.setWeight(250);
 		assertEquals(200, unit.getWeight(),Util.DEFAULT_EPSILON);
 	}
+	
+	
+	// Strength tests based on white box testing.
+	@Test
+	public void setStrength_BelowConstr()  throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		assertEquals(25, unit.getStrength(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setStrength_BelowAfterConstr()  throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setStrength(-20);
+		assertEquals(1, unit.getStrength(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setStrength_Betweenboundaries() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setStrength(70);
+		assertEquals(70, unit.getStrength(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setStrength_MaxValue() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setStrength(200);
+		assertEquals(200, unit.getStrength(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setStrength_Overflow() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setStrength(250);
+		assertEquals(200, unit.getStrength(),Util.DEFAULT_EPSILON);
+	
+	}
+	
+	
+	// Agility tests based on white box testing
+	
+	@Test
+	public void setAgility_BelowConstr()  throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		assertEquals(25, unit.getAgility(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setAgility_BelowAfterConstr()  throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setAgility(-20);
+		assertEquals(1, unit.getAgility(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setAgility_Betweenboundaries() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setAgility(70);
+		assertEquals(70, unit.getAgility(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setAgility_MaxValue() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setAgility(200);
+		assertEquals(200, unit.getAgility(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setAgility_Overflow() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setAgility(250);
+		assertEquals(200, unit.getAgility(),Util.DEFAULT_EPSILON);
+	
+	}
+	
+	// Toughness tests based on white box testing. 
+	
+	@Test
+	public void setToughness_BelowConstr()  throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		assertEquals(25, unit.getToughness(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setToughness_BelowAfterConstr()  throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setToughness(-20);
+		assertEquals(1, unit.getToughness(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setToughness_Betweenboundaries() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setToughness(70);
+		assertEquals(70, unit.getToughness(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setToughness_MaxValue() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setToughness(200);
+		assertEquals(200, unit.getToughness(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void setToughness_Overflow() throws IllegalPositionException, IllegalNameException , IllegalAdjacentPositionException {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, 0);
+		unit.setToughness(250);
+		assertEquals(200, unit.getToughness(),Util.DEFAULT_EPSILON);
+	
+	}
+	
+	// Hitpoints Tests
+	
+	@Test
+	public void getMaxHitpoints_check(){
+		assertEquals(108, unit_test2.getMaxHitpointsStamina(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void getCurrentHitpoints_check(){
+		assertEquals(108, unit_test2.getHitpoints(),Util.DEFAULT_EPSILON);
+	}
+	
+	// Stamina Tests
+	
+	@Test
+	public void getMaxStamina_check(){
+		assertEquals(108, unit_test2.getMaxHitpointsStamina(),Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void getCurrentStamina_check(){
+		assertEquals(108, unit_test2.getStamina(),Util.DEFAULT_EPSILON);
+	}
+	
+	
+	
+	
+	
 	
 //	@Test
 //	public void setProperties() throws IllegalPositionException, IllegalNameException {
