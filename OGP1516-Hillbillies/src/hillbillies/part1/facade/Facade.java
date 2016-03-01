@@ -181,11 +181,11 @@ public class Facade implements IFacade {
 		try {
 			unit.moveTo(target);
 		} catch (IllegalPositionException e) {
-//			throw new ModelException("Error text", e);
-			e.printStackTrace();
+			throw new ModelException("Error text", e);
+
 		} catch (IllegalAdjacentPositionException e) {
-//			throw new ModelException("Error text", e);
-			e.printStackTrace();
+			throw new ModelException("Error text", e);
+
 		}
 		
 	}
