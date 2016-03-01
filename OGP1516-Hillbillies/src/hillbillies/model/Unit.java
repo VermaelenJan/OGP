@@ -13,10 +13,19 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 
 
-//TODO: write tests for everything
+
 
 /**
- * 
+ * @invar  The location of each unit must be a valid location for any
+ *         unit.
+ *       | isValidLocation(getLocation())
+ * @invar  The name of each unit must be a valid name for any
+ *         unit.
+ *       | isValidName(getName())
+ * @invar  The weight of each unit must be a valid weight for any
+ *         unit.
+ *       | isValidWeight(getWeight())
+ *       
  * @author Maxime en Jan
  *
  */
@@ -177,6 +186,36 @@ public class Unit {
 	}
 	
 	/**
+	 * 
+	 * Return the location of this unit.
+	 */
+	@Basic @Raw
+	public List<Double> getLocation() {
+		List<Double> position = new ArrayList<Double>();
+		position.add(this.x_pos);
+		position.add(this.y_pos);
+		position.add(this.z_pos);
+		return(position);
+	}
+	
+	/**
+	 * Check whether the given location is a valid location for
+	 * any unit.
+	 * 
+	 * @param location
+	 * 			The location to check.
+	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
+	 * 			are smaller than the world_x, world_y and world_z values and the x,y and z value are greater than 0.
+	 * 			| result == (location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
+				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
+	 */
+	@Raw @Model
+	private static boolean isValidLocation(List<Double> location) {
+		return ((location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
+				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
+	}
+	
+	/**
 	 * Set the location of this unit to the given location.
 	 * 
 	 * @param  location
@@ -191,43 +230,19 @@ public class Unit {
 	 */
 	@Raw @Model
 	private void setLocation(List<Double> location) throws IllegalPositionException{
-		if (!canHaveAsPosition(location))
+		if (!isValidLocation(location))
 			throw new IllegalPositionException(location);
 		this.x_pos = location.get(0);
 		this.y_pos = location.get(1);
 		this.z_pos = location.get(2);
 	}
 	
-	/**
-	 * 
-	 * @param location
-	 * 			The location to check.
-	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
-	 * 			are smaller than the world_x, world_y and world_z values and the x,y and z value are greater than 0.
-	 * 			| result == (location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
-				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
-	 */
-	@Raw @Model
-	private boolean canHaveAsPosition(List<Double> location) {
-		return ((location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
-				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
-	}
-	
-	/**
-	 * 
-	 * Return the location of this unit.
-	 */
-	@Basic @Raw
-	public List<Double> getLocation() {
-		List<Double> position = new ArrayList<Double>();
-		position.add(this.x_pos);
-		position.add(this.y_pos);
-		position.add(this.z_pos);
-		return(position);
-	}
 
 
-	
+	/**
+	 * 
+	 * Returns the coordinates of the cube the unit is in.
+	 */
 	@Basic @Raw
 	public List<Integer> getOccupiedCube() {
 		List<Integer> position = new ArrayList<Integer>();
@@ -238,35 +253,46 @@ public class Unit {
 		return(position);
 	}
 	
-
+	
 	
 	/**
 	 * 
-	 * @param name
+	 * Return the name of this unit.
 	 */
-	
-	@Raw
-	public void setName(String name) throws IllegalNameException{
-		if (!isValidName(name))
-			throw new IllegalNameException(name);
-		this.name = name;
+	@Basic @Raw 
+	public String getName(){
+		return this.name;
 	}
 	
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Check whether the given name is a valid name for
+	 * any unit.
+	 *  
+	 * @param  name
+	 *         The name to check.
+	 * @return True if and only if the given name's length is greater or equal to 2 and the given name's first character 
+	 * 		   is uppercase and the given name has all valid characters.
+	 * 		   | result ==
+	 * 				((name.length() >= 2) 
+	 *			&&	(Character.isUpperCase(name.charAt(0))) 
+	 *			&&  (areValidCharacters(name)))			
+	 * 			
 	 */
-	
 	@Model
 	private static boolean isValidName(String name){
 		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (areValidCharacters(name)));
 	}
 	
 	/**
+	 * Check whether the given name(characters) is a valid name for 
+	 * any unit. 
 	 * 
 	 * @param name
-	 * @return
+	 * @return True if and only if the name has as characters letters,space, double quotes and a single quote,
+	 * 		   precursory by a backslash.
+	 * 		   | result == for (char c : name.toCharArray()){
+							 (( Character.isLetter(c)) || ( (c == ' ') ) && ( (c == '"')) && ( (c == '\''))) }
+	 * 			
 	 */
 	@Model
 	private static boolean areValidCharacters(String name){
@@ -279,21 +305,78 @@ public class Unit {
 	}
 	
 	/**
+	 * Set the name of this unit to the given name.
 	 * 
-	 * @return
+	 * @param  Name
+	 *         The new name for this unit.
+	 * @post   The name of this new unit is equal to
+	 *         the given name.
+	 *       | new.getName() == Name
+	 * @throws ExceptionName_Java
+	 *         The given name is not a valid name for any
+	 *         unit.
+	 *       | ! isValidName(getName())
 	 */
-	
-	@Basic @Raw 
-	public String getName(){
-		return this.name;
+	@Raw
+	public void setName(String name) throws IllegalNameException{
+		if (!isValidName(name))
+			throw new IllegalNameException(name);
+		this.name = name;
 	}
 	
-
+	
 	/**
 	 * 
-	 * @param weight
+	 * Return the weight of this unit.
 	 */
+	@Basic @Raw
+	public int getWeight(){
+		return this.weight;
+	}	
 	
+	
+	/**
+	 * 
+	 * @param   weight
+	 *          The new weight for this unit.
+	 * @param   flag
+	 * @post	If the given flag is true,the weight is set for the first time in the constructor,
+	 * 		    the current minimum value of the weight is the initial minimum value 
+	 * 		    of the weight of the constructor and the current maximum value of the weight 
+	 *          is the initial maximum value of the weight of the constructor.
+	 *          | if (flag)
+	 *				then ((new.curr_min_val == INIT_MIN_VAL) && (new.curr_max_val = INIT_MAX_VAL))
+	 * @post    If the given flag is false,the weight is already set once in the constructor,
+	 * 		    the current minimum value of the weight is the minimum value 
+	 * 		    of the weight after the constructor and the current maximum value of the weight 
+	 *          is the maximum value of the weight after the constructor.
+	 *          | if (! flag)
+	 *				then ((new.curr_min_val == MIN_VAL) && (new.curr_max_val = MAX_VAL))
+	 * @post    if the given weight is greater than the units strength plus agility, divided by 2, 
+	 * 			and if the given weight is smaller than the current minimum value of the weight,
+	 * 			the weight of this unit is equal  to current minimum value.
+	 * 			| if (weight >= (getStrength()+getAgility())/2)
+	 * 			|	if (weight < curr_min_val)
+	 * 			|		then (new.weight == curr_min_val) 	
+	 * @post	if the given weight is greater than the units strength plus agility, divided by 2, 
+	 * 			and if the given weight is greater than the current minimum value and smaller than
+	 * 			the current maximum value, the weight of this unit is equal to the given weight.
+	 * 			| if (weight >= (getStrength()+getAgility())/2)
+	 * 			|	if ((weight >= curr_min_val) && (weight <= curr_max_val))
+	 * 			|		then (new.weight == weight)	
+	 * @post    if the given weight is greater than the units strength plus agility, divided by 2, 
+	 * 			and if the given weight is greater than the current maximum value of the weight,
+	 * 			the weight of this unit is equal  to current minimum value.
+	 * 			| if (weight >= (getStrength()+getAgility())/2)
+	 * 			|	if (weight > curr_min_val)
+	 * 			|		then (new.weight == curr_max_val) 
+	 * @post    if the given weight is smaller than the units strength plus agility, divided by 2, 
+	 * 			the weight of this unit is equal to the units strength plus agility, divided by 2.
+	 * 			| if (weight < (getStrength()+getAgility())/2)
+	 * 			|	then (new.weight == (getStrength()+getAgility())/2) 			
+			
+   
+	 */	
 	@Raw @Model
 	private void setWeight(int weight, boolean flag){
 		if (flag){
@@ -320,26 +403,19 @@ public class Unit {
 
 	}
 	
-	
 	/**
 	 * 
-	 * @param weight
+	 * @param	weight
+	 *	     	The new weight for this unit.
+	 * @effect	The weight of the unit is set with the flag on false.
+	 * 			| setWeight(weight,false)
 	 */
-	
 	@Raw
 	public void setWeight(int weight) {
 		setWeight(weight, false);
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	
-	@Basic @Raw
-	public int getWeight(){
-		return this.weight;
-	}	
+
 	
 	/**
 	 * 
@@ -830,7 +906,7 @@ public class Unit {
 		current_target.add((double)(current_cube.get(1)+ dy + CUBE_LENGTH/2));
 		current_target.add((double)(current_cube.get(2)+ dz + CUBE_LENGTH/2));
 		
-		if (! canHaveAsPosition(current_target)){			
+		if (! isValidLocation(current_target)){			
 			throw new IllegalPositionException(current_target);
 		}
 		if (! (dx == 0 && dy == 0 && dz ==0)) {
