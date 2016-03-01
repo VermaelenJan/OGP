@@ -183,10 +183,7 @@ public class Facade implements IFacade {
 		} catch (IllegalPositionException e) {
 			throw new ModelException("Error text", e);
 
-		} catch (IllegalAdjacentPositionException e) {
-			throw new ModelException("Error text", e);
-
-		}
+		} 
 		
 	}
 

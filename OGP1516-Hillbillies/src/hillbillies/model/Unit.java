@@ -1,4 +1,5 @@
 package hillbillies.model;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,7 +14,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 
 //TODO: write tests for everything
-//TODO: CONSTANTS, randomMethods,... 
+
 /**
  * 
  * @author Maxime en Jan
@@ -82,8 +83,9 @@ public class Unit {
 
 
 	/**
+	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
 	 * 
-	 * @param location
+	 * @param cubeLocation
 	 *			The location for this new unit.
 	 * @param name
 	 * 			The name for this new unit.
@@ -95,10 +97,6 @@ public class Unit {
 	 * 			The agility for this new unit.
 	 * @param toughness
 	 * 			The toughness for this new unit.
-	 * @param hitpoints
-	 * 			The hitpoints for this new unit.
-	 * @param stamina
-	 * 			The stamina for this new unit.
 	 * @param orientation
 	 * 			The orientation for this new unit.
 	 * @post The location of this new unit is equal to the given location.
@@ -121,13 +119,12 @@ public class Unit {
 	 * 			| setOrientation(orientation)
 	 * @throws IllegalPositionException
 	 * 			The given position is not a valid position for a unit.
-	 * 			| ! canHaveAsPosition(position)w
+	 * 			| ! canHaveAsPosition(position)
 	 * @throws IllegalNameException 
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
 	 * 
 	 */
-	
 	@Raw
 	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
@@ -143,24 +140,55 @@ public class Unit {
 		setToughness(toughness, true);
 		setHitpoints(getMaxHitpointsStamina());
 		setStamina(getMaxHitpointsStamina());
-		setOrientation(orientation);
-		
+		setOrientation(orientation);	
 	}
 	
+	/**
+	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility and the default orientation PI/2.
+	 * 
+	 * @param cubeLocation
+	 *			The location for this new unit.
+	 * @param name
+	 * 			The name for this new unit.
+	 * @param weight
+	 * 			The weight for this new unit.
+	 * @param strength
+	 * 			The strength for this new unit.
+	 * @param agility
+	 * 			The agility for this new unit.
+	 * @param toughness
+	 * 			The toughness for this new unit.
+	 * @param orientation
+	 * 			The orientation for this new unit.
+	 * @effect This new unit is initialized with the given cubeLocation as its cubeLocation, the given name as its name, the given 
+	 * 			weight as its weight, the given strength as its strength, the given agility as its agility, the given toughness as 
+	 * 			its toughness, and the default value PI/2 as its orientation.
+	 * @throws IllegalPositionException
+	 * 			The given position is not a valid position for a unit.
+	 * 			| ! canHaveAsPosition(position)w
+	 * @throws IllegalNameException 
+	 * 			The given name is not a valid name for a unit.	
+	 * 			| ! isValidName(name)
+	 */
 	@Raw
 	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness)
 			throws IllegalPositionException, IllegalNameException {
 		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
-	}	
-	/**
-	 * 
-	 * @param location
-	 * 			The location to set.
-	 * @throws IllegalPositionException
-	 * 			the location is not a valid location for a unit.
-	 * 			| !canHaveAsPosition(location)
-	 */
+	}
 	
+	/**
+	 * Set the location of this unit to the given location.
+	 * 
+	 * @param  location
+	 *         The new location for this unit.
+	 * @post   The location of this new unit is equal to
+	 *         the given location.
+	 *       | new.getLocation() == location
+	 * @throws IllegalPositionException
+	 *         The given location is not a valid location for any
+	 *         unit.
+	 *       | ! isValidLocation(getLocation())
+	 */
 	@Raw @Model
 	private void setLocation(List<Double> location) throws IllegalPositionException{
 		if (!canHaveAsPosition(location))
@@ -179,17 +207,26 @@ public class Unit {
 	 * 			| result == (location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
 				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
 	 */
-	
 	@Raw @Model
 	private boolean canHaveAsPosition(List<Double> location) {
 		return ((location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
 				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
 	}
-
+	
 	/**
 	 * 
-	 * @return
+	 * Return the location of this unit.
 	 */
+	@Basic @Raw
+	public List<Double> getLocation() {
+		List<Double> position = new ArrayList<Double>();
+		position.add(this.x_pos);
+		position.add(this.y_pos);
+		position.add(this.z_pos);
+		return(position);
+	}
+
+
 	
 	@Basic @Raw
 	public List<Integer> getOccupiedCube() {
@@ -201,19 +238,7 @@ public class Unit {
 		return(position);
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	
-	@Basic @Raw
-	public List<Double> getLocation() {
-		List<Double> position = new ArrayList<Double>();
-		position.add(this.x_pos);
-		position.add(this.y_pos);
-		position.add(this.z_pos);
-		return(position);
-	}
+
 	
 	/**
 	 * 
@@ -347,7 +372,9 @@ public class Unit {
 		else if ((strength >= curr_min_val) && (strength <= curr_max_val))
 			this.strength = strength;
 		else if (strength > curr_max_val)
-			this.strength = curr_max_val; 
+			this.strength = curr_max_val;
+		
+		setWeight(getWeight());
 	}
 	
 	/**
@@ -382,6 +409,8 @@ public class Unit {
 			this.agility = agility;
 		else if (agility > curr_max_val)
 			this.agility = curr_max_val; 
+		
+		setWeight(getWeight());
 	}
 	
 	/**
@@ -551,8 +580,6 @@ public class Unit {
 	 * 
 	 * @param duration
 	 */
-	// TODO exceptions(zowel opgave als location)!!!!!!!!!!!!!!!!! jaaa eric, we weten het.
-	
 	
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
 		
@@ -564,7 +591,6 @@ public class Unit {
 		if (getTimeSinceRest() > 180){
 			startResting();
 		}
-		
 		
 		if (isAttacking()){
 			
@@ -623,18 +649,10 @@ public class Unit {
 						!((getOccupiedCube().get(0) == global_target.get(0)) &&
 						(getOccupiedCube().get(1) == global_target.get(1)) &&
 						(getOccupiedCube().get(2) == global_target.get(2)) ) ) {
-					
 					try {
 						moveTo(global_target);
-					} catch (IllegalPositionException e) {} catch (IllegalAdjacentPositionException e) {
-
-						e.printStackTrace();
-					}
-					
-					
-					
+					} catch (IllegalPositionException e) {} 
 				}
-
 			}
 			
 			else{
@@ -663,10 +681,7 @@ public class Unit {
 				setOrientation(Math.atan2(getCurrentSpeed().get(1),getCurrentSpeed().get(0)));
 			}
 						
-		}
-		
-
-		
+		}		
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
 		}
@@ -759,7 +774,7 @@ public class Unit {
 	@Model 
 	private void stopMoving(){
 		isMoving = false;
-		//stopSprinting(); (Hill kept stopping sprinting)
+
 	}
 	
 	@Basic @Model
@@ -801,8 +816,6 @@ public class Unit {
 		moveToAdjacent(dx, dy, dz, false);
 	}
 	
-	// TODO show exception if try to move in more than 1 block, add new exception
-	
 	@Model
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
 																					IllegalAdjacentPositionException{
@@ -813,7 +826,6 @@ public class Unit {
 
 		List<Double> current_target = new ArrayList<Double>();
 		List<Integer> current_cube = getOccupiedCube();
-			
 		current_target.add((double)(current_cube.get(0)+ dx + CUBE_LENGTH/2));
 		current_target.add((double)(current_cube.get(1)+ dy + CUBE_LENGTH/2));
 		current_target.add((double)(current_cube.get(2)+ dz + CUBE_LENGTH/2));
@@ -836,8 +848,11 @@ public class Unit {
 	}
 	
 			
-	public void moveTo(List<Integer>end_target) throws IllegalPositionException, IllegalAdjacentPositionException {
+	public void moveTo(List<Integer>end_target) throws IllegalPositionException {
+		
 		global_target = end_target;
+		
+		
 		int x_cur = getOccupiedCube().get(0);
 		int y_cur = getOccupiedCube().get(1);
 		int z_cur = getOccupiedCube().get(2);
@@ -883,13 +898,17 @@ public class Unit {
 			else{
 				z_res = -1;
 			}
-			moveToAdjacent(x_res, y_res,z_res, true);
+			try {
+				moveToAdjacent(x_res, y_res,z_res, true);
+			} catch (IllegalAdjacentPositionException e) {}
 		}
 	}
 	
 	private boolean isValidAdjacentMovement(int dx, int dy, int dz){
 		
-		return (((dx == 0) || (dx == 1) || (dx == -1)) && ((dy == 0) || (dy == 1) || (dy == -1) )&& ((dz == 0) || (dz == 1) || dz == -1));
+		return (((dx == 0) || (dx == 1) || (dx == -1)) && 
+				((dy == 0) || (dy == 1) || (dy == -1) )&& 
+				((dz == 0) || (dz == 1) || dz == -1));
 	}
 	
 	public void work(){
@@ -938,13 +957,13 @@ public class Unit {
 			}
 			
 			stopWorking();
-
 			
 			this.setOrientationInFight(other);
 				
 			this.setAttackTime(1);
 		}
 	}
+	
 	
 	@Model 
 	private void setOrientationInFight(Unit other) {
@@ -1050,12 +1069,14 @@ public class Unit {
 	
 	@Model
 	private void startResting(){
-		setTimeResting(0);
-		resting = true;
-		stopWorking();
+		if ( (getHitpoints() != getMaxHitpointsStamina()) || ( (getStamina() != getMaxHitpointsStamina()) )){
+			setTimeResting(0);
+			resting = true;
+			stopWorking();
+			setStartHitpoints(getHitpoints());
+			setStartStamina(getStamina());
+		}
 
-		setStartHitpoints(getHitpoints());
-		setStartStamina(getStamina());
 	}
 	
 	@Model
@@ -1129,10 +1150,7 @@ public class Unit {
 		if (possible_task == 0){
 			try {
 				moveTo(getRandomPosition());
-			} catch (IllegalPositionException e) {} catch (IllegalAdjacentPositionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (IllegalPositionException e) {}
 		}
 		else if (possible_task == 1){
 			work();
