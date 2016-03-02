@@ -26,7 +26,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  *         unit.
  *       | isValidWeight(getWeight())
  *       
- * @author Maxime en Jan
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 0.9
  *
  */
 public class Unit {
@@ -38,9 +39,9 @@ public class Unit {
 	private double CUBE_LENGTH = 1;
 	
 	
-	private double x_pos;
-	private double y_pos;
-	private double z_pos;
+	private double xPos;
+	private double yPos;
+	private double zPos;
 	
 	private String name;
 	private int weight;
@@ -55,8 +56,8 @@ public class Unit {
 	private static int INIT_MAX_VAL = 100;
 	private static int MIN_VAL = 1;
 	private static int MAX_VAL = 200;
-	private int curr_min_val;
-	private int curr_max_val;
+	private int currMinVal;
+	private int currMaxVal;
 	
 	private boolean sprinting;
 	private double velocity;
@@ -66,25 +67,25 @@ public class Unit {
 	
 	// Working
 	private boolean working;
-	private float time_remainder_to_work;
+	private float timeRemainderToWork;
 	
 	// Attack
-	private float attack_time;
+	private float attackTime;
 	
 	// Rest
 	private boolean resting;
-	private float time_since_rest;
-	private float time_resting = Float.MAX_VALUE;
-	private double start_hitpoints;
-	private double start_stamina;
-	private float periodic_rest;
+	private float timeSinceRest;
+	private float timeResting = Float.MAX_VALUE;
+	private double startRestHitpoints;
+	private double startRestStamina;
+	private float periodicRest;
 	
 	// Default Behaviour
-	private boolean default_behaviour;
+	private boolean defaultBehaviour;
 	
 	// Moving
 	private boolean isMoving ;
-	private List<Integer> global_target;
+	private List<Integer> globalTarget;
 	
 	
 	// Random
@@ -192,9 +193,9 @@ public class Unit {
 	@Basic @Raw
 	public List<Double> getLocation() {
 		List<Double> position = new ArrayList<Double>();
-		position.add(this.x_pos);
-		position.add(this.y_pos);
-		position.add(this.z_pos);
+		position.add(this.xPos);
+		position.add(this.yPos);
+		position.add(this.zPos);
 		return(position);
 	}
 	
@@ -206,7 +207,7 @@ public class Unit {
 	 * 			The location to check.
 	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
 	 * 			are smaller than the world_x, world_y and world_z values and the x,y and z value are greater than 0.
-	 * 			| result == (location.get(0) <= World_x) && (location.get(1) <= World_y) && (location.get(2) <= World_z) && 
+	 * 			| result == (location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
 				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
 	 */
 	@Raw @Model
@@ -232,9 +233,9 @@ public class Unit {
 	private void setLocation(List<Double> location) throws IllegalPositionException{
 		if (!isValidLocation(location))
 			throw new IllegalPositionException(location);
-		this.x_pos = location.get(0);
-		this.y_pos = location.get(1);
-		this.z_pos = location.get(2);
+		this.xPos = location.get(0);
+		this.yPos = location.get(1);
+		this.zPos = location.get(2);
 	}
 	
 
@@ -381,21 +382,21 @@ public class Unit {
 	@Raw @Model
 	private void setWeight(int weight, boolean flag){
 		if (flag){
-			curr_min_val = INIT_MIN_VAL;
-			curr_max_val = INIT_MAX_VAL;
+			currMinVal = INIT_MIN_VAL;
+			currMaxVal = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = MIN_VAL;
-			curr_max_val = MAX_VAL;
+			currMinVal = MIN_VAL;
+			currMaxVal = MAX_VAL;
 		}
 
 		if (weight >= (getStrength()+getAgility())/2){
-			if (weight < curr_min_val) 
-				this.weight = curr_min_val;
-			else if ((weight >= curr_min_val) && (weight <= curr_max_val))
+			if (weight < currMinVal) 
+				this.weight = currMinVal;
+			else if ((weight >= currMinVal) && (weight <= currMaxVal))
 				this.weight = weight;
-			else if (weight > curr_max_val)
-				this.weight = curr_max_val; 
+			else if (weight > currMaxVal)
+				this.weight = currMaxVal; 
 		}
 		
 		else{
@@ -436,20 +437,20 @@ public class Unit {
 	@Raw @Model
 	private void setStrength(int strength, boolean flag){
 		if (flag){
-			curr_min_val = INIT_MIN_VAL;
-			curr_max_val = INIT_MAX_VAL;
+			currMinVal = INIT_MIN_VAL;
+			currMaxVal = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = MIN_VAL;
-			curr_max_val = MAX_VAL;
+			currMinVal = MIN_VAL;
+			currMaxVal = MAX_VAL;
 		}
 
-		if ( strength < curr_min_val) 
-			this.strength = curr_min_val;
-		else if ((strength >= curr_min_val) && (strength <= curr_max_val))
+		if ( strength < currMinVal) 
+			this.strength = currMinVal;
+		else if ((strength >= currMinVal) && (strength <= currMaxVal))
 			this.strength = strength;
-		else if (strength > curr_max_val)
-			this.strength = curr_max_val;
+		else if (strength > currMaxVal)
+			this.strength = currMaxVal;
 		
 		setWeight(getWeight());
 	}
@@ -472,20 +473,20 @@ public class Unit {
 	@Raw @Model
 	private void setAgility(int agility, boolean flag){
 		if (flag){
-			curr_min_val = INIT_MIN_VAL;
-			curr_max_val = INIT_MAX_VAL;
+			currMinVal = INIT_MIN_VAL;
+			currMaxVal = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = MIN_VAL;
-			curr_max_val = MAX_VAL;
+			currMinVal = MIN_VAL;
+			currMaxVal = MAX_VAL;
 		}
 
-		if ( agility < curr_min_val) 
-			this.agility = curr_min_val;
-		else if ((agility >= curr_min_val) && (agility <= curr_max_val))
+		if ( agility < currMinVal) 
+			this.agility = currMinVal;
+		else if ((agility >= currMinVal) && (agility <= currMaxVal))
 			this.agility = agility;
-		else if (agility > curr_max_val)
-			this.agility = curr_max_val; 
+		else if (agility > currMaxVal)
+			this.agility = currMaxVal; 
 		
 		setWeight(getWeight());
 	}
@@ -518,20 +519,20 @@ public class Unit {
 	@Raw @Model
 	private void setToughness(int toughness, boolean flag){
 		if (flag){
-			curr_min_val = INIT_MIN_VAL;
-			curr_max_val = INIT_MAX_VAL;
+			currMinVal = INIT_MIN_VAL;
+			currMaxVal = INIT_MAX_VAL;
 		}
 		else {
-			curr_min_val = MIN_VAL;
-			curr_max_val = MAX_VAL;
+			currMinVal = MIN_VAL;
+			currMaxVal = MAX_VAL;
 		}
 
-		if ( toughness < curr_min_val) 
-			this.toughness = curr_min_val;
-		else if ((toughness >= curr_min_val) && (toughness <= curr_max_val))
+		if ( toughness < currMinVal) 
+			this.toughness = currMinVal;
+		else if ((toughness >= currMinVal) && (toughness <= currMaxVal))
 			this.toughness =toughness;
-		else if (toughness > curr_max_val)
-			this.toughness = curr_max_val; 
+		else if (toughness > currMaxVal)
+			this.toughness = currMaxVal; 
 	}
 	
 	/**
@@ -722,12 +723,12 @@ public class Unit {
 				try {
 					setLocation(target);
 				} catch (IllegalPositionException e) {}
-				if (!(global_target == null) &&
-						!((getOccupiedCube().get(0) == global_target.get(0)) &&
-						(getOccupiedCube().get(1) == global_target.get(1)) &&
-						(getOccupiedCube().get(2) == global_target.get(2)) ) ) {
+				if (!(globalTarget == null) &&
+						!((getOccupiedCube().get(0) == globalTarget.get(0)) &&
+						(getOccupiedCube().get(1) == globalTarget.get(1)) &&
+						(getOccupiedCube().get(2) == globalTarget.get(2)) ) ) {
 					try {
-						moveTo(global_target);
+						moveTo(globalTarget);
 					} catch (IllegalPositionException e) {} 
 				}
 			}
@@ -774,12 +775,12 @@ public class Unit {
 	
 	@Model
 	private void setTimePeriodicRest(float time){
-		this.periodic_rest = time;
+		this.periodicRest = time;
 	}
 	
 	@Basic @Model
 	private float getTimePeriodicRest(){
-		return this.periodic_rest;
+		return this.periodicRest;
 	}
 	
 	@Model
@@ -920,14 +921,14 @@ public class Unit {
 			current_target_cube.add(current_cube.get(0)+ dx);
 			current_target_cube.add(current_cube.get(1)+ dy);
 			current_target_cube.add(current_cube.get(2)+ dz);
-			global_target = current_target_cube;
+			globalTarget = current_target_cube;
 		}
 	}
 	
 			
 	public void moveTo(List<Integer>end_target) throws IllegalPositionException {
 		
-		global_target = end_target;
+		globalTarget = end_target;
 		
 		
 		int x_cur = getOccupiedCube().get(0);
@@ -1014,12 +1015,12 @@ public class Unit {
 	
 	@Model
 	private void setTimeRemainderToWork(float time){
-		time_remainder_to_work = time;
+		timeRemainderToWork = time;
 	}
 	
 	@Model 
 	private float getTimeRemainderToWork(){
-		return time_remainder_to_work;
+		return timeRemainderToWork;
 	}
 	
 	
@@ -1121,12 +1122,12 @@ public class Unit {
 	
 	@Model
 	private void setAttackTime(float time){
-		this.attack_time = time;
+		this.attackTime = time;
 	}
 	
 	@Basic @Model
 	private float getAttackTime(){
-		return this.attack_time;
+		return this.attackTime;
 	}
 	
 	@Basic @Model
@@ -1150,8 +1151,8 @@ public class Unit {
 			setTimeResting(0);
 			resting = true;
 			stopWorking();
-			setStartHitpoints(getHitpoints());
-			setStartStamina(getStamina());
+			setStartRestHitpoints(getHitpoints());
+			setStartRestStamina(getStamina());
 		}
 
 	}
@@ -1159,8 +1160,8 @@ public class Unit {
 	@Model
 	private void stopResting(){
 		if (! canHaveRecoverdOneHp()){
-			setHitpoints(getStartHitpoints());
-			setStamina(getStartStamina());
+			setHitpoints(getStartRestHitpoints());
+			setStamina(getStartRestStamina());
 		}
 		resting = false;
 		setTimeSinceRest(0);
@@ -1169,56 +1170,56 @@ public class Unit {
 	
 	@Model
 	private void setTimeSinceRest(float time){
-		this.time_since_rest = time;
+		this.timeSinceRest = time;
 	}
 	
 	@Model
 	private float getTimeSinceRest(){
-		return this.time_since_rest;
+		return this.timeSinceRest;
 	}
 	
 	@Model
 	private void setTimeResting(float time) {
-		this.time_resting = time;
+		this.timeResting = time;
 	}
 	
 	@Basic @Model
 	private float getTimeResting() {
-		return this.time_resting;
+		return this.timeResting;
 	}
 	
 	@Model
-	private void setStartHitpoints(double hitpoints){
-		this.start_hitpoints = hitpoints;
+	private void setStartRestHitpoints(double hitpoints){
+		this.startRestHitpoints = hitpoints;
 	}
 	
 	@Basic @Model
-	private double getStartHitpoints(){
-		return this.start_hitpoints;
+	private double getStartRestHitpoints(){
+		return this.startRestHitpoints;
 	}
 	
 	@Model
-	private void setStartStamina(double stamina){
-		this.start_stamina = stamina;
+	private void setStartRestStamina(double stamina){
+		this.startRestStamina = stamina;
 	}
 	
 	@Basic @Model
-	private double getStartStamina(){
-		return this.start_stamina;
+	private double getStartRestStamina(){
+		return this.startRestStamina;
 	}
 	
 	@Basic
 	public boolean isDefaultBehaviourEnabled(){
-		return default_behaviour;
+		return defaultBehaviour;
 	}
 	
 	
 	public void startDefaultBehaviour(){
-		default_behaviour = true;
+		defaultBehaviour = true;
 	}
 	
 	public void stopDefaultBehaviour(){
-		default_behaviour = false;
+		defaultBehaviour = false;
 	}
 	
 	@Model
