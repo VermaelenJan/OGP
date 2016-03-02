@@ -134,8 +134,8 @@ public class Unit {
 	 * 			| ! isValidName(name)
 	 * 
 	 */
-	@Raw
-	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness, 
+	@Raw @Model
+	private Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
 		List<Double> location = new ArrayList<Double>();
 		location.add(CubeLocation.get(0)+CUBE_LENGTH/2);
@@ -340,6 +340,7 @@ public class Unit {
 	 * @param   weight
 	 *          The new weight for this unit.
 	 * @param   flag
+	 * 			A flag to mark that the method is used in the constructor.
 	 * @post	If the given flag is true,the weight is set for the first time in the constructor,
 	 * 		    the current minimum value of the weight is the initial minimum value 
 	 * 		    of the weight of the constructor and the current maximum value of the weight 
@@ -352,23 +353,23 @@ public class Unit {
 	 *          is the maximum value of the weight after the constructor.
 	 *          | if (! flag)
 	 *				then ((new.curr_min_val == MIN_VAL) && (new.curr_max_val = MAX_VAL))
-	 * @post    if the given weight is greater than the units strength plus agility, divided by 2, 
+	 * @post    if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is smaller than the current minimum value of the weight,
-	 * 			the weight of this unit is equal  to current minimum value.
+	 * 			the weight of this unit is equal to the current minimum value.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
 	 * 			|	if (weight < curr_min_val)
 	 * 			|		then (new.weight == curr_min_val) 	
-	 * @post	if the given weight is greater than the units strength plus agility, divided by 2, 
+	 * @post	if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is greater than the current minimum value and smaller than
 	 * 			the current maximum value, the weight of this unit is equal to the given weight.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
 	 * 			|	if ((weight >= curr_min_val) && (weight <= curr_max_val))
 	 * 			|		then (new.weight == weight)	
-	 * @post    if the given weight is greater than the units strength plus agility, divided by 2, 
+	 * @post    if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is greater than the current maximum value of the weight,
-	 * 			the weight of this unit is equal  to current minimum value.
+	 * 			the weight of this unit is equal to the current maximum value.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
-	 * 			|	if (weight > curr_min_val)
+	 * 			|	if (weight > curr_max_val)
 	 * 			|		then (new.weight == curr_max_val) 
 	 * @post    if the given weight is smaller than the units strength plus agility, divided by 2, 
 	 * 			the weight of this unit is equal to the units strength plus agility, divided by 2.

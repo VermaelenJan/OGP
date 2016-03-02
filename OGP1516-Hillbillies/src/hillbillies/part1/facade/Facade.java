@@ -22,9 +22,9 @@ public class Facade implements IFacade {
 		try {
 			unit = new Unit(position, name, weight, strength, agility, toughness);
 		} catch (IllegalPositionException e) {
-			throw new ModelException("Error text:", e);
+			throw new ModelException("Illegal Position", e);
 		} catch (IllegalNameException e) {
-			throw new ModelException("Error text:", e);
+			throw new ModelException("Illegal Name:", e);
 		}
 		return unit;
 	}
@@ -53,7 +53,7 @@ public class Facade implements IFacade {
 		try {
 			unit.setName(newName);
 		} catch (IllegalNameException e) {
-			throw new ModelException("Error text:", e);
+			throw new ModelException("Illegal Name", e);
 		}
 	}
 
@@ -126,7 +126,7 @@ public class Facade implements IFacade {
 		try {
 			unit.advanceTime(dt);
 		} catch (IllegalAdvanceTimeException e) {
-			throw new ModelException("Error text:", e);
+			throw new ModelException("Illegal TimePeriod", e);
 		}
 		
 	}
@@ -136,9 +136,9 @@ public class Facade implements IFacade {
 		try {
 			unit.moveToAdjacent(dx,  dy,  dz);
 		} catch (IllegalPositionException e) {
-			throw new ModelException("Error text:", e);
+			throw new ModelException("Illegal Position", e);
 		} catch (IllegalAdjacentPositionException e) {
-			throw new ModelException("Error text:", e);
+			throw new ModelException("Illegal Adjacent Position", e);
 		}
 	}
 
@@ -181,7 +181,7 @@ public class Facade implements IFacade {
 		try {
 			unit.moveTo(target);
 		} catch (IllegalPositionException e) {
-			throw new ModelException("Error text", e);
+			throw new ModelException("Illegal Position", e);
 
 		} 
 		
@@ -204,7 +204,7 @@ public class Facade implements IFacade {
 			attacker.attack(defender);
 			defender.defend(attacker);
 		} catch (IllegalAttackPosititonException e) {
-			throw new ModelException("Error text:", e);
+			throw new ModelException("Illegal AttackPosition", e);
 		}
 		
 	}
