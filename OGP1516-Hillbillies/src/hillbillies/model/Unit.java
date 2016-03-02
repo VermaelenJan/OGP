@@ -396,7 +396,8 @@ public class Unit {
 	 * 
 	 * @param	weight
 	 *	     	The new weight for this unit.
-	 * @effect	The weight of the unit is set with the flag on false.
+	 * @effect	The weight of the unit is set to the given weight, with the restrictions for a not-newly created unit
+	 * 			(with the flag on false).
 	 * 			| setWeight(weight,false)
 	 */
 	@Raw
@@ -709,14 +710,14 @@ public class Unit {
 				stopMoving();
 				try {
 					setLocation(target);
-				} catch (IllegalPositionException e) {}
+				} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				if (!(globalTarget == null) &&
 						!((getOccupiedCube()[0] == globalTarget[0]) &&
 						(getOccupiedCube()[1] == globalTarget[1]) &&
 						(getOccupiedCube()[2] == globalTarget[2]) ) ) {
 					try {
 						moveTo(globalTarget);
-					} catch (IllegalPositionException e) {} 
+					} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				}
 			}
 			
@@ -726,7 +727,7 @@ public class Unit {
 									getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
 				try {
 					setLocation(new_loc);
-				} catch (IllegalPositionException e) {}
+				} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				
 				if (isSprinting()) {
 					if (getStamina() - dt*10 > 0){
@@ -810,13 +811,15 @@ public class Unit {
 		return currentSpeed;
 	}
 	
-	
+	/**
+	 * 
+	 */
 	public void startSprinting(){
-		sprinting = true;
+		this.sprinting = true;
 	}
 	
 	public void stopSprinting(){
-		sprinting = false;
+		this.sprinting = false;
 	}
 	
 	public boolean isSprinting(){
@@ -830,13 +833,13 @@ public class Unit {
 		}
 		stopWorking();
 		if (!isAttacking()){
-			isMoving = true;
+			this.isMoving = true;
 		}
 	}
 	
 	@Model 
 	private void stopMoving(){
-		isMoving = false;
+		this.isMoving = false;
 
 	}
 	
@@ -887,33 +890,37 @@ public class Unit {
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
-		int[] current_cube = getOccupiedCube();
-		double[] current_target = {	(double)(current_cube[0]+ dx + CUBE_LENGTH/2), 
-									(double)(current_cube[1]+ dy + CUBE_LENGTH/2),
-									(double)(current_cube[2]+ dz + CUBE_LENGTH/2)};
+		int[] currentCube = getOccupiedCube();
+		double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
+									(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
+									(double)(currentCube[2]+ dz + CUBE_LENGTH/2)};
 
 		
-		if (! isValidLocation(current_target)){			
-			throw new IllegalPositionException(current_target);
+		if (! isValidLocation(currentTarget)){			
+			throw new IllegalPositionException(currentTarget);
 		}
 		if (! (dx == 0 && dy == 0 && dz ==0)) {
 			startMoving();
 		}
 		
-		target = current_target;
+		target = currentTarget;
+		
 		if (! calledBy_moveTo) {
-			int[] current_target_cube = {current_cube[0] + dx, current_cube[1]+ dy, current_cube[2] + dz};
+			int[] current_target_cube = {currentCube[0] + dx, currentCube[1]+ dy, currentCube[2] + dz};
 			globalTarget = current_target_cube;
 		}
 	}
 	
 			
-	public void moveTo(int[] end_target) throws IllegalPositionException {
-		
+	public void moveTo(int[] end_target) throws IllegalPositionException { 
+										// When IllegalPositionException is thrown in moveToAdjacent(),
+										// by the coding rules, the variable "globalTarget" should be reverted to the
+										// state as at the beginning of the method. Since the method will always initiate a new
+										// globalTarget, the lack of reverting wont cause any problems.
 		globalTarget = end_target;
 		
 		
-		int x_cur = getOccupiedCube()[0];
+		int xCur = getOccupiedCube()[0];
 		int y_cur = getOccupiedCube()[1];
 		int z_cur = getOccupiedCube()[2];
 		
@@ -921,16 +928,16 @@ public class Unit {
 		int y_tar = end_target[1];
 		int z_tar = end_target[2];
 		
-		if (x_cur != x_tar || y_cur != y_tar || z_cur != z_tar){
+		if (xCur != x_tar || y_cur != y_tar || z_cur != z_tar){
 			int x_res;
 			int y_res;
 			int z_res;
 			
 			// x
-			if (x_cur == x_tar){
+			if (xCur == x_tar){
 				x_res = 0;
 			}
-			else if (x_cur < x_tar){
+			else if (xCur < x_tar){
 				x_res = 1;
 			}
 			else{
@@ -960,7 +967,7 @@ public class Unit {
 			}
 			try {
 				moveToAdjacent(x_res, y_res,z_res, true);
-			} catch (IllegalAdjacentPositionException e) {}
+			} catch (IllegalAdjacentPositionException e) {} //Exception will never be thrown.
 		}
 	}
 	
@@ -981,13 +988,13 @@ public class Unit {
 		if ( isResting() && (canHaveRecoverdOneHp())){
 			stopResting();
 		}
-		working = true;
+		this.working = true;
 		setTimeRemainderToWork((float) 500/getStrength());
 	}
 	
 	@Model
 	private void stopWorking(){
-		working = false;
+		this.working = false;
 
 	}
 	@Basic
@@ -997,7 +1004,7 @@ public class Unit {
 	
 	@Model
 	private void setTimeRemainderToWork(float time){
-		timeRemainderToWork = time;
+		this.timeRemainderToWork = time;
 	}
 	
 	@Model 
@@ -1210,7 +1217,7 @@ public class Unit {
 		if (possible_task == 0){
 			try {
 				moveTo(getRandomPosition());
-			} catch (IllegalPositionException e) {}
+			} catch (IllegalPositionException e) {} //Exception will never be thrown.
 		}
 		else if (possible_task == 1){
 			work();
