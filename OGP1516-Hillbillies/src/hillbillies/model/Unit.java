@@ -329,36 +329,39 @@ public class Unit {
 	 *          The new weight for this unit.
 	 * @param   flag
 	 * 			A flag to mark that the method is used in the constructor.
-	 * @post	If the given flag is true,the weight is set for the first time in the constructor,
+	 * 
+	 *			If the given flag is true, the weight is set for the first time in the constructor,
 	 * 		    the current minimum value of the weight is the initial minimum value 
 	 * 		    of the weight of the constructor and the current maximum value of the weight 
 	 *          is the initial maximum value of the weight of the constructor.
 	 *          | if (flag)
-	 *				then ((new.curr_min_val == INIT_MIN_VAL) && (new.curr_max_val = INIT_MAX_VAL))
-	 * @post    If the given flag is false,the weight is already set once in the constructor,
+	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *
+	 *    		If the given flag is false,the weight is already set once in the constructor,
 	 * 		    the current minimum value of the weight is the minimum value 
 	 * 		    of the weight after the constructor and the current maximum value of the weight 
 	 *          is the maximum value of the weight after the constructor.
 	 *          | if (! flag)
-	 *				then ((new.curr_min_val == MIN_VAL) && (new.curr_max_val = MAX_VAL))
+	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *
 	 * @post    if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is smaller than the current minimum value of the weight,
 	 * 			the weight of this unit is equal to the current minimum value.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
-	 * 			|	if (weight < curr_min_val)
-	 * 			|		then (new.weight == curr_min_val) 	
+	 * 			|	if (weight < currMinVal)
+	 * 			|		then (new.weight == currMinVal) 	
 	 * @post	if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is greater than the current minimum value and smaller than
 	 * 			the current maximum value, the weight of this unit is equal to the given weight.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
-	 * 			|	if ((weight >= curr_min_val) && (weight <= curr_max_val))
+	 * 			|	if ((weight >= currMinVal) && (weight <= currMaxVal))
 	 * 			|		then (new.weight == weight)	
 	 * @post    if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is greater than the current maximum value of the weight,
 	 * 			the weight of this unit is equal to the current maximum value.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
-	 * 			|	if (weight > curr_max_val)
-	 * 			|		then (new.weight == curr_max_val) 
+	 * 			|	if (weight > currMaxVal)
+	 * 			|		then (new.weight == currMaxVal) 
 	 * @post    if the given weight is smaller than the units strength plus agility, divided by 2, 
 	 * 			the weight of this unit is equal to the units strength plus agility, divided by 2.
 	 * 			| if (weight < (getStrength()+getAgility())/2)
@@ -677,18 +680,18 @@ public class Unit {
 			
 			if (getTimePeriodicRest() >= 0.2){
 				
-				int nb_times_period = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
+				int nbTimesPeriod = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
 				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
-				double new_hitpoints = getHitpoints() + ((double)getToughness()/200)*(double)(nb_times_period);
-				double new_stamina = getStamina() + ((double) getToughness()/100)*(double)(nb_times_period);
+				double newHitpoints = getHitpoints() + ((double)getToughness()/200)*(double)(nbTimesPeriod);
+				double newStamina = getStamina() + ((double) getToughness()/100)*(double)(nbTimesPeriod);
 				
 				
-				if (new_hitpoints <= getMaxHitpointsStamina()){
-					setHitpoints(new_hitpoints);
+				if (newHitpoints <= getMaxHitpointsStamina()){
+					setHitpoints(newHitpoints);
 				}
-				else if (new_stamina <= getMaxHitpointsStamina()){
+				else if (newStamina <= getMaxHitpointsStamina()){
 					setHitpoints(getMaxHitpointsStamina());
-					setStamina(new_stamina);				
+					setStamina(newStamina);				
 				}
 				else{
 					setHitpoints(getMaxHitpointsStamina());
@@ -722,11 +725,11 @@ public class Unit {
 			}
 			
 			else{
-				double[] new_loc = {getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
+				double[] newLoc = {getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
 									getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
 									getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
 				try {
-					setLocation(new_loc);
+					setLocation(newLoc);
 				} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				
 				if (isSprinting()) {
@@ -782,11 +785,11 @@ public class Unit {
 	}
 	
 	@Basic @Model
-	private double getWalkingSpeed(double target_z){
-		if (getLocation()[2]-target_z < 0){
+	private double getWalkingSpeed(double targetZ){
+		if (getLocation()[2]-targetZ < 0){
 			return 0.5*getBaseSpeed();
 		}
-		else if (getLocation()[2]- target_z > 0){
+		else if (getLocation()[2]- targetZ > 0){
 			return 1.2*getBaseSpeed();
 		}
 		else{
@@ -906,67 +909,67 @@ public class Unit {
 		target = currentTarget;
 		
 		if (! calledBy_moveTo) {
-			int[] current_target_cube = {currentCube[0] + dx, currentCube[1]+ dy, currentCube[2] + dz};
-			globalTarget = current_target_cube;
+			int[] currentTargetCube = {currentCube[0] + dx, currentCube[1]+ dy, currentCube[2] + dz};
+			globalTarget = currentTargetCube;
 		}
 	}
 	
 			
-	public void moveTo(int[] end_target) throws IllegalPositionException { 
+	public void moveTo(int[] endTarget) throws IllegalPositionException { 
 										// When IllegalPositionException is thrown in moveToAdjacent(),
 										// by the coding rules, the variable "globalTarget" should be reverted to the
 										// state as at the beginning of the method. Since the method will always initiate a new
 										// globalTarget, the lack of reverting wont cause any problems.
-		globalTarget = end_target;
+		globalTarget = endTarget;
 		
 		
 		int xCur = getOccupiedCube()[0];
-		int y_cur = getOccupiedCube()[1];
-		int z_cur = getOccupiedCube()[2];
+		int yCur = getOccupiedCube()[1];
+		int zCur = getOccupiedCube()[2];
 		
-		int x_tar = end_target[0];
-		int y_tar = end_target[1];
-		int z_tar = end_target[2];
+		int xTar = endTarget[0];
+		int yTar = endTarget[1];
+		int zTar = endTarget[2];
 		
-		if (xCur != x_tar || y_cur != y_tar || z_cur != z_tar){
-			int x_res;
-			int y_res;
-			int z_res;
+		if (xCur != xTar || yCur != yTar || zCur != zTar){
+			int xRes;
+			int yRes;
+			int zRes;
 			
 			// x
-			if (xCur == x_tar){
-				x_res = 0;
+			if (xCur == xTar){
+				xRes = 0;
 			}
-			else if (xCur < x_tar){
-				x_res = 1;
+			else if (xCur < xTar){
+				xRes = 1;
 			}
 			else{
-				x_res = -1;
+				xRes = -1;
 			}
 			
 			// y 
-			if (y_cur == y_tar){
-				y_res = 0;
+			if (yCur == yTar){
+				yRes = 0;
 			}
-			else if (y_cur < y_tar){
-				y_res = 1;
+			else if (yCur < yTar){
+				yRes = 1;
 			}
 			else{
-				y_res = -1;
+				yRes = -1;
 			}
 			
 			// z
-			if (z_cur == z_tar){
-				z_res = 0;
+			if (zCur == zTar){
+				zRes = 0;
 			}
-			else if (z_cur < z_tar){
-				z_res = 1;
+			else if (zCur < zTar){
+				zRes = 1;
 			}
 			else{
-				z_res = -1;
+				zRes = -1;
 			}
 			try {
-				moveToAdjacent(x_res, y_res,z_res, true);
+				moveToAdjacent(xRes, yRes,zRes, true);
 			} catch (IllegalAdjacentPositionException e) {} //Exception will never be thrown.
 		}
 	}
@@ -1034,13 +1037,13 @@ public class Unit {
 	
 	@Model 
 	private void setOrientationInFight(Unit other) {
-		double orient_unit_this = Math.atan2(other.getLocation()[1]-this.getLocation()[1],
+		double orientUnitThis = Math.atan2(other.getLocation()[1]-this.getLocation()[1],
 				other.getLocation()[0]-this.getLocation()[0]);
-		double orient_unit_other = Math.atan2(this.getLocation()[1]-other.getLocation()[1],
+		double orientUnitOther = Math.atan2(this.getLocation()[1]-other.getLocation()[1],
 				this.getLocation()[0]-other.getLocation()[0]);
 		
-		this.setOrientation(orient_unit_this);
-		other.setOrientation(orient_unit_other);
+		this.setOrientation(orientUnitThis);
+		other.setOrientation(orientUnitOther);
 	}
 	
 	
@@ -1052,22 +1055,25 @@ public class Unit {
 			
 			stopWorking();
 			
-			double possibility_dodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
-			if (getDefendSucces(possibility_dodge)){
+			double possibilityDodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
+			if (getDefendSucces(possibilityDodge)){
 				this.setRandomLocation();
 				this.setOrientationInFight(other);
 
 			}
 			
 			else{
-				double possibility_block = (double)(0.25*(((double) this.getStrength()+ (double) this.getAgility())/
-						((double) ((double) other.getStrength()+(double) other.getAgility()))));
+				double possibilityBlock = (double)(0.25*(((double) this.getStrength() + (double) this.getAgility())/
+						((double) ((double)other.getStrength()+(double) other.getAgility()))));
 				
-				if ( ! getDefendSucces(possibility_block)){
+				if ( ! getDefendSucces(possibilityBlock)){
 
-					this.setHitpoints(this.getHitpoints()-(double)( (double) other.getStrength()/10));
-					if (this.getHitpoints() < 0) {
+					double newHitPoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
+					if (newHitPoints <= 0) {
 						this.setHitpoints(0);
+					}
+					else {
+						this.setHitpoints(newHitPoints);
 					}
 				}
 
@@ -1086,19 +1092,19 @@ public class Unit {
 	}
 	
 	@Model
-	private double[] randomPosition(double[] curr_loc){
-		double[] new_loc = {curr_loc[0]+ (random.nextDouble()*2-1), curr_loc[1]+ (random.nextDouble()*2-1), curr_loc[2]};
-		if (curr_loc == new_loc) {
-			return randomPosition(curr_loc);
+	private double[] randomPosition(double[] currLoc){
+		double[] newLoc = {currLoc[0]+ (random.nextDouble()*2-1), currLoc[1]+ (random.nextDouble()*2-1), currLoc[2]};
+		if (currLoc == newLoc) {
+			return randomPosition(currLoc);
 		}
-		return new_loc;
+		return newLoc;
 	}
 	
 	@Model
-	private boolean canHaveAsAttackPosition(int[] attack_cube_position){
-		return((Math.abs(this.getOccupiedCube()[0]-attack_cube_position[0]) <=1) && 
-				(Math.abs(this.getOccupiedCube()[1]-attack_cube_position[1]) <=1) &&
-				(Math.abs(this.getOccupiedCube()[2]-attack_cube_position[2]) <=1));	
+	private boolean canHaveAsAttackPosition(int[] attackCubePosition){
+		return((Math.abs(this.getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
+				(Math.abs(this.getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
+				(Math.abs(this.getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
 	}
 	
 	@Basic
@@ -1213,13 +1219,13 @@ public class Unit {
 	
 	@Model
 	private void newDefaultBehaviour(){
-		int possible_task = random.nextInt(3);
-		if (possible_task == 0){
+		int possibleTask = random.nextInt(3);
+		if (possibleTask == 0){
 			try {
 				moveTo(getRandomPosition());
 			} catch (IllegalPositionException e) {} //Exception will never be thrown.
 		}
-		else if (possible_task == 1){
+		else if (possibleTask == 1){
 			work();
 		}
 		
@@ -1230,7 +1236,7 @@ public class Unit {
 	
 	@Model
 	private int[] getRandomPosition(){
-		int[] rand_loc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
-		return rand_loc;
+		int[] randLoc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
+		return randLoc;
 	}
 }

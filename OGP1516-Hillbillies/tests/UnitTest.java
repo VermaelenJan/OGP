@@ -410,21 +410,40 @@ public class UnitTest {
 		
 		assertFalse(unit1.isAttacking());
 
-		unit2.defend(unit1);
-		
-		assertTrue(	(	(unit2.getLocation()[0] == location2[0] + 0.5) && 
-						(unit2.getLocation()[1] == location2[1] + 0.5) && 
-						(unit2.getLocation()[2] == location2[2] + 0.5) &&
-						(unit2.getHitpoints() == unit2.getMaxHitpointsStamina()))
-			||
-					(	(unit2.getLocation()[0] == location2[0] + 0.5) && 
-						(unit2.getLocation()[1] == location2[1] + 0.5) && 
-						(unit2.getLocation()[2] == location2[2] + 0.5) &&
-						(unit2.getHitpoints() <= unit2.getMaxHitpointsStamina()))
-			||
-					(	(unit2.getLocation()[0] != location2[0] + 0.5) ||
-						(unit2.getLocation()[1] != location2[1] + 0.5) || 
-						(unit2.getLocation()[2] != location2[2] + 0.5)	));
+		boolean blocked = false; boolean hitted = false; boolean dodged = false;
+		for (int i = 1; i<1000; i++){
+			
+			Unit unit3 = new Unit(location2, ValidName, 0, 0, 0, 0);
+			unit3.defend(unit1);
+			
+			if (	(unit3.getLocation()[0] == location2[0] + 0.5) && 
+					(unit3.getLocation()[1] == location2[1] + 0.5) && 
+					(unit3.getLocation()[2] == location2[2] + 0.5) &&
+					(unit3.getHitpoints() == unit3.getMaxHitpointsStamina())	
+				){
+				blocked = true;
+				}
+			
+			else if (	(unit3.getLocation()[0] == location2[0] + 0.5) && 
+						(unit3.getLocation()[1] == location2[1] + 0.5) && 
+						(unit3.getLocation()[2] == location2[2] + 0.5) &&
+ 						(unit3.getHitpoints() <= unit2.getMaxHitpointsStamina())
+ 				){
+				hitted = true;
+				}
+			
+			else if(	(unit3.getLocation()[0] != location2[0] + 0.5) ||
+						(unit3.getLocation()[1] != location2[1] + 0.5) || 
+						(unit3.getLocation()[2] != location2[2] + 0.5)
+				){
+				dodged = true;
+				}
+			
+			if (i==1){
+				assertTrue(blocked || hitted || dodged);
+			}
+		}
+		assertTrue(blocked && hitted && dodged);
 	}
 	
 	@Test (expected=IllegalAttackPosititonException.class)
