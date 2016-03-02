@@ -11,9 +11,6 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 
 
-
-
-
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
@@ -199,9 +196,9 @@ public class Unit {
 	 * @param location
 	 * 			The location to check.
 	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
-	 * 			are smaller than the world_x, world_y and world_z values and the x,y and z value are greater than 0.
-	 * 			| result == (location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
-				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
+	 * 			are smaller than the WORLD_X, WORLD_Y and WORLD_Z values and the x,y and z value are greater than 0.
+	 * 			| result == (location[0] <= WORLD_X) && (location[1] <= WORLD_Y) && (location[2] <= WORLD_Z) && 
+				| (location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0))
 	 */
 	@Raw @Model
 	private static boolean isValidLocation(double[] location) {
@@ -303,7 +300,7 @@ public class Unit {
 	 * @post   The name of this new unit is equal to
 	 *         the given name.
 	 *       | new.getName() == Name
-	 * @throws ExceptionName_Java
+	 * @throws IllegalNameException
 	 *         The given name is not a valid name for any
 	 *         unit.
 	 *       | ! isValidName(getName())
