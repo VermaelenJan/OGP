@@ -1,8 +1,5 @@
 package hillbillies.part1.facade;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import hillbillies.model.IllegalAdjacentPositionException;
 import hillbillies.model.IllegalAdvanceTimeException;
 import hillbillies.model.IllegalAttackPosititonException;
@@ -16,11 +13,9 @@ public class Facade implements IFacade {
 	@Override
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
-		List<Integer> position = new ArrayList<Integer>();
-		position.add(initialPosition[0]); position.add(initialPosition[1]); position.add(initialPosition[2]);
-		Unit unit = null;
+		Unit unit;
 		try {
-			unit = new Unit(position, name, weight, strength, agility, toughness);
+			unit = new Unit(initialPosition, name, weight, strength, agility, toughness);
 		} catch (IllegalPositionException e) {
 			throw new ModelException("Illegal Position", e);
 		} catch (IllegalNameException e) {
@@ -31,16 +26,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public double[] getPosition(Unit unit) throws ModelException {
-		List<Double> position = unit.getLocation();
-		double[] location = {position.get(0), position.get(1), position.get(2)};
-		return location;
+		return unit.getLocation();
 	}
 
 	@Override
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
-		List<Integer> cube = unit.getOccupiedCube();
-		int[] locCube = {cube.get(0), cube.get(1), cube.get(2)};
-		return locCube;
+		return unit.getOccupiedCube();
 	}
 
 	@Override
@@ -176,10 +167,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
-		List<Integer> target = new ArrayList<Integer>();
-		target.add(cube[0]); target.add(cube[1]); target.add(cube[2]);
 		try {
-			unit.moveTo(target);
+			unit.moveTo(cube);
 		} catch (IllegalPositionException e) {
 			throw new ModelException("Illegal Position", e);
 

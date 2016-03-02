@@ -18,7 +18,7 @@ import ogp.framework.util.Util;
 public class UnitTest {
 	
 	private static String ValidName;
-	private static List<Integer> ValidLocation;
+	private static int[] ValidLocation = {0, 24, 49};
 	private static Unit unit_test;
 	private static Unit valid_unit;
 
@@ -26,8 +26,6 @@ public class UnitTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	ValidName = "This 's a \"test\"";
-	ValidLocation = new ArrayList<Integer>(); 
-	ValidLocation.add(0); ValidLocation.add(24); ValidLocation.add(49);
 	}
 	
 	@Before
@@ -40,37 +38,33 @@ public class UnitTest {
 
 	@Test
 	public void constructor_Legal() throws Exception {
-		List <Integer> location = new ArrayList<Integer>();
-		location.add(10); location.add(20); location.add( 30);
+		int[] location = {10, 20, 30};
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
-		List<Double> position = unit.getLocation();
-		assertEquals(10.5, position.get(0), Util.DEFAULT_EPSILON);
-		assertEquals(20.5, position.get(1), Util.DEFAULT_EPSILON);
-		assertEquals(30.5, position.get(2), Util.DEFAULT_EPSILON);
+		double[] position = unit.getLocation();
+		assertEquals(10.5, position[0], Util.DEFAULT_EPSILON);
+		assertEquals(20.5, position[1], Util.DEFAULT_EPSILON);
+		assertEquals(30.5, position[2], Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void constructor_EdgeWorld() throws Exception {
-		List <Integer> location = new ArrayList<Integer>();
-		location.add(0); location.add(0); location.add( 49);
+		int[] location = {0, 0, 49};
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
-		List<Double> position = unit.getLocation();
-		assertEquals(0.5, position.get(0), Util.DEFAULT_EPSILON);
-		assertEquals(0.5, position.get(1), Util.DEFAULT_EPSILON);
-		assertEquals(49.5, position.get(2), Util.DEFAULT_EPSILON);
+		double[] position = unit.getLocation();
+		assertEquals(0.5, position[0], Util.DEFAULT_EPSILON);
+		assertEquals(0.5, position[1], Util.DEFAULT_EPSILON);
+		assertEquals(49.5, position[2], Util.DEFAULT_EPSILON);
 	}
 
 	@Test (expected=IllegalPositionException.class)
 	public void constructor_OutOfWorldPos() throws Exception {
-		List<Integer> location = new ArrayList<Integer>();
-		location.add(0); location.add(0); location.add(50);
+		int[] location = {0, 0, 50};
 		new Unit(location, ValidName, 0, 0, 0, 0);
 	}
 	
 	@Test (expected=IllegalPositionException.class)
 	public void constructor_OutOfWorldNeg() throws Exception {
-		List<Integer> location = new ArrayList<Integer>();
-		location.add(10); location.add(10); location.add(-1);
+		int[] location = {10, 10, -1};
 		new Unit(location, ValidName, 0, 0, 0, 0);
 	}	
 
@@ -298,9 +292,9 @@ public class UnitTest {
 		assertFalse(unit.isActualMoving());
 		List <Double> expected_location = new ArrayList <Double>();
 		expected_location.add(1.5);expected_location.add(24.5);expected_location.add(48.5);
-		assertEquals(expected_location.get(0), unit.getLocation().get(0), Util.DEFAULT_EPSILON);
-		assertEquals(expected_location.get(1), unit.getLocation().get(1), Util.DEFAULT_EPSILON);
-		assertEquals(expected_location.get(2), unit.getLocation().get(2), Util.DEFAULT_EPSILON);
+		assertEquals(expected_location.get(0), unit.getLocation()[0], Util.DEFAULT_EPSILON);
+		assertEquals(expected_location.get(1), unit.getLocation()[1], Util.DEFAULT_EPSILON);
+		assertEquals(expected_location.get(2), unit.getLocation()[2], Util.DEFAULT_EPSILON);
 	}
 	
 	@Test (expected=IllegalAdjacentPositionException.class)
@@ -313,8 +307,7 @@ public class UnitTest {
 	
 	@Test (expected=IllegalPositionException.class)
 	public void moveToAdjacent_positionException() throws Exception {
-		List <Integer> location = new ArrayList<Integer>();
-		location.add(0); location.add(0); location.add(0);
+		int[] location = {0, 0, 0};
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
 		unit.moveToAdjacent(1, 0, -1);
 		
@@ -331,39 +324,36 @@ public class UnitTest {
 	
 	@Test
 	public void moveTo_check() throws Exception {
-		List <Integer> location = new ArrayList<Integer>();
-		location.add(10); location.add(20); location.add(30);
+		int[] location = {10, 20, 30};
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
 		
-		List <Integer> target = new ArrayList<Integer>();
-		target.add(12); target.add(20); target.add(30);
+		int[] target = {12, 20, 30};
 		
-		assertEquals(10.5, unit.getLocation().get(0), Util.DEFAULT_EPSILON);
-		assertEquals(20.5, unit.getLocation().get(1), Util.DEFAULT_EPSILON);
-		assertEquals(30.5, unit.getLocation().get(2), Util.DEFAULT_EPSILON);
+		assertEquals(10.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
+		assertEquals(20.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
+		assertEquals(30.5, unit.getLocation()[2], Util.DEFAULT_EPSILON);
 
 		unit.moveTo(target);
 		unit.advanceTime(0.1);
 
-		assertEquals(10, (int) unit.getOccupiedCube().get(0));
-		assertEquals(20, (int) unit.getOccupiedCube().get(1));
-		assertEquals(30, (int) unit.getOccupiedCube().get(2));
+		assertEquals(10, (int) unit.getOccupiedCube()[0]);
+		assertEquals(20, (int) unit.getOccupiedCube()[1]);
+		assertEquals(30, (int) unit.getOccupiedCube()[2]);
 		
-		assertNotEquals(10.5, unit.getLocation().get(0), Util.DEFAULT_EPSILON);
-		assertEquals(20.5, unit.getLocation().get(1), Util.DEFAULT_EPSILON);
-		assertEquals(30.5, unit.getLocation().get(2), Util.DEFAULT_EPSILON);
+		assertNotEquals(10.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
+		assertEquals(20.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
+		assertEquals(30.5, unit.getLocation()[2], Util.DEFAULT_EPSILON);
 		
 		for (int i = 1; i<200; i++) {
 		unit.advanceTime(0.1);
 		}
 		
-		assertEquals((double) 12.5, unit.getLocation().get(0), Util.DEFAULT_EPSILON);
+		assertEquals((double) 12.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
 	}
 	
 	@Test (expected=IllegalPositionException.class)
 	public void moveTo_positionException() throws Exception {
-		List <Integer> target = new ArrayList<Integer>();
-		target.add(0); target.add(0); target.add(50);
+		int[] target = {0, 0, 50};
 		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
 		unit.moveTo(target);
 		
@@ -400,12 +390,9 @@ public class UnitTest {
 	
 	@Test
 	public void fight() throws Exception {
-		List <Integer> location1 = new ArrayList<Integer>();
-		location1.add(10); location1.add(10); location1.add(10);
+		int[] location1 = {10, 10, 10};
 		Unit unit1 = new Unit(location1, ValidName, 0, 0, 0, 0);
-		
-		List <Integer> location2 = new ArrayList<Integer>();
-		location2.add(11); location2.add(10); location2.add(10);
+		int[] location2 = {11, 10, 10};
 		Unit unit2 = new Unit(location2, ValidName, 0, 0, 0, 0);
 		
 		unit1.attack(unit2);
@@ -425,29 +412,27 @@ public class UnitTest {
 
 		unit2.defend(unit1);
 		
-		assertTrue(	(	(unit2.getLocation().get(0) == location2.get(0)+0.5) && 
-						(unit2.getLocation().get(1) == location2.get(1)+0.5) && 
-						(unit2.getLocation().get(2) == location2.get(2)+0.5) &&
-						(unit2.getHitpoints() == unit2.getMaxHitpointsStamina())	)
+		assertTrue(	(	(unit2.getLocation()[0] == location2[0] + 0.5) && 
+						(unit2.getLocation()[1] == location2[1] + 0.5) && 
+						(unit2.getLocation()[2] == location2[2] + 0.5) &&
+						(unit2.getHitpoints() == unit2.getMaxHitpointsStamina()))
 			||
-					(	(unit2.getLocation().get(0) == location2.get(0)+0.5) && 
-						(unit2.getLocation().get(1) == location2.get(1)+0.5) && 
-						(unit2.getLocation().get(2) == location2.get(2)+0.5) &&
-						(unit2.getHitpoints() <= unit2.getMaxHitpointsStamina())	)
+					(	(unit2.getLocation()[0] == location2[0] + 0.5) && 
+						(unit2.getLocation()[1] == location2[1] + 0.5) && 
+						(unit2.getLocation()[2] == location2[2] + 0.5) &&
+						(unit2.getHitpoints() <= unit2.getMaxHitpointsStamina()))
 			||
-					(	(unit2.getLocation().get(0) != location2.get(0)+0.5) ||
-						(unit2.getLocation().get(1) != location2.get(1)+0.5) || 
-						(unit2.getLocation().get(2) != location2.get(2)+0.5)		));
+					(	(unit2.getLocation()[0] != location2[0] + 0.5) ||
+						(unit2.getLocation()[1] != location2[1] + 0.5) || 
+						(unit2.getLocation()[2] != location2[2] + 0.5)	));
 	}
 	
 	@Test (expected=IllegalAttackPosititonException.class)
 	public void fight_IllegalAttPos() throws Exception {
-		List <Integer> location1 = new ArrayList<Integer>();
-		location1.add(10); location1.add(10); location1.add(10);
+		int[] location1 = {10, 10, 10};
 		Unit unit1 = new Unit(location1, ValidName, 0, 0, 0, 0);
 		
-		List <Integer> location2 = new ArrayList<Integer>();
-		location2.add(12); location2.add(10); location2.add(10);
+		int[] location2 = {12, 10, 10};
 		Unit unit2 = new Unit(location2, ValidName, 0, 0, 0, 0);
 		
 		unit1.attack(unit2);

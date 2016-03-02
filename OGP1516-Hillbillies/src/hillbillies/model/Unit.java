@@ -1,7 +1,6 @@
 package hillbillies.model;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -63,7 +62,7 @@ public class Unit {
 	private double velocity;
 
 	// Target
-	private List<Double> target = null;
+	private double[] target = null;
 	
 	// Working
 	private boolean working;
@@ -85,7 +84,7 @@ public class Unit {
 	
 	// Moving
 	private boolean isMoving ;
-	private List<Integer> globalTarget;
+	private int[] globalTarget;
 	
 	
 	// Random
@@ -136,12 +135,9 @@ public class Unit {
 	 * 
 	 */
 	@Model
-	private Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness, 
+	private Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
-		List<Double> location = new ArrayList<Double>();
-		location.add(CubeLocation.get(0)+CUBE_LENGTH/2);
-		location.add(CubeLocation.get(1)+CUBE_LENGTH/2);
-		location.add(CubeLocation.get(2)+CUBE_LENGTH/2);
+		double[] location = {CubeLocation[0]+CUBE_LENGTH/2, CubeLocation[1]+CUBE_LENGTH/2, CubeLocation[2]+CUBE_LENGTH/2};
 		setLocation(location);
 		setName(name);
 		setWeight(weight, true);
@@ -181,7 +177,7 @@ public class Unit {
 	 * 			| ! isValidName(name)
 	 */
 	
-	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness)
+	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
 			throws IllegalPositionException, IllegalNameException {
 		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
 	}
@@ -191,11 +187,8 @@ public class Unit {
 	 * Return the location of this unit.
 	 */
 	@Basic @Raw
-	public List<Double> getLocation() {
-		List<Double> position = new ArrayList<Double>();
-		position.add(this.xPos);
-		position.add(this.yPos);
-		position.add(this.zPos);
+	public double[] getLocation() {
+		double[] position = {this.xPos, this.yPos, this.zPos};
 		return(position);
 	}
 	
@@ -211,9 +204,9 @@ public class Unit {
 				| (location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0))
 	 */
 	@Raw @Model
-	private static boolean isValidLocation(List<Double> location) {
-		return ((location.get(0) <= WORLD_X) && (location.get(1) <= WORLD_Y) && (location.get(2) <= WORLD_Z) && 
-				(location.get(0) >= 0) && (location.get(1) >= 0) && (location.get(2) >= 0));
+	private static boolean isValidLocation(double[] location) {
+		return ((location[0] <= WORLD_X) && (location[1] <= WORLD_Y) && (location[2] <= WORLD_Z) && 
+				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
 	/**
@@ -230,12 +223,12 @@ public class Unit {
 	 *       | ! isValidLocation(getLocation())
 	 */
 	@Raw @Model
-	private void setLocation(List<Double> location) throws IllegalPositionException{
+	private void setLocation(double[] location) throws IllegalPositionException{
 		if (!isValidLocation(location))
 			throw new IllegalPositionException(location);
-		this.xPos = location.get(0);
-		this.yPos = location.get(1);
-		this.zPos = location.get(2);
+		this.xPos = location[0];
+		this.yPos = location[1];
+		this.zPos = location[2];
 	}
 	
 
@@ -245,12 +238,9 @@ public class Unit {
 	 * Returns the coordinates of the cube the unit is in.
 	 */
 	@Basic @Raw
-	public List<Integer> getOccupiedCube() {
-		List<Integer> position = new ArrayList<Integer>();
-		List<Double> location = this.getLocation();
-		position.add(location.get(0).intValue());
-		position.add(location.get(1).intValue());
-		position.add(location.get(2).intValue());
+	public int[] getOccupiedCube() {
+		double[] location = this.getLocation();
+		int[] position = {(int) location[0], (int) location[1], (int) location[2]};
 		return(position);
 	}
 	
@@ -724,9 +714,9 @@ public class Unit {
 					setLocation(target);
 				} catch (IllegalPositionException e) {}
 				if (!(globalTarget == null) &&
-						!((getOccupiedCube().get(0) == globalTarget.get(0)) &&
-						(getOccupiedCube().get(1) == globalTarget.get(1)) &&
-						(getOccupiedCube().get(2) == globalTarget.get(2)) ) ) {
+						!((getOccupiedCube()[0] == globalTarget[0]) &&
+						(getOccupiedCube()[1] == globalTarget[1]) &&
+						(getOccupiedCube()[2] == globalTarget[2]) ) ) {
 					try {
 						moveTo(globalTarget);
 					} catch (IllegalPositionException e) {} 
@@ -734,10 +724,9 @@ public class Unit {
 			}
 			
 			else{
-				List<Double> new_loc = new ArrayList<Double>();
-				new_loc.add(getLocation().get(0)+ this.getCurrentSpeed().get(0)*dt);
-				new_loc.add(getLocation().get(1)+ this.getCurrentSpeed().get(1)*dt);
-				new_loc.add(getLocation().get(2)+ this.getCurrentSpeed().get(2)*dt);
+				double[] new_loc = {getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
+									getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
+									getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
 				try {
 					setLocation(new_loc);
 				} catch (IllegalPositionException e) {}
@@ -756,7 +745,7 @@ public class Unit {
 						startSprinting();
 					}
 				}
-				setOrientation(Math.atan2(getCurrentSpeed().get(1),getCurrentSpeed().get(0)));
+				setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
 			}
 						
 		}		
@@ -796,10 +785,10 @@ public class Unit {
 	
 	@Basic @Model
 	private double getWalkingSpeed(double target_z){
-		if (getLocation().get(2)-target_z < 0){
+		if (getLocation()[2]-target_z < 0){
 			return 0.5*getBaseSpeed();
 		}
-		else if (getLocation().get(2)- target_z > 0){
+		else if (getLocation()[2]- target_z > 0){
 			return 1.2*getBaseSpeed();
 		}
 		else{
@@ -808,21 +797,20 @@ public class Unit {
 	}
 	
 	@Basic
-	public List<Double> getCurrentSpeed() {
+	public double[] getCurrentSpeed() {
 		double distance = getDistanceToTarget();
 
 		if (isSprinting()){
-			velocity = getWalkingSpeed(target.get(2))*2;
+			velocity = getWalkingSpeed(target[2])*2;
 		}
 		else{
-			velocity = getWalkingSpeed(target.get(2));
+			velocity = getWalkingSpeed(target[2]);
 		}
-		List<Double> current_speed = new ArrayList<Double>();
-		current_speed.add(velocity*(target.get(0)-getLocation().get(0))/distance);
-		current_speed.add(velocity*(target.get(1)-getLocation().get(1))/distance);
-		current_speed.add(velocity*(target.get(2)-getLocation().get(2))/distance);
 		
-		return current_speed;
+		double[] currentSpeed= {velocity*(target[0]-getLocation()[0])/distance, 
+								velocity*(target[1]-getLocation()[1])/distance, 
+								velocity*(target[2]-getLocation()[2])/distance};
+		return currentSpeed;
 	}
 	
 	
@@ -870,8 +858,8 @@ public class Unit {
 		if (target == null) {
 			return (double) 0;
 		}
-		double distance = Math.sqrt(Math.pow((target.get(0)-getLocation().get(0)),2)+Math.pow((target.get(1)-getLocation().get(1)),2)
-		+ Math.pow((target.get(2)-getLocation().get(2)),2));
+		double distance = Math.sqrt(Math.pow((target[0]-getLocation()[0]),2)+Math.pow((target[1]-getLocation()[1]),2)
+		+ Math.pow((target[2]-getLocation()[2]),2));
 		return distance;
 	}
 	
@@ -885,8 +873,8 @@ public class Unit {
 		if (!isMoving()) {
 			return (double) 0;
 		}
-		return Math.sqrt(Math.pow((getCurrentSpeed().get(0) ), 2) +
-		Math.pow((getCurrentSpeed().get(1) ), 2) + Math.pow((getCurrentSpeed().get(2)), 2));
+		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
+		Math.pow((getCurrentSpeed()[1] ), 2) + Math.pow((getCurrentSpeed()[2]), 2));
 	}
 	
 	
@@ -901,12 +889,12 @@ public class Unit {
 		if (! isValidAdjacentMovement(dx,dy,dz)){
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
+		
+		int[] current_cube = getOccupiedCube();
+		double[] current_target = {	(double)(current_cube[0]+ dx + CUBE_LENGTH/2), 
+									(double)(current_cube[1]+ dy + CUBE_LENGTH/2),
+									(double)(current_cube[2]+ dz + CUBE_LENGTH/2)};
 
-		List<Double> current_target = new ArrayList<Double>();
-		List<Integer> current_cube = getOccupiedCube();
-		current_target.add((double)(current_cube.get(0)+ dx + CUBE_LENGTH/2));
-		current_target.add((double)(current_cube.get(1)+ dy + CUBE_LENGTH/2));
-		current_target.add((double)(current_cube.get(2)+ dz + CUBE_LENGTH/2));
 		
 		if (! isValidLocation(current_target)){			
 			throw new IllegalPositionException(current_target);
@@ -917,27 +905,24 @@ public class Unit {
 		
 		target = current_target;
 		if (! calledBy_moveTo) {
-			List<Integer> current_target_cube = new ArrayList<Integer>();
-			current_target_cube.add(current_cube.get(0)+ dx);
-			current_target_cube.add(current_cube.get(1)+ dy);
-			current_target_cube.add(current_cube.get(2)+ dz);
+			int[] current_target_cube = {current_cube[0] + dx, current_cube[1]+ dy, current_cube[2] + dz};
 			globalTarget = current_target_cube;
 		}
 	}
 	
 			
-	public void moveTo(List<Integer>end_target) throws IllegalPositionException {
+	public void moveTo(int[] end_target) throws IllegalPositionException {
 		
 		globalTarget = end_target;
 		
 		
-		int x_cur = getOccupiedCube().get(0);
-		int y_cur = getOccupiedCube().get(1);
-		int z_cur = getOccupiedCube().get(2);
+		int x_cur = getOccupiedCube()[0];
+		int y_cur = getOccupiedCube()[1];
+		int z_cur = getOccupiedCube()[2];
 		
-		int x_tar = end_target.get(0);
-		int y_tar = end_target.get(1);
-		int z_tar = end_target.get(2);
+		int x_tar = end_target[0];
+		int y_tar = end_target[1];
+		int z_tar = end_target[2];
 		
 		if (x_cur != x_tar || y_cur != y_tar || z_cur != z_tar){
 			int x_res;
@@ -1045,10 +1030,10 @@ public class Unit {
 	
 	@Model 
 	private void setOrientationInFight(Unit other) {
-		double orient_unit_this = Math.atan2(other.getLocation().get(1)-this.getLocation().get(1),
-				other.getLocation().get(0)-this.getLocation().get(0));
-		double orient_unit_other = Math.atan2(this.getLocation().get(1)-other.getLocation().get(1),
-				this.getLocation().get(0)-other.getLocation().get(0));
+		double orient_unit_this = Math.atan2(other.getLocation()[1]-this.getLocation()[1],
+				other.getLocation()[0]-this.getLocation()[0]);
+		double orient_unit_other = Math.atan2(this.getLocation()[1]-other.getLocation()[1],
+				this.getLocation()[0]-other.getLocation()[0]);
 		
 		this.setOrientation(orient_unit_this);
 		other.setOrientation(orient_unit_other);
@@ -1097,11 +1082,8 @@ public class Unit {
 	}
 	
 	@Model
-	private List<Double> randomPosition(List<Double>curr_loc){
-		List<Double> new_loc = new ArrayList<Double>();
-		new_loc.add(curr_loc.get(0)+ (random.nextDouble()*2-1) );
-		new_loc.add(curr_loc.get(1)+ (random.nextDouble()*2-1) );
-		new_loc.add(curr_loc.get(2));
+	private double[] randomPosition(double[] curr_loc){
+		double[] new_loc = {curr_loc[0]+ (random.nextDouble()*2-1), curr_loc[1]+ (random.nextDouble()*2-1), curr_loc[2]};
 		if (curr_loc == new_loc) {
 			return randomPosition(curr_loc);
 		}
@@ -1109,10 +1091,10 @@ public class Unit {
 	}
 	
 	@Model
-	private boolean canHaveAsAttackPosition(List<Integer>attack_cube_position){
-		return((Math.abs(this.getOccupiedCube().get(0)-attack_cube_position.get(0)) <=1) && 
-				(Math.abs(this.getOccupiedCube().get(1)-attack_cube_position.get(1)) <=1) &&
-				(Math.abs(this.getOccupiedCube().get(2)-attack_cube_position.get(2)) <=1));	
+	private boolean canHaveAsAttackPosition(int[] attack_cube_position){
+		return((Math.abs(this.getOccupiedCube()[0]-attack_cube_position[0]) <=1) && 
+				(Math.abs(this.getOccupiedCube()[1]-attack_cube_position[1]) <=1) &&
+				(Math.abs(this.getOccupiedCube()[2]-attack_cube_position[2]) <=1));	
 	}
 	
 	@Basic
@@ -1220,6 +1202,9 @@ public class Unit {
 	
 	public void stopDefaultBehaviour(){
 		defaultBehaviour = false;
+		stopWorking();
+		stopMoving();
+		stopResting();
 	}
 	
 	@Model
@@ -1240,11 +1225,8 @@ public class Unit {
 	}
 	
 	@Model
-	private List<Integer> getRandomPosition(){
-		List<Integer> rand_loc = new ArrayList<Integer>();
-		rand_loc.add(random.nextInt(WORLD_X-1));
-		rand_loc.add(random.nextInt(WORLD_Y-1));
-		rand_loc.add(random.nextInt(WORLD_Z-1));
+	private int[] getRandomPosition(){
+		int[] rand_loc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
 		return rand_loc;
 	}
 }

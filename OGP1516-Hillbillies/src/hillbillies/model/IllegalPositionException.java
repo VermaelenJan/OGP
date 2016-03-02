@@ -34,10 +34,10 @@ public class IllegalPositionException extends RuntimeException {
 	 * 			the given z value on index 2 of the list location.
 	 * 			| new.getZpos() == location.get(2)
 	 */
-	public IllegalPositionException(List<Double> location) {
-		this.x = location.get(0);
-		this.y = location.get(1);
-		this.z = location.get(2);
+	public IllegalPositionException(double[] location) {
+		this.x = location[0];
+		this.y = location[1];
+		this.z = location[2];
 	}
 	
 	/**

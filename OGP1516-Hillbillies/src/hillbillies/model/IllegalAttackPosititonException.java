@@ -29,10 +29,10 @@ public class IllegalAttackPosititonException extends RuntimeException {
 	 * 			the given z value on index 2 of the list location.
 	 * 			| new.getZpos() == location.get(2)
 	 */
-	public IllegalAttackPosititonException(List<Integer> location) {
-		this.x = location.get(0);
-		this.y = location.get(1);
-		this.z = location.get(2);
+	public IllegalAttackPosititonException(int[] location) {
+		this.x = location[0];
+		this.y = location[1];
+		this.z = location[2];
 	}
 	
 	/**
