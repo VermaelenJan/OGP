@@ -135,7 +135,7 @@ public class Unit {
 	 * 			| ! isValidName(name)
 	 * 
 	 */
-	@Raw @Model
+	@Model
 	private Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
 		List<Double> location = new ArrayList<Double>();
@@ -180,7 +180,7 @@ public class Unit {
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
 	 */
-	@Raw
+	
 	public Unit(List<Integer> CubeLocation, String name, int weight, int strength, int agility, int toughness)
 			throws IllegalPositionException, IllegalNameException {
 		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
