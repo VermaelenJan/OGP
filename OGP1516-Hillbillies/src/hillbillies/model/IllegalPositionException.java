@@ -9,7 +9,7 @@ import be.kuleuven.cs.som.annotate.Immutable;
  * @author Jan Vermaelen, Maxime Pittomvils
  *
  */
-public class IllegalPositionException extends Exception {
+public class IllegalPositionException extends RuntimeException {
 	
 	/**
 	 * Variables registering the x,y and z value.

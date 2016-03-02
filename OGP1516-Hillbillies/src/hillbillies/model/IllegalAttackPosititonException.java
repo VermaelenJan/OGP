@@ -5,7 +5,7 @@ import java.util.List;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 
-public class IllegalAttackPosititonException extends Exception {
+public class IllegalAttackPosititonException extends RuntimeException {
 	
 	/**
 	 * Variables registering the x,y and z value of the unit to attack.

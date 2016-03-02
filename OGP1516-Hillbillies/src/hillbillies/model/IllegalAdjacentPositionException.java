@@ -3,7 +3,7 @@ package hillbillies.model;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 
-public class IllegalAdjacentPositionException extends Exception{
+public class IllegalAdjacentPositionException extends RuntimeException{
 	
 
 	/**
