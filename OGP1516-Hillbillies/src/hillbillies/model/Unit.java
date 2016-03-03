@@ -26,7 +26,14 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar  The agility of each unit must be between MIN_VAL and MAX_VAL,inclusively.
  * 		 | (getAgility() >= MIN_VAL) && (getAgility() <= MAX_VAL) 
  * @invar  The toughness of each unit must be between MIN_VAL and MAX_VAL,inclusively.
- * 		 | (getTougness() >= MIN_VAL) && (getToughness() <= MAX_VAL)    
+ * 		 | (getTougness() >= MIN_VAL) && (getToughness() <= MAX_VAL)
+ * @invar  The hitpoints of each unit must be a valid hitpoints for any
+ *         unit.
+ *       | isValidHitpoints(getHitpoints())
+ * @invar  The stamina of each unit must be a valid stamina for any
+ *         unit.
+ *       | isValidStamina(getStamina())
+ *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 0.9
  *
@@ -48,8 +55,8 @@ public class Unit {
 	private int currMaxVal;
 	
 	
-	private double hitpoints;
-	private double stamina;	
+
+	
 	private double orientation;
 		
 	private boolean sprinting;
@@ -114,10 +121,16 @@ public class Unit {
 	 * 			| setAgility(agility)
 	 * @effect the given toughness is set as the toughness of this new unit.
 	 * 			| setToughness(toughness)
-	 * @effect the given hitpoints are set as the hitpoints of this new unit.
-	 * 			| setHitpoints(hitpoints)
-	 * @effect the given stamina is set as the stamina of this new unit. 		
-	 * 			| setStamina(stamina)													
+	 * @pre    The given hitpoints must be a valid hitpoints for any unit.
+	 *          | isValidHitpoints(hitpoints)
+	 * @post   The hitpoints of this new unit is equal to the given
+	 *         hitpoints.
+	 *          | new.getHitpoints() == hitpoints
+	 * @pre    The given stamina must be a valid stamina for any unit.
+	 *       	| isValidStamina(stamina)
+	 * @post   The stamina of this new unit is equal to the given
+	 *         stamina.
+	 *       	| new.getStamina() == stamina													
 	 * @effect the given orientation is set as the orientation of this new unit.
 	 * 			| setOrientation(orientation)
 	 * @throws IllegalPositionException
@@ -436,7 +449,7 @@ public class Unit {
 	 * 
 	 * Return the strength of this unit.
 	 */
-	@Basic 
+	@Basic @Raw
 	public int getStrength(){
 		return this.strength;
 	}
@@ -526,7 +539,7 @@ public class Unit {
 	 * 
 	 * Return the agility of this unit.
 	 */
-	@Basic
+	@Basic @Raw
 	public int getAgility(){
 		return this.agility;
 	}
@@ -694,86 +707,123 @@ public class Unit {
 	private int toughness;
 
 	
-	
+	// HITPOINTS
 
 	/**
+	 * Return the maximum hitpoints of this unit.
 	 * 
-	 * @return
+	 * @return The weight times the toughness divided by 50, rounded up to the first
+	 * 			larger integer.
+	 * 		   | result == Math.ceil((getWeight()*getToughness())/50)
 	 */
-	
 	@Basic @Raw
 	public int getMaxHitpointsStamina() {
 		 return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
 	}
 	
-	/**
-	 * 
-	 * @param hitpoints
-	 * @return
-	 */
-	
-	@Raw 
-	private boolean hasValidHitpoints(double hitpoints){
-		return ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()));
-	}
 	
 	/**
 	 * 
-	 * @param stamina
-	 * @return
+	 * Return the hitpoints of this unit.
 	 */
-	
-	@Raw
-	private boolean hasValidStamina(double stamina){
-		return ((stamina >= 0) && (stamina <= getMaxHitpointsStamina()));
-	}
-	
-	/**
-	 * 
-	 * @param hitpoints
-	 * 
-	 * @pre
-	 */
-	
-	@Raw
-	private void setHitpoints(double hitpoints){
-		assert hasValidHitpoints(hitpoints);
-		this.hitpoints = hitpoints;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	
-	@Basic  
+	@Basic @Raw
 	public double getHitpoints(){
 		return this.hitpoints;
 	}
 	
+	
+	/**
+	 * Check whether the given hitpoints is a valid hitpoints for
+	 * any unit.
+	 *  
+	 * @param  hitpoints
+	 *         The hitpoints to check.
+	 * @return True if and only if the given hitpoints are greater than zero and 
+	 * 		   smalller than the maximum hitpoints.
+ 	 *       | result == ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()))
+	 */
+	@Raw 
+	private boolean isValidHitpoints(double hitpoints){
+		return ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()));
+	}
+	
+	/**
+	 * Set the hitpoints of this unit to the given hitpoints.
+	 * 
+	 * @param  hitpoints
+	 *         The new hitpoints for this unit.
+	 * @pre    The given hitpoints must be a valid hitpoints for any
+	 *         unit.
+	 *       | isValidHitpoints(hitpoints)
+	 * @post   The hitpoints of this unit is equal to the given
+	 *         hitpoints.
+	 *       | new.getHitpoints() == hitpoints
+	 */
+	@Raw
+	private void setHitpoints(double hitpoints){
+		assert isValidHitpoints(hitpoints);
+		this.hitpoints = hitpoints;
+	}
+	
+	/**
+	 * Variable registering the hitpoints of this unit.
+	 */
+	private double hitpoints;
+	
+	
+	// STAMINA
+		
 	/**
 	 * 
-	 * @param stamina
-	 * 
-	 * @pre
+	 * Return the stamina of this unit.
 	 */
+	@Basic @Raw
+	public double getStamina(){
+		return this.stamina;
+	}
+
 	
+	/**
+	 * Check whether the given stamina is a valid stamina for
+	 * any unit.
+	 *  
+	 * @param  stamina
+	 *         The stamina to check.
+	 * @return True if and only if the given stamina is greater than zero and 
+	 * 		   smaller than the maximum stamina.
+ 	 *       | result == ((stamina >= 0) && (stamina <= getMaxHitpointsStamina())) 
+	 */
+	@Raw
+	private boolean isValidStamina(double stamina){
+		return ((stamina >= 0) && (stamina <= getMaxHitpointsStamina()));
+	}
+	
+	/**
+	 * Set the stamina of this unit to the given stamina.
+	 * 
+	 * @param  stamina
+	 *         The new stamina for this unit.
+	 * @pre    The given stamina must be a valid stamina for any
+	 *         unit.
+	 *       | isValidStamina(stamina)
+	 * @post   The stamina of this unit is equal to the given
+	 *         stamina.
+	 *       | new.getStamina() == stamina
+	 */
 	@Raw @Model
 	private void setStamina(double stamina){
-		assert hasValidStamina(stamina);
+		assert isValidStamina(stamina);
 		this.stamina = stamina;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Variable registering the stamina of this unit.
 	 */
+	private double stamina;
 	
-	@Basic 
-	public double getStamina(){
-		return this.stamina;
-	}
 	
+	// ORIENTATION
+
 	/**
 	 * 
 	 * @param orientation
@@ -789,7 +839,7 @@ public class Unit {
 	 * @return
 	 */
 	
-	@Basic 
+	@Basic @Raw
 	public double getOrientation(){
 		return this.orientation;
 	}
@@ -831,8 +881,8 @@ public class Unit {
 				
 				int nbTimesPeriod = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
 				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
-				double newHitpoints = getHitpoints() + ((double)getToughness()/200)*(double)(nbTimesPeriod);
-				double newStamina = getStamina() + ((double) getToughness()/100)*(double)(nbTimesPeriod);
+				double newHitpoints = getHitpoints() + ((double)getToughness()/200.0)*(double)(nbTimesPeriod);
+				double newStamina = getStamina() + ((double) getToughness()/100.0)*(double)(nbTimesPeriod);
 				
 				
 				if (newHitpoints <= getMaxHitpointsStamina()){
@@ -1139,9 +1189,10 @@ public class Unit {
 	private void startWorking(){
 		if ( isResting() && (canHaveRecoverdOneHp())){
 			stopResting();
+			this.working = true;
+			setTimeRemainderToWork((float) 500/getStrength());
 		}
-		this.working = true;
-		setTimeRemainderToWork((float) 500/getStrength());
+
 	}
 	
 	@Model
