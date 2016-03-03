@@ -33,6 +33,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar  The stamina of each unit must be a valid stamina for any
  *         unit.
  *       | isValidStamina(getStamina())
+  * @invar  The orientation of each unit must be between -PI 
+ *       | 
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 0.9
@@ -53,11 +55,6 @@ public class Unit {
 	private static int MAX_VAL = 200;
 	private int currMinVal;
 	private int currMaxVal;
-	
-	
-
-	
-	private double orientation;
 		
 	private boolean sprinting;
 	private double velocity;
@@ -826,23 +823,39 @@ public class Unit {
 
 	/**
 	 * 
-	 * @param orientation
+	 * Return the orientation of this unit.
 	 */
-	
-	@Raw @Model
-	private void setOrientation(double orientation){
-		this.orientation = orientation%(2*Math.PI);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	
 	@Basic @Raw
 	public double getOrientation(){
 		return this.orientation;
 	}
+	
+	/**
+	 * Set the orientation of this unit to the given orientation.
+	 * 
+	* @param  orientation
+	*         The new orientation for this unit.
+	* @post   The orientation of this new unit is set to the given orientation modulo 2*PI.
+	*      	  | new.getOrientation() == orientation%(2*PI)
+	 */
+	@Raw @Model
+	private void setOrientation(double orientation){
+		double modOrientation = orientation%(2*Math.PI);
+		if (modOrientation >= 0){
+			this.orientation = modOrientation;
+		}
+		else{
+			this.orientation = modOrientation + 2*Math.PI;
+		}
+	}
+	
+	
+	/**
+	 * Variable registering the orientation of this unit.
+	 */
+	private double orientation;
+	
+
 	
 	/**
 	 * 
@@ -1191,6 +1204,10 @@ public class Unit {
 			stopResting();
 			this.working = true;
 			setTimeRemainderToWork((float) 500/getStrength());
+		}
+		else if (!isResting()){
+			this.working = true;
+			setTimeRemainderToWork((float) 500/getStrength());			
 		}
 
 	}
