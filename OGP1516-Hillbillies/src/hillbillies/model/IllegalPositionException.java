@@ -1,5 +1,4 @@
 package hillbillies.model;
-import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
