@@ -340,10 +340,8 @@ public class UnitTest {
 	
 	@Test (expected=IllegalAdjacentPositionException.class)
 	public void moveToAdjacent_AdjacentException() throws Exception {
-
 		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
 		unit.moveToAdjacent(2, 0, -1);
-		
 	}
 	
 	@Test (expected=IllegalPositionException.class)
@@ -351,7 +349,6 @@ public class UnitTest {
 		int[] location = {0, 0, 0};
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
 		unit.moveToAdjacent(1, 0, -1);
-		
 	}
 	
 	@Test
