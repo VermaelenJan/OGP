@@ -33,8 +33,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar  The stamina of each unit must be a valid stamina for any
  *         unit.
  *       | isValidStamina(getStamina())
-  * @invar  The orientation of each unit must be between -PI 
- *       | 
+  * @invar  The orientation of each unit must be between 0 and 2*PI. 
+ *       | (getOrientation() >= 0) && (getOrientation < 2*PI)
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 0.9
@@ -835,12 +835,12 @@ public class Unit {
 	 * 
 	* @param  orientation
 	*         The new orientation for this unit.
-	* @post   The orientation of this new unit is set to the given orientation modulo 2*PI.
+	* @post   The orientation of this new unit is set to the given orientation modulo 2*PI,made positive.
 	*      	  | new.getOrientation() == orientation%(2*PI)
 	 */
 	@Raw @Model
 	private void setOrientation(double orientation){
-		double modOrientation = orientation%(2*Math.PI);
+		double modOrientation = orientation%(Math.PI);
 		if (modOrientation >= 0){
 			this.orientation = modOrientation;
 		}
