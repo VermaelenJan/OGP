@@ -5,7 +5,8 @@ import be.kuleuven.cs.som.annotate.Immutable;
 
 /**
  * 
- * @author Jan Vermaelen, Maxime Pittomvils
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
  *
  */
 public class IllegalPositionException extends RuntimeException {

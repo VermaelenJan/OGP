@@ -15,6 +15,11 @@ import hillbillies.model.IllegalPositionException;
 import hillbillies.model.Unit;
 import ogp.framework.util.Util;
 
+/**
+ *
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 0.8
+ */
 public class UnitTest {
 	
 	private static String ValidName;

@@ -1,10 +1,13 @@
 package hillbillies.model;
 
-import java.util.List;
-
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 
+/**
+ *  *
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
+ */
 public class IllegalAttackPosititonException extends RuntimeException {
 	
 	/**
