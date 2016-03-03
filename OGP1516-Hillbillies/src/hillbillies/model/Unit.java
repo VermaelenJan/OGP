@@ -1015,8 +1015,8 @@ public class Unit {
 		}
 	}
 	
-	@Basic
-	public double[] getCurrentSpeed() {
+	@Basic @Model
+	private double[] getCurrentSpeed() {
 		double distance = getDistanceToTarget();
 
 		if (isSprinting()){

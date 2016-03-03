@@ -82,6 +82,13 @@ public class UnitTest {
 		new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
 	}
 	
+	@Test
+	public void constructor_LegalNameSetNGet() throws Exception {
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		unit.setName("This is OK");
+		assertEquals("This is OK", unit.getName());
+	}
+	
 	@Test (expected=IllegalNameException.class)
 	public void constructor_IllegalNameChars() throws Exception {
 		new Unit(ValidLocation, "N0 v@lid name", 0, 0, 0, 0);
