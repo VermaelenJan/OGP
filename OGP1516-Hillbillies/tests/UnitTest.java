@@ -24,8 +24,8 @@ public class UnitTest {
 	
 	private static String ValidName;
 	private static int[] ValidLocation = {0, 24, 49};
-	private static Unit unit_test;
-	private static Unit valid_unit;
+	private static Unit testUnit;
+	private static Unit validUnit;
 
 	
 	@BeforeClass
@@ -35,8 +35,8 @@ public class UnitTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		valid_unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
-		unit_test = new Unit(ValidLocation, ValidName, 60, 50, 70, 90);
+		validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		testUnit = new Unit(ValidLocation, ValidName, 60, 50, 70, 90);
 	}
 	
 	
@@ -124,42 +124,42 @@ public class UnitTest {
 	@Test
 	public void setWeight_BelowAfterConstr() throws Exception {
 
-		valid_unit.setAgility(0);
-		valid_unit.setStrength(0);
-		valid_unit.setWeight(-20);
-		assertEquals(1,valid_unit.getWeight());
+		validUnit.setAgility(0);
+		validUnit.setStrength(0);
+		validUnit.setWeight(-20);
+		assertEquals(1,validUnit.getWeight());
 	}
 	
 	@Test
 	public void setWeight_BelowConstr() throws Exception {
-		valid_unit.setWeight(-20);
-		assertEquals(25,valid_unit.getWeight(),Util.DEFAULT_EPSILON);
+		validUnit.setWeight(-20);
+		assertEquals(25,validUnit.getWeight(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setWeight_Below() throws Exception{
-		valid_unit.setStrength(50);
-		valid_unit.setAgility(50);
-		valid_unit.setWeight(-20);
-		assertEquals(50, valid_unit.getWeight(),Util.DEFAULT_EPSILON);
+		validUnit.setStrength(50);
+		validUnit.setAgility(50);
+		validUnit.setWeight(-20);
+		assertEquals(50, validUnit.getWeight(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setWeight_Betweenboundaries() throws Exception {
-		valid_unit.setWeight(70);
-		assertEquals(70, valid_unit.getWeight(),Util.DEFAULT_EPSILON);
+		validUnit.setWeight(70);
+		assertEquals(70, validUnit.getWeight(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setWeight_MaxValue() throws Exception {
-		valid_unit.setWeight(200);
-		assertEquals(200, valid_unit.getWeight(),Util.DEFAULT_EPSILON);
+		validUnit.setWeight(200);
+		assertEquals(200, validUnit.getWeight(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setWeight_Overflow() throws Exception {
-		valid_unit.setWeight(250);
-		assertEquals(200, valid_unit.getWeight(),Util.DEFAULT_EPSILON);
+		validUnit.setWeight(250);
+		assertEquals(200, validUnit.getWeight(),Util.DEFAULT_EPSILON);
 	}
 	
 	
@@ -167,31 +167,31 @@ public class UnitTest {
 	
 	@Test
 	public void setStrength_BelowConstr()  throws Exception {
-		assertEquals(25, valid_unit.getStrength(),Util.DEFAULT_EPSILON);
+		assertEquals(25, validUnit.getStrength(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setStrength_BelowAfterConstr()  throws Exception {
-		valid_unit.setStrength(-20);
-		assertEquals(1, valid_unit.getStrength(),Util.DEFAULT_EPSILON);
+		validUnit.setStrength(-20);
+		assertEquals(1, validUnit.getStrength(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setStrength_Betweenboundaries() throws Exception {
-		valid_unit.setStrength(70);
-		assertEquals(70, valid_unit.getStrength(),Util.DEFAULT_EPSILON);
+		validUnit.setStrength(70);
+		assertEquals(70, validUnit.getStrength(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setStrength_MaxValue() throws Exception {
-		valid_unit.setStrength(200);
-		assertEquals(200, valid_unit.getStrength(),Util.DEFAULT_EPSILON);
+		validUnit.setStrength(200);
+		assertEquals(200, validUnit.getStrength(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setStrength_Overflow() throws Exception {
-		valid_unit.setStrength(250);
-		assertEquals(200, valid_unit.getStrength(),Util.DEFAULT_EPSILON);
+		validUnit.setStrength(250);
+		assertEquals(200, validUnit.getStrength(),Util.DEFAULT_EPSILON);
 	
 	}
 	
@@ -200,31 +200,31 @@ public class UnitTest {
 	
 	@Test
 	public void setAgility_BelowConstr()  throws Exception {
-		assertEquals(25, valid_unit.getAgility(),Util.DEFAULT_EPSILON);
+		assertEquals(25, validUnit.getAgility(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setAgility_BelowAfterConstr()  throws Exception {
-		valid_unit.setAgility(-20);
-		assertEquals(1, valid_unit.getAgility(),Util.DEFAULT_EPSILON);
+		validUnit.setAgility(-20);
+		assertEquals(1, validUnit.getAgility(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setAgility_Betweenboundaries() throws Exception {
-		valid_unit.setAgility(70);
-		assertEquals(70, valid_unit.getAgility(),Util.DEFAULT_EPSILON);
+		validUnit.setAgility(70);
+		assertEquals(70, validUnit.getAgility(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setAgility_MaxValue() throws Exception {
-		valid_unit.setAgility(200);
-		assertEquals(200, valid_unit.getAgility(),Util.DEFAULT_EPSILON);
+		validUnit.setAgility(200);
+		assertEquals(200, validUnit.getAgility(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setAgility_Overflow() throws Exception {
-		valid_unit.setAgility(250);
-		assertEquals(200, valid_unit.getAgility(),Util.DEFAULT_EPSILON);
+		validUnit.setAgility(250);
+		assertEquals(200, validUnit.getAgility(),Util.DEFAULT_EPSILON);
 	
 	}
 	
@@ -233,31 +233,31 @@ public class UnitTest {
 	
 	@Test
 	public void setToughness_BelowConstr()  throws Exception {
-		assertEquals(25, valid_unit.getToughness(),Util.DEFAULT_EPSILON);
+		assertEquals(25, validUnit.getToughness(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setToughness_BelowAfterConstr()  throws Exception {
-		valid_unit.setToughness(-20);
-		assertEquals(1, valid_unit.getToughness(),Util.DEFAULT_EPSILON);
+		validUnit.setToughness(-20);
+		assertEquals(1, validUnit.getToughness(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setToughness_Betweenboundaries() throws Exception {
-		valid_unit.setToughness(70);
-		assertEquals(70, valid_unit.getToughness(),Util.DEFAULT_EPSILON);
+		validUnit.setToughness(70);
+		assertEquals(70, validUnit.getToughness(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setToughness_MaxValue() throws Exception {
-		valid_unit.setToughness(200);
-		assertEquals(200, valid_unit.getToughness(),Util.DEFAULT_EPSILON);
+		validUnit.setToughness(200);
+		assertEquals(200, validUnit.getToughness(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void setToughness_Overflow() throws Exception {
-		valid_unit.setToughness(250);
-		assertEquals(200, valid_unit.getToughness(),Util.DEFAULT_EPSILON);
+		validUnit.setToughness(250);
+		assertEquals(200, validUnit.getToughness(),Util.DEFAULT_EPSILON);
 	
 	}
 	
@@ -266,12 +266,12 @@ public class UnitTest {
 	
 	@Test
 	public void getMaxHitpoints_Check(){
-		assertEquals(200*60*90/100/100, unit_test.getMaxHitpointsStamina(),Util.DEFAULT_EPSILON);
+		assertEquals(200*60*90/100/100, testUnit.getMaxHitpointsStamina(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void getHitpoints_Check(){
-		assertEquals(200*60*90/100/100, unit_test.getHitpoints(),Util.DEFAULT_EPSILON);
+		assertEquals(200*60*90/100/100, testUnit.getHitpoints(),Util.DEFAULT_EPSILON);
 	}
 	
 	
@@ -279,12 +279,12 @@ public class UnitTest {
 	
 	@Test
 	public void getMaxStamina_Check(){
-		assertEquals(200*60*90/100/100, unit_test.getMaxHitpointsStamina(),Util.DEFAULT_EPSILON);
+		assertEquals(200*60*90/100/100, testUnit.getMaxHitpointsStamina(),Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void getCurrentStamina_Check(){
-		assertEquals(200*60*90/100/100, unit_test.getStamina(),Util.DEFAULT_EPSILON); // (stamina == 108)
+		assertEquals(200*60*90/100/100, testUnit.getStamina(),Util.DEFAULT_EPSILON); // (stamina == 108)
 	}
 	
 	@Test
@@ -307,12 +307,12 @@ public class UnitTest {
 	
 	@Test (expected=IllegalAdvanceTimeException.class)
 	public void advanceTime_IllegalAdvanceTimeExceptionOverflow() {
-		unit_test.advanceTime(0.21);
+		testUnit.advanceTime(0.21);
 	}
 	
 	@Test (expected=IllegalAdvanceTimeException.class)
 	public void advanceTime_IllegalAdvanceTimeExceptionNeg() {
-		unit_test.advanceTime(-0.1);
+		testUnit.advanceTime(-0.1);
 	}
 	
 	
@@ -331,11 +331,11 @@ public class UnitTest {
 			} catch (IllegalAdvanceTimeException e) {}
 		}
 		assertFalse(unit.isActualMoving());
-		List <Double> expected_location = new ArrayList <Double>();
-		expected_location.add(1.5);expected_location.add(24.5);expected_location.add(48.5);
-		assertEquals(expected_location.get(0), unit.getLocation()[0], Util.DEFAULT_EPSILON);
-		assertEquals(expected_location.get(1), unit.getLocation()[1], Util.DEFAULT_EPSILON);
-		assertEquals(expected_location.get(2), unit.getLocation()[2], Util.DEFAULT_EPSILON);
+		List <Double> expectedLocation = new ArrayList <Double>();
+		expectedLocation.add(1.5);expectedLocation.add(24.5);expectedLocation.add(48.5);
+		assertEquals(expectedLocation.get(0), unit.getLocation()[0], Util.DEFAULT_EPSILON);
+		assertEquals(expectedLocation.get(1), unit.getLocation()[1], Util.DEFAULT_EPSILON);
+		assertEquals(expectedLocation.get(2), unit.getLocation()[2], Util.DEFAULT_EPSILON);
 	}
 	
 	@Test (expected=IllegalAdjacentPositionException.class)
@@ -356,11 +356,11 @@ public class UnitTest {
 	
 	@Test
 	public void sprint_Check(){
-		assertFalse(valid_unit.isSprinting());
-		valid_unit.startSprinting();
-		assertTrue(valid_unit.isSprinting());
-		valid_unit.stopSprinting();
-		assertFalse(valid_unit.isSprinting());
+		assertFalse(validUnit.isSprinting());
+		validUnit.startSprinting();
+		assertTrue(validUnit.isSprinting());
+		validUnit.stopSprinting();
+		assertFalse(validUnit.isSprinting());
 	}
 	
 	@Test
@@ -406,30 +406,30 @@ public class UnitTest {
 	@Test
 	public void rest_Check() {
 		int[] target = {49, 49, 49};
-		valid_unit.moveTo(target);
-		valid_unit.startSprinting();
+		validUnit.moveTo(target);
+		validUnit.startSprinting();
 		
 		for (int i = 1; i<16; i++) {
-			valid_unit.advanceTime(0.1);
+			validUnit.advanceTime(0.1);
 		}
 		
-		assertTrue(valid_unit.isSprinting());
-		valid_unit.advanceTime(0.1);		
-		assertFalse(valid_unit.isSprinting());
-		assertEquals(0, valid_unit.getStamina(), Util.DEFAULT_EPSILON);
-		valid_unit.rest();
-		valid_unit.advanceTime(0.1);
-		assertEquals(0, valid_unit.getStamina(), Util.DEFAULT_EPSILON);
-		valid_unit.advanceTime(0.1);
-		assertEquals((double) valid_unit.getToughness()/100, valid_unit.getStamina(), Util.DEFAULT_EPSILON);
+		assertTrue(validUnit.isSprinting());
+		validUnit.advanceTime(0.1);		
+		assertFalse(validUnit.isSprinting());
+		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
+		validUnit.rest();
+		validUnit.advanceTime(0.1);
+		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
+		validUnit.advanceTime(0.1);
+		assertEquals((double) validUnit.getToughness()/100, validUnit.getStamina(), Util.DEFAULT_EPSILON);
 		
 		for (int i = 1; i<57; i++) {
-			valid_unit.advanceTime(0.18);
-			assertTrue(valid_unit.getMaxHitpointsStamina() > (int) valid_unit.getStamina());
+			validUnit.advanceTime(0.18);
+			assertTrue(validUnit.getMaxHitpointsStamina() > (int) validUnit.getStamina());
 		}
 		
-		valid_unit.advanceTime(0.18);
-		assertEquals(valid_unit.getMaxHitpointsStamina(), (int) valid_unit.getStamina());
+		validUnit.advanceTime(0.18);
+		assertEquals(validUnit.getMaxHitpointsStamina(), (int) validUnit.getStamina());
 		
 	}
 	
@@ -437,39 +437,39 @@ public class UnitTest {
 	@Test
 	public void rest_OneHPRestTimeCheck() {
 		int[] target = {49, 49, 49};
-		valid_unit.moveTo(target);
-		valid_unit.startSprinting();
-		while (valid_unit.getStamina() > 0) {
-			valid_unit.advanceTime(0.1);
+		validUnit.moveTo(target);
+		validUnit.startSprinting();
+		while (validUnit.getStamina() > 0) {
+			validUnit.advanceTime(0.1);
 		}
-		assertEquals(0, valid_unit.getStamina(), Util.DEFAULT_EPSILON);
+		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
 		
-		float timeForOneHP = (float) ((float) 1/(float)(valid_unit.getToughness()/200.0/0.2));
-		valid_unit.rest();
+		float timeForOneHP = (float) ((float) 1/(float)(validUnit.getToughness()/200.0/0.2));
+		validUnit.rest();
 		while (timeForOneHP >= 0.1) {
 			timeForOneHP-=0.1;
-			valid_unit.advanceTime(0.1);
+			validUnit.advanceTime(0.1);
 		}
 		int[] target2 = {49, 0, 0};
-		valid_unit.moveTo(target2);
-		assertFalse(valid_unit.isActualMoving());
-		assertTrue(valid_unit.isResting());
-		valid_unit.work();
-		assertTrue(valid_unit.isResting());
-		assertFalse(valid_unit.isWorking());
-		valid_unit.advanceTime(0.1);
-		valid_unit.work();
-		assertTrue(valid_unit.isWorking());
-		assertFalse(valid_unit.isResting());
+		validUnit.moveTo(target2);
+		assertFalse(validUnit.isActualMoving());
+		assertTrue(validUnit.isResting());
+		validUnit.work();
+		assertTrue(validUnit.isResting());
+		assertFalse(validUnit.isWorking());
+		validUnit.advanceTime(0.1);
+		validUnit.work();
+		assertTrue(validUnit.isWorking());
+		assertFalse(validUnit.isResting());
 		
-		valid_unit.rest();
+		validUnit.rest();
 		
-		int[] location = {valid_unit.getOccupiedCube()[0], valid_unit.getOccupiedCube()[1], valid_unit.getOccupiedCube()[2]};
+		int[] location = {validUnit.getOccupiedCube()[0], validUnit.getOccupiedCube()[1], validUnit.getOccupiedCube()[2]};
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
 		
-		valid_unit.attack(unit);
-		assertTrue(valid_unit.isAttacking());
-		assertFalse(valid_unit.isResting());
+		validUnit.attack(unit);
+		assertTrue(validUnit.isAttacking());
+		assertFalse(validUnit.isResting());
 
 		
 	}
@@ -479,26 +479,26 @@ public class UnitTest {
 	
 	@Test
 	public void orientation_MovingECheck () throws Exception {
-		assertEquals(Math.PI/2,valid_unit.getOrientation(), Util.DEFAULT_EPSILON);
-		valid_unit.moveToAdjacent(1, 0, 0);
-		valid_unit.advanceTime(0.1);
-		assertEquals(0, valid_unit.getOrientation(), Util.DEFAULT_EPSILON);
+		assertEquals(Math.PI/2,validUnit.getOrientation(), Util.DEFAULT_EPSILON);
+		validUnit.moveToAdjacent(1, 0, 0);
+		validUnit.advanceTime(0.1);
+		assertEquals(0, validUnit.getOrientation(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void orientation_MovingNCheck () throws Exception {
-		assertEquals(Math.PI/2,valid_unit.getOrientation(), Util.DEFAULT_EPSILON);
-		valid_unit.moveToAdjacent(0, -1, 0);
-		valid_unit.advanceTime(0.1);
-		assertEquals(3*Math.PI/2, valid_unit.getOrientation(), Util.DEFAULT_EPSILON);
+		assertEquals(Math.PI/2,validUnit.getOrientation(), Util.DEFAULT_EPSILON);
+		validUnit.moveToAdjacent(0, -1, 0);
+		validUnit.advanceTime(0.1);
+		assertEquals(3*Math.PI/2, validUnit.getOrientation(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void orientation_MovingNECheck () throws Exception {
-		assertEquals(Math.PI/2,valid_unit.getOrientation(), Util.DEFAULT_EPSILON);
-		valid_unit.moveToAdjacent(1, -1, 0);
-		valid_unit.advanceTime(0.1);
-		assertEquals(7*Math.PI/4, valid_unit.getOrientation(), Util.DEFAULT_EPSILON);
+		assertEquals(Math.PI/2,validUnit.getOrientation(), Util.DEFAULT_EPSILON);
+		validUnit.moveToAdjacent(1, -1, 0);
+		validUnit.advanceTime(0.1);
+		assertEquals(7*Math.PI/4, validUnit.getOrientation(), Util.DEFAULT_EPSILON);
 	}
 		
 	
@@ -578,22 +578,22 @@ public class UnitTest {
 	
 	@Test
 	public void work_Check() {
-		assertFalse(valid_unit.isWorking());
-		valid_unit.work();
-		assertTrue(valid_unit.isWorking());
+		assertFalse(validUnit.isWorking());
+		validUnit.work();
+		assertTrue(validUnit.isWorking());
 		
-		float timeToWork = (float) 500/valid_unit.getStrength();
+		float timeToWork = (float) 500/validUnit.getStrength();
 		
 		while (timeToWork >= 0.15) {
 			timeToWork -= 0.15;
-			valid_unit.advanceTime(0.15);
-			assertTrue(valid_unit.isWorking());
+			validUnit.advanceTime(0.15);
+			assertTrue(validUnit.isWorking());
 		}
 		
-		valid_unit.advanceTime(timeToWork-0.0001);
-		assertTrue(valid_unit.isWorking());
+		validUnit.advanceTime(timeToWork-0.0001);
+		assertTrue(validUnit.isWorking());
 		
-		valid_unit.advanceTime(0.0001);
-		assertFalse(valid_unit.isWorking());
+		validUnit.advanceTime(0.0001);
+		assertFalse(validUnit.isWorking());
 	}
 }
