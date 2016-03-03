@@ -18,10 +18,15 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar  The name of each unit must be a valid name for any
  *         unit.
  *       | isValidName(getName())
- * @invar  The weight of each unit must be a valid weight for any
- *         unit.
- *       | isValidWeight(getWeight())
- *       
+ * @invar  The weight of each unit must be greater or equal than the units strength plus agility, divided by two,
+ * 		   and smaller than MAX_VAL.
+ *       | getWeight() >= (getAgility()+getStrength)/2 && (getWeight() <= MAX_VAL)
+ * @invar  The strength of each unit must be between MIN_VAL and MAX_VAL,inclusively.
+ * 		 | (getStrength() >= MIN_VAL) && (getStrength() <= MAX_VAL)
+ * @invar  The agility of each unit must be between MIN_VAL and MAX_VAL,inclusively.
+ * 		 | (getAgility() >= MIN_VAL) && (getAgility() <= MAX_VAL) 
+ * @invar  The toughness of each unit must be between MIN_VAL and MAX_VAL,inclusively.
+ * 		 | (getTougness() >= MIN_VAL) && (getToughness() <= MAX_VAL)    
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 0.9
  *
@@ -34,20 +39,7 @@ public class Unit {
 	static int WORLD_Z = 50;
 	private double CUBE_LENGTH = 1;
 	
-	
-	private double xPos;
-	private double yPos;
-	private double zPos;
-	
-	private String name;
-	private int weight;
-	private int strength;
-	private int agility;
-	private int toughness;
-	private double hitpoints;
-	private double stamina;	
-	private double orientation;
-	
+	// MIN,MAX VALUES 
 	private static int INIT_MIN_VAL = 25;
 	private static int INIT_MAX_VAL = 100;
 	private static int MIN_VAL = 1;
@@ -55,6 +47,11 @@ public class Unit {
 	private int currMinVal;
 	private int currMaxVal;
 	
+	
+	private double hitpoints;
+	private double stamina;	
+	private double orientation;
+		
 	private boolean sprinting;
 	private double velocity;
 
@@ -179,6 +176,8 @@ public class Unit {
 		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
 	}
 	
+	// LOCATION
+	
 	/**
 	 * 
 	 * Return the location of this unit.
@@ -228,8 +227,16 @@ public class Unit {
 		this.zPos = location[2];
 	}
 	
+	/**
+	 * Variables registering the location of this unit.
+	 */
+	private double xPos;
+	private double yPos;
+	private double zPos;
+	
 
-
+	// CUBE
+	
 	/**
 	 * 
 	 * Returns the coordinates of the cube the unit is in.
@@ -242,6 +249,7 @@ public class Unit {
 	}
 	
 	
+	// NAME 
 	
 	/**
 	 * 
@@ -250,6 +258,26 @@ public class Unit {
 	@Basic @Raw 
 	public String getName(){
 		return this.name;
+	}
+	
+	/**
+	 * Set the name of this unit to the given name.
+	 * 
+	 * @param  Name
+	 *         The new name for this unit.
+	 * @post   The name of this new unit is equal to
+	 *         the given name.
+	 *       | new.getName() == Name
+	 * @throws IllegalNameException
+	 *         The given name is not a valid name for any
+	 *         unit.
+	 *       | ! isValidName(getName())
+	 */
+	@Raw
+	public void setName(String name) throws IllegalNameException{
+		if (!isValidName(name))
+			throw new IllegalNameException(name);
+		this.name = name;
 	}
 	
 	/**
@@ -293,25 +321,12 @@ public class Unit {
 	}
 	
 	/**
-	 * Set the name of this unit to the given name.
-	 * 
-	 * @param  Name
-	 *         The new name for this unit.
-	 * @post   The name of this new unit is equal to
-	 *         the given name.
-	 *       | new.getName() == Name
-	 * @throws IllegalNameException
-	 *         The given name is not a valid name for any
-	 *         unit.
-	 *       | ! isValidName(getName())
+	 * Variable registering the name of the unit.
 	 */
-	@Raw
-	public void setName(String name) throws IllegalNameException{
-		if (!isValidName(name))
-			throw new IllegalNameException(name);
-		this.name = name;
-	}
+	private String name;
+
 	
+	// WEIGHT
 	
 	/**
 	 * 
@@ -324,6 +339,21 @@ public class Unit {
 	
 	
 	/**
+	 * Set the weight of this unit to the given weight.
+	 * 
+	 * @param	weight
+	 *	     	The new weight for this unit.
+	 * @effect	The weight of the unit is set to the given weight, with the restrictions for a not-newly created unit
+	 * 			(with the flag on false).
+	 * 			| setWeight(weight,false)
+	 */
+	@Raw
+	public void setWeight(int weight) {
+		setWeight(weight, false);
+	}
+	
+	/**
+	 * Set the weight of this unit to the given weight
 	 * 
 	 * @param   weight
 	 *          The new weight for this unit.
@@ -396,33 +426,71 @@ public class Unit {
 	}
 	
 	/**
-	 * 
-	 * @param	weight
-	 *	     	The new weight for this unit.
-	 * @effect	The weight of the unit is set to the given weight, with the restrictions for a not-newly created unit
-	 * 			(with the flag on false).
-	 * 			| setWeight(weight,false)
+	 * Variable registering the weight of this unit.
 	 */
-	@Raw
-	public void setWeight(int weight) {
-		setWeight(weight, false);
-	}
+	private int weight;
 	
-
+	// STRENGTH
 	
 	/**
 	 * 
-	 * @return
+	 * Return the strength of this unit.
 	 */
-	
 	@Basic 
 	public int getStrength(){
 		return this.strength;
 	}
 	
 	/**
+	 * Set the strength of this unit to the given strength.
 	 * 
-	 * @param strength
+	 * @param	strength
+	 *	     	The new strength for this unit.
+	 * @effect	The strength of the unit is set to the given strength, with the restrictions for a not-newly created unit
+	 * 			(with the flag on false).
+	 * 			| setStrength(weight,false)
+	 */
+	@Raw
+	public void setStrength(int strength) {
+		setStrength(strength, false);
+	}
+	
+	/**
+	 * Set the strength of this unit to the given strength.
+	 * 
+	 * @param   strength
+	 *          The new strength for this unit.
+	 * @param   flag
+	 * 			A flag to mark that the method is used in the constructor.
+	 * 
+	 *			If the given flag is true, the weight is set for the first time in the constructor,
+	 * 		    the current minimum value of the strength is the initial minimum value 
+	 * 		    of the strength of the constructor and the current maximum value of the strength 
+	 *          is the initial maximum value of the strength of the constructor.
+	 *          | if (flag)
+	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *
+	 *    		If the given flag is false,the strength is already set once in the constructor,
+	 * 		    the current minimum value of the strength is the minimum value 
+	 * 		    of the strength after the constructor and the current maximum value of the strength 
+	 *          is the maximum value of the strength after the constructor.
+	 *          | if (! flag)
+	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *
+	 * @post    If the given strength is smaller than the current minimum value of the strength,
+	 * 			the strength of this unit is equal to the current minimum value.
+	 * 			| if (strength < currMinVal)
+	 * 			|		then (new.strength == currMinVal) 	
+	 * @post	If the given strength is greater than the current minimum value and smaller than
+	 * 			the current maximum value, the strength of this unit is equal to the given strength.
+	 * 			| if ((strength >= currMinVal) && (strength <= currMaxVal))
+	 * 			|		then (new.strength == strength)	
+	 * @post    | if the given strength is greater than the current maximum value of the strength,
+	 * 			the strength of this unit is equal to the current maximum value.
+	 * 			| if (strength > currMaxVal)
+	 * 			|		then (new.strength == currMaxVal) 
+	 * @effect	The weight is set to the the weight of the unit, depending on the restrictions of the weight,
+	 * 			due to possible changes of the strength. 
 	 */
 	
 	@Raw @Model
@@ -447,20 +515,73 @@ public class Unit {
 	}
 	
 	/**
-	 * 
-	 * @param strength
+	 * Variable registering the strength of this unit.
 	 */
+	private int strength;
 	
-	@Raw
-	public void setStrength(int strength) {
-		setStrength(strength, false);
+	
+	// AGILITY
+		
+	/**
+	 * 
+	 * Return the agility of this unit.
+	 */
+	@Basic
+	public int getAgility(){
+		return this.agility;
 	}
 	
 	/**
+	 * Set the agility of this unit to the given agility.
 	 * 
-	 * @param agility
+	 * @param	agility
+	 *	     	The new agility for this unit.
+	 * @effect	The agility of the unit is set to the given agility, with the restrictions for a not-newly created unit
+	 * 			(with the flag on false).
+	 * 			| setAgility(agility,false)
 	 */
+	@Raw
+	public void setAgility(int agility) {
+		setAgility(agility, false);
+	}
 	
+	/**
+	 * Set the agility of this unit to the given agility.
+	 * 
+	 * @param   agility
+	 *          The new agility for this unit.
+	 * @param   flag
+	 * 			A flag to mark that the method is used in the constructor.
+	 * 
+	 *			If the given flag is true, the agility is set for the first time in the constructor,
+	 * 		    the current minimum value of the agility is the initial minimum value 
+	 * 		    of the agility of the constructor and the current maximum value of the agility 
+	 *          is the initial maximum value of the agility of the constructor.
+	 *          | if (flag)
+	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *
+	 *    		If the given flag is false,the agility is already set once in the constructor,
+	 * 		    the current minimum value of the agility is the minimum value 
+	 * 		    of the agility after the constructor and the current maximum value of the agility 
+	 *          is the maximum value of the agility after the constructor.
+	 *          | if (! flag)
+	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *
+	 * @post    If the given agility is smaller than the current minimum value of the agility,
+	 * 			the agility of this unit is equal to the current minimum value.
+	 * 			| if (agility < currMinVal)
+	 * 			|		then (new.agility == currMinVal) 	
+	 * @post	If the given agility is greater than the current minimum value and smaller than
+	 * 			the current maximum value, the agility of this unit is equal to the given agility.
+	 * 			| if ((agility >= currMinVal) && (agility <= currMaxVal))
+	 * 			|		then (new.agility == agility)	
+	 * @post    | if the given agility is greater than the current maximum value of the agility,
+	 * 			the agility of this unit is equal to the current maximum value.
+	 * 			| if (agility > currMaxVal)
+	 * 			|		then (new.agility == currMaxVal) 
+	 * @effect	The weight is set to the the weight of the unit, depending on the restrictions of the weight,
+	 * 			due to possible changes of the strength. 
+	 */
 	@Raw @Model
 	private void setAgility(int agility, boolean flag){
 		if (flag){
@@ -481,32 +602,72 @@ public class Unit {
 		
 		setWeight(getWeight());
 	}
+	/**
+	 * Variable registering the agility of this unit.
+	 */
+	private int agility;
 	
+	
+	// TOUGHNESS	
+
 	/**
 	 * 
-	 * @param agility
+	 * Return the toughness of this unit.
 	 */
+	@Basic @Raw
+	public int getToughness(){
+		return this.toughness;
+	}
 	
+	/**
+	 * Set the toughness of this unit to the given toughness.
+	 * 
+	 * @param	toughness
+	 *	     	The new toughness for this unit.
+	 * @effect	The toughness of the unit is set to the given toughness, with the restrictions for a not-newly created unit
+	 * 			(with the flag on false).
+	 * 			| setToughness(toughness,false)
+	 */
 	@Raw
-	public void setAgility(int agility) {
-		setAgility(agility, false);
+	public void setToughness(int toughness) {
+		setToughness(toughness, false);
 	}
 	
 	/**
+	 * Set the toughness of this unit to the given agility.
 	 * 
-	 * @return
-	 */
-	
-	@Basic
-	public int getAgility(){
-		return this.agility;
-	}
-	
-	/**
+	 * @param   toughness
+	 *          The new toughness for this unit.
+	 * @param   flag
+	 * 			A flag to mark that the method is used in the constructor.
 	 * 
-	 * @param toughness
+	 *			If the given flag is true, the toughness is set for the first time in the constructor,
+	 * 		    the current minimum value of the toughness is the initial minimum value 
+	 * 		    of the toughness of the constructor and the current maximum value of the toughness 
+	 *          is the initial maximum value of the toughness of the constructor.
+	 *          | if (flag)
+	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *
+	 *    		If the given flag is false,the toughness is already set once in the constructor,
+	 * 		    the current minimum value of the toughness is the minimum value 
+	 * 		    of the toughness after the constructor and the current maximum value of the toughness 
+	 *          is the maximum value of the toughness after the constructor.
+	 *          | if (! flag)
+	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *
+	 * @post    If the given toughness is smaller than the current minimum value of the toughness,
+	 * 			the toughness of this unit is equal to the current minimum value.
+	 * 			| if (toughness < currMinVal)
+	 * 			|		then (new.toughness == currMinVal) 	
+	 * @post	If the given toughness is greater than the current minimum value and smaller than
+	 * 			the current maximum value, the toughness of this unit is equal to the given toughness.
+	 * 			| if ((toughness >= currMinVal) && (toughness <= currMaxVal))
+	 * 			|		then (new.toughness == toughness)	
+	 * @post    | if the given toughness is greater than the current maximum value of the toughness,
+	 * 			the toughness of this unit is equal to the current maximum value.
+	 * 			| if (toughness > currMaxVal)
+	 * 			|		then (new.toughness == currMaxVal) 
 	 */
-	
 	@Raw @Model
 	private void setToughness(int toughness, boolean flag){
 		if (flag){
@@ -526,26 +687,14 @@ public class Unit {
 			this.toughness = currMaxVal; 
 	}
 	
-	/**
-	 * 
-	 * @param toughness
-	 */
-	
-	@Raw
-	public void setToughness(int toughness) {
-		setToughness(toughness, false);
-	}
 	
 	/**
-	 * 
-	 * @return
+	 * 	Variable registering the toughness of this unit.
 	 */
-	
-	@Basic @Raw
-	public int getToughness(){
-		return this.toughness;
-	}
+	private int toughness;
 
+	
+	
 
 	/**
 	 * 
