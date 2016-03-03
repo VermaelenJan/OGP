@@ -53,8 +53,6 @@ public class Unit {
 	private static int INIT_MAX_VAL = 100;
 	private static int MIN_VAL = 1;
 	private static int MAX_VAL = 200;
-	private int currMinVal;
-	private int currMaxVal;
 		
 	private boolean sprinting;
 	private double velocity;
@@ -411,6 +409,8 @@ public class Unit {
 	 */	
 	@Raw @Model
 	private void setWeight(int weight, boolean flag){
+		int currMinVal;
+		int currMaxVal;
 		if (flag){
 			currMinVal = INIT_MIN_VAL;
 			currMaxVal = INIT_MAX_VAL;
@@ -505,6 +505,8 @@ public class Unit {
 	
 	@Raw @Model
 	private void setStrength(int strength, boolean flag){
+		int currMinVal;
+		int currMaxVal;
 		if (flag){
 			currMinVal = INIT_MIN_VAL;
 			currMaxVal = INIT_MAX_VAL;
@@ -594,6 +596,8 @@ public class Unit {
 	 */
 	@Raw @Model
 	private void setAgility(int agility, boolean flag){
+		int currMinVal;
+		int currMaxVal;
 		if (flag){
 			currMinVal = INIT_MIN_VAL;
 			currMaxVal = INIT_MAX_VAL;
@@ -680,6 +684,8 @@ public class Unit {
 	 */
 	@Raw @Model
 	private void setToughness(int toughness, boolean flag){
+		int currMinVal;
+		int currMaxVal;
 		if (flag){
 			currMinVal = INIT_MIN_VAL;
 			currMaxVal = INIT_MAX_VAL;
