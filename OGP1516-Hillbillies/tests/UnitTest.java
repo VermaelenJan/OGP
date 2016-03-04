@@ -600,4 +600,36 @@ public class UnitTest {
 		validUnit.advanceTime(0.0001);
 		assertFalse(validUnit.isWorking());
 	}
+	
+	
+	// Default behaviour test
+	
+	@Test
+	public void defaultBehaviour_Check() {
+	assertFalse(validUnit.isDefaultBehaviourEnabled());
+	validUnit.startDefaultBehaviour();
+	assertTrue(validUnit.isDefaultBehaviourEnabled());
+	boolean working = false; boolean resting = false; boolean moving = false;
+	for (int i = 1; i<200; i++){
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		unit.startDefaultBehaviour();
+		if (!working){
+			working = unit.isWorking();
+		}
+		if (!resting){
+			resting = unit.isResting();
+		}
+		if (!moving){
+			moving = unit.isActualMoving();
+		}
+		
+		System.out.println(unit.isWorking());
+		System.out.println(unit.isActualMoving());
+		System.out.println(unit.isResting());
+		assertTrue((unit.isWorking() || unit.isActualMoving() || unit.isResting()));
+
+		}
+	assertTrue(working && resting && moving);
+	}
+	
 }
