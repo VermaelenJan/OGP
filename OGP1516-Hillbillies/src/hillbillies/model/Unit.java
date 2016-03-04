@@ -869,8 +869,41 @@ public class Unit {
 	 * Advances the game with duration dt.
 	 * @param dt
 	 * 		  The duration which the game time is advanced.
+	 * @effect The new time since the unit has stopped resting is equal to the previous time
+	 * 			the unit has stopped resting, plus dt.
+	 * @effect If the time since the unit has last stopped resting is larger than 3 minutes,
+	 * 			the unit starts resting.
+	 * @effect If the unit is attacking, the unit stops working and resting, and the new attackTime
+	 * 			is equal to the previous attackTime minus dt.
+	 * @effect If the unit is attacking and the remainder attackTime drops below 0, the attackTime is
+	 * 			set to 0.
+	 * @effect If the unit is resting, the new hitpoints of the unit are equal to the previous hitpoints
+	 * 			plus his toughness divided by 200, for each 0,2 seconds, until the unit reaches its maximum
+	 * 			amount of hitpoints.
+	 * @effect If the unit is resting and the hitpoints of the unit are equal to its maximum hitpoints,
+	 * 			the new stamina of the unit is equal to the previous stamina of the unit, plus his toughness
+	 * 			divided by 100, for each 0,2 seconds, until the unit reaches its maximum amount of stamina.
+	 * @effect If the unit is resting and the hitpoints of the unit are equal to its maximum hitpoints,
+	 * 			and the stamina of the unit is equal its maximum stamina, the unit stops resting.
+	 * @effect If the unit is working, the new time remainder to work is equal to the previous time remainder 
+	 * 			to work	minus dt.
+	 * @effect If the time remainder to work drops below 0, the unit stops working.
+	 * @effect If the unit is moving and the unit is arrived, the unit stops moving.
+	 * @effect If the unit is arrived at the middle of a cube, and the target is another cube, the unit 
+	 * 			starts moving to the target
+	 * @effect If the unit is moving and not arrived, the new location of the unit is equal to the previous 
+	 * 			location of the unit plus its speed multiplied by dt in x, y and z direction.
+	 * @effect If the unit is moving, not arrived and sprinting, the new stamina of the unit is equal to the 
+	 * 			previous stamina of the unit minus 10 times dt.
+	 * @effect If the unit is moving, not arrived, sprinting and the stamina drops below 0, the new stamina
+	 * 			is equal to 0 and the unit stops sprinting.
+	 * @effect If the unit is moving and not arrived, its orientation will be updated to the direction the
+	 * 			unit is moving in.
+	 * @effect If the unit is moving, not arrived and defaultBehaviour is enabled, the unit starts sprinting
+	 * 			with a chance of dt/10.
+	 * @throws IllegalAdvanceTimeException(dt)
+	 * 			The given dt is not a valid advanceTime duration.
 	 */
-	
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
 		
 		if (! isValidAdvanceTime(dt)){
@@ -924,7 +957,7 @@ public class Unit {
 				
 		else if (isWorking() && canHaveRecoverdOneHp()){
 			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
-			if (getTimeRemainderToWork() < 0){
+			if (getTimeRemainderToWork() <= 0){
 				stopWorking();
 			}
 		}
@@ -963,7 +996,7 @@ public class Unit {
 					}
 				}
 				else if (isDefaultBehaviourEnabled()) {
-					if (random.nextDouble() <= 0.01) {
+					if (random.nextDouble() <= (float) dt/10) {
 						startSprinting();
 					}
 				}
@@ -1010,16 +1043,16 @@ public class Unit {
 	 * 
 	 * @param 	targetZ
 	 * 		 	The z coordinate of the target to which the unit is going.
-	 * @return 	if the current location of the unit is below the target location in the z axis,
-	 * 			0.5 times the base speed of the unit.
+	 * @return 	0.5 times the base speed of the unit, if the value of the z coordinate of the current 
+	 * 			location of the unit is smaller than the z coordinate of the target location.
 	 * 			| if (getLocation()[z_coord]-targetZ < 0)
-	 * 				than result == 0.5*getBaseSpeed() 
-	 * @return 	if the current location of the unit is above the target location in the z axis,
-	 * 			1.2 times the base speed of the unit.
+	 * 				then result == 0.5*getBaseSpeed() 
+	 * @return 	1.2 times the base speed of the unit, if the value of the z coordinate of the current
+	 * 			location of the unit is greater than the z coordinate of the target location.
 	 * 			| if (getLocation()[z_coord]-targetZ > 0)
-	 * 				than result == 1.5*getBaseSpeed() 
-	 * @return 	if the current location is on the same height in te z axis,
-	 * 			base speed of unit.
+	 * 				then result == 1.2*getBaseSpeed() 
+	 * @return 	The base speed of the unit, if the value of the z coordinate of the current location 
+	 * 			is equal to the z coordinate of the target location.
 	 * 			| result == getBaseSpeed()			
 	 */
 	@Basic @Model
@@ -1036,7 +1069,7 @@ public class Unit {
 	}
 	// TODO 
 	/**
-	 * Return the current speed of the unit.
+	 * Return the current speed of the unit in x, y and z direction.
 	 * 
 	 * @return if the unit is sprinting, the current speed is equal to the walking speed times 2,
 	 * 			multiplied with the difference between the location of the target and location of the unit,
@@ -1429,10 +1462,36 @@ public class Unit {
 	
 	// FIGHTING
 	
-	
+	/**
+	 * Attack an other unit.
+	 * 
+	 * @param	other
+	 * 		 	Unit to attack.
+	 * @post	if the unit is not equal to the unit to attack and if the unit
+	 * 			is resting, the unit stops resting.
+	 * 			| if (this != other)
+	 * 			|	if (this.isResting())
+	 * 			|		than this.stopResting()
+	 * @post 	if the unit is not equal to the unit to attack, 
+	 * 			the unit stops working.
+	 * 			| if (this != other)
+	 * 			|	than this.stopWorking()
+	 * @post	if the unit is not equal to the unit to attack,
+	 * 			the new orientation in fight is set to the to the unit to attack
+	 * 			| if (this != other)
+	 * 			|	than this.setOrientationInFight(other)
+	 * @post	if the unit is not equal to the unit to attack,
+	 * 			the new attack time of this unit is equal to 1.
+	 * 			| if (this != other)
+	 * 			|	than this.setAttackTime(1)
+	 * @throws	IllegalAttackPosititonException(other.getOccupiedCube())
+	 * 			The unit cannot attack the given other unit.
+	 * 			| ! this.isValidAttackPosition(other.getOccupiedCube())
+	 * 			
+	 */
 	public void attack(Unit other) throws IllegalAttackPosititonException {
 		if (this != other) {
-			if (!this.canHaveAsAttackPosition(other.getOccupiedCube())) {
+			if (!this.isValidAttackPosition(other.getOccupiedCube())) {
 				throw new IllegalAttackPosititonException(other.getOccupiedCube());
 			}
 			
@@ -1447,6 +1506,26 @@ public class Unit {
 			this.setAttackTime(1);
 		}
 	}
+	
+	/**
+	 * Checks whether the given position of the unit to attack is a valid position to attack.
+	 * 
+	 * @param	attackCubePosition
+	 * 			The position of the cube of the unit to attack.
+	 * @return	True if and only if the distance between the cube of the unit 
+	 * 			and the cube of the unit to attack is smaller than 1, as well as 
+	 * 			in the x, y and z direction.
+	 * 			| result ==((this.getOccupiedCube()[x] - attackCubePostion[x] <= 1)
+	 * 					  &&(this.getOccupiedCube()[y] - attackCubePostion[y] <= 1)
+	 * 				      &&(this.getOccupiedCube()[z] - attackCubePostion[z] <= 1))
+	 */
+	@Model
+	private boolean isValidAttackPosition(int[] attackCubePosition){
+		return((Math.abs(this.getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
+				(Math.abs(this.getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
+				(Math.abs(this.getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
+	}
+	
 	
 	
 	@Model 
@@ -1514,45 +1593,88 @@ public class Unit {
 		return newLoc;
 	}
 	
-	@Model
-	private boolean canHaveAsAttackPosition(int[] attackCubePosition){
-		return((Math.abs(this.getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
-				(Math.abs(this.getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
-				(Math.abs(this.getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
-	}
-	
+	/**
+	 * Checks whether the unit is attacking.
+	 * 
+	 * @return	True if and only if the attack time is greater than 0.
+	 * 			| result == (getAttacktime() > 0)
+	 */
 	@Basic
 	public boolean isAttacking(){
 		return (getAttackTime() > 0);
 	}
 	
+	/**
+	 * Set the attack time to the given time.
+	 * 
+	 * @param	time
+	 * 			The time to set to the unit.
+	 * @post 	The new attack time of this unit is equal to the given time.				
+	 */
 	@Model
 	private void setAttackTime(float time){
 		this.attackTime = time;
 	}
 	
+	/**
+	 * Return the attack time of this unit.
+	 */
 	@Basic @Model
 	private float getAttackTime(){
 		return this.attackTime;
 	}
 	
+	/**
+	 * Checks whether the unit's defend is succesfull.
+	 * @param	possibility
+	 * 			The possibility to defend succesfull.
+	 * @return	True if and only if the the unit has defended succesfull.
+	 * 			| result == (random.nextDouble <= possibility)
+	 */
 	@Basic @Model
-	private boolean getDefendSucces(double x){
-		return (random.nextDouble() <= x);
+	private boolean getDefendSucces(double possibility){
+		return (random.nextDouble() <= possibility);
 	}
 	
 	// RESTING
 	
-	
+	/**
+	 * The unit rests.
+	 * 
+	 * @effect	the unit starts resting.
+	 * 			| startResting();
+	 */
 	public void rest(){
 		startResting();
 	}
 	
+	/**
+	 * Checks whether the unit is resting.
+	 * 
+	 * @return	True if and only if the unit is resting.
+	 * 			| result == resting
+	 */
 	@Basic 
 	public boolean isResting(){
 		return resting;
 	}
 	
+	/**
+	 * The unit starts resting.
+	 * 
+	 * @effect	if the hitpoints of the unit are not equal to the maximum hitpoints or the stamina is not equal
+	 * 			to the maximum stamina, the new time to rest for the unit is set to 0, the unit is resting,
+	 * 			the unit stops working, the new initial hitpoints when starting to rest are set to the current hitpoints
+	 * 			and the new initial stamina when starting to rest is set to the given stamina.
+	 * 			| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
+	 * 			|	( (getStamina() != getMaxHitpointsStamina()) ))
+	 * 			|	then (setTimeResting(0)
+	 * 					&& resting = true
+	 * 					&& stopWorking()
+	 * 					&& setStartRestHitpoints(getHitpoints())
+	 * 					&& setStartRestStamina(getStamina()))
+	 * 
+	 */
 	@Model
 	private void startResting(){
 		if ( (getHitpoints() != getMaxHitpointsStamina()) || ( (getStamina() != getMaxHitpointsStamina()) )){
@@ -1562,9 +1684,24 @@ public class Unit {
 			setStartRestHitpoints(getHitpoints());
 			setStartRestStamina(getStamina());
 		}
-
 	}
 	
+	/**
+	 * The unit stops resting.
+	 * 
+	 * @effect  if the unit has not rest long enough to recover one hitpoint,
+	 * 			the new hitpoints are set to the initial hitpoints when the unit 
+	 * 			began to rest, and the new stamina is set to the initial stamina 
+	 * 			when the unit began to rest.
+	 * 			| if (! canHaveRecoverdOneHp())
+	 * 			|	than (setHitpoints(getStartRestHitpoints())
+	 * @post 	the unit is not resting
+	 * 			| resting == false
+	 * @effect	The new time since resting is equal to 0.
+	 * 			| setTimeSinceRest(0)
+	 * @effect	The new time that the unit has rested is equal to a large value.
+	 * 			| setTimeResting(MAX_VALUE)
+	 */
 	@Model
 	private void stopResting(){
 		if (! canHaveRecoverdOneHp()){
@@ -1576,75 +1713,155 @@ public class Unit {
 		setTimeResting(Float.MAX_VALUE);
 	}
 	
+	/**
+	 * Set the time since rest to the given time.
+	 * 
+	 * @post The new time since resting is equal to the given time.
+	 */
 	@Model
 	private void setTimeSinceRest(float time){
 		this.timeSinceRest = time;
 	}
 	
+	/**
+	 * Return the time since the ending of the last rest.
+	 */
 	@Model
 	private float getTimeSinceRest(){
 		return this.timeSinceRest;
 	}
 	
+	/**
+	 * Set the time resting to the given time.
+	 * 
+	 * @param	time
+	 * 			The time that the unit is resting.
+	 * @post 	The new time that the unit is resting is equal to the given time.
+	 */
 	@Model
 	private void setTimeResting(float time) {
 		this.timeResting = time;
 	}
 	
+	/**
+	 * Return the time this unit is resting.
+	 */
 	@Basic @Model
 	private float getTimeResting() {
 		return this.timeResting;
 	}
 	
+	/**
+	 * Set the time since the last reset period. 
+	 * 
+	 * @param	time
+	 * 			The periodic rest time.
+	 * @post	The new periodic reset time is equal to the given time.
+	 */
 	@Model
 	private void setTimePeriodicRest(float time){
 		this.periodicRest = time;
 	}
 	
+	/**
+	 * Return the periodic rest of this unit.
+	 */
 	@Basic @Model
 	private float getTimePeriodicRest(){
 		return this.periodicRest;
 	}
 	
+	/**
+	 * Checks whether the unit has rested enough to recover one hitpoint.
+	 * 
+	 * @return	True if and only if the time the unit is resting is greater than or
+	 * 			equal the time for the unit to recover one hitpoint.
+	 * 			| result == (getTimeResting >= ( 1/((getToughness()/200.0)/0.2)))
+	 */
 	@Model
 	private boolean canHaveRecoverdOneHp(){
-		return (getTimeResting() > ((double) 1/(((double) getToughness()/200.0)/0.2)));
+		return (getTimeResting() >= ((double) 1/(((double) getToughness()/200.0)/0.2)));
 
 	}
 	
-	@Model
-	private void setStartRestHitpoints(double hitpoints){
-		this.startRestHitpoints = hitpoints;
-	}
 	
+	/**
+	 * Return the initial hitpoints on the moment the unit started resting.
+	 */
 	@Basic @Model
 	private double getStartRestHitpoints(){
 		return this.startRestHitpoints;
 	}
 	
+	/**
+	 * Set the initial hitpoints when the unit started resting to the given hitpoints.
+	 * 
+	 * @param	hitpoints
+	 * 			The hitpoints to set.
+	 * @post	The new initial hitpoints when the unit started resting are equal to the given hitpoints.
+	 * 			
+	 */
 	@Model
-	private void setStartRestStamina(double stamina){
-		this.startRestStamina = stamina;
+	private void setStartRestHitpoints(double hitpoints){
+		this.startRestHitpoints = hitpoints;
 	}
-	
+
+	/**
+	 * Return the initial stamina on the moment the unit started resting.
+	 */
 	@Basic @Model
 	private double getStartRestStamina(){
 		return this.startRestStamina;
 	}
 	
+	/**
+	 * Set the initial stamina when the unit started resting to the given stamina.
+	 * 
+	 * @param	stamina
+	 * 			The stamina to set.
+	 * @post	
+	 */
+	@Model
+	private void setStartRestStamina(double stamina){
+		this.startRestStamina = stamina;
+	}
 	
+
 	// DEFAULT BEHAVIOUR
 	
+	/**
+	 * Check whether the default behaviour is enabled.
+	 * 
+	 * @return	true if and only if the default behaviour is enabled.
+	 * 			| result == defaultBehaviour
+	 */
 	@Basic
 	public boolean isDefaultBehaviourEnabled(){
 		return defaultBehaviour;
 	}
 	
-	
+	/**
+	 * Start the default behaviour.
+	 * 
+	 * @post	the new state of default behaviour is set to enabled.
+	 * 			| new.defaultBehaviour == true
+	 */
 	public void startDefaultBehaviour(){
 		defaultBehaviour = true;
 	}
 	
+	/**
+	 * Stop the default behaviour.
+	 * 
+	 * @post	the new state of default behaviour is set to disabled.
+	 * 			| new.defaultBehaviour == false
+	 * @effect	The unit stops working.
+	 * 			| stopWorking()
+	 * @effect	The unit stops moving.
+	 * 			| stopMoving()
+	 * @effect	The unit stops resting.
+	 * 			| stopResting()
+	 */
 	public void stopDefaultBehaviour(){
 		defaultBehaviour = false;
 		stopWorking();
@@ -1652,6 +1869,9 @@ public class Unit {
 		stopResting();
 	}
 	
+	/**
+	 * 
+	 */
 	@Model
 	private void newDefaultBehaviour(){
 		int possibleTask = random.nextInt(3);
@@ -1669,6 +1889,15 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * Return a random position in the boundaries of the playing field.
+	 * 
+	 * @return	Return random position smaller than WORLD_X-1 in the x direction, WORLD_Y -1 in the y direction,
+	 * 			WORLD_Z - 1 in the z direction.
+	 * 			| randLoc_x == randomInt(0,WORLD_X-1)
+	 * 			| randLoc_y == randomInt(0,WORLD_Y-1)
+	 * 			| randLoc_z == randomInt(0,WORLD_Z-1)
+	 */
 	@Model
 	private int[] getRandomPosition(){
 		int[] randLoc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
