@@ -1106,7 +1106,7 @@ public class Unit {
 	 * 
 	 * @return	if the unit is not moving, the speed is equal to 0.
 	 * 			| if (!isMoving())
-	 * 			|	than result == 0
+	 * 			|	then result == 0
 	 * @return	the 2-norm of the current speed in x,y and z direction.
 	 * 			| result == (getCurrentSpeed()[x]^2 + getCurrentSpeed()[y]^2 + getCurrentSpeed()[z]^2)^(1/2)
 	 */
@@ -1176,12 +1176,12 @@ public class Unit {
 	 * @effect 	if the unit is resting and has rested long enough to recover one hitpoint,
 	 * 			the units stops resting.
 	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
-	 * 			|	than stopResting()
+	 * 			|	then stopResting()
 	 * @effect	The unit stops working.
 	 * 			| stopResting()
 	 * @effect	if the unit is not attacking, the unit is moving.
 	 * 			| if (!isAttacking())
-	 * 			|	than isMoving == true.
+	 * 			|	then isMoving == true.
 	 */
 	@Model 
 	private void startMoving(){
@@ -1222,7 +1222,7 @@ public class Unit {
 	 * Returns the distance from the current location to the target.
 	 * @return	if there is no target, the distance is equal to 0.
 	 * 			if (target == 0)
-	 * 				than result == 0
+	 * 				then result == 0
 	 * @return	the 2-norm of the distance between the target and the current location in x y and z direction.
 	 * 			| result == ((target[x]-getLocation()[x])^2+ (target[y] - getLocation()[y])^2 + 
 	 * 			| (target[z]-getLocation()[z])^2)^(1/2)			 
@@ -1388,13 +1388,13 @@ public class Unit {
 	 * 			the unit stops resting ,starts working and its time remainder to work is equal to 
 	 * 			500 divided by the strength of the unit.
 	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
-	 * 			|	than (stopResting() 
+	 * 			|	then (stopResting() 
 	 * 			|		&& (working == true)
 	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
 	 * @effect	if the unit is not resting, the units starts working and its time remainder to work
 	 * 			is equal to 500 divided by the strength of the unit.
 	 * 			| if (!working)
-	 * 			|	than ((working == true)
+	 * 			|	then ((working == true)
 	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
 	 */
 	@Model
@@ -1471,19 +1471,19 @@ public class Unit {
 	 * 			is resting, the unit stops resting.
 	 * 			| if (this != other)
 	 * 			|	if (this.isResting())
-	 * 			|		than this.stopResting()
+	 * 			|		then this.stopResting()
 	 * @post 	if the unit is not equal to the unit to attack, 
 	 * 			the unit stops working.
 	 * 			| if (this != other)
-	 * 			|	than this.stopWorking()
+	 * 			|	then this.stopWorking()
 	 * @post	if the unit is not equal to the unit to attack,
 	 * 			the new orientation in fight is set to the to the unit to attack
 	 * 			| if (this != other)
-	 * 			|	than this.setOrientationInFight(other)
+	 * 			|	then this.setOrientationInFight(other)
 	 * @post	if the unit is not equal to the unit to attack,
 	 * 			the new attack time of this unit is equal to 1.
 	 * 			| if (this != other)
-	 * 			|	than this.setAttackTime(1)
+	 * 			|	then this.setAttackTime(1)
 	 * @throws	IllegalAttackPosititonException(other.getOccupiedCube())
 	 * 			The unit cannot attack the given other unit.
 	 * 			| ! this.isValidAttackPosition(other.getOccupiedCube())
@@ -1694,7 +1694,7 @@ public class Unit {
 	 * 			began to rest, and the new stamina is set to the initial stamina 
 	 * 			when the unit began to rest.
 	 * 			| if (! canHaveRecoverdOneHp())
-	 * 			|	than (setHitpoints(getStartRestHitpoints())
+	 * 			|	then (setHitpoints(getStartRestHitpoints())
 	 * @post 	the unit is not resting
 	 * 			| resting == false
 	 * @effect	The new time since resting is equal to 0.

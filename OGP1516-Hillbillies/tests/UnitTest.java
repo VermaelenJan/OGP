@@ -18,7 +18,8 @@ import ogp.framework.util.Util;
 /**
  *
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0.8
+ * @version 1.0
+ * based on black-box testing
  */
 public class UnitTest {
 	
@@ -405,6 +406,56 @@ public class UnitTest {
 	}
 	
 	
+	// Speed tests
+	
+	@Test
+	public void getSpeed_XYWalk() {
+		int[] target = {24, 0, 49}; 
+		testUnit.moveTo(target);
+		assertEquals(1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void getSpeed_XYSprint() {
+		int[] target = {24, 0, 49}; 
+		testUnit.moveTo(target);
+		testUnit.startSprinting();
+		assertEquals(2*1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void getSpeed_ZWalkUp() {
+		int[] location = {0,0,0};
+		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
+		int[] target = {0, 0, 2}; 
+		unit.moveTo(target);
+		assertEquals(0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void getSpeed_ZWalkDown() {
+		int[] target = {0, 24, 40}; 
+		validUnit.moveTo(target);
+		assertEquals(1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+	}
+	
+	public void getSpeed_ZSprintUp() {
+		int[] location = {0,0,0};
+		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
+		int[] target = {0, 0, 2}; 
+		unit.moveTo(target);
+		unit.startSprinting();
+		assertEquals(2.0*0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void getSpeed_XYZSprintDown() {
+		int[] target = {24, 0, 0}; 
+		validUnit.moveTo(target);
+		validUnit.startSprinting();
+		assertEquals(2.0*1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+	}
+	
 	// Rest test (eg. stamina)
 	
 	@Test
@@ -620,7 +671,7 @@ public class UnitTest {
 		int[] target = {2,24,49};
 		unit.moveTo(target);
 		unit.startSprinting();
-		for (int j = 1; j<25; j++) {
+		for (int j = 1; j<20; j++) {
 		unit.advanceTime(0.2);
 		}
 		unit.startDefaultBehaviour();
