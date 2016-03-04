@@ -869,8 +869,41 @@ public class Unit {
 	 * Advances the game with duration dt.
 	 * @param dt
 	 * 		  The duration which the game time is advanced.
+	 * @effect The new time since the unit has stopped resting is equal to the previous time
+	 * 			the unit has stopped resting, plus dt.
+	 * @effect If the time since the unit has last stopped resting is larger than 3 minutes,
+	 * 			the unit starts resting.
+	 * @effect If the unit is attacking, the unit stops working and resting, and the new attackTime
+	 * 			is equal to the previous attackTime minus dt.
+	 * @effect If the unit is attacking and the remainder attackTime drops below 0, the attackTime is
+	 * 			set to 0.
+	 * @effect If the unit is resting, the new hitpoints of the unit are equal to the previous hitpoints
+	 * 			plus his toughness divided by 200, for each 0,2 seconds, until the unit reaches its maximum
+	 * 			amount of hitpoints.
+	 * @effect If the unit is resting and the hitpoints of the unit are equal to its maximum hitpoints,
+	 * 			the new stamina of the unit is equal to the previous stamina of the unit, plus his toughness
+	 * 			divided by 100, for each 0,2 seconds, until the unit reaches its maximum amount of stamina.
+	 * @effect If the unit is resting and the hitpoints of the unit are equal to its maximum hitpoints,
+	 * 			and the stamina of the unit is equal its maximum stamina, the unit stops resting.
+	 * @effect If the unit is working, the new time remainder to work is equal to the previous time remainder 
+	 * 			to work	minus dt.
+	 * @effect If the time remainder to work drops below 0, the unit stops working.
+	 * @effect If the unit is moving and the unit is arrived, the unit stops moving.
+	 * @effect If the unit is arrived at the middle of a cube, and the target is another cube, the unit 
+	 * 			starts moving to the target
+	 * @effect If the unit is moving and not arrived, the new location of the unit is equal to the previous 
+	 * 			location of the unit plus its speed multiplied by dt in x, y and z direction.
+	 * @effect If the unit is moving, not arrived and sprinting, the new stamina of the unit is equal to the 
+	 * 			previous stamina of the unit minus 10 times dt.
+	 * @effect If the unit is moving, not arrived, sprinting and the stamina drops below 0, the new stamina
+	 * 			is equal to 0 and the unit stops sprinting.
+	 * @effect If the unit is moving and not arrived, its orientation will be updated to the direction the
+	 * 			unit is moving in.
+	 * @effect If the unit is moving, not arrived and defaultBehaviour is enabled, the unit starts sprinting
+	 * 			with a chance of dt/10.
+	 * @throws IllegalAdvanceTimeException(dt)
+	 * 			The given dt is not a valid advanceTime duration.
 	 */
-	
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
 		
 		if (! isValidAdvanceTime(dt)){
@@ -924,7 +957,7 @@ public class Unit {
 				
 		else if (isWorking() && canHaveRecoverdOneHp()){
 			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
-			if (getTimeRemainderToWork() < 0){
+			if (getTimeRemainderToWork() <= 0){
 				stopWorking();
 			}
 		}
@@ -963,7 +996,7 @@ public class Unit {
 					}
 				}
 				else if (isDefaultBehaviourEnabled()) {
-					if (random.nextDouble() <= 0.01) {
+					if (random.nextDouble() <= (float) dt/10) {
 						startSprinting();
 					}
 				}
@@ -1010,16 +1043,16 @@ public class Unit {
 	 * 
 	 * @param 	targetZ
 	 * 		 	The z coordinate of the target to which the unit is going.
-	 * @return 	if the current location of the unit is below the target location in the z axis,
-	 * 			0.5 times the base speed of the unit.
+	 * @return 	0.5 times the base speed of the unit, if the value of the z coordinate of the current 
+	 * 			location of the unit is smaller than the z coordinate of the target location.
 	 * 			| if (getLocation()[z_coord]-targetZ < 0)
-	 * 				than result == 0.5*getBaseSpeed() 
-	 * @return 	if the current location of the unit is above the target location in the z axis,
-	 * 			1.2 times the base speed of the unit.
+	 * 				then result == 0.5*getBaseSpeed() 
+	 * @return 	1.2 times the base speed of the unit, if the value of the z coordinate of the current
+	 * 			location of the unit is greater than the z coordinate of the target location.
 	 * 			| if (getLocation()[z_coord]-targetZ > 0)
-	 * 				than result == 1.5*getBaseSpeed() 
-	 * @return 	if the current location is on the same height in te z axis,
-	 * 			base speed of unit.
+	 * 				then result == 1.2*getBaseSpeed() 
+	 * @return 	The base speed of the unit, if the value of the z coordinate of the current location 
+	 * 			is equal to the z coordinate of the target location.
 	 * 			| result == getBaseSpeed()			
 	 */
 	@Basic @Model
@@ -1036,7 +1069,7 @@ public class Unit {
 	}
 	// TODO 
 	/**
-	 * Return the current speed of the unit.
+	 * Return the current speed of the unit in x, y and z direction.
 	 * 
 	 * @return if the unit is sprinting, the current speed is equal to the walking speed times 2,
 	 * 			multiplied with the difference between the location of the target and location of the unit,
