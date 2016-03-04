@@ -602,17 +602,29 @@ public class UnitTest {
 	}
 	
 	
-	// Default behaviour test
+	// Default behaviour tests
 	
 	@Test
 	public void defaultBehaviour_Check() {
-	assertFalse(validUnit.isDefaultBehaviourEnabled());
 	validUnit.startDefaultBehaviour();
 	assertTrue(validUnit.isDefaultBehaviourEnabled());
+	validUnit.stopDefaultBehaviour();
+	assertFalse(validUnit.isDefaultBehaviourEnabled());
+	}
+	
+	@Test
+	public void defaultBehaviour_Posibilities() {
 	boolean working = false; boolean resting = false; boolean moving = false;
 	for (int i = 1; i<200; i++){
 		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		int[] target = {2,24,49};
+		unit.moveTo(target);
+		unit.startSprinting();
+		for (int j = 1; j<25; j++) {
+		unit.advanceTime(0.2);
+		}
 		unit.startDefaultBehaviour();
+		unit.advanceTime(0.001);
 		if (!working){
 			working = unit.isWorking();
 		}
@@ -622,12 +634,7 @@ public class UnitTest {
 		if (!moving){
 			moving = unit.isActualMoving();
 		}
-		
-		System.out.println(unit.isWorking());
-		System.out.println(unit.isActualMoving());
-		System.out.println(unit.isResting());
 		assertTrue((unit.isWorking() || unit.isActualMoving() || unit.isResting()));
-
 		}
 	assertTrue(working && resting && moving);
 	}
