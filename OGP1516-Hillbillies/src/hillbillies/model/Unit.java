@@ -1,7 +1,10 @@
 package hillbillies.model;
 
 
+
 import java.util.Random;
+
+
 
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
@@ -54,8 +57,7 @@ public class Unit {
 	private static int MIN_VAL = 1;
 	private static int MAX_VAL = 200;
 		
-	private boolean sprinting;
-	private double velocity;
+
 
 	// Target
 	private double[] target = null;
@@ -173,7 +175,7 @@ public class Unit {
 	 * 			its toughness, and the default value PI/2 as its orientation.
 	 * @throws IllegalPositionException
 	 * 			The given position is not a valid position for a unit.
-	 * 			| ! canHaveAsPosition(position)w
+	 * 			| ! canHaveAsPosition(position)
 	 * @throws IllegalNameException 
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
@@ -587,7 +589,7 @@ public class Unit {
 	 * 			the current maximum value, the agility of this unit is equal to the given agility.
 	 * 			| if ((agility >= currMinVal) && (agility <= currMaxVal))
 	 * 			|		then (new.agility == agility)	
-	 * @post    | if the given agility is greater than the current maximum value of the agility,
+	 * @post    if the given agility is greater than the current maximum value of the agility,
 	 * 			the agility of this unit is equal to the current maximum value.
 	 * 			| if (agility > currMaxVal)
 	 * 			|		then (new.agility == currMaxVal) 
@@ -864,8 +866,9 @@ public class Unit {
 
 	
 	/**
-	 * 
-	 * @param duration
+	 * Advances the game with duration dt.
+	 * @param dt
+	 * 		  The duration which the game time is advanced.
 	 */
 	
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
@@ -973,7 +976,13 @@ public class Unit {
 		}
 
 	}
-	
+	/**
+	 * Checks whether the duration can have the given dt as its duration.
+	 * @param dt
+	 * 		  The duration which the game time is advanced.
+	 * @return	True if and only if dt is greater or equal to 0 and smaller or equal to 0.2 .
+	 * 			result == ((dt >=0)&&(dt <= 0.2))
+	 */
 	@Model
 	private static boolean isValidAdvanceTime(double dt){
 
@@ -981,27 +990,38 @@ public class Unit {
 		
 	}
 	
-	@Model
-	private void setTimePeriodicRest(float time){
-		this.periodicRest = time;
-	}
+	// SPEED
 	
-	@Basic @Model
-	private float getTimePeriodicRest(){
-		return this.periodicRest;
-	}
 	
-	@Model
-	private boolean canHaveRecoverdOneHp(){
-		return (getTimeResting() > ((double) 1/(((double) getToughness()/200.0)/0.2)));
-
-	}
-		
+	/**
+	 * Return the base speed of this unit.
+	 * @return 1.5 times the strength plus agility of the unit, divided by 200/100 ,
+	 * 		   divided by the weight of the unit.
+	 * 		   | result == 1.5*(getStrength()+getAgility())/(2*getWeight())
+	 */
 	@Basic @Model
 	private double getBaseSpeed(){
 		return 1.5*(getStrength()+getAgility())/(2*getWeight());
 	}
 	
+	
+	/**
+	 * Get the walking speed of the unit.
+	 * 
+	 * @param 	targetZ
+	 * 		 	The z coordinate of the target to which the unit is going.
+	 * @return 	if the current location of the unit is below the target location in the z axis,
+	 * 			0.5 times the base speed of the unit.
+	 * 			| if (getLocation()[z_coord]-targetZ < 0)
+	 * 				than result == 0.5*getBaseSpeed() 
+	 * @return 	if the current location of the unit is above the target location in the z axis,
+	 * 			1.2 times the base speed of the unit.
+	 * 			| if (getLocation()[z_coord]-targetZ > 0)
+	 * 				than result == 1.5*getBaseSpeed() 
+	 * @return 	if the current location is on the same height in te z axis,
+	 * 			base speed of unit.
+	 * 			| result == getBaseSpeed()			
+	 */
 	@Basic @Model
 	private double getWalkingSpeed(double targetZ){
 		if (getLocation()[2]-targetZ < 0){
@@ -1014,7 +1034,18 @@ public class Unit {
 			return getBaseSpeed();
 		}
 	}
-	
+	// TODO 
+	/**
+	 * Return the current speed of the unit.
+	 * 
+	 * @return if the unit is sprinting, the current speed is equal to the walking speed times 2,
+	 * 			multiplied with the difference between the location of the target and location of the unit,
+	 * 			respectively in x, y and z direction, divided by the distance between the units location and
+	 * 			the target.
+	 * 			| result ==     velocity*(target[0]-getLocation()[0])/distance, 
+								velocity*(target[1]-getLocation()[1])/distance, 
+								velocity*(target[2]-getLocation()[2])/distance
+	 */
 	@Basic @Model
 	private double[] getCurrentSpeed() {
 		double distance = getDistanceToTarget();
@@ -1033,20 +1064,92 @@ public class Unit {
 	}
 	
 	/**
+	 * variable referencing the velocity of this unit.
+	 */
+	private double velocity;
+	
+	/**
+	 * Returns  the magnitude of the units speed.
+	 * 
+	 * @return	if the unit is not moving, the speed is equal to 0.
+	 * 			| if (!isMoving())
+	 * 			|	than result == 0
+	 * @return	the 2-norm of the current speed in x,y and z direction.
+	 * 			| result == (getCurrentSpeed()[x]^2 + getCurrentSpeed()[y]^2 + getCurrentSpeed()[z]^2)^(1/2)
+	 */
+	@Basic
+	public double getCurrentSpeedMag() {
+		if (!isMoving()) {
+			return (double) 0;
+		}
+		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
+		Math.pow((getCurrentSpeed()[1] ), 2) + Math.pow((getCurrentSpeed()[2]), 2));
+	}
+	
+
+
+	// SPRINTING 
+	
+	/**
+	 * Set sprinting of this unit on true.
 	 * 
 	 */
 	public void startSprinting(){
 		this.sprinting = true;
 	}
 	
+	/**
+	 * Stop the unit sprinting.
+	 * 
+	 * @post	The sprinting is stopped.
+	 * 			sprinting == false;		
+	 */
 	public void stopSprinting(){
 		this.sprinting = false;
 	}
-	
+	/**
+	 * Checks whether the unit is sprinting.
+	 * 
+	 * @return sprinting.
+	 * 		   | result == sprinting
+	 */
 	public boolean isSprinting(){
 		return sprinting;
 	}
 	
+	/**
+	 * Variable registering sprinting of this unit.
+	 */
+	private boolean sprinting;
+
+	
+	// MOVING
+	
+	/**
+	 * Checks whether the unit is moving.
+	 * 
+	 * @return	True if and only if the unit is moving and the unit is not working and 
+	 * 			the unit is not resting and the unit is not attacking.
+	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
+	 */
+	@Basic
+	public boolean isActualMoving(){
+		return (isMoving() && !isWorking() && !isResting() && !isAttacking());
+	}
+	
+	/**
+	 * Start moving the unit.
+	 * 
+	 * @effect 	if the unit is resting and has rested long enough to recover one hitpoint,
+	 * 			the units stops resting.
+	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
+	 * 			|	than stopResting()
+	 * @effect	The unit stops working.
+	 * 			| stopResting()
+	 * @effect	if the unit is not attacking, the unit is moving.
+	 * 			| if (!isAttacking())
+	 * 			|	than isMoving == true.
+	 */
 	@Model 
 	private void startMoving(){
 		if ( isResting() && (canHaveRecoverdOneHp())){
@@ -1058,22 +1161,39 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * stop moving the unit.
+	 * 
+	 * @post 	the unit is not moving.
+	 * 			| isMoving == false				
+	 */
 	@Model 
 	private void stopMoving(){
 		this.isMoving = false;
 
 	}
 	
+	/**
+	 * Checks whether the unit is moving.
+	 * 
+	 * @return	True if and only if the unit is moving.
+	 * 			| result == isMoving			
+	 */
 	@Basic @Model
 	private boolean isMoving(){
 		return isMoving;
 	}
 	
-	@Basic
-	public boolean isActualMoving(){
-		return (isMoving() && !isWorking() && !isResting() && !isAttacking());
-	}
-	
+
+	/**
+	 * Returns the distance from the current location to the target.
+	 * @return	if there is no target, the distance is equal to 0.
+	 * 			if (target == 0)
+	 * 				than result == 0
+	 * @return	the 2-norm of the distance between the target and the current location in x y and z direction.
+	 * 			| result == ((target[x]-getLocation()[x])^2+ (target[y] - getLocation()[y])^2 + 
+	 * 			| (target[z]-getLocation()[z])^2)^(1/2)			 
+	 */
 	@Model
 	private double getDistanceToTarget() {
 		if (target == null) {
@@ -1084,25 +1204,40 @@ public class Unit {
 		return distance;
 	}
 	
+	/**
+	 * Checks whether the unit is arrived at the target.
+	 * 
+	 * @param	dt
+	 * 		  	The duration dt of game time.
+	 * @return	true if and only if the distance to the target is smaller than the duration dt times the magnitude of
+	 * 			the current speed.
+	 * 			| result == (getDistanceToTarget() < dt*getCurrentSpeedMag())
+	 */
 	@Model
 	private boolean Arrived(double dt){
 		return (getDistanceToTarget() < dt*getCurrentSpeedMag());	
 	}
 	
-	@Basic
-	public double getCurrentSpeedMag() {
-		if (!isMoving()) {
-			return (double) 0;
-		}
-		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
-		Math.pow((getCurrentSpeed()[1] ), 2) + Math.pow((getCurrentSpeed()[2]), 2));
-	}
-	
-	
+	// TODO 
+	/**
+	 * Move to the adjacent cube.
+	 * 
+	 * @param	dx
+	 * 			The movement of the unit in the x direction.
+	 * @param	dy
+	 * 			the movement of the unit in the y direction. 
+	 * @param	dz
+	 * 			The movement of the unit in the z direction.
+	 * @effect	The unit moves to an adjacent cube with movements dx,dy and dz and the boolean
+	 * 			calledByTo on false.
+	 * @throws 	IllegalPositionException
+	 * @throws 	IllegalAdjacentPositionException
+	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException , IllegalAdjacentPositionException {
 		moveToAdjacent(dx, dy, dz, false);
 	}
 	
+	// TODO
 	@Model
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
 																					IllegalAdjacentPositionException{
@@ -1132,7 +1267,7 @@ public class Unit {
 		}
 	}
 	
-			
+	// TODO		
 	public void moveTo(int[] endTarget) throws IllegalPositionException { 
 										// When IllegalPositionException is thrown in moveToAdjacent(),
 										// by the coding rules, the variable "globalTarget" should be reverted to the
@@ -1199,11 +1334,36 @@ public class Unit {
 				((dz == 0) || (dz == 1) || dz == -1));
 	}
 	
+	// WORKING
+	
+	
+	/**
+	 * The unit starts working.
+	 * 
+	 * @effect	the unit starts working
+	 * 			| startWorking()
+	 */			
 	public void work(){
 		startWorking();
 		
 	}
 	
+	/**
+	 * The unit starts working.
+	 * 
+	 * @effect	if the unit is resting and the unit has rested for a time to recover one hitpoint,
+	 * 			the unit stops resting ,starts working and its time remainder to work is equal to 
+	 * 			500 divided by the strength of the unit.
+	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
+	 * 			|	than (stopResting() 
+	 * 			|		&& (working == true)
+	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
+	 * @effect	if the unit is not resting, the units starts working and its time remainder to work
+	 * 			is equal to 500 divided by the strength of the unit.
+	 * 			| if (!working)
+	 * 			|	than ((working == true)
+	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
+	 */
 	@Model
 	private void startWorking(){
 		if ( isResting() && (canHaveRecoverdOneHp())){
@@ -1218,25 +1378,56 @@ public class Unit {
 
 	}
 	
+	/**
+	 * stop the unit from working.
+	 * 
+	 * @post	the unit is not working
+	 * 			| working == false
+	 */
 	@Model
 	private void stopWorking(){
 		this.working = false;
 
+	/**
+	 * Checks whether the unit is working.
+	 * 
+	 * @return	true if and only if  the unit is working.
+	 * 			| result == working
+	 */
 	}
 	@Basic
 	public boolean isWorking(){
 		return working;
 	}
 	
+	/**
+	 * 
+	 * Return the time remaining to work of this unit.
+	 */
+	@Model 
+	private float getTimeRemainderToWork(){
+		return timeRemainderToWork;
+	}
+	
+	/**
+	 * Set the time remaining to work of this unit to the given time.
+	 * 
+	 * @param	time
+	 * 			The new time remaining to work for this unit.
+	 * @post	The time remaining to work of this new time is equal to
+	 *        	the given time.
+	 *       	| new.getTimeRemainderToWork() == time
+	 * 			
+	 */
 	@Model
 	private void setTimeRemainderToWork(float time){
 		this.timeRemainderToWork = time;
 	}
 	
-	@Model 
-	private float getTimeRemainderToWork(){
-		return timeRemainderToWork;
-	}
+
+	
+	
+	// FIGHTING
 	
 	
 	public void attack(Unit other) throws IllegalAttackPosititonException {
@@ -1350,6 +1541,8 @@ public class Unit {
 		return (random.nextDouble() <= x);
 	}
 	
+	// RESTING
+	
 	
 	public void rest(){
 		startResting();
@@ -1404,6 +1597,22 @@ public class Unit {
 	}
 	
 	@Model
+	private void setTimePeriodicRest(float time){
+		this.periodicRest = time;
+	}
+	
+	@Basic @Model
+	private float getTimePeriodicRest(){
+		return this.periodicRest;
+	}
+	
+	@Model
+	private boolean canHaveRecoverdOneHp(){
+		return (getTimeResting() > ((double) 1/(((double) getToughness()/200.0)/0.2)));
+
+	}
+	
+	@Model
 	private void setStartRestHitpoints(double hitpoints){
 		this.startRestHitpoints = hitpoints;
 	}
@@ -1422,6 +1631,9 @@ public class Unit {
 	private double getStartRestStamina(){
 		return this.startRestStamina;
 	}
+	
+	
+	// DEFAULT BEHAVIOUR
 	
 	@Basic
 	public boolean isDefaultBehaviourEnabled(){
