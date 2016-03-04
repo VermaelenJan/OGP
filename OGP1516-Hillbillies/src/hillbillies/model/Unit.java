@@ -56,39 +56,10 @@ public class Unit {
 	private static int INIT_MAX_VAL = 100;
 	private static int MIN_VAL = 1;
 	private static int MAX_VAL = 200;
-		
-
-
-	// Target
-	private double[] target = null;
-	
-	// Working
-	private boolean working;
-	private float timeRemainderToWork;
-	
-	// Attack
-	private float attackTime;
-	
-	// Rest
-	private boolean resting;
-	private float timeSinceRest;
-	private float timeResting = Float.MAX_VALUE;
-	private double startRestHitpoints;
-	private double startRestStamina;
-	private float periodicRest;
-	
-	// Default Behaviour
-	private boolean defaultBehaviour;
-	
-	// Moving
-	private boolean isMoving ;
-	private int[] globalTarget;
-	
 	
 	// Random
 	Random random = new Random();
-
-
+		
 	/**
 	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
 	 * 
@@ -1028,6 +999,7 @@ public class Unit {
 	
 	/**
 	 * Return the base speed of this unit.
+	 * 
 	 * @return 1.5 times the strength plus agility of the unit, divided by 200/100 ,
 	 * 		   divided by the weight of the unit.
 	 * 		   | result == 1.5*(getStrength()+getAgility())/(2*getWeight())
@@ -1067,17 +1039,26 @@ public class Unit {
 			return getBaseSpeed();
 		}
 	}
-	// TODO 
+
 	/**
 	 * Return the current speed of the unit in x, y and z direction.
 	 * 
-	 * @return if the unit is sprinting, the current speed is equal to the walking speed times 2,
+	 * @return 	if the unit is sprinting, the current speed is equal to the walking speed times 2,
 	 * 			multiplied with the difference between the location of the target and location of the unit,
-	 * 			respectively in x, y and z direction, divided by the distance between the units location and
-	 * 			the target.
-	 * 			| result ==     velocity*(target[0]-getLocation()[0])/distance, 
-								velocity*(target[1]-getLocation()[1])/distance, 
-								velocity*(target[2]-getLocation()[2])/distance
+	 * 			divided by the absolute distance between the units location and the target,
+	 * 			respectively in x, y and z direction, 
+	 * 			| result ==     (velocity*2*(target[x]-getLocation()[x])/distance, 
+	 * 			|                velocity*2*(target[y]-getLocation()[y])/distance,
+	 * 			|                velocity*2*(target[z]-getLocation()[z])/distance)
+	 * @return	if the unit is not sprinting, the current speed is equal to the walking speed,
+	 * 		   	multiplied with the difference between the location of the target and location of the unit,
+	 * 		   	divided by the absolute distance between the units location and the target,
+	 * 		   	respectively in x, y and z direction, 
+	 * 			| result ==     (velocity*(target[x]-getLocation()[x])/distance, 
+	 * 			|                velocity*(target[y]-getLocation()[y])/distance,
+	 * 			|                velocity*(target[z]-getLocation()[z])/distance)
+				 
+				
 	 */
 	@Basic @Model
 	private double[] getCurrentSpeed() {
@@ -1126,6 +1107,8 @@ public class Unit {
 	/**
 	 * Set sprinting of this unit on true.
 	 * 
+	 * @post	The new state of sprinting of this unit is true.
+	 * 
 	 */
 	public void startSprinting(){
 		this.sprinting = true;
@@ -1134,7 +1117,7 @@ public class Unit {
 	/**
 	 * Stop the unit sprinting.
 	 * 
-	 * @post	The sprinting is stopped.
+	 * @post	The new state of sprinting of this unit is false.
 	 * 			sprinting == false;		
 	 */
 	public void stopSprinting(){
@@ -1181,7 +1164,7 @@ public class Unit {
 	 * 			| stopResting()
 	 * @effect	if the unit is not attacking, the unit is moving.
 	 * 			| if (!isAttacking())
-	 * 			|	then isMoving == true.
+	 * 			|	then new.isMoving == true.
 	 */
 	@Model 
 	private void startMoving(){
@@ -1197,14 +1180,18 @@ public class Unit {
 	/**
 	 * stop moving the unit.
 	 * 
-	 * @post 	the unit is not moving.
-	 * 			| isMoving == false				
+	 * @post 	the new state of moving of the unit is false.
+	 * 			| new.isMoving == false				
 	 */
 	@Model 
 	private void stopMoving(){
 		this.isMoving = false;
-
 	}
+	
+	/**
+	 * Variable registering whether the unit is moving.
+	 */
+	private boolean isMoving ;
 	
 	/**
 	 * Checks whether the unit is moving.
@@ -1237,6 +1224,8 @@ public class Unit {
 		return distance;
 	}
 	
+
+	
 	/**
 	 * Checks whether the unit is arrived at the target.
 	 * 
@@ -1251,7 +1240,7 @@ public class Unit {
 		return (getDistanceToTarget() < dt*getCurrentSpeedMag());	
 	}
 	
-	// TODO 
+	// TODO bij de throws moet niets staan neem ik aan?
 	/**
 	 * Move to the adjacent cube.
 	 * 
@@ -1262,7 +1251,8 @@ public class Unit {
 	 * @param	dz
 	 * 			The movement of the unit in the z direction.
 	 * @effect	The unit moves to an adjacent cube with movements dx,dy and dz and the boolean
-	 * 			calledByTo on false.
+	 * 			calledByTo on false, which means this function is not called by the function moveTo,
+	 * 			but only a single moveToAdjacent request.
 	 * @throws 	IllegalPositionException
 	 * @throws 	IllegalAdjacentPositionException
 	 */
@@ -1270,7 +1260,35 @@ public class Unit {
 		moveToAdjacent(dx, dy, dz, false);
 	}
 	
-	// TODO
+	/**
+	 * Move to the adjacent cube.
+	 * 
+	 * @param	dx
+	 * 			The movement of the unit in the x direction.
+	 * @param	dy
+	 * 			the movement of the unit in the y direction. 
+	 * @param	dz
+	 * 			The movement of the unit in the z direction.
+	 * @param	calledBy_moveTo
+	 * 			Boolean for defining the function called by the function MoveTo.
+	 * 			The currentTarget is the position of the middle of the cube, where the unit would
+	 * 			move to after the dx,dy and dz movement.
+	 * @effect	if the movement in x,y and z direction is not zero, the unit starts moving.
+	 * 			| startMoving()				 	
+	 * @post 	if the boolean calledBy_moveTo is false, the new current target cube is equal to 
+	 * 			the cube position of the current cube plus the dx,dy and dz movement,respectively 
+	 * 			in x,y and z direction.
+	 * 			| currentTargetCube[x] == currentCube[x] + dx
+	 * 			|&& currentTargetCube[y] == currentCube[y] + dy
+	 * 			|&& currentTargetCube[z] == currentCube[z] + dz
+	 * @throws	IllegalPositionException(currentTarget)
+	 * 			The currentTarget (location after the moveToAdjacent) is not a valid location.
+	 * 			| ! isValidLocation(currentTarget)
+	 * @throws	IllegalAdjacentPositionException(dx,dy,dz)
+	 * 			The given dx,dy and dz movement is not a valid moveToAdjacent movement.
+	 * 			| ! isValidAdjacentMovement(dx,dy,dz)
+	 * 			
+	 */
 	@Model
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
 																					IllegalAdjacentPositionException{
@@ -1300,7 +1318,38 @@ public class Unit {
 		}
 	}
 	
-	// TODO		
+	/**
+	 * Checks whether the dx, dy and dz movement is a valid adjacent movement.
+	 * 
+	 * @param	dx
+	 * 			The movement of the unit in the x direction.
+	 * @param	dy
+	 * 			the movement of the unit in the y direction. 
+	 * @param	dz
+	 * 			The movement of the unit in the z direction.
+	 * @return	True if and only if the movement is 0 or 1 or -1, respectively 
+	 * 			for dx, dy and dz.
+	 * 			| result == (((dx == 0) || (dx == 1) || (dx == -1))
+	 * 			|        && ((dy == 0) || (dy == 1) || (dy == -1) )
+	 * 			|        &&  ((dz == 0) || (dz == 1) || dz == -1))
+	 */
+	private boolean isValidAdjacentMovement(int dx, int dy, int dz){
+		
+		return (((dx == 0) || (dx == 1) || (dx == -1)) && 
+				((dy == 0) || (dy == 1) || (dy == -1) )&& 
+				((dz == 0) || (dz == 1) || dz == -1));
+	}
+	
+	
+	// TODO hier ook niets bij de illegalpositionexception schrijven dus?
+	/**
+	 * Move to the given target.
+	 * 	
+	 * @param	endTarget
+	 * 			The target of the unit to move to.
+	 *			if the current		
+	 * @throws	IllegalPositionException
+	 */
 	public void moveTo(int[] endTarget) throws IllegalPositionException { 
 										// When IllegalPositionException is thrown in moveToAdjacent(),
 										// by the coding rules, the variable "globalTarget" should be reverted to the
@@ -1360,12 +1409,17 @@ public class Unit {
 		}
 	}
 	
-	private boolean isValidAdjacentMovement(int dx, int dy, int dz){
-		
-		return (((dx == 0) || (dx == 1) || (dx == -1)) && 
-				((dy == 0) || (dy == 1) || (dy == -1) )&& 
-				((dz == 0) || (dz == 1) || dz == -1));
-	}
+	/**
+	 * Variable registering the target to move to.
+	 */
+	private double[] target = null;
+	
+	/**
+	 * Variable registering the global target to move to.
+	 */
+	private int[] globalTarget;
+	
+
 	
 	// WORKING
 	
@@ -1373,7 +1427,7 @@ public class Unit {
 	/**
 	 * The unit starts working.
 	 * 
-	 * @effect	the unit starts working
+	 * @effect	the unit starts working.
 	 * 			| startWorking()
 	 */			
 	public void work(){
@@ -1434,6 +1488,12 @@ public class Unit {
 	}
 	
 	/**
+	 * Variable registering whether the unit is working.
+	 */
+	private boolean working;
+	
+	
+	/**
 	 * 
 	 * Return the time remaining to work of this unit.
 	 */
@@ -1456,6 +1516,11 @@ public class Unit {
 	private void setTimeRemainderToWork(float time){
 		this.timeRemainderToWork = time;
 	}
+	
+	/**
+	 * Variable registering the time remaining to work.
+	 */
+	private float timeRemainderToWork;
 	
 
 	
@@ -1527,7 +1592,25 @@ public class Unit {
 	}
 	
 	
-	
+	/**
+	 * Set the orientation of the units in the fight to each other.
+	 * 
+	 * @param	other
+	 * 			The other unit in the fight.
+	 * @effect 	The orientation of this unit is set in the direction of the other unit, 
+	 * 			using the arc tangens of the distant difference in y direction of the other unit and
+	 * 			this unit, and the distant difference in z direciton of the other unit and 
+	 * 			this unit.
+	 * 			|  setOrientation(arctangens(other.getLocation()[y]-this.getLocation()[y],
+	 * 			|	other.getLocation()[x]-this.getLocation()[x])
+	 * @effect 	The orientation of the other unit is set in the direction of the this unit, 
+	 * 			using the arc tangens of the distant difference in y direction of this unit and
+	 * 			the other unit, and the distant difference in z direciton of this unit and 
+	 * 			the other unit.
+	 * 			|  setOrientation(arctangens(this.getLocation()[y]-other.getLocation()[y],
+	 * 			|	this.getLocation()[x]-other.getLocation()[x])
+	 * 
+	 */
 	@Model 
 	private void setOrientationInFight(Unit other) {
 		double orientUnitThis = Math.atan2(other.getLocation()[1]-this.getLocation()[1],
@@ -1539,7 +1622,48 @@ public class Unit {
 		other.setOrientation(orientUnitOther);
 	}
 	
-	
+	/**
+	 * Defend against an other unit.
+	 * 
+	 * @param	other
+	 * 			The unit to defend against.
+	 * @effect	if the unit is not equal to the other unit and the unit is resting, than the unit stops resting.
+	 * 			| if (this!=other)
+	 * 			|	if (this.isResting())
+	 * 			|		then this.stopResting()
+	 * @effect	if the unit is not equal to the other unit, the unit stops working.
+	 * 			| if (this!=other)
+	 * 			|	then this.stopWorking()
+	 * @effect	if the unit is not equal to the other unit, the possibility to dodge is 0.2 times this units agility,
+	 * 			divided by the other units agility.
+	 * 			| if (this != other)
+	 * 			|	than possibilityDodge = (0.2* this.getAgility()/other.getAgility())
+	 * @effect	if this unit is not equal to the other unit, and the unit dodges successfully, the unit is set
+	 * 			to a random location and its orientation is in the direction of the other attacking unit.
+	 * 			| if (this != other)
+	 * 			|	if (getDefendSucces(possibilityDodge))
+	 * 			|		then (this.setRandomLocation && this.setOrientationInFight(other))
+	 * @effect	if this unit is not equal to the other unit, and the unit is not resting,
+	 * 			the possibility to block is equal to 0.25 times the strength plus agility of this unit, 
+	 * 			divided by the strength plus agility of the other unit.
+	 * 			| possibilityBlock = 0.25*(( this.getStrength() + this.getAgility())/
+	 * 				( (other.getStrength()+other.getAgility() ))))
+	 * @post	if this unit is not equal to the other unit, and if the unit does not 
+	 * 			dodge successfully, and if the unit does not block successfully,
+	 * 			the new hitpoints are equal to the old hitpoints reduced with the strength
+	 * 			of the other unit divided by 10.	
+	 * 			| if (this != other)
+	 * 			|	if ( ! getDefendSucces(possibilityDodge))
+	 * 			|		if (! getDefendSucces(possibilityBlock))
+	 * 			|			then (new.hitpoints = old.hitpoints - getStrength()/10)
+	 * @effect 	if this unit is not equal to the other unit, and if the unit fails to dodge, and the unit fails
+	 * 			to block, and if the hitpoints are less than 0, than the hitpoints are 0.
+	 * 			| if (this != other)
+	 * 			|	if ( ! getDefendSucces(possibilityDodge))
+	 * 			|		if (! getDefendSucces(possibilityBlock))
+	 * 			|			if (this.getHitpoints) <=0)
+	 * 			|				than this.setHitpoints(0)			
+	 */
 	public void defend(Unit other){
 		if (this != other) {
 			if (this.isResting()) {
@@ -1575,6 +1699,12 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * Set the unit to a random position when dodging.
+	 * 
+	 * @effect	The location is a random location.
+	 * 			| setLocation(randomPosition(getLocation))
+	 */
 	@Model 
 	private void setRandomLocation(){
 		try {
@@ -1584,6 +1714,18 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * Return a random position in the near area of the current location.
+	 * 
+	 * @param 	currLoc
+	 * 			The current location of the unit.
+	 * @return 	The current location plus a random number between -1 and 1, excluding 0,
+	 * 			in the x and y direction.
+	 * 			| result == (currLoc[x]+randomNumber(-1,1) 
+	 * 			| 		&&  (currLoc[y] + randomNumber(-1,1))
+	 * 			|		&&  (currLoc[z])
+	 * 			
+	 */
 	@Model
 	private double[] randomPosition(double[] currLoc){
 		double[] newLoc = {currLoc[0]+ (random.nextDouble()*2-1), currLoc[1]+ (random.nextDouble()*2-1), currLoc[2]};
@@ -1623,6 +1765,11 @@ public class Unit {
 	private float getAttackTime(){
 		return this.attackTime;
 	}
+	
+	/**
+	 * Variable registering the attack time.
+	 */
+	private float attackTime;
 	
 	/**
 	 * Checks whether the unit's defend is succesfull.
@@ -1714,6 +1861,11 @@ public class Unit {
 	}
 	
 	/**
+	 * Variable registering if the unit is resting.
+	 */
+	private boolean resting;
+	
+	/**
 	 * Set the time since rest to the given time.
 	 * 
 	 * @post The new time since resting is equal to the given time.
@@ -1730,6 +1882,11 @@ public class Unit {
 	private float getTimeSinceRest(){
 		return this.timeSinceRest;
 	}
+	
+	/**
+	 * Variable registering the time since the unit last stopped resting.
+	 */
+	private float timeSinceRest;
 	
 	/**
 	 * Set the time resting to the given time.
@@ -1752,6 +1909,11 @@ public class Unit {
 	}
 	
 	/**
+	 * Variable registering the time the unit is resting.
+	 */
+	private float timeResting = Float.MAX_VALUE;
+	
+	/**
 	 * Set the time since the last reset period. 
 	 * 
 	 * @param	time
@@ -1770,6 +1932,11 @@ public class Unit {
 	private float getTimePeriodicRest(){
 		return this.periodicRest;
 	}
+	
+	/**
+	 * Variable registering the periodic rest.
+	 */
+	private float periodicRest;
 	
 	/**
 	 * Checks whether the unit has rested enough to recover one hitpoint.
@@ -1805,7 +1972,12 @@ public class Unit {
 	private void setStartRestHitpoints(double hitpoints){
 		this.startRestHitpoints = hitpoints;
 	}
-
+	
+	/**
+	 * Variable registering the hitpoints on the moment the unit started resting. 
+	 */
+	private double startRestHitpoints;
+	
 	/**
 	 * Return the initial stamina on the moment the unit started resting.
 	 */
@@ -1825,6 +1997,11 @@ public class Unit {
 	private void setStartRestStamina(double stamina){
 		this.startRestStamina = stamina;
 	}
+	
+	/**
+	 * Variable registering the stamina on the moment the unit started resting.
+	 */
+	private double startRestStamina;
 	
 
 	// DEFAULT BEHAVIOUR
@@ -1870,7 +2047,23 @@ public class Unit {
 	}
 	
 	/**
+	 * Variable registering if the defaultbehaviour is enabled.
+	 */
+	private boolean defaultBehaviour;
+	
+	/**
+	 * Set a new default behaviour for the unit to do.
 	 * 
+	 * possibleTask[0] = moveTo(randomPosition),possibleTask[1] = work, possibleTask[2] = rest
+	 * @effect	if the possible task is move to random position, unit moves to random position.
+	 * 			| if (possibleTask[0])
+	 * 			|	than moveTo(getRandomPosition)
+	 * @effect	if the possible task is work, the unit works.
+	 * 			| if (possibleTask[1])
+	 * 			|	than work()
+	 * @effect	if the possible task is rest, the unit rests.
+	 * 			| if (possibleTask[2])
+	 * 			|	than rest()
 	 */
 	@Model
 	private void newDefaultBehaviour(){
