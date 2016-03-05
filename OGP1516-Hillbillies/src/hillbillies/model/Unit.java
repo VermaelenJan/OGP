@@ -1,17 +1,10 @@
 package hillbillies.model;
 
-
-
 import java.util.Random;
-
-
-
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
-
-
 
 
 /**
@@ -21,7 +14,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar  The name of each unit must be a valid name for any
  *         unit.
  *       | isValidName(getName())
- * @invar  The weight of each unit must be greater or equal than the units strength plus agility, divided by two,
+ * @invar  The weight of each unit must be greater than or equal to the units strength plus agility, divided by two,
  * 		   and smaller than MAX_VAL.
  *       | getWeight() >= (getAgility()+getStrength)/2 && (getWeight() <= MAX_VAL)
  * @invar  The strength of each unit must be between MIN_VAL and MAX_VAL,inclusively.
@@ -30,17 +23,15 @@ import be.kuleuven.cs.som.annotate.Raw;
  * 		 | (getAgility() >= MIN_VAL) && (getAgility() <= MAX_VAL) 
  * @invar  The toughness of each unit must be between MIN_VAL and MAX_VAL,inclusively.
  * 		 | (getTougness() >= MIN_VAL) && (getToughness() <= MAX_VAL)
- * @invar  The hitpoints of each unit must be a valid hitpoints for any
- *         unit.
+ * @invar  The hitpoints of each unit must be a valid hitpoints for the unit.
  *       | isValidHitpoints(getHitpoints())
- * @invar  The stamina of each unit must be a valid stamina for any
- *         unit.
+ * @invar  The stamina of each unit must be a valid stamina for the unit.
  *       | isValidStamina(getStamina())
-  * @invar  The orientation of each unit must be between 0 and 2*PI. 
+ * @invar  The orientation of each unit must be between 0 and 2*PI. 
  *       | (getOrientation() >= 0) && (getOrientation < 2*PI)
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0.9
+ * @version 0.9.8
  *
  */
 public class Unit {
@@ -51,13 +42,13 @@ public class Unit {
 	static int WORLD_Z = 50;
 	private double CUBE_LENGTH = 1;
 	
-	// MIN,MAX VALUES 
+	// MIN,MAX VALUES (for properties)
 	private static int INIT_MIN_VAL = 25;
 	private static int INIT_MAX_VAL = 100;
 	private static int MIN_VAL = 1;
 	private static int MAX_VAL = 200;
 	
-	// Random
+	// Randomizer
 	Random random = new Random();
 		
 	/**
@@ -81,25 +72,23 @@ public class Unit {
 	 * 			| new.getLocation() == location
 	 * @post The name of this new unit is equal to the given name.
 	 * 			| new.getName() == name
-	 * @effect the given weight is set as the weight of this new unit.
+	 * @effect The given weight is set as the weight of this new unit.
 	 * 			| setWeight(weight)
-	 * @effect the given strength is set as the strength of this new unit.
+	 * @effect The given strength is set as the strength of this new unit.
 	 * 			| setStrength(strength)
-	 * @effect the given agility is set as the agility of this new unit.
+	 * @effect The given agility is set as the agility of this new unit.
 	 * 			| setAgility(agility)
-	 * @effect the given toughness is set as the toughness of this new unit.
+	 * @effect The given toughness is set as the toughness of this new unit.
 	 * 			| setToughness(toughness)
-	 * @pre    The given hitpoints must be a valid hitpoints for any unit.
+	 * @pre The given hitpoints must be a valid hitpoints for the unit.
 	 *          | isValidHitpoints(hitpoints)
-	 * @post   The hitpoints of this new unit is equal to the given
-	 *         hitpoints.
+	 * @post The hitpoints of this new unit is equal to the given hitpoints.
 	 *          | new.getHitpoints() == hitpoints
-	 * @pre    The given stamina must be a valid stamina for any unit.
+	 * @pre The given stamina must be a valid stamina for the unit.
 	 *       	| isValidStamina(stamina)
-	 * @post   The stamina of this new unit is equal to the given
-	 *         stamina.
+	 * @post The stamina of this new unit is equal to the given stamina.
 	 *       	| new.getStamina() == stamina													
-	 * @effect the given orientation is set as the orientation of this new unit.
+	 * @effect The given orientation is set as the orientation of this new unit.
 	 * 			| setOrientation(orientation)
 	 * @throws IllegalPositionException
 	 * 			The given position is not a valid position for a unit.
@@ -107,7 +96,6 @@ public class Unit {
 	 * @throws IllegalNameException 
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
-	 * 
 	 */
 	@Model
 	private Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, 
@@ -139,8 +127,6 @@ public class Unit {
 	 * 			The agility for this new unit.
 	 * @param toughness
 	 * 			The toughness for this new unit.
-	 * @param orientation
-	 * 			The orientation for this new unit.
 	 * @effect This new unit is initialized with the given cubeLocation as its cubeLocation, the given name as its name, the given 
 	 * 			weight as its weight, the given strength as its strength, the given agility as its agility, the given toughness as 
 	 * 			its toughness, and the default value PI/2 as its orientation.
@@ -160,7 +146,6 @@ public class Unit {
 	// LOCATION
 	
 	/**
-	 * 
 	 * Return the location of this unit.
 	 */
 	@Basic @Raw
@@ -177,8 +162,8 @@ public class Unit {
 	 * 			The location to check.
 	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
 	 * 			are smaller than the WORLD_X, WORLD_Y and WORLD_Z values and the x,y and z value are greater than 0.
-	 * 			| result == (location[0] <= WORLD_X) && (location[1] <= WORLD_Y) && (location[2] <= WORLD_Z) && 
-				| (location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0))
+	 * 			| result == (location[x] <= WORLD_X) && (location[y] <= WORLD_Y) && (location[z] <= WORLD_Z) && 
+	 *			| (location[x] >= 0) && (location[y] >= 0) && (location[z] >= 0))
 	 */
 	@Raw @Model
 	private static boolean isValidLocation(double[] location) {
@@ -189,15 +174,13 @@ public class Unit {
 	/**
 	 * Set the location of this unit to the given location.
 	 * 
-	 * @param  location
-	 *         The new location for this unit.
-	 * @post   The location of this new unit is equal to
-	 *         the given location.
-	 *       | new.getLocation() == location
+	 * @param location
+	 *         	The new location for this unit.
+	 * @post The location of this new unit is equal to the given location.
+	 *       	| new.getLocation() == location
 	 * @throws IllegalPositionException
-	 *         The given location is not a valid location for any
-	 *         unit.
-	 *       | ! isValidLocation(location)
+	 *         	The given location is not a valid location for any unit.
+	 *       	| ! isValidLocation(location)
 	 */
 	@Raw @Model
 	private void setLocation(double[] location) throws IllegalPositionException{
@@ -211,15 +194,13 @@ public class Unit {
 	/**
 	 * Variables registering the location of this unit.
 	 */
-	private double xPos;
-	private double yPos;
-	private double zPos;
+	private double xPos = 0;
+	private double yPos = 0;
+	private double zPos = 0;
 	
-
 	// CUBE
 	
 	/**
-	 * 
 	 * Returns the coordinates of the cube the unit is in.
 	 */
 	@Basic @Raw
@@ -229,11 +210,9 @@ public class Unit {
 		return(position);
 	}
 	
-	
 	// NAME 
 	
 	/**
-	 * 
 	 * Return the name of this unit.
 	 */
 	@Basic @Raw 
@@ -244,15 +223,13 @@ public class Unit {
 	/**
 	 * Set the name of this unit to the given name.
 	 * 
-	 * @param  name
-	 *         The new name for this unit.
-	 * @post   The name of this new unit is equal to
-	 *         the given name.
-	 *       | new.getName() == Name
+	 * @param name
+	 *         	The new name for this unit.
+	 * @post The name of this new unit is equal to the given name.
+	 *         	| new.getName() == Name
 	 * @throws IllegalNameException
-	 *         The given name is not a valid name for any
-	 *         unit.
-	 *       | ! isValidName(name)
+	 *         	The given name is not a valid name for any unit.
+	 *         	| ! isValidName(name)
 	 */
 	@Raw
 	public void setName(String name) throws IllegalNameException{
@@ -262,18 +239,15 @@ public class Unit {
 	}
 	
 	/**
-	 * Check whether the given name is a valid name for
-	 * any unit.
+	 * Check whether the given name is a valid name for any unit.
 	 *  
-	 * @param  name
-	 *         The name to check.
-	 * @return True if and only if the given name's length is greater or equal to 2 and the given name's first character 
-	 * 		   is uppercase and the given name has all valid characters.
-	 * 		   | result ==
-	 * 				((name.length() >= 2) 
-	 *			&&	(Character.isUpperCase(name.charAt(0))) 
-	 *			&&  (areValidCharacters(name)))			
-	 * 			
+	 * @param name
+	 *         	The name to check.
+	 * @return True if and only if the given name's length is greater or equal to 2 and the given name's 
+	 * 			first character is uppercase and the given name has all valid characters.
+	 * 		   	| result == (	(name.length() >= 2) 
+	 *							&&	(Character.isUpperCase(name.charAt(0))) 
+	 *							&&  (areValidCharacters(name)) )			
 	 */
 	@Model
 	private static boolean isValidName(String name){
@@ -281,15 +255,12 @@ public class Unit {
 	}
 	
 	/**
-	 * Check whether the given name(characters) is a valid name for 
-	 * any unit. 
+	 * Check whether all the given name's characters are valid for a name of any unit. 
 	 * 
 	 * @param name
-	 * @return True if and only if the name has as characters letters,space, double quotes and a single quote,
-	 * 		   precursory by a backslash.
-	 * 		   | result == for (char c : name.toCharArray()){
-							 (( Character.isLetter(c)) || ( (c == ' ') ) && ( (c == '"')) && ( (c == '\''))) }
-	 * 			
+	 * @return True if and only if the name has letters, spaces, double quotes or single quotes as characters.
+	 * 		   	| result == (for char in name
+	 *						 ( char.isLetter ||  (char == ' ')  || (char == '"') || (char == ''')))
 	 */
 	@Model
 	private static boolean areValidCharacters(String name){
@@ -297,20 +268,18 @@ public class Unit {
 			if ( (! Character.isLetter(c)) && (! (c == ' ') ) && (! (c == '"')) && (! (c == '\'')) )
 				return false;
 		}
-		
 		return true;	
 	}
 	
 	/**
 	 * Variable registering the name of the unit.
 	 */
-	private String name;
+	private String name = "";
 
 	
 	// WEIGHT
 	
 	/**
-	 * 
 	 * Return the weight of this unit.
 	 */
 	@Basic @Raw
@@ -322,9 +291,9 @@ public class Unit {
 	/**
 	 * Set the weight of this unit to the given weight.
 	 * 
-	 * @param	weight
+	 * @param weight
 	 *	     	The new weight for this unit.
-	 * @effect	The weight of the unit is set to the given weight, with the restrictions for a not-newly created unit
+	 * @effect The weight of the unit is set to the given weight, with the restrictions for a not-newly created unit
 	 * 			(with the flag on false).
 	 * 			| setWeight(weight,false)
 	 */
@@ -336,49 +305,47 @@ public class Unit {
 	/**
 	 * Set the weight of this unit to the given weight
 	 * 
-	 * @param   weight
+	 * @param weight
 	 *          The new weight for this unit.
-	 * @param   flag
+	 * @param flag
 	 * 			A flag to mark that the method is used in the constructor.
 	 * 
-	 *			If the given flag is true, the weight is set for the first time in the constructor,
-	 * 		    the current minimum value of the weight is the initial minimum value 
-	 * 		    of the weight of the constructor and the current maximum value of the weight 
-	 *          is the initial maximum value of the weight of the constructor.
-	 *          | if (flag)
-	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *		If the given flag is true, the weight is set for the first time in the constructor,
+	 * 		the current minimum value of the weight is the initial minimum value 
+	 * 		of the weight of the constructor and the current maximum value of the weight 
+	 *      is the initial maximum value of the weight of the constructor.
+	 *      | if (flag)
+	 *		|	then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
 	 *
-	 *    		If the given flag is false,the weight is already set once in the constructor,
-	 * 		    the current minimum value of the weight is the minimum value 
-	 * 		    of the weight after the constructor and the current maximum value of the weight 
-	 *          is the maximum value of the weight after the constructor.
-	 *          | if (! flag)
-	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *    	If the given flag is false,the weight is already set once in the constructor,
+	 * 		the current minimum value of the weight is the minimum value 
+	 * 		of the weight after the constructor and the current maximum value of the weight 
+	 *      is the maximum value of the weight after the constructor.
+	 *      | if (! flag)
+	 *		|	then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
 	 *
-	 * @post    if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
+	 * @post If the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is smaller than the current minimum value of the weight,
 	 * 			the weight of this unit is equal to the current minimum value.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
 	 * 			|	if (weight < currMinVal)
-	 * 			|		then (new.weight == currMinVal) 	
-	 * @post	if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
+	 * 			|		then (new.getWeight() == currMinVal) 	
+	 * @post If the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is greater than the current minimum value and smaller than
 	 * 			the current maximum value, the weight of this unit is equal to the given weight.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
 	 * 			|	if ((weight >= currMinVal) && (weight <= currMaxVal))
-	 * 			|		then (new.weight == weight)	
-	 * @post    if the given weight is greater than or equal to the units strength plus agility, divided by 2, 
+	 * 			|		then (new.getWeight() == weight)	
+	 * @post If the given weight is greater than or equal to the units strength plus agility, divided by 2, 
 	 * 			and if the given weight is greater than the current maximum value of the weight,
 	 * 			the weight of this unit is equal to the current maximum value.
 	 * 			| if (weight >= (getStrength()+getAgility())/2)
 	 * 			|	if (weight > currMaxVal)
-	 * 			|		then (new.weight == currMaxVal) 
-	 * @post    if the given weight is smaller than the units strength plus agility, divided by 2, 
+	 * 			|		then (new.getWeight() == currMaxVal) 
+	 * @post If the given weight is smaller than the units strength plus agility, divided by 2, 
 	 * 			the weight of this unit is equal to the units strength plus agility, divided by 2.
 	 * 			| if (weight < (getStrength()+getAgility())/2)
-	 * 			|	then (new.weight == (getStrength()+getAgility())/2) 			
-			
-   
+	 * 			|	then (new.getWeight() == (getStrength()+getAgility())/2)
 	 */	
 	@Raw @Model
 	private void setWeight(int weight, boolean flag){
@@ -411,12 +378,11 @@ public class Unit {
 	/**
 	 * Variable registering the weight of this unit.
 	 */
-	private int weight;
+	private int weight = 0;
 	
 	// STRENGTH
 	
 	/**
-	 * 
 	 * Return the strength of this unit.
 	 */
 	@Basic @Raw
@@ -427,11 +393,10 @@ public class Unit {
 	/**
 	 * Set the strength of this unit to the given strength.
 	 * 
-	 * @param	strength
+	 * @param strength
 	 *	     	The new strength for this unit.
-	 * @effect	The strength of the unit is set to the given strength, with the restrictions for a not-newly created unit
-	 * 			(with the flag on false).
-	 * 			| setStrength(weight,false)
+	 * @effect The strength of the unit is set to the given strength, with the restrictions for a not-newly created unit.
+	 * 			| setStrength(strength,false)
 	 */
 	@Raw
 	public void setStrength(int strength) {
@@ -441,41 +406,40 @@ public class Unit {
 	/**
 	 * Set the strength of this unit to the given strength.
 	 * 
-	 * @param   strength
+	 * @param strength
 	 *          The new strength for this unit.
-	 * @param   flag
+	 * @param flag
 	 * 			A flag to mark that the method is used in the constructor.
 	 * 
-	 *			If the given flag is true, the weight is set for the first time in the constructor,
-	 * 		    the current minimum value of the strength is the initial minimum value 
-	 * 		    of the strength of the constructor and the current maximum value of the strength 
-	 *          is the initial maximum value of the strength of the constructor.
-	 *          | if (flag)
-	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *		If the given flag is true, the strength is set for the first time in the constructor,
+	 * 		the current minimum value of the strength is the initial minimum value 
+	 * 		of the strength of the constructor and the current maximum value of the strength 
+	 *      is the initial maximum value of the strength of the constructor.
+	 *      | if (flag)
+	 *		|	then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
 	 *
-	 *    		If the given flag is false,the strength is already set once in the constructor,
-	 * 		    the current minimum value of the strength is the minimum value 
-	 * 		    of the strength after the constructor and the current maximum value of the strength 
-	 *          is the maximum value of the strength after the constructor.
-	 *          | if (! flag)
-	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *   	If the given flag is false,the strength is already set once in the constructor,
+	 * 		the current minimum value of the strength is the minimum value 
+	 * 		of the strength after the constructor and the current maximum value of the strength 
+	 *      is the maximum value of the strength after the constructor.
+	 *      | if (! flag)
+	 *		|	then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
 	 *
-	 * @post    If the given strength is smaller than the current minimum value of the strength,
+	 * @post If the given strength is smaller than the current minimum value of the strength,
 	 * 			the strength of this unit is equal to the current minimum value.
 	 * 			| if (strength < currMinVal)
-	 * 			|		then (new.strength == currMinVal) 	
-	 * @post	If the given strength is greater than the current minimum value and smaller than
+	 * 			|		then (new.getStrength() == currMinVal) 	
+	 * @post If the given strength is greater than the current minimum value and smaller than
 	 * 			the current maximum value, the strength of this unit is equal to the given strength.
 	 * 			| if ((strength >= currMinVal) && (strength <= currMaxVal))
-	 * 			|		then (new.strength == strength)	
-	 * @post    | if the given strength is greater than the current maximum value of the strength,
+	 * 			|		then (new.getStrength() == strength)	
+	 * @post If the given strength is greater than the current maximum value of the strength,
 	 * 			the strength of this unit is equal to the current maximum value.
 	 * 			| if (strength > currMaxVal)
-	 * 			|		then (new.strength == currMaxVal) 
-	 * @effect	The weight is set to the the weight of the unit, depending on the restrictions of the weight,
-	 * 			due to possible changes of the strength. 
+	 * 			|		then (new.getStrength() == currMaxVal) 
+	 * @effect The weight is set to the the weight of the unit, depending on the restrictions of the weight according
+	 * 			to the strength, due to possible changes of the strength. 
 	 */
-	
 	@Raw @Model
 	private void setStrength(int strength, boolean flag){
 		int currMinVal;
@@ -502,7 +466,7 @@ public class Unit {
 	/**
 	 * Variable registering the strength of this unit.
 	 */
-	private int strength;
+	private int strength = 0;
 	
 	
 	// AGILITY
@@ -519,10 +483,9 @@ public class Unit {
 	/**
 	 * Set the agility of this unit to the given agility.
 	 * 
-	 * @param	agility
+	 * @param agility
 	 *	     	The new agility for this unit.
-	 * @effect	The agility of the unit is set to the given agility, with the restrictions for a not-newly created unit
-	 * 			(with the flag on false).
+	 * @effect The agility of the unit is set to the given agility, with the restrictions for a not-newly created unit.
 	 * 			| setAgility(agility,false)
 	 */
 	@Raw
@@ -533,39 +496,39 @@ public class Unit {
 	/**
 	 * Set the agility of this unit to the given agility.
 	 * 
-	 * @param   agility
+	 * @param agility
 	 *          The new agility for this unit.
-	 * @param   flag
+	 * @param flag
 	 * 			A flag to mark that the method is used in the constructor.
 	 * 
-	 *			If the given flag is true, the agility is set for the first time in the constructor,
-	 * 		    the current minimum value of the agility is the initial minimum value 
-	 * 		    of the agility of the constructor and the current maximum value of the agility 
-	 *          is the initial maximum value of the agility of the constructor.
-	 *          | if (flag)
-	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *		If the given flag is true, the agility is set for the first time in the constructor,
+	 * 		the current minimum value of the agility is the initial minimum value 
+	 * 		of the agility of the constructor and the current maximum value of the agility 
+	 *      is the initial maximum value of the agility of the constructor.
+	 *      | if (flag)
+	 *			then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
 	 *
-	 *    		If the given flag is false,the agility is already set once in the constructor,
-	 * 		    the current minimum value of the agility is the minimum value 
-	 * 		    of the agility after the constructor and the current maximum value of the agility 
-	 *          is the maximum value of the agility after the constructor.
-	 *          | if (! flag)
-	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *    	If the given flag is false,the agility is already set once in the constructor,
+	 * 		the current minimum value of the agility is the minimum value 
+	 * 		of the agility after the constructor and the current maximum value of the agility 
+	 *      is the maximum value of the agility after the constructor.
+	 *      | if (! flag)
+	 *			then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
 	 *
-	 * @post    If the given agility is smaller than the current minimum value of the agility,
+	 * @post If the given agility is smaller than the current minimum value of the agility,
 	 * 			the agility of this unit is equal to the current minimum value.
 	 * 			| if (agility < currMinVal)
-	 * 			|		then (new.agility == currMinVal) 	
-	 * @post	If the given agility is greater than the current minimum value and smaller than
+	 * 			|		then (new.getAgility() == currMinVal) 	
+	 * @post If the given agility is greater than the current minimum value and smaller than
 	 * 			the current maximum value, the agility of this unit is equal to the given agility.
 	 * 			| if ((agility >= currMinVal) && (agility <= currMaxVal))
-	 * 			|		then (new.agility == agility)	
-	 * @post    if the given agility is greater than the current maximum value of the agility,
+	 * 			|		then (new.getAgility() == agility)	
+	 * @post If the given agility is greater than the current maximum value of the agility,
 	 * 			the agility of this unit is equal to the current maximum value.
 	 * 			| if (agility > currMaxVal)
-	 * 			|		then (new.agility == currMaxVal) 
-	 * @effect	The weight is set to the the weight of the unit, depending on the restrictions of the weight,
-	 * 			due to possible changes of the strength. 
+	 * 			|		then (new.getAgility() == currMaxVal) 
+	 * @effect The weight is set to the the weight of the unit, depending on the restrictions of the weight according
+	 * 			to the agility, due to possible changes of the agility. 
 	 */
 	@Raw @Model
 	private void setAgility(int agility, boolean flag){
@@ -589,16 +552,16 @@ public class Unit {
 		
 		setWeight(getWeight());
 	}
+	
 	/**
 	 * Variable registering the agility of this unit.
 	 */
-	private int agility;
+	private int agility = 0;
 	
 	
 	// TOUGHNESS	
 
 	/**
-	 * 
 	 * Return the toughness of this unit.
 	 */
 	@Basic @Raw
@@ -609,10 +572,9 @@ public class Unit {
 	/**
 	 * Set the toughness of this unit to the given toughness.
 	 * 
-	 * @param	toughness
+	 * @param toughness
 	 *	     	The new toughness for this unit.
-	 * @effect	The toughness of the unit is set to the given toughness, with the restrictions for a not-newly created unit
-	 * 			(with the flag on false).
+	 * @effect The toughness of the unit is set to the given toughness, with the restrictions for a not-newly created unit.
 	 * 			| setToughness(toughness,false)
 	 */
 	@Raw
@@ -623,37 +585,37 @@ public class Unit {
 	/**
 	 * Set the toughness of this unit to the given agility.
 	 * 
-	 * @param   toughness
+	 * @param toughness
 	 *          The new toughness for this unit.
-	 * @param   flag
+	 * @param flag
 	 * 			A flag to mark that the method is used in the constructor.
 	 * 
-	 *			If the given flag is true, the toughness is set for the first time in the constructor,
-	 * 		    the current minimum value of the toughness is the initial minimum value 
-	 * 		    of the toughness of the constructor and the current maximum value of the toughness 
-	 *          is the initial maximum value of the toughness of the constructor.
-	 *          | if (flag)
-	 *				then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
+	 *		If the given flag is true, the toughness is set for the first time in the constructor,
+	 * 		the current minimum value of the toughness is the initial minimum value 
+	 * 		of the toughness of the constructor and the current maximum value of the toughness 
+	 *      is the initial maximum value of the toughness of the constructor.
+	 *      | if (flag)
+	 *			then ((currMinVal == INIT_MIN_VAL) && (currMaxVal = INIT_MAX_VAL))
 	 *
-	 *    		If the given flag is false,the toughness is already set once in the constructor,
-	 * 		    the current minimum value of the toughness is the minimum value 
-	 * 		    of the toughness after the constructor and the current maximum value of the toughness 
-	 *          is the maximum value of the toughness after the constructor.
-	 *          | if (! flag)
-	 *				then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
+	 *    	If the given flag is false,the toughness is already set once in the constructor,
+	 * 		the current minimum value of the toughness is the minimum value 
+	 * 		of the toughness after the constructor and the current maximum value of the toughness 
+	 *      is the maximum value of the toughness after the constructor.
+	 *      | if (! flag)
+	 *			then ((currMinVal == MIN_VAL) && (currMaxVal = MAX_VAL))
 	 *
-	 * @post    If the given toughness is smaller than the current minimum value of the toughness,
+	 * @post If the given toughness is smaller than the current minimum value of the toughness,
 	 * 			the toughness of this unit is equal to the current minimum value.
 	 * 			| if (toughness < currMinVal)
-	 * 			|		then (new.toughness == currMinVal) 	
-	 * @post	If the given toughness is greater than the current minimum value and smaller than
+	 * 			|		then (new.getToughness() == currMinVal) 	
+	 * @post If the given toughness is greater than the current minimum value and smaller than
 	 * 			the current maximum value, the toughness of this unit is equal to the given toughness.
 	 * 			| if ((toughness >= currMinVal) && (toughness <= currMaxVal))
-	 * 			|		then (new.toughness == toughness)	
-	 * @post    | if the given toughness is greater than the current maximum value of the toughness,
+	 * 			|		then (new.getToughness() == toughness)	
+	 * @post If the given toughness is greater than the current maximum value of the toughness,
 	 * 			the toughness of this unit is equal to the current maximum value.
 	 * 			| if (toughness > currMaxVal)
-	 * 			|		then (new.toughness == currMaxVal) 
+	 * 			|		then (new.getToughness() == currMaxVal) 
 	 */
 	@Raw @Model
 	private void setToughness(int toughness, boolean flag){
@@ -676,13 +638,11 @@ public class Unit {
 			this.toughness = currMaxVal; 
 	}
 	
-	
 	/**
 	 * 	Variable registering the toughness of this unit.
 	 */
-	private int toughness;
+	private int toughness = 0;
 
-	
 	// HITPOINTS
 
 	/**
@@ -690,16 +650,14 @@ public class Unit {
 	 * 
 	 * @return The weight times the toughness divided by 50, rounded up to the first
 	 * 			larger integer.
-	 * 		   | result == Math.ceil((getWeight()*getToughness())/50)
+	 * 		   | result == ceil((getWeight()*getToughness())/50)
 	 */
 	@Basic @Raw
 	public int getMaxHitpointsStamina() {
 		 return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
 	}
 	
-	
 	/**
-	 * 
 	 * Return the hitpoints of this unit.
 	 */
 	@Basic @Raw
@@ -707,16 +665,14 @@ public class Unit {
 		return this.hitpoints;
 	}
 	
-	
 	/**
-	 * Check whether the given hitpoints is a valid hitpoints for
-	 * any unit.
+	 * Check whether the given hitpoints is a valid hitpoints for the unit.
 	 *  
-	 * @param  hitpoints
-	 *         The hitpoints to check.
+	 * @param hitpoints
+	 *         	The hitpoints to check.
 	 * @return True if and only if the given hitpoints are greater than zero and 
-	 * 		   smalller than the maximum hitpoints.
- 	 *       | result == ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()))
+	 * 		   	smaller than the maximum hitpoints.
+ 	 *       	| result == ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()))
 	 */
 	@Raw 
 	private boolean isValidHitpoints(double hitpoints){
@@ -726,14 +682,12 @@ public class Unit {
 	/**
 	 * Set the hitpoints of this unit to the given hitpoints.
 	 * 
-	 * @param  hitpoints
-	 *         The new hitpoints for this unit.
-	 * @pre    The given hitpoints must be a valid hitpoints for any
-	 *         unit.
-	 *       | isValidHitpoints(hitpoints)
-	 * @post   The hitpoints of this unit is equal to the given
-	 *         hitpoints.
-	 *       | new.getHitpoints() == hitpoints
+	 * @param hitpoints
+	 *         	The new hitpoints for this unit.
+	 * @pre The given hitpoints must be a valid hitpoints for the unit.
+	 *       	| isValidHitpoints(hitpoints)
+	 * @post The hitpoints of this unit is equal to the given hitpoints.
+	 *       	| new.getHitpoints() == hitpoints
 	 */
 	@Raw
 	private void setHitpoints(double hitpoints){
@@ -744,7 +698,7 @@ public class Unit {
 	/**
 	 * Variable registering the hitpoints of this unit.
 	 */
-	private double hitpoints;
+	private double hitpoints = 0;
 	
 	
 	// STAMINA
@@ -760,14 +714,13 @@ public class Unit {
 
 	
 	/**
-	 * Check whether the given stamina is a valid stamina for
-	 * any unit.
+	 * Check whether the given stamina is a valid stamina for the unit.
 	 *  
-	 * @param  stamina
-	 *         The stamina to check.
+	 * @param stamina
+	 *         	The stamina to check.
 	 * @return True if and only if the given stamina is greater than zero and 
-	 * 		   smaller than the maximum stamina.
- 	 *       | result == ((stamina >= 0) && (stamina <= getMaxHitpointsStamina())) 
+	 * 		   	smaller than the maximum stamina.
+ 	 *       	| result == ((stamina >= 0) && (stamina <= getMaxHitpointsStamina())) 
 	 */
 	@Raw
 	private boolean isValidStamina(double stamina){
@@ -777,14 +730,12 @@ public class Unit {
 	/**
 	 * Set the stamina of this unit to the given stamina.
 	 * 
-	 * @param  stamina
+	 * @param stamina
 	 *         The new stamina for this unit.
-	 * @pre    The given stamina must be a valid stamina for any
-	 *         unit.
-	 *       | isValidStamina(stamina)
-	 * @post   The stamina of this unit is equal to the given
-	 *         stamina.
-	 *       | new.getStamina() == stamina
+	 * @pre The given stamina must be a valid stamina for the unit.
+	 *         | isValidStamina(stamina)
+	 * @post The stamina of this unit is equal to the given stamina.
+	 *         | new.getStamina() == stamina
 	 */
 	@Raw @Model
 	private void setStamina(double stamina){
@@ -795,13 +746,11 @@ public class Unit {
 	/**
 	 * Variable registering the stamina of this unit.
 	 */
-	private double stamina;
-	
+	private double stamina = 0;
 	
 	// ORIENTATION
 
 	/**
-	 * 
 	 * Return the orientation of this unit.
 	 */
 	@Basic @Raw
@@ -812,10 +761,10 @@ public class Unit {
 	/**
 	 * Set the orientation of this unit to the given orientation.
 	 * 
-	* @param  orientation
-	*         The new orientation for this unit.
-	* @post   The orientation of this new unit is set to the given orientation modulo 2*PI,made positive.
-	*      	  | new.getOrientation() == orientation%(2*PI)
+	 * @param orientation
+	 *         The new orientation for this unit.
+	 * @post The new orientation of this unit is set to the given orientation modulo 2*PI, made positive.
+	 *      	  | new.getOrientation() == orientation%(2*PI)
 	 */
 	@Raw @Model
 	private void setOrientation(double orientation){
@@ -828,18 +777,17 @@ public class Unit {
 		}
 	}
 	
-	
 	/**
 	 * Variable registering the orientation of this unit.
 	 */
-	private double orientation;
-	
+	private double orientation = 0;
 
+	// ADVANCE TIME
 	
 	/**
 	 * Advances the game with duration dt.
 	 * @param dt
-	 * 		  The duration which the game time is advanced.
+	 * 		  	The duration which the game time is advanced.
 	 * @effect The new time since the unit has stopped resting is equal to the previous time
 	 * 			the unit has stopped resting, plus dt.
 	 * @effect If the time since the unit has last stopped resting is larger than 3 minutes,
@@ -978,31 +926,28 @@ public class Unit {
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
 		}
-
 	}
+	
 	/**
-	 * Checks whether the duration can have the given dt as its duration.
+	 * Checks whether the duration can have the given dt as its value.
 	 * @param dt
-	 * 		  The duration which the game time is advanced.
-	 * @return	True if and only if dt is greater or equal to 0 and smaller or equal to 0.2 .
+	 * 		  	The duration which the game time is advanced.
+	 * @return True if and only if dt is greater or equal to 0 and smaller or equal to 0.2.
 	 * 			result == ((dt >=0)&&(dt <= 0.2))
 	 */
 	@Model
 	private static boolean isValidAdvanceTime(double dt){
-
 		return ((dt >=0)&&(dt <= 0.2));
-		
 	}
 	
 	// SPEED
-	
 	
 	/**
 	 * Return the base speed of this unit.
 	 * 
 	 * @return 1.5 times the strength plus agility of the unit, divided by 200/100 ,
 	 * 		   divided by the weight of the unit.
-	 * 		   | result == 1.5*(getStrength()+getAgility())/(2*getWeight())
+	 * 		   | result == 1.5*(getStrength()+getAgility())/(200*getWeight()/100)
 	 */
 	@Basic @Model
 	private double getBaseSpeed(){
@@ -1013,16 +958,16 @@ public class Unit {
 	/**
 	 * Get the walking speed of the unit.
 	 * 
-	 * @param 	targetZ
+	 * @param targetZ
 	 * 		 	The z coordinate of the target to which the unit is going.
-	 * @return 	0.5 times the base speed of the unit, if the value of the z coordinate of the current 
+	 * @return 0.5 times the base speed of the unit, if the value of the z coordinate of the current 
 	 * 			location of the unit is smaller than the z coordinate of the target location.
 	 * 			| if (getLocation()[z_coord]-targetZ < 0)
-	 * 				then result == 0.5*getBaseSpeed() 
-	 * @return 	1.2 times the base speed of the unit, if the value of the z coordinate of the current
+	 * 			|	then result == 0.5*getBaseSpeed() 
+	 * @return 1.2 times the base speed of the unit, if the value of the z coordinate of the current
 	 * 			location of the unit is greater than the z coordinate of the target location.
 	 * 			| if (getLocation()[z_coord]-targetZ > 0)
-	 * 				then result == 1.2*getBaseSpeed() 
+	 * 			|	then result == 1.2*getBaseSpeed() 
 	 * @return 	The base speed of the unit, if the value of the z coordinate of the current location 
 	 * 			is equal to the z coordinate of the target location.
 	 * 			| result == getBaseSpeed()			
@@ -1043,22 +988,20 @@ public class Unit {
 	/**
 	 * Return the current speed of the unit in x, y and z direction.
 	 * 
-	 * @return 	if the unit is sprinting, the current speed is equal to the walking speed times 2,
+	 * @return If the unit is sprinting, the current speed is equal to the walking speed times 2,
 	 * 			multiplied with the difference between the location of the target and location of the unit,
 	 * 			divided by the absolute distance between the units location and the target,
-	 * 			respectively in x, y and z direction, 
-	 * 			| result ==     (velocity*2*(target[x]-getLocation()[x])/distance, 
-	 * 			|                velocity*2*(target[y]-getLocation()[y])/distance,
-	 * 			|                velocity*2*(target[z]-getLocation()[z])/distance)
-	 * @return	if the unit is not sprinting, the current speed is equal to the walking speed,
+	 * 			respectively in x, y and z direction.
+	 * 			| result == (velocity*2*(target[x]-getLocation()[x])/distance, 
+	 * 			|            velocity*2*(target[y]-getLocation()[y])/distance,
+	 * 			|            velocity*2*(target[z]-getLocation()[z])/distance )
+	 * @return If the unit is not sprinting, the current speed is equal to the walking speed,
 	 * 		   	multiplied with the difference between the location of the target and location of the unit,
 	 * 		   	divided by the absolute distance between the units location and the target,
-	 * 		   	respectively in x, y and z direction, 
-	 * 			| result ==     (velocity*(target[x]-getLocation()[x])/distance, 
-	 * 			|                velocity*(target[y]-getLocation()[y])/distance,
-	 * 			|                velocity*(target[z]-getLocation()[z])/distance)
-				 
-				
+	 * 		   	respectively in x, y and z direction.
+	 * 			| result == (velocity*(target[x]-getLocation()[x])/distance, 
+	 * 			|            velocity*(target[y]-getLocation()[y])/distance,
+	 * 			|            velocity*(target[z]-getLocation()[z])/distance )		
 	 */
 	@Basic @Model
 	private double[] getCurrentSpeed() {
@@ -1067,6 +1010,7 @@ public class Unit {
 		if (isSprinting()){
 			velocity = getWalkingSpeed(target[2])*2;
 		}
+		
 		else{
 			velocity = getWalkingSpeed(target[2]);
 		}
@@ -1080,15 +1024,15 @@ public class Unit {
 	/**
 	 * variable referencing the velocity of this unit.
 	 */
-	private double velocity;
+	private double velocity = 0;
 	
 	/**
-	 * Returns  the magnitude of the units speed.
+	 * Returns the magnitude of the units speed.
 	 * 
-	 * @return	if the unit is not moving, the speed is equal to 0.
+	 * @return 0, if the unit is not moving.
 	 * 			| if (!isMoving())
 	 * 			|	then result == 0
-	 * @return	the 2-norm of the current speed in x,y and z direction.
+	 * @return The 2-norm of the current speed in x,y and z direction.
 	 * 			| result == (getCurrentSpeed()[x]^2 + getCurrentSpeed()[y]^2 + getCurrentSpeed()[z]^2)^(1/2)
 	 */
 	@Basic
@@ -1099,15 +1043,14 @@ public class Unit {
 		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
 		Math.pow((getCurrentSpeed()[1] ), 2) + Math.pow((getCurrentSpeed()[2]), 2));
 	}
-	
-
 
 	// SPRINTING 
 	
 	/**
-	 * Set sprinting of this unit on true.
+	 * Enable sprinting of this unit.
 	 * 
 	 * @post	The new state of sprinting of this unit is true.
+	 * 			| new.isSprinting() == true
 	 * 
 	 */
 	public void startSprinting(){
@@ -1115,18 +1058,19 @@ public class Unit {
 	}
 	
 	/**
-	 * Stop the unit sprinting.
+	 * Disable sprinting of this unit.
 	 * 
-	 * @post	The new state of sprinting of this unit is false.
-	 * 			sprinting == false;		
+	 * @post The new state of sprinting of this unit is false.
+	 * 			| new.isSprinting == false;		
 	 */
 	public void stopSprinting(){
 		this.sprinting = false;
 	}
+	
 	/**
 	 * Checks whether the unit is sprinting.
 	 * 
-	 * @return sprinting.
+	 * @return The state of sprinting of this unit.
 	 * 		   | result == sprinting
 	 */
 	public boolean isSprinting(){
@@ -1136,15 +1080,14 @@ public class Unit {
 	/**
 	 * Variable registering sprinting of this unit.
 	 */
-	private boolean sprinting;
-
+	private boolean sprinting = false;
 	
 	// MOVING
 	
 	/**
 	 * Checks whether the unit is moving.
 	 * 
-	 * @return	True if and only if the unit is moving and the unit is not working and 
+	 * @return True if and only if the unit is moving and the unit is not working and 
 	 * 			the unit is not resting and the unit is not attacking.
 	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
 	 */
@@ -1154,15 +1097,15 @@ public class Unit {
 	}
 	
 	/**
-	 * Start moving the unit.
+	 * Enable the movement of the unit.
 	 * 
-	 * @effect 	if the unit is resting and has rested long enough to recover one hitpoint,
+	 * @effect If the unit is resting and has rested long enough to have recovered one hitpoint,
 	 * 			the units stops resting.
 	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
 	 * 			|	then stopResting()
-	 * @effect	The unit stops working.
-	 * 			| stopResting()
-	 * @effect	if the unit is not attacking, the unit is moving.
+	 * @effect The unit stops working.
+	 * 			| stopWorking()
+	 * @effect If the unit is not attacking, the unit starts moving.
 	 * 			| if (!isAttacking())
 	 * 			|	then new.isMoving == true.
 	 */
@@ -1178,9 +1121,9 @@ public class Unit {
 	}
 	
 	/**
-	 * stop moving the unit.
+	 * Disable the movement of the unit.
 	 * 
-	 * @post 	the new state of moving of the unit is false.
+	 * @post The new state of moving of the unit is false.
 	 * 			| new.isMoving == false				
 	 */
 	@Model 
@@ -1191,26 +1134,25 @@ public class Unit {
 	/**
 	 * Variable registering whether the unit is moving.
 	 */
-	private boolean isMoving ;
+	private boolean isMoving = false;
 	
 	/**
-	 * Checks whether the unit is moving.
+	 * Checks whether the unit is (globally) moving, possibly temporary interrupted.
 	 * 
-	 * @return	True if and only if the unit is moving.
+	 * @return True if and only if the unit is moving.
 	 * 			| result == isMoving			
 	 */
 	@Basic @Model
 	private boolean isMoving(){
 		return isMoving;
 	}
-	
 
 	/**
-	 * Returns the distance from the current location to the target.
-	 * @return	if there is no target, the distance is equal to 0.
-	 * 			if (target == 0)
-	 * 				then result == 0
-	 * @return	the 2-norm of the distance between the target and the current location in x y and z direction.
+	 * Returns the distance from the unit's current location to the target.
+	 * @return 0 if there is no target.
+	 * 			| if (target == null)
+	 * 			|	then result == 0
+	 * @return The 2-norm of the distance between the target and the current location in x y and z direction.
 	 * 			| result == ((target[x]-getLocation()[x])^2+ (target[y] - getLocation()[y])^2 + 
 	 * 			| (target[z]-getLocation()[z])^2)^(1/2)			 
 	 */
@@ -1224,14 +1166,12 @@ public class Unit {
 		return distance;
 	}
 	
-
-	
 	/**
 	 * Checks whether the unit is arrived at the target.
 	 * 
-	 * @param	dt
-	 * 		  	The duration dt of game time.
-	 * @return	true if and only if the distance to the target is smaller than the duration dt times the magnitude of
+	 * @param dt
+	 * 		  	The duration dt of game time advancement.
+	 * @return True if and only if the distance to the target is smaller than the duration dt times the magnitude of
 	 * 			the current speed.
 	 * 			| result == (getDistanceToTarget() < dt*getCurrentSpeedMag())
 	 */
@@ -1239,22 +1179,26 @@ public class Unit {
 	private boolean Arrived(double dt){
 		return (getDistanceToTarget() < dt*getCurrentSpeedMag());	
 	}
-	
-	// TODO bij de throws moet niets staan neem ik aan?
+
 	/**
 	 * Move to the adjacent cube.
 	 * 
-	 * @param	dx
+	 * @param dx
 	 * 			The movement of the unit in the x direction.
-	 * @param	dy
-	 * 			the movement of the unit in the y direction. 
-	 * @param	dz
+	 * @param dy
+	 * 			The movement of the unit in the y direction. 
+	 * @param dz
 	 * 			The movement of the unit in the z direction.
-	 * @effect	The unit moves to an adjacent cube with movements dx,dy and dz and the boolean
+	 * @effect The unit moves to an adjacent cube with movements dx, dy and dz and the boolean
 	 * 			calledByTo on false, which means this function is not called by the function moveTo,
 	 * 			but only a single moveToAdjacent request.
-	 * @throws 	IllegalPositionException
-	 * @throws 	IllegalAdjacentPositionException
+	 * 			| moveToAdjacent(dx, dy, dz, false)
+	 * @throws IllegalPositionException(currentTarget)
+	 * 			The currentTarget (location after the moveToAdjacent) is not a valid location.
+	 * 			| ! isValidLocation(currentTarget)
+	 * @throws IllegalAdjacentPositionException(dx,dy,dz)
+	 * 			The given dx,dy and dz movement is not a valid moveToAdjacent movement.
+	 * 			| ! isValidAdjacentMovement(dx,dy,dz)
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException , IllegalAdjacentPositionException {
 		moveToAdjacent(dx, dy, dz, false);
@@ -1263,28 +1207,29 @@ public class Unit {
 	/**
 	 * Move to the adjacent cube.
 	 * 
-	 * @param	dx
+	 * @param dx
 	 * 			The movement of the unit in the x direction.
-	 * @param	dy
-	 * 			the movement of the unit in the y direction. 
-	 * @param	dz
+	 * @param dy
+	 * 			The movement of the unit in the y direction. 
+	 * @param dz
 	 * 			The movement of the unit in the z direction.
-	 * @param	calledBy_moveTo
+	 * @param calledBy_moveTo
 	 * 			Boolean for defining the function called by the function MoveTo.
-	 * 			The currentTarget is the position of the middle of the cube, where the unit would
-	 * 			move to after the dx,dy and dz movement.
-	 * @effect	if the movement in x,y and z direction is not zero, the unit starts moving.
+	 * @effect If the movement in x,y and z direction is not zero, the unit starts moving.
 	 * 			| startMoving()				 	
-	 * @post 	if the boolean calledBy_moveTo is false, the new current target cube is equal to 
-	 * 			the cube position of the current cube plus the dx,dy and dz movement,respectively 
+	 * @post If the boolean calledBy_moveTo is false, the new current target cube is equal to 
+	 * 			the cube position of the current cube plus the dx,dy and dz movement, respectively 
 	 * 			in x,y and z direction.
-	 * 			| currentTargetCube[x] == currentCube[x] + dx
-	 * 			|&& currentTargetCube[y] == currentCube[y] + dy
-	 * 			|&& currentTargetCube[z] == currentCube[z] + dz
-	 * @throws	IllegalPositionException(currentTarget)
+	 * 			|   new.currentTargetCube[x] == this.currentCube[x] + dx
+	 * 			|&& new.currentTargetCube[y] == this.currentCube[y] + dy
+	 * 			|&& new.currentTargetCube[z] == this.currentCube[z] + dz
+	 * 		Note: If the boolean calledBy_moveTo is true, the currentTarget remains unchanged.
+	 * 		The currentTarget is the position of the middle of the cube, where the unit would
+	 * 		move to after the dx,dy and dz movement.
+	 * @throws IllegalPositionException(currentTarget)
 	 * 			The currentTarget (location after the moveToAdjacent) is not a valid location.
 	 * 			| ! isValidLocation(currentTarget)
-	 * @throws	IllegalAdjacentPositionException(dx,dy,dz)
+	 * @throws IllegalAdjacentPositionException(dx,dy,dz)
 	 * 			The given dx,dy and dz movement is not a valid moveToAdjacent movement.
 	 * 			| ! isValidAdjacentMovement(dx,dy,dz)
 	 * 			
@@ -1321,34 +1266,57 @@ public class Unit {
 	/**
 	 * Checks whether the dx, dy and dz movement is a valid adjacent movement.
 	 * 
-	 * @param	dx
+	 * @param dx
 	 * 			The movement of the unit in the x direction.
-	 * @param	dy
-	 * 			the movement of the unit in the y direction. 
-	 * @param	dz
+	 * @param dy
+	 * 			The movement of the unit in the y direction. 
+	 * @param dz
 	 * 			The movement of the unit in the z direction.
-	 * @return	True if and only if the movement is 0 or 1 or -1, respectively 
+	 * @return True if and only if the movement is 0 or 1 or -1,
 	 * 			for dx, dy and dz.
 	 * 			| result == (((dx == 0) || (dx == 1) || (dx == -1))
-	 * 			|        && ((dy == 0) || (dy == 1) || (dy == -1) )
-	 * 			|        &&  ((dz == 0) || (dz == 1) || dz == -1))
+	 * 			|         && ((dy == 0) || (dy == 1) || (dy == -1))
+	 * 			|         && ((dz == 0) || (dz == 1) || (dz == -1)))
 	 */
 	private boolean isValidAdjacentMovement(int dx, int dy, int dz){
-		
 		return (((dx == 0) || (dx == 1) || (dx == -1)) && 
-				((dy == 0) || (dy == 1) || (dy == -1) )&& 
-				((dz == 0) || (dz == 1) || dz == -1));
+				((dy == 0) || (dy == 1) || (dy == -1))&& 
+				((dz == 0) || (dz == 1) || (dz == -1)));
 	}
 	
-	
-	// TODO hier ook niets bij de illegalpositionexception schrijven dus?
 	/**
 	 * Move to the given target.
 	 * 	
 	 * @param	endTarget
 	 * 			The target of the unit to move to.
-	 *			if the current		
+	 * 
+	 * The unit paths the shortest way reachable with moveToAdjacent.
+	 * | if (currentLocation[x] == targetLocation[x])
+	 * | 	then dx = 0
+	 * | else if (currentLocation[x] < targetLocation[x])
+	 * | 	then dx = 1
+	 * | else if (currentLocation[x] > targetLocation[x])
+	 * | 	then dx = -1
+	 * | 
+	 * | if (currentLocation[y] == targetLocation[y])
+	 * | 	then dy = 0
+	 * | else if (currentLocation[y] < targetLocation[y])
+	 * | 	then dy = 1
+	 * | else if (currentLocation[y] > targetLocation[y])
+	 * | 	then dy = -1
+	 * | 
+	 * | if (currentLocation[z] == targetLocation[z])
+	 * | 	then dz = 0
+	 * | else if (currentLocation[z] < targetLocation[z])
+	 * | 	then dz = 1
+	 * | else if (currentLocation[z] > targetLocation[z])
+	 * | 	then dz = -1
+	 * 
+	 * @effect 	The unit will move to the first relative cube (dx, dy, dz) heading to his target.
+	 * 			| moveToAdjacent(dx, dy, dz, true)
 	 * @throws	IllegalPositionException
+	 * 			The given target is not a valid position for a unit.
+	 * 			| ! canHaveAsPosition(target)
 	 */
 	public void moveTo(int[] endTarget) throws IllegalPositionException { 
 										// When IllegalPositionException is thrown in moveToAdjacent(),
@@ -1417,17 +1385,14 @@ public class Unit {
 	/**
 	 * Variable registering the global target to move to.
 	 */
-	private int[] globalTarget;
-	
+	private int[] globalTarget = null;
 
-	
 	// WORKING
 	
-	
 	/**
-	 * The unit starts working.
+	 * Enable the unit's working.
 	 * 
-	 * @effect	the unit starts working.
+	 * @effect The unit starts working.
 	 * 			| startWorking()
 	 */			
 	public void work(){
@@ -1438,16 +1403,16 @@ public class Unit {
 	/**
 	 * The unit starts working.
 	 * 
-	 * @effect	if the unit is resting and the unit has rested for a time to recover one hitpoint,
-	 * 			the unit stops resting ,starts working and its time remainder to work is equal to 
+	 * @effect If the unit is resting and the unit has rested for a time at least long enough to recover
+	 * 			one hitpoint, the unit stops resting, starts working and its time remainder to work is equal to 
 	 * 			500 divided by the strength of the unit.
-	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
-	 * 			|	then (isWorking() == true)
-	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
-	 * @effect	if the unit is not resting, the units starts working and its time remainder to work
+	 * 			| if ( isResting() && canHaveRecoverdOneHp() )
+	 * 			|	then (new.isWorking() == true)
+	 * 			|		&& (setTimeRemainderToWork(500/getStrength()))
+	 * @effect If the unit is not resting, the units starts working and its time remainder to work
 	 * 			is equal to 500 divided by the strength of the unit.
-	 * 			| if (! isWorking())
-	 * 			|	then ((isWorking == true)
+	 * 			| if (! isResting())
+	 * 			|	then ((new.isWorking() == true)
 	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
 	 */
 	@Model
@@ -1457,18 +1422,18 @@ public class Unit {
 			this.working = true;
 			setTimeRemainderToWork((float) 500/getStrength());
 		}
+		
 		else if (!isResting()){
 			this.working = true;
 			setTimeRemainderToWork((float) 500/getStrength());			
 		}
-
 	}
 	
 	/**
-	 * stop the unit from working.
+	 * The unit stops working.
 	 * 
-	 * @post	the unit is not working
-	 * 			| working == false
+	 * @post The unit is not working.
+	 * 			| new.isWorking() == false
 	 */
 	@Model
 	private void stopWorking(){
@@ -1477,7 +1442,7 @@ public class Unit {
 	/**
 	 * Checks whether the unit is working.
 	 * 
-	 * @return	true if and only if  the unit is working.
+	 * @return True if and only if  the unit is working.
 	 * 			| result == working
 	 */
 	}
@@ -1489,11 +1454,9 @@ public class Unit {
 	/**
 	 * Variable registering whether the unit is working.
 	 */
-	private boolean working;
-	
+	private boolean working = false;
 	
 	/**
-	 * 
 	 * Return the time remaining to work of this unit.
 	 */
 	@Model 
@@ -1504,10 +1467,9 @@ public class Unit {
 	/**
 	 * Set the time remaining to work of this unit to the given time.
 	 * 
-	 * @param	time
+	 * @param time
 	 * 			The new time remaining to work for this unit.
-	 * @post	The time remaining to work of this new time is equal to
-	 *        	the given time.
+	 * @post The time remaining to work of this unit is equal to the given time.
 	 *       	| new.getTimeRemainderToWork() == time
 	 * 			
 	 */
@@ -1519,36 +1481,32 @@ public class Unit {
 	/**
 	 * Variable registering the time remaining to work.
 	 */
-	private float timeRemainderToWork;
-	
-
-	
+	private float timeRemainderToWork = 0;
 	
 	// FIGHTING
 	
 	/**
 	 * Attack an other unit.
 	 * 
-	 * @param	other
+	 * @param other
 	 * 		 	Unit to attack.
-	 * @effect	if the unit is not equal to the unit to attack and if the unit
+	 * @effect If the unit is not equal to the unit to attack and if the unit
 	 * 			is resting, the unit stops resting.
 	 * 			| if (this != other)
 	 * 			|	if (this.isResting())
 	 * 			|		then this.stopResting()
-	 * @effect 	if the unit is not equal to the unit to attack, 
-	 * 			the unit stops working.
+	 * @effect If the unit is not equal to the unit to attack, the unit stops working.
 	 * 			| if (this != other)
 	 * 			|	then this.stopWorking()
-	 * @effect	if the unit is not equal to the unit to attack,
-	 * 			the new orientation in fight is set to the to the unit to attack
+	 * @effect If the unit is not equal to the unit to attack,
+	 * 			the new orientation is set to the to the orientation in fight.
 	 * 			| if (this != other)
 	 * 			|	then this.setOrientationInFight(other)
-	 * @effect	if the unit is not equal to the unit to attack,
-	 * 			the new attack time of this unit is equal to 1.
+	 * @effect If the unit is not equal to the unit to attack,
+	 * 			the new attack time of this unit is equal to 1 second.
 	 * 			| if (this != other)
 	 * 			|	then this.setAttackTime(1)
-	 * @throws	IllegalAttackPosititonException(other.getOccupiedCube())
+	 * @throws IllegalAttackPosititonException(other.getOccupiedCube())
 	 * 			The unit cannot attack the given other unit.
 	 * 			| ! this.isValidAttackPosition(other.getOccupiedCube())
 	 * 			
@@ -1570,18 +1528,17 @@ public class Unit {
 			this.setAttackTime(1);
 		}
 	}
-	
+
 	/**
 	 * Checks whether the given position of the unit to attack is a valid position to attack.
 	 * 
-	 * @param	attackCubePosition
+	 * @param attackCubePosition
 	 * 			The position of the cube of the unit to attack.
-	 * @return	True if and only if the distance between the cube of the unit 
-	 * 			and the cube of the unit to attack is smaller than 1, as well as 
-	 * 			in the x, y and z direction.
-	 * 			| result ==((this.getOccupiedCube()[x] - attackCubePostion[x] <= 1)
-	 * 					  &&(this.getOccupiedCube()[y] - attackCubePostion[y] <= 1)
-	 * 				      &&(this.getOccupiedCube()[z] - attackCubePostion[z] <= 1))
+	 * @return True if and only if the distance between the cube of the unit 
+	 * 			and the cube of the unit to attack is 0 or 1 in the x, y and z direction.
+	 * 			| result ==((this.getOccupiedCube()[x] - attackCubePosition[x] <= 1)
+	 * 					  &&(this.getOccupiedCube()[y] - attackCubePosition[y] <= 1)
+	 * 				      &&(this.getOccupiedCube()[z] - attackCubePosition[z] <= 1))
 	 */
 	@Model
 	private boolean isValidAttackPosition(int[] attackCubePosition){
@@ -1590,25 +1547,23 @@ public class Unit {
 				(Math.abs(this.getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
 	}
 	
-	
 	/**
 	 * Set the orientation of the units in the fight to each other.
 	 * 
-	 * @param	other
+	 * @param other
 	 * 			The other unit in the fight.
-	 * @effect 	The orientation of this unit is set in the direction of the other unit, 
-	 * 			using the arc tangens of the distant difference in y direction of the other unit and
-	 * 			this unit, and the distant difference in z direction of the other unit and 
+	 * @effect The orientation of this unit is set in the direction of the other unit, 
+	 * 			using the arc tangens of the distance difference in y direction of the other unit and
+	 * 			this unit, and the distance difference in x direction of the other unit and 
 	 * 			this unit.
-	 * 			|  setOrientation(arctangens(other.getLocation()[y]-this.getLocation()[y],
+	 * 			| this.setOrientation(arctangens(other.getLocation()[y]-this.getLocation()[y],
 	 * 			|	other.getLocation()[x]-this.getLocation()[x])
-	 * @effect 	The orientation of the other unit is set in the direction of the this unit, 
-	 * 			using the arc tangens of the distant difference in y direction of this unit and
-	 * 			the other unit, and the distant difference in z direciton of this unit and 
+	 * @effect The orientation of the other unit is set in the direction of the this unit, 
+	 * 			using the arc tangens of the distance difference in y direction of this unit and
+	 * 			the other unit, and the distance difference in x direction of this unit and 
 	 * 			the other unit.
-	 * 			|  setOrientation(arctangens(this.getLocation()[y]-other.getLocation()[y],
+	 * 			| other.setOrientation(arctangens(this.getLocation()[y]-other.getLocation()[y],
 	 * 			|	this.getLocation()[x]-other.getLocation()[x])
-	 * 
 	 */
 	@Model 
 	private void setOrientationInFight(Unit other) {
@@ -1624,44 +1579,43 @@ public class Unit {
 	/**
 	 * Defend against an other unit.
 	 * 
-	 * @param	other
+	 * @param other
 	 * 			The unit to defend against.
-	 * @effect	if the unit is not equal to the other unit and the unit is resting, than the unit stops resting.
+	 * @effect If the unit is not equal to the other unit and the unit is resting, the unit stops resting.
 	 * 			| if (this!=other)
 	 * 			|	if (this.isResting())
 	 * 			|		then this.stopResting()
-	 * @effect	if the unit is not equal to the other unit, the unit stops working.
+	 * @effect If the unit is not equal to the other unit, the unit stops working.
 	 * 			| if (this!=other)
 	 * 			|	then this.stopWorking()
-	 * @effect	if the unit is not equal to the other unit, the possibility to dodge is 0.2 times this units agility,
-	 * 			divided by the other units agility.
-	 * 			| if (this != other)
-	 * 			|	than possibilityDodge = (0.2* this.getAgility()/other.getAgility())
-	 * @effect	if this unit is not equal to the other unit, and the unit dodges successfully, the unit is set
-	 * 			to a random location and its orientation is in the direction of the other attacking unit.
+	 *  If the unit is not equal to the other unit, the possibility to dodge is 0.2 times this units agility,
+	 * 	divided by the other units agility.
+	 * 	| if (this != other)
+	 * 	|	then possibilityDodge = (0.2* this.getAgility()/other.getAgility())
+	 * @effect If this unit is not equal to the other unit, and the unit dodges successfully, the unit's location is set
+	 * 			to a random location and its orientation is set in the direction of the attacking unit.
 	 * 			| if (this != other)
 	 * 			|	if (getDefendSucces(possibilityDodge))
 	 * 			|		then (this.setRandomLocation && this.setOrientationInFight(other))
-	 * @effect	if this unit is not equal to the other unit, and the unit is not resting,
-	 * 			the possibility to block is equal to 0.25 times the strength plus agility of this unit, 
-	 * 			divided by the strength plus agility of the other unit.
-	 * 			| possibilityBlock = 0.25*(( this.getStrength() + this.getAgility())/
-	 * 				( (other.getStrength()+other.getAgility() ))))
-	 * @post	if this unit is not equal to the other unit, and if the unit does not 
+	 *	If this unit is not equal to the other unit, and the unit is not resting,
+	 * 	the possibility to block is equal to 0.25 times the strength plus agility of this unit, 
+	 * 	divided by the strength plus agility of the other unit.
+	 * 	| possibilityBlock = 0.25*(( this.getStrength() + this.getAgility())/(other.getStrength()+other.getAgility()))
+	 * @post If this unit is not equal to the other unit, and if the unit does not 
 	 * 			dodge successfully, and if the unit does not block successfully,
 	 * 			the new hitpoints are equal to the old hitpoints reduced with the strength
 	 * 			of the other unit divided by 10.	
 	 * 			| if (this != other)
 	 * 			|	if ( ! getDefendSucces(possibilityDodge))
 	 * 			|		if (! getDefendSucces(possibilityBlock))
-	 * 			|			then (new.hitpoints = old.hitpoints - getStrength()/10)
-	 * @effect 	if this unit is not equal to the other unit, and if the unit fails to dodge, and the unit fails
-	 * 			to block, and if the hitpoints are less than 0, than the hitpoints are 0.
+	 * 			|			then (new.getHitpoints() = this.getHitpoints - this.getStrength()/10)
+	 * @effect If this unit is not equal to the other unit, and if the unit fails to dodge, and the unit fails
+	 * 			to block, and if the hitpoints are less than or equal to 0, then the hitpoints are set to 0.
 	 * 			| if (this != other)
 	 * 			|	if ( ! getDefendSucces(possibilityDodge))
 	 * 			|		if (! getDefendSucces(possibilityBlock))
 	 * 			|			if (this.getHitpoints) <=0)
-	 * 			|				than this.setHitpoints(0)			
+	 * 			|				then this.setHitpoints(0)			
 	 */
 	public void defend(Unit other){
 		if (this != other) {
@@ -1683,7 +1637,6 @@ public class Unit {
 						((double) ((double)other.getStrength()+(double) other.getAgility()))));
 				
 				if ( ! getDefendSucces(possibilityBlock)){
-
 					double newHitPoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
 					if (newHitPoints <= 0) {
 						this.setHitpoints(0);
@@ -1692,17 +1645,15 @@ public class Unit {
 						this.setHitpoints(newHitPoints);
 					}
 				}
-
-				
 			}
 		}
 	}
 	
 	/**
-	 * Set the unit to a random position when dodging.
+	 * Set the unit to a random position near the current location.
 	 * 
-	 * @effect	The location is a random location.
-	 * 			| setLocation(randomPosition(getLocation))
+	 * @effect The location is a random location.
+	 * 			| setLocation(randomPosition(getLocation()))
 	 */
 	@Model 
 	private void setRandomLocation(){
@@ -1716,13 +1667,11 @@ public class Unit {
 	/**
 	 * Return a random position in the near area of the current location.
 	 * 
-	 * @param 	currLoc
+	 * @param currLoc
 	 * 			The current location of the unit.
-	 * @return 	The current location plus a random number between -1 and 1, excluding 0,
+	 * @return The current location plus a random number between -1 and 1, excluding 0,
 	 * 			in the x and y direction.
-	 * 			| result == (currLoc[x]+randomNumber(-1,1) 
-	 * 			| 		&&  (currLoc[y] + randomNumber(-1,1))
-	 * 			|		&&  (currLoc[z])
+	 * 			| result == [currLoc[x]+randomNumber(-1,1), currLoc[y] + randomNumber(-1,1), currLoc[z] ]
 	 * 			
 	 */
 	@Model
@@ -1737,7 +1686,7 @@ public class Unit {
 	/**
 	 * Checks whether the unit is attacking.
 	 * 
-	 * @return	True if and only if the attack time is greater than 0.
+	 * @return True if and only if the attack time is greater than 0.
 	 * 			| result == (getAttacktime() > 0)
 	 */
 	@Basic
@@ -1748,9 +1697,9 @@ public class Unit {
 	/**
 	 * Set the attack time to the given time.
 	 * 
-	 * @param	time
-	 * 			The time to set to the unit.
-	 * @post 	The new attack time of this unit is equal to the given time.
+	 * @param time
+	 * 			The time to set as the unit's attack time.
+	 * @post The new attack time of this unit is equal to the given time.
 	 * 			| new.getAttackTime() == time			
 	 */
 	@Model
@@ -1769,14 +1718,14 @@ public class Unit {
 	/**
 	 * Variable registering the attack time.
 	 */
-	private float attackTime;
+	private float attackTime = 0;
 	
 	/**
-	 * Checks whether the unit's defend is succesfull.
-	 * @param	possibility
-	 * 			The possibility to defend succesfull.
-	 * @return	True if and only if the the unit has defended succesfull.
-	 * 			| result == (random.nextDouble <= possibility)
+	 * Checks whether the unit's defend is successful.
+	 * @param possibility
+	 * 			The possibility to defend successful.
+	 * @return True if and only if the the unit has defended successful.
+	 * 			| result == (randomDouble <= possibility)
 	 */
 	@Basic @Model
 	private boolean getDefendSucces(double possibility){
@@ -1786,9 +1735,9 @@ public class Unit {
 	// RESTING
 	
 	/**
-	 * The unit rests.
+	 * The unit starts resting.
 	 * 
-	 * @effect	the unit starts resting.
+	 * @effect The unit starts resting.
 	 * 			| startResting();
 	 */
 	public void rest(){
@@ -1798,7 +1747,7 @@ public class Unit {
 	/**
 	 * Checks whether the unit is resting.
 	 * 
-	 * @return	True if and only if the unit is resting.
+	 * @return True if and only if the unit is resting.
 	 * 			| result == resting
 	 */
 	@Basic 
@@ -1809,25 +1758,25 @@ public class Unit {
 	/**
 	 * The unit starts resting.
 	 * 
-	 * @effect	if the hitpoints of the unit are not equal to the maximum hitpoints or the stamina is not equal
-	 * 			to the maximum stamina, the new time to rest for the unit is set to 0, the unit is resting,
-	 * 			the unit stops working, the new initial hitpoints when starting to rest are set to the current hitpoints
-	 * 			and the new initial stamina when starting to rest is set to the given stamina.
+	 * @effect If the hitpoints of the unit are not equal to the maximum hitpoints or the stamina is not equal
+	 * 			to the maximum stamina, the new time resting for the unit is set to 0, the unit stops working,
+	 * 			the unit is resting, the new initial hitpoints when starting to rest are set to the current hitpoints
+	 * 			and the new initial stamina when starting to rest is set to the current stamina.
 	 * 			| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
-	 * 			|	( (getStamina() != getMaxHitpointsStamina()) ))
+	 * 			|	 ( (getStamina() != getMaxHitpointsStamina()) ))
 	 * 			|	then (setTimeResting(0)
-	 * 					&& isResting() == true
-	 * 					&& stopWorking()
-	 * 					&& setStartRestHitpoints(getHitpoints())
-	 * 					&& setStartRestStamina(getStamina()))
+	 * 			|		&& stopWorking()
+	 * 			|		&& new.isResting() == true
+	 * 			|		&& setStartRestHitpoints(getHitpoints())
+	 * 			|		&& setStartRestStamina(getStamina()))
 	 * 
 	 */
 	@Model
 	private void startResting(){
 		if ( (getHitpoints() != getMaxHitpointsStamina()) || ( (getStamina() != getMaxHitpointsStamina()) )){
 			setTimeResting(0);
-			resting = true;
 			stopWorking();
+			resting = true;
 			setStartRestHitpoints(getHitpoints());
 			setStartRestStamina(getStamina());
 		}
@@ -1836,17 +1785,17 @@ public class Unit {
 	/**
 	 * The unit stops resting.
 	 * 
-	 * @effect  if the unit has not rest long enough to recover one hitpoint,
+	 * @effect If the unit has not rest long enough to have recovered one hitpoint,
 	 * 			the new hitpoints are set to the initial hitpoints when the unit 
 	 * 			began to rest, and the new stamina is set to the initial stamina 
 	 * 			when the unit began to rest.
 	 * 			| if (! canHaveRecoverdOneHp())
 	 * 			|	then (setHitpoints(getStartRestHitpoints())
-	 * @post 	the unit is not resting
-	 * 			| isResting() == false
-	 * @effect	The new time since resting is equal to 0.
+	 * @post The unit is not resting
+	 * 			| new.isResting() == false
+	 * @effect The new time since resting is equal to 0.
 	 * 			| setTimeSinceRest(0)
-	 * @effect	The new time that the unit has rested is equal to a large value.
+	 * @effect The new time that the unit has rested is equal to a large value.
 	 * 			| setTimeResting(MAX_VALUE)
 	 */
 	@Model
@@ -1863,14 +1812,14 @@ public class Unit {
 	/**
 	 * Variable registering if the unit is resting.
 	 */
-	private boolean resting;
+	private boolean resting = false;
 	
 	/**
 	 * Set the time since rest to the given time.
 	 * 
-	 * @param 	time
+	 * @param time
 	 * 			The time since the unit has stopped resting.
-	 * @post 	The new time since resting is equal to the given time.
+	 * @post The new time since rest is equal to the given time.
 	 * 			| new.getTimeSinceRest() == time
 	 */
 	@Model
@@ -1889,14 +1838,14 @@ public class Unit {
 	/**
 	 * Variable registering the time since the unit last stopped resting.
 	 */
-	private float timeSinceRest;
+	private float timeSinceRest = 0;
 	
 	/**
 	 * Set the time resting to the given time.
 	 * 
-	 * @param	time
+	 * @param time
 	 * 			The time that the unit is resting.
-	 * @post 	The new time that the unit is resting is equal to the given time.
+	 * @post The new time that the unit is resting is equal to the given time.
 	 * 			| new.getTimeResting() == time
 	 */
 	@Model
@@ -1913,16 +1862,16 @@ public class Unit {
 	}
 	
 	/**
-	 * Variable registering the time the unit is resting.
+	 * Variable registering the time the unit is resting. (MAX_VALUE if the unit is not resting.)
 	 */
 	private float timeResting = Float.MAX_VALUE;
 	
 	/**
-	 * Set the time since the last reset period. 
+	 * Set the time since the last rest period (0.2sec). 
 	 * 
-	 * @param	time
+	 * @param time
 	 * 			The periodic rest time.
-	 * @post	The new periodic reset time is equal to the given time.
+	 * @post The new periodic reset time is equal to the given time.
 	 *			| new.getTimePeriodicRest() == time
 	 */
 	@Model
@@ -1941,12 +1890,12 @@ public class Unit {
 	/**
 	 * Variable registering the periodic rest.
 	 */
-	private float periodicRest;
+	private float periodicRest = 0;
 	
 	/**
-	 * Checks whether the unit has rested enough to recover one hitpoint.
+	 * Checks whether the unit has rested long enough to be able to have recovered one hitpoint.
 	 * 
-	 * @return	True if and only if the time the unit is resting is greater than or
+	 * @return True if and only if the time the unit is resting is greater than or
 	 * 			equal the time for the unit to recover one hitpoint.
 	 * 			| result == (getTimeResting >= ( 1/((getToughness()/200.0)/0.2)))
 	 */
@@ -1955,7 +1904,6 @@ public class Unit {
 		return (getTimeResting() >= ((double) 1/(((double) getToughness()/200.0)/0.2)));
 
 	}
-	
 	
 	/**
 	 * Return the initial hitpoints on the moment the unit started resting.
@@ -1968,9 +1916,9 @@ public class Unit {
 	/**
 	 * Set the initial hitpoints when the unit started resting to the given hitpoints.
 	 * 
-	 * @param	hitpoints
+	 * @param hitpoints
 	 * 			The hitpoints to set.
-	 * @post	The new initial hitpoints when the unit started resting are equal to the given hitpoints.
+	 * @post The new initial hitpoints when the unit started resting are equal to the given hitpoints.
 	 * 			| new.getStartRestHitpoints() == hitpoints
 	 * 			
 	 */
@@ -1982,7 +1930,7 @@ public class Unit {
 	/**
 	 * Variable registering the hitpoints on the moment the unit started resting. 
 	 */
-	private double startRestHitpoints;
+	private double startRestHitpoints = 0;
 	
 	/**
 	 * Return the initial stamina on the moment the unit started resting.
@@ -1995,9 +1943,9 @@ public class Unit {
 	/**
 	 * Set the initial stamina when the unit started resting to the given stamina.
 	 * 
-	 * @param	stamina
+	 * @param stamina
 	 * 			The stamina to set.
-	 * @post	The new initial stamina when the unit started resting are equal to the given stamina.
+	 * @post The new initial stamina when the unit started resting are equal to the given stamina.
 	 * 			| new.getStartRestStamina() == stamina	
 	 */
 	@Model
@@ -2008,15 +1956,14 @@ public class Unit {
 	/**
 	 * Variable registering the stamina on the moment the unit started resting.
 	 */
-	private double startRestStamina;
-	
+	private double startRestStamina = 0;
 
 	// DEFAULT BEHAVIOUR
 	
 	/**
 	 * Check whether the default behaviour is enabled.
 	 * 
-	 * @return	true if and only if the default behaviour is enabled.
+	 * @return True if and only if the default behaviour is enabled.
 	 * 			| result == defaultBehaviour
 	 */
 	@Basic
@@ -2025,9 +1972,9 @@ public class Unit {
 	}
 	
 	/**
-	 * Start the default behaviour.
+	 * Enable the default behaviour.
 	 * 
-	 * @post	the new state of default behaviour is set to enabled.
+	 * @post The new state of default behaviour is set to enabled.
 	 * 			| new.defaultBehaviour == true
 	 */
 	public void startDefaultBehaviour(){
@@ -2037,13 +1984,13 @@ public class Unit {
 	/**
 	 * Stop the default behaviour.
 	 * 
-	 * @post	the new state of default behaviour is set to disabled.
+	 * @post The new state of default behaviour is set to disabled.
 	 * 			| new.defaultBehaviour == false
-	 * @effect	The unit stops working.
+	 * @effect The unit stops working.
 	 * 			| stopWorking()
-	 * @effect	The unit stops moving.
+	 * @effect The unit stops moving.
 	 * 			| stopMoving()
-	 * @effect	The unit stops resting.
+	 * @effect The unit stops resting.
 	 * 			| stopResting()
 	 */
 	public void stopDefaultBehaviour(){
@@ -2054,24 +2001,24 @@ public class Unit {
 	}
 	
 	/**
-	 * Variable registering if the defaultbehaviour is enabled.
+	 * Variable registering if the default behaviour is enabled.
 	 */
-	private boolean defaultBehaviour;
+	private boolean defaultBehaviour = false;
 	
 	/**
 	 * Set a new default behaviour task for the unit to do.
 	 * 
 	 * Chance 1/3: possibleTask[0] = moveTo(randomPosition),
 	 * possibleTask[1] = work, possibleTask[2] = rest
-	 * @effect	if the possible task is move to random position, unit moves to random position.
+	 * @effect If the possible task is move to random position, unit moves to random position.
 	 * 			| if (possibleTask[0])
-	 * 			|	than moveTo(getRandomPosition)
-	 * @effect	if the possible task is work, the unit works.
+	 * 			|	then moveTo(getRandomPosition)
+	 * @effect If the possible task is work, the unit works.
 	 * 			| if (possibleTask[1])
-	 * 			|	than work()
+	 * 			|	then work()
 	 * @effect	if the possible task is rest, the unit rests.
 	 * 			| if (possibleTask[2])
-	 * 			|	than rest()
+	 * 			|	then rest()
 	 */
 	@Model
 	private void newDefaultBehaviour(){
@@ -2081,6 +2028,7 @@ public class Unit {
 				moveTo(getRandomPosition());
 			} catch (IllegalPositionException e) {} //Exception will never be thrown.
 		}
+		
 		else if (possibleTask == 1){
 			work();
 		}
@@ -2091,10 +2039,10 @@ public class Unit {
 	}
 	
 	/**
-	 * Return a random position in the boundaries of the playing field.
+	 * Return a random cube position in the boundaries of the world.
 	 * 
-	 * @return	Return random position smaller than WORLD_X-1 in the x direction, WORLD_Y -1 in the y direction,
-	 * 			WORLD_Z - 1 in the z direction.
+	 * @return	Return random cube position smaller than WORLD_X-1 in the x direction, WORLD_Y-1 in the y direction,
+	 * 			WORLD_Z-1 in the z direction, and greater than 0.
 	 * 			| randLoc_x == randomInt(0,WORLD_X-1)
 	 * 			| randLoc_y == randomInt(0,WORLD_Y-1)
 	 * 			| randLoc_z == randomInt(0,WORLD_Z-1)
