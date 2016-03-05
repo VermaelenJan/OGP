@@ -769,11 +769,19 @@ public class Unit {
 	@Raw @Model
 	private void setOrientation(double orientation){
 		double modOrientation = orientation%(Math.PI);
-		if (modOrientation >= 0){
+		if (modOrientation > 0){
 			this.orientation = modOrientation;
 		}
-		else{
+		else if (modOrientation < 0) {
 			this.orientation = modOrientation + 2*Math.PI;
+		}
+		else {
+			if (orientation%(2*Math.PI) == 0) {
+				this.orientation = 0;
+			}
+			else {
+				this.orientation = Math.PI;
+			}
 		}
 	}
 	
@@ -1324,7 +1332,6 @@ public class Unit {
 										// state as at the beginning of the method. Since the method will always initiate a new
 										// globalTarget, the lack of reverting wont cause any problems.
 		globalTarget = endTarget;
-		
 		
 		int xCur = getOccupiedCube()[0];
 		int yCur = getOccupiedCube()[1];
