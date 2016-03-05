@@ -31,7 +31,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *       | (getOrientation() >= 0) && (getOrientation < 2*PI)
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0.9.8
+ * @version 0.9.9
  *
  */
 public class Unit {
@@ -80,11 +80,11 @@ public class Unit {
 	 * 			| setAgility(agility)
 	 * @effect The given toughness is set as the toughness of this new unit.
 	 * 			| setToughness(toughness)
-	 * @pre The given hitpoints must be a valid hitpoints for the unit.
+	 * @pre The given hitpoints must be a valid hitpoints for this unit.
 	 *          | isValidHitpoints(hitpoints)
 	 * @post The hitpoints of this new unit is equal to the given hitpoints.
 	 *          | new.getHitpoints() == hitpoints
-	 * @pre The given stamina must be a valid stamina for the unit.
+	 * @pre The given stamina must be a valid stamina for this unit.
 	 *       	| isValidStamina(stamina)
 	 * @post The stamina of this new unit is equal to the given stamina.
 	 *       	| new.getStamina() == stamina													
@@ -127,7 +127,7 @@ public class Unit {
 	 * 			The agility for this new unit.
 	 * @param toughness
 	 * 			The toughness for this new unit.
-	 * @effect This new unit is initialized with the given cubeLocation as its cubeLocation, the given name as its name, the given 
+	 * @effect This new unit is initialized with the given cube location as its cube location, the given name as its name, the given 
 	 * 			weight as its weight, the given strength as its strength, the given agility as its agility, the given toughness as 
 	 * 			its toughness, and the default value PI/2 as its orientation.
 	 * @throws IllegalPositionException
@@ -137,7 +137,6 @@ public class Unit {
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
 	 */
-	
 	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
 			throws IllegalPositionException, IllegalNameException {
 		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
@@ -176,7 +175,7 @@ public class Unit {
 	 * 
 	 * @param location
 	 *         	The new location for this unit.
-	 * @post The location of this new unit is equal to the given location.
+	 * @post The new location of this unit is equal to the given location.
 	 *       	| new.getLocation() == location
 	 * @throws IllegalPositionException
 	 *         	The given location is not a valid location for any unit.
@@ -225,7 +224,7 @@ public class Unit {
 	 * 
 	 * @param name
 	 *         	The new name for this unit.
-	 * @post The name of this new unit is equal to the given name.
+	 * @post The new name of this unit is equal to the given name.
 	 *         	| new.getName() == Name
 	 * @throws IllegalNameException
 	 *         	The given name is not a valid name for any unit.
@@ -243,7 +242,7 @@ public class Unit {
 	 *  
 	 * @param name
 	 *         	The name to check.
-	 * @return True if and only if the given name's length is greater or equal to 2 and the given name's 
+	 * @return True if and only if the given name's length is greater than or equal to 2 and the given name's 
 	 * 			first character is uppercase and the given name has all valid characters.
 	 * 		   	| result == (	(name.length() >= 2) 
 	 *							&&	(Character.isUpperCase(name.charAt(0))) 
@@ -272,7 +271,7 @@ public class Unit {
 	}
 	
 	/**
-	 * Variable registering the name of the unit.
+	 * Variable registering the name of this unit.
 	 */
 	private String name = "";
 
@@ -287,13 +286,12 @@ public class Unit {
 		return this.weight;
 	}	
 	
-	
 	/**
 	 * Set the weight of this unit to the given weight.
 	 * 
 	 * @param weight
 	 *	     	The new weight for this unit.
-	 * @effect The weight of the unit is set to the given weight, with the restrictions for a not-newly created unit
+	 * @effect The new weight of the unit is set to the given weight, with the restrictions for a not-newly created unit
 	 * 			(with the flag on false).
 	 * 			| setWeight(weight,false)
 	 */
@@ -359,7 +357,6 @@ public class Unit {
 			currMinVal = MIN_VAL;
 			currMaxVal = MAX_VAL;
 		}
-
 		if (weight >= (getStrength()+getAgility())/2){
 			if (weight < currMinVal) 
 				this.weight = currMinVal;
@@ -368,11 +365,9 @@ public class Unit {
 			else if (weight > currMaxVal)
 				this.weight = currMaxVal; 
 		}
-		
 		else{
 			this.weight = (getStrength()+getAgility())/2;
 		}
-
 	}
 	
 	/**
@@ -395,7 +390,7 @@ public class Unit {
 	 * 
 	 * @param strength
 	 *	     	The new strength for this unit.
-	 * @effect The strength of the unit is set to the given strength, with the restrictions for a not-newly created unit.
+	 * @effect The new strength of this unit is set to the given strength, with the restrictions for a not-newly created unit.
 	 * 			| setStrength(strength,false)
 	 */
 	@Raw
@@ -452,7 +447,6 @@ public class Unit {
 			currMinVal = MIN_VAL;
 			currMaxVal = MAX_VAL;
 		}
-
 		if ( strength < currMinVal) 
 			this.strength = currMinVal;
 		else if ((strength >= currMinVal) && (strength <= currMaxVal))
@@ -467,7 +461,6 @@ public class Unit {
 	 * Variable registering the strength of this unit.
 	 */
 	private int strength = 0;
-	
 	
 	// AGILITY
 		
@@ -574,7 +567,7 @@ public class Unit {
 	 * 
 	 * @param toughness
 	 *	     	The new toughness for this unit.
-	 * @effect The toughness of the unit is set to the given toughness, with the restrictions for a not-newly created unit.
+	 * @effect The new toughness of this unit is set to the given toughness, with the restrictions for a not-newly created unit.
 	 * 			| setToughness(toughness,false)
 	 */
 	@Raw
@@ -629,7 +622,6 @@ public class Unit {
 			currMinVal = MIN_VAL;
 			currMaxVal = MAX_VAL;
 		}
-
 		if ( toughness < currMinVal) 
 			this.toughness = currMinVal;
 		else if ((toughness >= currMinVal) && (toughness <= currMaxVal))
@@ -684,9 +676,9 @@ public class Unit {
 	 * 
 	 * @param hitpoints
 	 *         	The new hitpoints for this unit.
-	 * @pre The given hitpoints must be a valid hitpoints for the unit.
+	 * @pre The given hitpoints must be valid hitpoints for this unit.
 	 *       	| isValidHitpoints(hitpoints)
-	 * @post The hitpoints of this unit is equal to the given hitpoints.
+	 * @post The hitpoints of this unit are equal to the given hitpoints.
 	 *       	| new.getHitpoints() == hitpoints
 	 */
 	@Raw
@@ -714,7 +706,7 @@ public class Unit {
 
 	
 	/**
-	 * Check whether the given stamina is a valid stamina for the unit.
+	 * Check whether the given stamina is a valid stamina for this unit.
 	 *  
 	 * @param stamina
 	 *         	The stamina to check.
@@ -734,7 +726,7 @@ public class Unit {
 	 *         The new stamina for this unit.
 	 * @pre The given stamina must be a valid stamina for the unit.
 	 *         | isValidStamina(stamina)
-	 * @post The stamina of this unit is equal to the given stamina.
+	 * @post The new stamina of this unit is equal to the given stamina.
 	 *         | new.getStamina() == stamina
 	 */
 	@Raw @Model
@@ -772,13 +764,16 @@ public class Unit {
 		if (modOrientation > 0){
 			this.orientation = modOrientation;
 		}
+		
 		else if (modOrientation < 0) {
 			this.orientation = modOrientation + 2*Math.PI;
 		}
+		
 		else {
 			if (orientation%(2*Math.PI) == 0) {
 				this.orientation = 0;
 			}
+			
 			else {
 				this.orientation = Math.PI;
 			}
@@ -853,7 +848,6 @@ public class Unit {
 			}
 		}
 		
-			
 		else if (isResting()){
 
 			setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
@@ -865,7 +859,6 @@ public class Unit {
 				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
 				double newHitpoints = getHitpoints() + ((double)getToughness()/200.0)*(double)(nbTimesPeriod);
 				double newStamina = getStamina() + ((double) getToughness()/100.0)*(double)(nbTimesPeriod);
-				
 				
 				if (newHitpoints <= getMaxHitpointsStamina()){
 					setHitpoints(newHitpoints);
@@ -953,8 +946,8 @@ public class Unit {
 	/**
 	 * Return the base speed of this unit.
 	 * 
-	 * @return 1.5 times the strength plus agility of the unit, divided by 200/100 ,
-	 * 		   divided by the weight of the unit.
+	 * @return 1.5 times the strength plus agility of the unit, divided by 200 times the weight ,
+	 * 		   divided by 100.
 	 * 		   | result == 1.5*(getStrength()+getAgility())/(200*getWeight()/100)
 	 */
 	@Basic @Model
@@ -964,10 +957,10 @@ public class Unit {
 	
 	
 	/**
-	 * Get the walking speed of the unit.
+	 * Get the walking speed of this unit.
 	 * 
 	 * @param targetZ
-	 * 		 	The z coordinate of the target to which the unit is going.
+	 * 		 	The z coordinate of the target to which the unit is moving.
 	 * @return 0.5 times the base speed of the unit, if the value of the z coordinate of the current 
 	 * 			location of the unit is smaller than the z coordinate of the target location.
 	 * 			| if (getLocation()[z_coord]-targetZ < 0)
@@ -994,7 +987,7 @@ public class Unit {
 	}
 
 	/**
-	 * Return the current speed of the unit in x, y and z direction.
+	 * Return the current speed of this unit in x, y and z direction.
 	 * 
 	 * @return If the unit is sprinting, the current speed is equal to the walking speed times 2,
 	 * 			multiplied with the difference between the location of the target and location of the unit,
@@ -1105,7 +1098,7 @@ public class Unit {
 	}
 	
 	/**
-	 * Enable the movement of the unit.
+	 * Enable the movement of this unit.
 	 * 
 	 * @effect If the unit is resting and has rested long enough to have recovered one hitpoint,
 	 * 			the units stops resting.
@@ -1129,7 +1122,7 @@ public class Unit {
 	}
 	
 	/**
-	 * Disable the movement of the unit.
+	 * Disable the movement of this unit.
 	 * 
 	 * @post The new state of moving of the unit is false.
 	 * 			| new.isMoving == false				
@@ -1476,7 +1469,7 @@ public class Unit {
 	 * 
 	 * @param time
 	 * 			The new time remaining to work for this unit.
-	 * @post The time remaining to work of this unit is equal to the given time.
+	 * @post The new time remaining to work of this unit is equal to the given time.
 	 *       	| new.getTimeRemainderToWork() == time
 	 * 			
 	 */
@@ -1745,7 +1738,7 @@ public class Unit {
 	 * The unit starts resting.
 	 * 
 	 * @effect The unit starts resting.
-	 * 			| startResting();
+	 * 			| startResting()
 	 */
 	public void rest(){
 		startResting();
