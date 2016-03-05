@@ -531,21 +531,23 @@ public class UnitTest {
 	
 	
 	// Orientation tests
-	
-	@Test
-	public void orientation_MovingECheck () throws Exception {
-		assertEquals(Math.PI/2,validUnit.getOrientation(), Util.DEFAULT_EPSILON);
-		validUnit.moveToAdjacent(1, 0, 0);
-		validUnit.advanceTime(0.1);
-		assertEquals(0, validUnit.getOrientation(), Util.DEFAULT_EPSILON);
-	}
-	
+		
 	@Test
 	public void orientation_MovingNCheck () throws Exception {
 		assertEquals(Math.PI/2,validUnit.getOrientation(), Util.DEFAULT_EPSILON);
 		validUnit.moveToAdjacent(0, -1, 0);
 		validUnit.advanceTime(0.1);
 		assertEquals(3*Math.PI/2, validUnit.getOrientation(), Util.DEFAULT_EPSILON);
+	}
+	
+	@Test
+	public void orientation_MovingWheck () throws Exception {
+		int[] location = {10,10,10};
+		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
+		assertEquals(Math.PI/2,unit.getOrientation(), Util.DEFAULT_EPSILON);
+		unit.moveToAdjacent(-1, 0, 0);
+		unit.advanceTime(0.1);
+		assertEquals(Math.PI, unit.getOrientation(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
