@@ -197,7 +197,7 @@ public class Unit {
 	 * @throws IllegalPositionException
 	 *         The given location is not a valid location for any
 	 *         unit.
-	 *       | ! isValidLocation(getLocation())
+	 *       | ! isValidLocation(location)
 	 */
 	@Raw @Model
 	private void setLocation(double[] location) throws IllegalPositionException{
@@ -244,7 +244,7 @@ public class Unit {
 	/**
 	 * Set the name of this unit to the given name.
 	 * 
-	 * @param  Name
+	 * @param  name
 	 *         The new name for this unit.
 	 * @post   The name of this new unit is equal to
 	 *         the given name.
@@ -252,7 +252,7 @@ public class Unit {
 	 * @throws IllegalNameException
 	 *         The given name is not a valid name for any
 	 *         unit.
-	 *       | ! isValidName(getName())
+	 *       | ! isValidName(name)
 	 */
 	@Raw
 	public void setName(String name) throws IllegalNameException{
@@ -1442,13 +1442,12 @@ public class Unit {
 	 * 			the unit stops resting ,starts working and its time remainder to work is equal to 
 	 * 			500 divided by the strength of the unit.
 	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
-	 * 			|	then (stopResting() 
-	 * 			|		&& (working == true)
+	 * 			|	then (isWorking() == true)
 	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
 	 * @effect	if the unit is not resting, the units starts working and its time remainder to work
 	 * 			is equal to 500 divided by the strength of the unit.
-	 * 			| if (!working)
-	 * 			|	then ((working == true)
+	 * 			| if (! isWorking())
+	 * 			|	then ((isWorking == true)
 	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
 	 */
 	@Model
@@ -1532,20 +1531,20 @@ public class Unit {
 	 * 
 	 * @param	other
 	 * 		 	Unit to attack.
-	 * @post	if the unit is not equal to the unit to attack and if the unit
+	 * @effect	if the unit is not equal to the unit to attack and if the unit
 	 * 			is resting, the unit stops resting.
 	 * 			| if (this != other)
 	 * 			|	if (this.isResting())
 	 * 			|		then this.stopResting()
-	 * @post 	if the unit is not equal to the unit to attack, 
+	 * @effect 	if the unit is not equal to the unit to attack, 
 	 * 			the unit stops working.
 	 * 			| if (this != other)
 	 * 			|	then this.stopWorking()
-	 * @post	if the unit is not equal to the unit to attack,
+	 * @effect	if the unit is not equal to the unit to attack,
 	 * 			the new orientation in fight is set to the to the unit to attack
 	 * 			| if (this != other)
 	 * 			|	then this.setOrientationInFight(other)
-	 * @post	if the unit is not equal to the unit to attack,
+	 * @effect	if the unit is not equal to the unit to attack,
 	 * 			the new attack time of this unit is equal to 1.
 	 * 			| if (this != other)
 	 * 			|	then this.setAttackTime(1)
@@ -1599,7 +1598,7 @@ public class Unit {
 	 * 			The other unit in the fight.
 	 * @effect 	The orientation of this unit is set in the direction of the other unit, 
 	 * 			using the arc tangens of the distant difference in y direction of the other unit and
-	 * 			this unit, and the distant difference in z direciton of the other unit and 
+	 * 			this unit, and the distant difference in z direction of the other unit and 
 	 * 			this unit.
 	 * 			|  setOrientation(arctangens(other.getLocation()[y]-this.getLocation()[y],
 	 * 			|	other.getLocation()[x]-this.getLocation()[x])
@@ -1751,7 +1750,8 @@ public class Unit {
 	 * 
 	 * @param	time
 	 * 			The time to set to the unit.
-	 * @post 	The new attack time of this unit is equal to the given time.				
+	 * @post 	The new attack time of this unit is equal to the given time.
+	 * 			| new.getAttackTime() == time			
 	 */
 	@Model
 	private void setAttackTime(float time){
@@ -1816,7 +1816,7 @@ public class Unit {
 	 * 			| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
 	 * 			|	( (getStamina() != getMaxHitpointsStamina()) ))
 	 * 			|	then (setTimeResting(0)
-	 * 					&& resting = true
+	 * 					&& isResting() == true
 	 * 					&& stopWorking()
 	 * 					&& setStartRestHitpoints(getHitpoints())
 	 * 					&& setStartRestStamina(getStamina()))
@@ -1843,7 +1843,7 @@ public class Unit {
 	 * 			| if (! canHaveRecoverdOneHp())
 	 * 			|	then (setHitpoints(getStartRestHitpoints())
 	 * @post 	the unit is not resting
-	 * 			| resting == false
+	 * 			| isResting() == false
 	 * @effect	The new time since resting is equal to 0.
 	 * 			| setTimeSinceRest(0)
 	 * @effect	The new time that the unit has rested is equal to a large value.
@@ -1868,7 +1868,10 @@ public class Unit {
 	/**
 	 * Set the time since rest to the given time.
 	 * 
-	 * @post The new time since resting is equal to the given time.
+	 * @param 	time
+	 * 			The time since the unit has stopped resting.
+	 * @post 	The new time since resting is equal to the given time.
+	 * 			| new.getTimeSinceRest() == time
 	 */
 	@Model
 	private void setTimeSinceRest(float time){
@@ -1894,6 +1897,7 @@ public class Unit {
 	 * @param	time
 	 * 			The time that the unit is resting.
 	 * @post 	The new time that the unit is resting is equal to the given time.
+	 * 			| new.getTimeResting() == time
 	 */
 	@Model
 	private void setTimeResting(float time) {
@@ -1919,6 +1923,7 @@ public class Unit {
 	 * @param	time
 	 * 			The periodic rest time.
 	 * @post	The new periodic reset time is equal to the given time.
+	 *			| new.getTimePeriodicRest() == time
 	 */
 	@Model
 	private void setTimePeriodicRest(float time){
@@ -1966,6 +1971,7 @@ public class Unit {
 	 * @param	hitpoints
 	 * 			The hitpoints to set.
 	 * @post	The new initial hitpoints when the unit started resting are equal to the given hitpoints.
+	 * 			| new.getStartRestHitpoints() == hitpoints
 	 * 			
 	 */
 	@Model
@@ -1991,7 +1997,8 @@ public class Unit {
 	 * 
 	 * @param	stamina
 	 * 			The stamina to set.
-	 * @post	
+	 * @post	The new initial stamina when the unit started resting are equal to the given stamina.
+	 * 			| new.getStartRestStamina() == stamina	
 	 */
 	@Model
 	private void setStartRestStamina(double stamina){
@@ -2052,9 +2059,10 @@ public class Unit {
 	private boolean defaultBehaviour;
 	
 	/**
-	 * Set a new default behaviour for the unit to do.
+	 * Set a new default behaviour task for the unit to do.
 	 * 
-	 * possibleTask[0] = moveTo(randomPosition),possibleTask[1] = work, possibleTask[2] = rest
+	 * Chance 1/3: possibleTask[0] = moveTo(randomPosition),
+	 * possibleTask[1] = work, possibleTask[2] = rest
 	 * @effect	if the possible task is move to random position, unit moves to random position.
 	 * 			| if (possibleTask[0])
 	 * 			|	than moveTo(getRandomPosition)
