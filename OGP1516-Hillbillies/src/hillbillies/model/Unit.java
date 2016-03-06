@@ -31,7 +31,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *       | (getOrientation() >= 0) && (getOrientation < 2*PI)
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0.9.9
+ * @version 1.0
  *
  */
 public class Unit {
