@@ -1,3 +1,4 @@
+package hillbillies.tests.unit;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
