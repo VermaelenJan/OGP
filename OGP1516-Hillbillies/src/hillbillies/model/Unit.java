@@ -760,24 +760,7 @@ public class Unit {
 	 */
 	@Raw @Model
 	private void setOrientation(double orientation){
-		double modOrientation = orientation%(Math.PI);
-		if (modOrientation > 0){
-			this.orientation = modOrientation;
-		}
-		
-		else if (modOrientation < 0) {
-			this.orientation = modOrientation + 2*Math.PI;
-		}
-		
-		else {
-			if (orientation%(2*Math.PI) == 0) {
-				this.orientation = 0;
-			}
-			
-			else {
-				this.orientation = Math.PI;
-			}
-		}
+		this.orientation = (((orientation%(2*Math.PI))+2*Math.PI)%(2*Math.PI));
 	}
 	
 	/**
