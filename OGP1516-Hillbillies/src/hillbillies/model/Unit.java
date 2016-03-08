@@ -6,7 +6,9 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
-
+//TODO: make Location.class (value class)
+//TODO: remove @basic if not @basic
+//TODO: split AdvanceTime
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
@@ -814,12 +816,13 @@ public class Unit {
 		if (! isValidAdvanceTime(dt)){
 			throw new IllegalAdvanceTimeException(dt);
 		}
-		
-		setTimeSinceRest(getTimeSinceRest() + (float)dt);
-		if (getTimeSinceRest() > 180){
-			startResting();
+		if (! isResting()) {
+			setTimeSinceRest(getTimeSinceRest() + (float)dt);
+			if (getTimeSinceRest() > 180){
+				startResting();
+			}
 		}
-		
+
 		if (isAttacking()){
 			
 			stopWorking();
@@ -860,7 +863,7 @@ public class Unit {
 				
 		else if (isWorking() && canHaveRecoverdOneHp()){
 			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
-			if (getTimeRemainderToWork() <= 0){
+			if (getTimeRemainderToWork()-(float)dt <= 0){
 				stopWorking();
 			}
 		}
@@ -2005,19 +2008,10 @@ public class Unit {
 	 */
 	@Model
 	private void newDefaultBehaviour(){
-		int possibleTask = random.nextInt(3);
-		if (possibleTask == 0){
-			try {
-				moveTo(getRandomPosition());
-			} catch (IllegalPositionException e) {} //Exception will never be thrown.
-		}
-		
-		else if (possibleTask == 1){
-			work();
-		}
-		
-		else{
-			rest();
+		switch (random.nextInt(3)) {
+			case 0: try {moveTo(getRandomPosition());} catch (IllegalPositionException e) {} break;
+			case 1: work(); break;						//Exception will never be thrown.
+			case 2: rest(); break;
 		}
 	}
 	
@@ -2031,7 +2025,7 @@ public class Unit {
 	 * 			| randLoc_z == randomInt(0,WORLD_Z-1)
 	 */
 	@Model
-	private int[] getRandomPosition(){
+	private int[] getRandomPosition(){ //TODO: move to Location.class
 		int[] randLoc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
 		return randLoc;
 	}
