@@ -201,7 +201,7 @@ public class Unit {
 	// CUBE
 	
 	/**
-	 * Returns the coordinates of the cube the unit is in.
+	 * @return The coordinates of the cube the unit is in.
 	 */
 	@Raw
 	public int[] getOccupiedCube() {
