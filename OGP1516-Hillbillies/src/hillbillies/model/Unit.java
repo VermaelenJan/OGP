@@ -9,6 +9,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 //TODO: make Location.class (value class).
 //TODO: split AdvanceTime.
 //TODO: make internal functions nominal if necessary.
+//TODO: class for constants.
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
