@@ -7,7 +7,6 @@ import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
 //TODO: make Location.class (value class)
-//TODO: remove @basic if not @basic
 //TODO: split AdvanceTime
 /**
  * @invar  The location of each unit must be a valid location for any
@@ -204,7 +203,7 @@ public class Unit {
 	/**
 	 * Returns the coordinates of the cube the unit is in.
 	 */
-	@Basic @Raw
+	@Raw
 	public int[] getOccupiedCube() {
 		double[] location = this.getLocation();
 		int[] position = {(int) location[0], (int) location[1], (int) location[2]};
@@ -646,7 +645,7 @@ public class Unit {
 	 * 			larger integer.
 	 * 		   | result == ceil((getWeight()*getToughness())/50)
 	 */
-	@Basic @Raw
+	@Raw
 	public int getMaxHitpointsStamina() {
 		 return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
 	}
@@ -936,7 +935,7 @@ public class Unit {
 	 * 		   divided by 100.
 	 * 		   | result == 1.5*(getStrength()+getAgility())/(200*getWeight()/100)
 	 */
-	@Basic @Model
+	@Model
 	private double getBaseSpeed(){
 		return 1.5*(getStrength()+getAgility())/(2*getWeight());
 	}
@@ -959,7 +958,7 @@ public class Unit {
 	 * 			is equal to the z coordinate of the target location.
 	 * 			| result == getBaseSpeed()			
 	 */
-	@Basic @Model
+	@Model
 	private double getWalkingSpeed(double targetZ){
 		if (getLocation()[2]-targetZ < 0){
 			return 0.5*getBaseSpeed();
@@ -990,7 +989,7 @@ public class Unit {
 	 * 			|            velocity*(target[y]-getLocation()[y])/distance,
 	 * 			|            velocity*(target[z]-getLocation()[z])/distance )		
 	 */
-	@Basic @Model
+	@Model
 	private double[] getCurrentSpeed() {
 		double distance = getDistanceToTarget();
 
@@ -1022,10 +1021,9 @@ public class Unit {
 	 * @return The 2-norm of the current speed in x,y and z direction.
 	 * 			| result == (getCurrentSpeed()[x]^2 + getCurrentSpeed()[y]^2 + getCurrentSpeed()[z]^2)^(1/2)
 	 */
-	@Basic
 	public double getCurrentSpeedMag() {
 		if (!isMoving()) {
-			return (double) 0;
+			return 0;
 		}
 		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
 		Math.pow((getCurrentSpeed()[1] ), 2) + Math.pow((getCurrentSpeed()[2]), 2));
@@ -1078,7 +1076,6 @@ public class Unit {
 	 * 			the unit is not resting and the unit is not attacking.
 	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
 	 */
-	@Basic
 	public boolean isActualMoving(){
 		return (isMoving() && !isWorking() && !isResting() && !isAttacking());
 	}
@@ -1675,7 +1672,6 @@ public class Unit {
 	 * @return True if and only if the attack time is greater than 0.
 	 * 			| result == (getAttacktime() > 0)
 	 */
-	@Basic
 	public boolean isAttacking(){
 		return (getAttackTime() > 0);
 	}
@@ -1713,7 +1709,7 @@ public class Unit {
 	 * @return True if and only if the the unit has defended successful.
 	 * 			| result == (randomDouble <= possibility)
 	 */
-	@Basic @Model
+	@Model
 	private boolean getDefendSucces(double possibility){
 		return (random.nextDouble() <= possibility);
 	}
@@ -1738,7 +1734,7 @@ public class Unit {
 	 */
 	@Basic 
 	public boolean isResting(){
-		return resting;
+		return this.resting;
 	}
 	
 	/**
@@ -1762,7 +1758,7 @@ public class Unit {
 		if ( (getHitpoints() != getMaxHitpointsStamina()) || ( (getStamina() != getMaxHitpointsStamina()) )){
 			setTimeResting(0);
 			stopWorking();
-			resting = true;
+			this.resting = true;
 			setStartRestHitpoints(getHitpoints());
 			setStartRestStamina(getStamina());
 		}
@@ -1790,7 +1786,7 @@ public class Unit {
 			setHitpoints(getStartRestHitpoints());
 			setStamina(getStartRestStamina());
 		}
-		resting = false;
+		this.resting = false;
 		setTimeSinceRest(0);
 		setTimeResting(Float.MAX_VALUE);
 	}
@@ -1954,7 +1950,7 @@ public class Unit {
 	 */
 	@Basic
 	public boolean isDefaultBehaviourEnabled(){
-		return defaultBehaviour;
+		return this.defaultBehaviour;
 	}
 	
 	/**
