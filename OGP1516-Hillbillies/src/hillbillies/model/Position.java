@@ -36,4 +36,11 @@ public class Position {
 		double[] position = {this.xPos, this.yPos, this.zPos};
 		return(position);
 	}
+	
+	@Raw
+	public int[] getOccupiedCube() {
+		double[] location = this.getLocation();
+		int[] position = {(int) location[0], (int) location[1], (int) location[2]};
+		return(position);
+	}
 }
