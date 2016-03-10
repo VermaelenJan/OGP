@@ -52,7 +52,10 @@ public class Unit {
 	private static int MAX_VAL = 200;
 	
 	// Randomizer
-	Random random = new Random();
+	private Random random = new Random();
+	
+	//Location
+	private Position position = new Position();
 		
 	/**
 	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.

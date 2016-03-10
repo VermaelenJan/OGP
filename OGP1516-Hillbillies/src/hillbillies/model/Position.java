@@ -13,7 +13,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @version 0.0
  */
 class Position {
-	
+	//TODO: constructor
 	@Raw @Model
 	private void setLocation(double[] location) throws IllegalPositionException {
 		if (!isValidLocation(location))
