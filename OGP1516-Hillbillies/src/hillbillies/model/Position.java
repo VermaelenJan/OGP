@@ -1,22 +1,27 @@
 package hillbillies.model;
 
+import java.util.Random;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
+import be.kuleuven.cs.som.annotate.Value;
 
 
 //TODO: indexes from 1 to 4
 /**
  * A class of positions.
- * @value
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 0.0
  */
+@Value
 class Position {
-	//TODO: constructor
-	//TODO: make all protected
+	
+	// Randomizer
+	private Random random = new Random();
+	
 	@Raw @Model 
-	public void setLocation(double[] location) throws IllegalPositionException {
+	protected void setLocation(double[] location) throws IllegalPositionException {
 		if (!isValidLocation(location))
 			throw new IllegalPositionException(location);	
 	this.xPos = location[0];
@@ -29,21 +34,45 @@ class Position {
 	private double zPos = 0;
 	
 	@Raw @Model
-	public static boolean isValidLocation(double[] location) {
+	protected static boolean isValidLocation(double[] location) {
 		return ((location[0] <= Unit.WORLD_X) && (location[1] <= Unit.WORLD_Y) && (location[2] <= Unit.WORLD_Z) && 
 				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
 	@Basic @Raw
-	public double[] getLocation() {
+	protected double[] getLocation() {
 		double[] position = {this.xPos, this.yPos, this.zPos};
 		return(position);
 	}
 	
 	@Raw
-	public int[] getOccupiedCube() {
+	protected int[] getOccupiedCube() {
 		double[] location = this.getLocation();
 		int[] position = {(int) location[0], (int) location[1], (int) location[2]};
 		return(position);
+	}
+	
+	@Model 
+	protected void setRandomLocation(){
+		try {
+			setLocation(randomPosition(getLocation()));
+		} catch (IllegalPositionException e) {
+			setRandomLocation();
+		}
+	}
+	
+	@Model
+	protected double[] randomPosition(double[] currLoc){
+		double[] newLoc = {currLoc[0]+ (random.nextDouble()*2-1), currLoc[1]+ (random.nextDouble()*2-1), currLoc[2]};
+		if (currLoc == newLoc) {
+			return randomPosition(currLoc);
+		}
+		return newLoc;
+	}
+	
+	@Model
+	protected int[] getRandomPosition(){
+		int[] randLoc = {random.nextInt(Unit.WORLD_X-1), random.nextInt(Unit.WORLD_Y-1), random.nextInt(Unit.WORLD_Z-1)};
+		return randLoc;
 	}
 }

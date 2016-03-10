@@ -6,10 +6,11 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
-//TODO: make Location.class (value class).
 //TODO: split AdvanceTime.
 //TODO: make internal functions nominal if necessary.
+//TODO: fix doc van Position.java en remove //code if alles werkt en doc in orde is
 //TODO: class for constants.
+//TODO: vraag iets over gevallen zoals getLoc en getOccCube
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
@@ -55,7 +56,7 @@ public class Unit {
 	private Random random = new Random();
 	
 	//Location
-	private Position positionObj = new Position();
+	public Position positionObj = new Position();
 		
 	/**
 	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
@@ -107,7 +108,6 @@ public class Unit {
 	private Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
 		double[] location = {CubeLocation[0]+CUBE_LENGTH/2, CubeLocation[1]+CUBE_LENGTH/2, CubeLocation[2]+CUBE_LENGTH/2};
-		//setLocation(location);
 		positionObj.setLocation(location); //
 		setName(name);
 		setWeight(weight, true);
@@ -156,48 +156,46 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public double[] getLocation() {
-		return positionObj.getLocation(); //
-		//double[] position = {this.xPos, this.yPos, this.zPos};
-		//return(position);
+		return positionObj.getLocation();
 	}
 	
-	/**
-	 * Check whether the given location is a valid location for
-	 * any unit.
-	 * 
-	 * @param location
-	 * 			The location to check.
-	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
-	 * 			are smaller than the WORLD_X, WORLD_Y and WORLD_Z values and the x,y and z value are greater than 0.
-	 * 			| result == (location[x] <= WORLD_X) && (location[y] <= WORLD_Y) && (location[z] <= WORLD_Z) && 
-	 *			| (location[x] >= 0) && (location[y] >= 0) && (location[z] >= 0))
-	 */
-	@Raw @Model
-	private static boolean isValidLocation(double[] location) {
-		return ((location[0] <= WORLD_X) && (location[1] <= WORLD_Y) && (location[2] <= WORLD_Z) && 
-				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
-	}
+//	/**
+//	 * Check whether the given location is a valid location for
+//	 * any unit.
+//	 * 
+//	 * @param location
+//	 * 			The location to check.
+//	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
+//	 * 			are smaller than the WORLD_X, WORLD_Y and WORLD_Z values and the x,y and z value are greater than 0.
+//	 * 			| result == (location[x] <= WORLD_X) && (location[y] <= WORLD_Y) && (location[z] <= WORLD_Z) && 
+//	 *			| (location[x] >= 0) && (location[y] >= 0) && (location[z] >= 0))
+//	 */
+//	@Raw @Model
+//	private static boolean isValidLocation(double[] location) {
+//		return ((location[0] <= WORLD_X) && (location[1] <= WORLD_Y) && (location[2] <= WORLD_Z) && 
+//				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
+//	}
 	
-	/**
-	 * Set the location of this unit to the given location.
-	 * 
-	 * @param location
-	 *         	The new location for this unit.
-	 * @post The new location of this unit is equal to the given location.
-	 *       	| new.getLocation() == location
-	 * @throws IllegalPositionException
-	 *         	The given location is not a valid location for any unit.
-	 *       	| ! isValidLocation(location)
-	 */
-	@Raw @Model
-	private void setLocation(double[] location) throws IllegalPositionException{ //TODO: remove
-		positionObj.setLocation(location);
-//		if (!isValidLocation(location))
-//			throw new IllegalPositionException(location);
-//		this.xPos = location[0];
-//		this.yPos = location[1];
-//		this.zPos = location[2];
-	}
+//	/**
+//	 * Set the location of this unit to the given location.
+//	 * 
+//	 * @param location
+//	 *         	The new location for this unit.
+//	 * @post The new location of this unit is equal to the given location.
+//	 *       	| new.getLocation() == location
+//	 * @throws IllegalPositionException
+//	 *         	The given location is not a valid location for any unit.
+//	 *       	| ! isValidLocation(location)
+//	 */
+//	@Raw @Model
+//	private void setLocation(double[] location) throws IllegalPositionException{
+//		positionObj.setLocation(location);
+////		if (!isValidLocation(location))
+////			throw new IllegalPositionException(location);
+////		this.xPos = location[0];
+////		this.yPos = location[1];
+////		this.zPos = location[2];
+//	}
 //	
 //	/**
 //	 * Variables registering the location of this unit.
@@ -213,9 +211,7 @@ public class Unit {
 	 */
 	@Raw
 	public int[] getOccupiedCube() {
-		double[] location = this.getLocation();
-		int[] position = {(int) location[0], (int) location[1], (int) location[2]};
-		return(position);
+		return positionObj.getOccupiedCube();
 	}
 	
 	// NAME 
@@ -813,7 +809,7 @@ public class Unit {
 	 * 			is equal to 0 and the unit stops sprinting.
 	 * @effect If the unit is moving and not arrived, its orientation will be updated to the direction the
 	 * 			unit is moving in.
-	 * @effect If the unit is moving, not arrived and defaultBehaviour is enabled, the unit starts sprinting
+	 * @effect If the unit is moving, not arrived and defaultBehaviour is enabled, the unit starts or stops sprinting
 	 * 			with a chance of dt/10.
 	 * @throws IllegalAdvanceTimeException(dt)
 	 * 			The given dt is not a valid advanceTime duration.
@@ -870,7 +866,9 @@ public class Unit {
 				
 		else if (isWorking() && canHaveRecoverdOneHp()){
 			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
-			if (getTimeRemainderToWork()-(float)dt <= 0){
+//			if (getTimeRemainderToWork()-(float)dt <= 0){ //TODO: controleren
+			if (getTimeRemainderToWork() <= 0){
+				setTimeRemainderToWork(0);
 				stopWorking();
 			}
 		}
@@ -879,12 +877,12 @@ public class Unit {
 			if (Arrived(dt)){
 				stopMoving();
 				try {
-					setLocation(target);
+					positionObj.setLocation(target);
 				} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				if (!(globalTarget == null) &&
-						!((getOccupiedCube()[0] == globalTarget[0]) &&
-						(getOccupiedCube()[1] == globalTarget[1]) &&
-						(getOccupiedCube()[2] == globalTarget[2]) ) ) {
+						!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
+						(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
+						(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
 					try {
 						moveTo(globalTarget);
 					} catch (IllegalPositionException e) {} //Exception will never be thrown.
@@ -892,11 +890,11 @@ public class Unit {
 			}
 			
 			else{
-				double[] newLoc = {getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
-									getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
-									getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
+				double[] newLoc = {positionObj.getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
+						positionObj.getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
+						positionObj.getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
 				try {
-					setLocation(newLoc);
+					positionObj.setLocation(newLoc);
 				} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				
 				if (isSprinting()) {
@@ -910,7 +908,12 @@ public class Unit {
 				}
 				else if (isDefaultBehaviourEnabled()) {
 					if (random.nextDouble() <= (float) dt/10) {
-						startSprinting();
+						if (isSprinting()) { //TODO: er in laten of niet?
+							stopSprinting();
+						}
+						else {
+							startSprinting();
+						}
 					}
 				}
 				setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
@@ -968,10 +971,10 @@ public class Unit {
 	 */
 	@Model
 	private double getWalkingSpeed(double targetZ){
-		if (getLocation()[2]-targetZ < 0){
+		if (positionObj.getLocation()[2]-targetZ < 0){
 			return 0.5*getBaseSpeed();
 		}
-		else if (getLocation()[2]- targetZ > 0){
+		else if (positionObj.getLocation()[2]- targetZ > 0){
 			return 1.2*getBaseSpeed();
 		}
 		else{
@@ -1009,9 +1012,9 @@ public class Unit {
 			velocity = getWalkingSpeed(target[2]);
 		}
 		
-		double[] currentSpeed= {velocity*(target[0]-getLocation()[0])/distance, 
-								velocity*(target[1]-getLocation()[1])/distance, 
-								velocity*(target[2]-getLocation()[2])/distance};
+		double[] currentSpeed= {velocity*(target[0]-positionObj.getLocation()[0])/distance, 
+								velocity*(target[1]-positionObj.getLocation()[1])/distance, 
+								velocity*(target[2]-positionObj.getLocation()[2])/distance};
 		return currentSpeed;
 	}
 	
@@ -1153,8 +1156,9 @@ public class Unit {
 		if (target == null) {
 			return (double) 0;
 		}
-		double distance = Math.sqrt(Math.pow((target[0]-getLocation()[0]),2)+Math.pow((target[1]-getLocation()[1]),2)
-		+ Math.pow((target[2]-getLocation()[2]),2));
+		double distance = Math.sqrt(Math.pow((target[0]-positionObj.getLocation()[0]),2)
+				+ Math.pow((target[1]-positionObj.getLocation()[1]),2)
+				+ Math.pow((target[2]-positionObj.getLocation()[2]),2));
 		return distance;
 	}
 	
@@ -1234,13 +1238,13 @@ public class Unit {
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
-		int[] currentCube = getOccupiedCube();
+		int[] currentCube = positionObj.getOccupiedCube();
 		double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
 									(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
 									(double)(currentCube[2]+ dz + CUBE_LENGTH/2)};
 
 		
-		if (! isValidLocation(currentTarget)){			
+		if (! Position.isValidLocation(currentTarget)){			
 			throw new IllegalPositionException(currentTarget);
 		}
 		if (! (dx == 0 && dy == 0 && dz ==0)) {
@@ -1317,9 +1321,9 @@ public class Unit {
 										// globalTarget, the lack of reverting wont cause any problems.
 		globalTarget = endTarget;
 		
-		int xCur = getOccupiedCube()[0];
-		int yCur = getOccupiedCube()[1];
-		int zCur = getOccupiedCube()[2];
+		int xCur = positionObj.getOccupiedCube()[0];
+		int yCur = positionObj.getOccupiedCube()[1];
+		int zCur = positionObj.getOccupiedCube()[2];
 		
 		int xTar = endTarget[0];
 		int yTar = endTarget[1];
@@ -1504,8 +1508,8 @@ public class Unit {
 	 */
 	public void attack(Unit other) throws IllegalAttackPosititonException {
 		if (this != other) {
-			if (!this.isValidAttackPosition(other.getOccupiedCube())) {
-				throw new IllegalAttackPosititonException(other.getOccupiedCube());
+			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
+				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
 			}
 			
 			if (this.isResting()) {
@@ -1533,9 +1537,9 @@ public class Unit {
 	 */
 	@Model
 	private boolean isValidAttackPosition(int[] attackCubePosition){
-		return((Math.abs(this.getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
-				(Math.abs(this.getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
-				(Math.abs(this.getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
+		return((Math.abs(this.positionObj.getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
+				(Math.abs(this.positionObj.getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
+				(Math.abs(this.positionObj.getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
 	}
 	
 	/**
@@ -1558,10 +1562,10 @@ public class Unit {
 	 */
 	@Model 
 	private void setOrientationInFight(Unit other) {
-		double orientUnitThis = Math.atan2(other.getLocation()[1]-this.getLocation()[1],
-				other.getLocation()[0]-this.getLocation()[0]);
-		double orientUnitOther = Math.atan2(this.getLocation()[1]-other.getLocation()[1],
-				this.getLocation()[0]-other.getLocation()[0]);
+		double orientUnitThis = Math.atan2(other.positionObj.getLocation()[1]-this.positionObj.getLocation()[1],
+				other.positionObj.getLocation()[0]-this.positionObj.getLocation()[0]);
+		double orientUnitOther = Math.atan2(this.positionObj.getLocation()[1]-other.positionObj.getLocation()[1],
+				this.positionObj.getLocation()[0]-other.positionObj.getLocation()[0]);
 		
 		this.setOrientation(orientUnitThis);
 		other.setOrientation(orientUnitOther);
@@ -1618,7 +1622,7 @@ public class Unit {
 			
 			double possibilityDodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
 			if (getDefendSucces(possibilityDodge)){
-				this.setRandomLocation();
+				this.positionObj.setRandomLocation();
 				this.setOrientationInFight(other);
 
 			}
@@ -1640,39 +1644,39 @@ public class Unit {
 		}
 	}
 	
-	/**
-	 * Set the unit to a random position near the current location.
-	 * 
-	 * @effect The location is a random location.
-	 * 			| setLocation(randomPosition(getLocation()))
-	 */
-	@Model 
-	private void setRandomLocation(){
-		try {
-			setLocation(randomPosition(getLocation()));
-		} catch (IllegalPositionException e) {
-			setRandomLocation();
-		}
-	}
+//	/**
+//	 * Set the unit to a random position near the current location.
+//	 * 
+//	 * @effect The location is a random location.
+//	 * 			| setLocation(randomPosition(getLocation()))
+//	 */
+//	@Model 
+//	private void setRandomLocation(){
+//		try {
+//			positionObj.setLocation(randomPosition(positionObj.getLocation()));
+//		} catch (IllegalPositionException e) {
+//			setRandomLocation();
+//		}
+//	}
 	
-	/**
-	 * Return a random position in the near area of the current location.
-	 * 
-	 * @param currLoc
-	 * 			The current location of the unit.
-	 * @return The current location plus a random number between -1 and 1, excluding 0,
-	 * 			in the x and y direction.
-	 * 			| result == [currLoc[x]+randomNumber(-1,1), currLoc[y] + randomNumber(-1,1), currLoc[z] ]
-	 * 			
-	 */
-	@Model
-	private double[] randomPosition(double[] currLoc){
-		double[] newLoc = {currLoc[0]+ (random.nextDouble()*2-1), currLoc[1]+ (random.nextDouble()*2-1), currLoc[2]};
-		if (currLoc == newLoc) {
-			return randomPosition(currLoc);
-		}
-		return newLoc;
-	}
+//	/**
+//	 * Return a random position in the near area of the current location.
+//	 * 
+//	 * @param currLoc
+//	 * 			The current location of the unit.
+//	 * @return The current location plus a random number between -1 and 1, excluding 0,
+//	 * 			in the x and y direction.
+//	 * 			| result == [currLoc[x]+randomNumber(-1,1), currLoc[y] + randomNumber(-1,1), currLoc[z] ]
+//	 * 			
+//	 */
+//	@Model
+//	private double[] randomPosition(double[] currLoc){
+//		double[] newLoc = {currLoc[0]+ (random.nextDouble()*2-1), currLoc[1]+ (random.nextDouble()*2-1), currLoc[2]};
+//		if (currLoc == newLoc) {
+//			return randomPosition(currLoc);
+//		}
+//		return newLoc;
+//	}
 	
 	/**
 	 * Checks whether the unit is attacking.
@@ -2013,24 +2017,24 @@ public class Unit {
 	@Model
 	private void newDefaultBehaviour(){
 		switch (random.nextInt(3)) {
-			case 0: try {moveTo(getRandomPosition());} catch (IllegalPositionException e) {} break;
+			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
 			case 1: work(); break;						//Exception will never be thrown.
 			case 2: rest(); break;
 		}
 	}
 	
-	/**
-	 * Return a random cube position in the boundaries of the world.
-	 * 
-	 * @return	Return random cube position smaller than WORLD_X-1 in the x direction, WORLD_Y-1 in the y direction,
-	 * 			WORLD_Z-1 in the z direction, and greater than 0.
-	 * 			| randLoc_x == randomInt(0,WORLD_X-1)
-	 * 			| randLoc_y == randomInt(0,WORLD_Y-1)
-	 * 			| randLoc_z == randomInt(0,WORLD_Z-1)
-	 */
-	@Model
-	private int[] getRandomPosition(){ //TODO: move to Location.class
-		int[] randLoc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
-		return randLoc;
-	}
+//	/**
+//	 * Return a random cube position in the boundaries of the world.
+//	 * 
+//	 * @return	Return random cube position smaller than WORLD_X-1 in the x direction, WORLD_Y-1 in the y direction,
+//	 * 			WORLD_Z-1 in the z direction, and greater than 0.
+//	 * 			| randLoc_x == randomInt(0,WORLD_X-1)
+//	 * 			| randLoc_y == randomInt(0,WORLD_Y-1)
+//	 * 			| randLoc_z == randomInt(0,WORLD_Z-1)
+//	 */
+//	@Model
+//	private int[] getRandomPosition(){
+//		int[] randLoc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
+//		return randLoc;
+//	}
 }
