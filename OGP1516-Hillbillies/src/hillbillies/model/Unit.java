@@ -1238,6 +1238,11 @@ public class Unit {
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
+		//TODO: do something
+//		if (isMoving) {
+//			throw new IllegalAdjacentPositionException(1, 1, 1);
+//		}
+		
 		int[] currentCube = positionObj.getOccupiedCube();
 		double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
 									(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
