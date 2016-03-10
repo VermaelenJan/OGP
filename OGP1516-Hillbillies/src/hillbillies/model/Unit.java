@@ -813,7 +813,7 @@ public class Unit {
 	 * 			with a chance of dt/10.
 	 * @throws IllegalAdvanceTimeException(dt)
 	 * 			The given dt is not a valid advanceTime duration.
-	 */
+	 */ //TODO: doc aanpassen
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
 		
 		if (! isValidAdvanceTime(dt)){
@@ -1033,7 +1033,7 @@ public class Unit {
 	 * 			| result == (getCurrentSpeed()[x]^2 + getCurrentSpeed()[y]^2 + getCurrentSpeed()[z]^2)^(1/2)
 	 */
 	public double getCurrentSpeedMag() {
-		if (!isMoving()) {
+		if (!isMoving() || isWorking() || isResting()) {
 			return 0;
 		}
 		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
@@ -1211,16 +1211,17 @@ public class Unit {
 	 * 			The movement of the unit in the z direction.
 	 * @param calledBy_moveTo
 	 * 			Boolean for defining the function called by the function MoveTo.
-	 * @effect If the movement in x,y and z direction is not zero, the unit starts moving.
+	 * @effect If the movement in x,y and z direction is not zero, the unit starts moving towards
+	 * 			the new current target, equal to the cube position of the current cube plus the dx, 
+	 * 			dy and dz movement, respectively in x, y and z direction.
+	 * 			|    new.currentTargetCube[x] == this.currentCube[x] + dx
+	 * 			| && new.currentTargetCube[y] == this.currentCube[y] + dy
+	 * 			| && new.currentTargetCube[z] == this.currentCube[z] + dz
 	 * 			| startMoving()				 	
-	 * @post If the boolean calledBy_moveTo is false, the new current target cube is equal to 
-	 * 			the cube position of the current cube plus the dx,dy and dz movement, respectively 
-	 * 			in x,y and z direction.
-	 * 			|   new.currentTargetCube[x] == this.currentCube[x] + dx
-	 * 			|&& new.currentTargetCube[y] == this.currentCube[y] + dy
-	 * 			|&& new.currentTargetCube[z] == this.currentCube[z] + dz
-	 * 		Note: If the boolean calledBy_moveTo is true, the currentTarget remains unchanged.
-	 * 		The currentTarget is the position of the middle of the cube, where the unit would
+	 * @post If the boolean calledBy_moveTo is false, the new global target cube is equal to 
+	 * 			the current target.
+	 * 		Note: If the boolean calledBy_moveTo is true, the globalTarget remains unchanged.
+	 * 		The global target is the position of the middle of the cube, where the unit would
 	 * 		move to after the dx,dy and dz movement.
 	 * @throws IllegalPositionException(currentTarget)
 	 * 			The currentTarget (location after the moveToAdjacent) is not a valid location.
@@ -1238,29 +1239,28 @@ public class Unit {
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
-		//TODO: do something
-//		if (isMoving) {
-//			throw new IllegalAdjacentPositionException(1, 1, 1);
-//		}
-		
-		int[] currentCube = positionObj.getOccupiedCube();
-		double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
-									(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
-									(double)(currentCube[2]+ dz + CUBE_LENGTH/2)};
+		//TODO: check of de fix goed is en doc aanpassen?
+		if (!isMoving) {
+			
+			int[] currentCube = positionObj.getOccupiedCube();
+			double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
+										(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
+										(double)(currentCube[2]+ dz + CUBE_LENGTH/2)};
 
-		
-		if (! Position.isValidLocation(currentTarget)){			
-			throw new IllegalPositionException(currentTarget);
-		}
-		if (! (dx == 0 && dy == 0 && dz ==0)) {
-			startMoving();
-		}
-		
-		target = currentTarget;
-		
-		if (! calledBy_moveTo) {
-			int[] currentTargetCube = {currentCube[0] + dx, currentCube[1]+ dy, currentCube[2] + dz};
-			globalTarget = currentTargetCube;
+			
+			if (! Position.isValidLocation(currentTarget)){			
+				throw new IllegalPositionException(currentTarget);
+			}
+			if (! (dx == 0 && dy == 0 && dz ==0)) {
+				startMoving();
+			}
+			
+			target = currentTarget;
+			
+			if (! calledBy_moveTo) {
+				int[] currentTargetCube = {currentCube[0] + dx, currentCube[1]+ dy, currentCube[2] + dz};
+				globalTarget = currentTargetCube;
+			}
 		}
 	}
 	
