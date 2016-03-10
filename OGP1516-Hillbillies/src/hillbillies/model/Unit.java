@@ -813,9 +813,8 @@ public class Unit {
 	 * 			with a chance of dt/10.
 	 * @throws IllegalAdvanceTimeException(dt)
 	 * 			The given dt is not a valid advanceTime duration.
-	 */ //TODO: doc aanpassen
+	 */ //TODO: doc aanpassen (na splitsen)
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
-		
 		if (! isValidAdvanceTime(dt)){
 			throw new IllegalAdvanceTimeException(dt);
 		}
@@ -874,7 +873,7 @@ public class Unit {
 		}
 
 		else if (isMoving()){
-			if (Arrived(dt)){
+			if (arrived(dt)){
 				stopMoving();
 				try {
 					positionObj.setLocation(target);
@@ -1154,7 +1153,7 @@ public class Unit {
 	@Model
 	private double getDistanceToTarget() {
 		if (target == null) {
-			return (double) 0;
+			return 0;
 		}
 		double distance = Math.sqrt(Math.pow((target[0]-positionObj.getLocation()[0]),2)
 				+ Math.pow((target[1]-positionObj.getLocation()[1]),2)
@@ -1172,8 +1171,8 @@ public class Unit {
 	 * 			| result == (getDistanceToTarget() < dt*getCurrentSpeedMag())
 	 */
 	@Model
-	private boolean Arrived(double dt){
-		return (getDistanceToTarget() < dt*getCurrentSpeedMag());	
+	private boolean arrived(double dt){
+		return (getDistanceToTarget() <= dt*getCurrentSpeedMag());	
 	}
 
 	/**
