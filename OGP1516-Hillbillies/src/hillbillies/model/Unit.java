@@ -55,7 +55,7 @@ public class Unit {
 	private Random random = new Random();
 	
 	//Location
-	private Position position = new Position();
+	private Position positionObj = new Position();
 		
 	/**
 	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
@@ -107,7 +107,8 @@ public class Unit {
 	private Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
 		double[] location = {CubeLocation[0]+CUBE_LENGTH/2, CubeLocation[1]+CUBE_LENGTH/2, CubeLocation[2]+CUBE_LENGTH/2};
-		setLocation(location);
+		//setLocation(location);
+		positionObj.setLocation(location); //
 		setName(name);
 		setWeight(weight, true);
 		setStrength(strength, true);
@@ -155,8 +156,9 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public double[] getLocation() {
-		double[] position = {this.xPos, this.yPos, this.zPos};
-		return(position);
+		return positionObj.getLocation(); //
+		//double[] position = {this.xPos, this.yPos, this.zPos};
+		//return(position);
 	}
 	
 	/**
@@ -188,12 +190,13 @@ public class Unit {
 	 *       	| ! isValidLocation(location)
 	 */
 	@Raw @Model
-	private void setLocation(double[] location) throws IllegalPositionException{
-		if (!isValidLocation(location))
-			throw new IllegalPositionException(location);
-		this.xPos = location[0];
-		this.yPos = location[1];
-		this.zPos = location[2];
+	private void setLocation(double[] location) throws IllegalPositionException{ //TODO: remove
+		positionObj.setLocation(location);
+//		if (!isValidLocation(location))
+//			throw new IllegalPositionException(location);
+//		this.xPos = location[0];
+//		this.yPos = location[1];
+//		this.zPos = location[2];
 	}
 	
 	/**

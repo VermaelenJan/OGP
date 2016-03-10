@@ -14,8 +14,9 @@ import be.kuleuven.cs.som.annotate.Raw;
  */
 class Position {
 	//TODO: constructor
-	@Raw @Model
-	private void setLocation(double[] location) throws IllegalPositionException {
+	//TODO: make all protected
+	@Raw @Model 
+	public void setLocation(double[] location) throws IllegalPositionException {
 		if (!isValidLocation(location))
 			throw new IllegalPositionException(location);	
 	this.xPos = location[0];
@@ -28,7 +29,7 @@ class Position {
 	private double zPos = 0;
 	
 	@Raw @Model
-	private static boolean isValidLocation(double[] location) {
+	public static boolean isValidLocation(double[] location) {
 		return ((location[0] <= Unit.WORLD_X) && (location[1] <= Unit.WORLD_Y) && (location[2] <= Unit.WORLD_Z) && 
 				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
