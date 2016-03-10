@@ -198,13 +198,13 @@ public class Unit {
 //		this.yPos = location[1];
 //		this.zPos = location[2];
 	}
-	
-	/**
-	 * Variables registering the location of this unit.
-	 */
-	private double xPos = 0;
-	private double yPos = 0;
-	private double zPos = 0;
+//	
+//	/**
+//	 * Variables registering the location of this unit.
+//	 */
+//	private double xPos = 0;
+//	private double yPos = 0;
+//	private double zPos = 0;
 	
 	// CUBE
 	
