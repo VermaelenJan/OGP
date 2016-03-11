@@ -185,7 +185,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isWorking(Unit unit) throws ModelException {
-		return unit.isWorking();
+		return unit.isWorkingShow();
 	}
 
 	@Override

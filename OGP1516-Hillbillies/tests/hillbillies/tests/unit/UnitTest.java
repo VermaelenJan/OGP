@@ -333,6 +333,7 @@ public class UnitTest {
 		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
 		assertFalse(unit.isActualMoving());
 		unit.moveToAdjacent(1, 0, -1);
+		unit.advanceTime(0.001);
 		assertTrue(unit.isActualMoving());
 		for (int i = 1; i<100; i++) {
 			try {
@@ -473,6 +474,9 @@ public class UnitTest {
 		validUnit.advanceTime(0.1);		
 		assertFalse(validUnit.isSprinting());
 		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
+		for (int i = 1; i<600; i++) {
+			validUnit.advanceTime(0.1);
+		}
 		validUnit.rest();
 		validUnit.advanceTime(0.1);
 		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
@@ -512,10 +516,10 @@ public class UnitTest {
 		assertTrue(validUnit.isResting());
 		validUnit.work();
 		assertTrue(validUnit.isResting());
-		assertFalse(validUnit.isWorking());
+		assertFalse(validUnit.isWorkingShow());
 		validUnit.advanceTime(0.1);
 		validUnit.work();
-		assertTrue(validUnit.isWorking());
+		assertTrue(validUnit.isWorkingShow());
 		assertFalse(validUnit.isResting());
 		
 		validUnit.rest();
@@ -636,23 +640,23 @@ public class UnitTest {
 	
 	@Test
 	public void work_Check() {
-		assertFalse(validUnit.isWorking());
+		assertFalse(validUnit.isWorkingShow());
 		validUnit.work();
-		assertTrue(validUnit.isWorking());
+		assertTrue(validUnit.isWorkingShow());
 		
 		float timeToWork = (float) 500/validUnit.getStrength();
 		
 		while (timeToWork >= 0.15) {
 			timeToWork -= 0.15;
 			validUnit.advanceTime(0.15);
-			assertTrue(validUnit.isWorking());
+			assertTrue(validUnit.isWorkingShow());
 		}
 		
 		validUnit.advanceTime(timeToWork-0.0001);
-		assertTrue(validUnit.isWorking());
+		assertTrue(validUnit.isWorkingShow());
 		
 		validUnit.advanceTime(0.0001);
-		assertFalse(validUnit.isWorking());
+		assertFalse(validUnit.isWorkingShow());
 	}
 	
 	
@@ -680,7 +684,7 @@ public class UnitTest {
 		unit.startDefaultBehaviour();
 		unit.advanceTime(0.001);
 		if (!working){
-			working = unit.isWorking();
+			working = unit.isWorkingShow();
 		}
 		if (!resting){
 			resting = unit.isResting();
@@ -688,7 +692,7 @@ public class UnitTest {
 		if (!moving){
 			moving = unit.isActualMoving();
 		}
-		assertTrue((unit.isWorking() || unit.isActualMoving() || unit.isResting()));
+		assertTrue((unit.isWorkingShow() || unit.isActualMoving() || unit.isResting()));
 		}
 	assertTrue(working && resting && moving);
 	}

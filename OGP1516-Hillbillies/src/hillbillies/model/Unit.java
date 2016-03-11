@@ -11,6 +11,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 //TODO: fix doc van Position.java en remove //code if alles werkt en doc in orde is
 //TODO: class for constants.
 //TODO: vraag iets over gevallen zoals getLoc en getOccCube
+//TODO: doc voor alle (aangepaste) methodes bekijken, @'s 
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
@@ -819,6 +820,7 @@ public class Unit {
 		if (! isValidAdvanceTime(dt)){
 			throw new IllegalAdvanceTimeException(dt);
 		}
+				
 		if (! isResting()) {
 			setTimeSinceRest(getTimeSinceRest() + (float)dt);
 			if (getTimeSinceRest() > 180){
@@ -1100,7 +1102,7 @@ public class Unit {
 	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
 	 */
 	public boolean isActualMoving(){
-		return (isMoving() && !isWorking() && !isResting() && !isAttacking());
+		return (isMoving() && !(positionObj.isAtMiddleOfCube() && (isWorking() || isResting())));
 	}
 	
 	/**
@@ -1249,13 +1251,11 @@ public class Unit {
 	@Model
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
 																					IllegalAdjacentPositionException{
-		System.err.println("here");
-
 		if (! isValidAdjacentMovement(dx,dy,dz)){
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
-		if (isMoving() && !flagBool){
+		if (isMoving() && !flagBool && canHaveRecoverdOneHp()){
 			stopWorking();
 			stopResting();
 		}
@@ -1344,7 +1344,7 @@ public class Unit {
 										// When IllegalPositionException is thrown in moveToAdjacent(),
 										// by the coding rules, the variable "globalTarget" should be reverted to the
 										// state as at the beginning of the method. Since the method will always initiate a new
-		System.out.println(flagBool);								// globalTarget, the lack of reverting wont cause any problems.
+										// globalTarget, the lack of reverting wont cause any problems.
 		globalTarget = endTarget;
 		
 		int xCur = positionObj.getOccupiedCube()[0];
@@ -1467,8 +1467,12 @@ public class Unit {
 	 */
 	}
 	@Basic
-	public boolean isWorking(){
+	private boolean isWorking(){
 		return working;
+	}
+	
+	public boolean isWorkingShow(){
+		return (isWorking() && !isActualMoving());
 	}
 	
 	/**
