@@ -772,6 +772,7 @@ public class Unit {
 	 * Variable registering the orientation of this unit.
 	 */
 	private double orientation = 0;
+	private boolean flagBool;
 
 	// ADVANCE TIME
 	
@@ -883,7 +884,10 @@ public class Unit {
 						(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
 						(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
 					try {
+						flagBool = true;
 						moveTo(globalTarget);
+						flagBool = false;
+						
 					} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				}
 			}
@@ -1114,10 +1118,13 @@ public class Unit {
 	 */
 	@Model 
 	private void startMoving(){
-		if ( isResting() && (canHaveRecoverdOneHp())){
+		if ( ! flagBool && isResting() && (canHaveRecoverdOneHp())){
 			stopResting(); //TODO
 		}
-		stopWorking(); //TODO
+		if (! flagBool) {
+			stopWorking(); //TODO
+
+		}
 		if (!isAttacking()){
 			this.isMoving = true;
 		}
