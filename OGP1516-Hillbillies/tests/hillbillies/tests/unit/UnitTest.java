@@ -413,7 +413,7 @@ public class UnitTest {
 	public void getSpeed_XYWalk() {
 		int[] target = {24, 0, 49}; 
 		testUnit.moveTo(target);
-		assertEquals(1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+		assertEquals(1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
@@ -421,7 +421,7 @@ public class UnitTest {
 		int[] target = {24, 0, 49}; 
 		testUnit.moveTo(target);
 		testUnit.startSprinting();
-		assertEquals(2*1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+		assertEquals(2*1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
@@ -430,14 +430,14 @@ public class UnitTest {
 		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
 		int[] target = {0, 0, 2}; 
 		unit.moveTo(target);
-		assertEquals(0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+		assertEquals(0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
 	public void getSpeed_ZWalkDown() {
 		int[] target = {0, 24, 40}; 
 		validUnit.moveTo(target);
-		assertEquals(1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+		assertEquals(1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	public void getSpeed_ZSprintUp() {
@@ -446,7 +446,7 @@ public class UnitTest {
 		int[] target = {0, 0, 2}; 
 		unit.moveTo(target);
 		unit.startSprinting();
-		assertEquals(2.0*0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+		assertEquals(2.0*0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
@@ -454,7 +454,7 @@ public class UnitTest {
 		int[] target = {24, 0, 0}; 
 		validUnit.moveTo(target);
 		validUnit.startSprinting();
-		assertEquals(2.0*1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMag(), Util.DEFAULT_EPSILON);
+		assertEquals(2.0*1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	// Rest test (eg. stamina)

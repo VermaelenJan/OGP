@@ -136,7 +136,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getCurrentSpeed(Unit unit) throws ModelException {
-		return unit.getCurrentSpeedMag();
+		return unit.getCurrentSpeedMagShow();
 	}
 
 	@Override

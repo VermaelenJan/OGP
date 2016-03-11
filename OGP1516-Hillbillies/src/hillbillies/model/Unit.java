@@ -836,8 +836,7 @@ public class Unit {
 			}
 		}
 		
-		else if (isResting()){
-
+		else if (isResting() && positionObj.isAtMiddleOfCube()){
 			setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
 			setTimeResting(getTimeResting() + (float) dt);
 			
@@ -863,7 +862,7 @@ public class Unit {
 			}
 		}
 				
-		else if (isWorking() && canHaveRecoverdOneHp()){
+		else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleOfCube()){
 			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
 //			if (getTimeRemainderToWork()-(float)dt <= 0){ //TODO: controleren
 			if (getTimeRemainderToWork() <= 0){
@@ -878,6 +877,7 @@ public class Unit {
 				try {
 					positionObj.setLocation(target);
 				} catch (IllegalPositionException e) {} //Exception will never be thrown.
+				
 				if (!(globalTarget == null) &&
 						!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
 						(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
@@ -919,6 +919,7 @@ public class Unit {
 			}
 						
 		}		
+		
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
 		}
@@ -1031,12 +1032,20 @@ public class Unit {
 	 * @return The 2-norm of the current speed in x,y and z direction.
 	 * 			| result == (getCurrentSpeed()[x]^2 + getCurrentSpeed()[y]^2 + getCurrentSpeed()[z]^2)^(1/2)
 	 */
-	public double getCurrentSpeedMag() {
-		if (!isMoving() || isWorking() || isResting()) {
+	private double getCurrentSpeedMag() {
+		if (!isMoving()) {
 			return 0;
 		}
+
 		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
 		Math.pow((getCurrentSpeed()[1] ), 2) + Math.pow((getCurrentSpeed()[2]), 2));
+	}
+	
+	public double getCurrentSpeedMagShow() {
+		if (isMoving() && (isWorking() || isResting())) {
+			return 0;
+		}
+		return getCurrentSpeedMag();
 	}
 
 	// SPRINTING 
@@ -1106,9 +1115,9 @@ public class Unit {
 	@Model 
 	private void startMoving(){
 		if ( isResting() && (canHaveRecoverdOneHp())){
-			stopResting();
+			stopResting(); //TODO
 		}
-		stopWorking();
+		stopWorking(); //TODO
 		if (!isAttacking()){
 			this.isMoving = true;
 		}
@@ -1395,8 +1404,7 @@ public class Unit {
 	 * 			| startWorking()
 	 */			
 	public void work(){
-		startWorking();
-		
+		startWorking();		
 	}
 	
 	/**
