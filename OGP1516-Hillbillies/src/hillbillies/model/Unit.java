@@ -1249,13 +1249,19 @@ public class Unit {
 	@Model
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
 																					IllegalAdjacentPositionException{
-		
+		System.err.println("here");
+
 		if (! isValidAdjacentMovement(dx,dy,dz)){
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
+		if (isMoving() && !flagBool){
+			stopWorking();
+			stopResting();
+		}
+		
 		//TODO: check of de fix goed is en doc aanpassen?
-		if (!isMoving) {
+		if (!isMoving()) {
 			
 			int[] currentCube = positionObj.getOccupiedCube();
 			double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
@@ -1338,7 +1344,7 @@ public class Unit {
 										// When IllegalPositionException is thrown in moveToAdjacent(),
 										// by the coding rules, the variable "globalTarget" should be reverted to the
 										// state as at the beginning of the method. Since the method will always initiate a new
-										// globalTarget, the lack of reverting wont cause any problems.
+		System.out.println(flagBool);								// globalTarget, the lack of reverting wont cause any problems.
 		globalTarget = endTarget;
 		
 		int xCur = positionObj.getOccupiedCube()[0];
