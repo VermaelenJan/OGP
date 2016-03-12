@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * @author Win
- *
+ * @version 1.0
  */
 final class ConstantsUtils {
 	

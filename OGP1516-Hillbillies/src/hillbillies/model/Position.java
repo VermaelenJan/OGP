@@ -11,7 +11,7 @@ import be.kuleuven.cs.som.annotate.Value;
 /**
  * A class of positions.
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0.0
+ * @version 1.0
  */
 @Value
 class Position {
