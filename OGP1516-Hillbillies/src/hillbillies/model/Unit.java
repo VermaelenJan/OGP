@@ -820,7 +820,7 @@ public class Unit {
 		if (! isValidAdvanceTime(dt)){
 			throw new IllegalAdvanceTimeException(dt);
 		}
-				
+		
 		if (! isResting()) {
 			setTimeSinceRest(getTimeSinceRest() + (float)dt);
 			if (getTimeSinceRest() > 180){
@@ -2018,7 +2018,7 @@ public class Unit {
 	public void stopDefaultBehaviour(){
 		defaultBehaviour = false;
 		stopWorking();
-		stopMoving();
+		moveTo(positionObj.getOccupiedCube());
 		stopResting();
 	}
 	
