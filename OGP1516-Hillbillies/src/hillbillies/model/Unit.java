@@ -1641,7 +1641,14 @@ public class Unit {
 	 * 			|				then this.setHitpoints(0)			
 	 */
 	public void defend(Unit other){
+		boolean defaultAfterDefend = false;
 		if (this != other) {
+			
+			if (isDefaultBehaviourEnabled()){
+				defaultAfterDefend = true;
+				stopDefaultBehaviour();
+			}
+			
 			if (this.isResting()) {
 			this.stopResting();
 			}
@@ -1669,6 +1676,10 @@ public class Unit {
 					}
 				}
 			}
+			if (defaultAfterDefend){
+				startDefaultBehaviour();				
+			}
+			
 		}
 	}
 	
