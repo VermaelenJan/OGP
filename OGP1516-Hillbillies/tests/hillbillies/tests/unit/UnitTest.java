@@ -503,6 +503,11 @@ public class UnitTest {
 			validUnit.advanceTime(0.1);
 		}
 		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
+		validUnit.moveTo(validUnit.getOccupiedCube());
+		
+		for (int i = 1; i<50; i++) {
+			validUnit.advanceTime(0.1);
+		}
 		
 		float timeForOneHP = (float) ((float) 1/(float)(validUnit.getToughness()/200.0/0.2));
 		validUnit.rest();
