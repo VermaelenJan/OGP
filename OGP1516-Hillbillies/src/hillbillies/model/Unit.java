@@ -773,7 +773,7 @@ public class Unit {
 	 * Variable registering the orientation of this unit.
 	 */
 	private double orientation = 0;
-	private boolean flagBool;
+	private boolean interruptRWPermission;
 
 	// ADVANCE TIME
 	
@@ -886,9 +886,9 @@ public class Unit {
 						(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
 						(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
 					try {
-						flagBool = true;
+						interruptRWPermission = true;
 						moveTo(globalTarget);
-						flagBool = false;
+						interruptRWPermission = false;
 						
 					} catch (IllegalPositionException e) {} //Exception will never be thrown.
 				}
@@ -1120,10 +1120,10 @@ public class Unit {
 	 */
 	@Model 
 	private void startMoving(){
-		if ( ! flagBool && isResting() && (canHaveRecoverdOneHp())){
+		if ( ! interruptRWPermission && isResting() && (canHaveRecoverdOneHp())){
 			stopResting(); //TODO
 		}
-		if (! flagBool) {
+		if (! interruptRWPermission) {
 			stopWorking(); //TODO
 
 		}
@@ -1255,14 +1255,13 @@ public class Unit {
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
-		if (isMoving() && !flagBool && canHaveRecoverdOneHp()){
+		if (isMoving() && !interruptRWPermission && canHaveRecoverdOneHp()){
 			stopWorking();
 			stopResting();
 		}
 		
 		//TODO: check of de fix goed is en doc aanpassen?
-		if (!isMoving()) {
-			
+		if (positionObj.isAtMiddleOfCube()) {
 			int[] currentCube = positionObj.getOccupiedCube();
 			double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
 										(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
@@ -1346,7 +1345,7 @@ public class Unit {
 										// state as at the beginning of the method. Since the method will always initiate a new
 										// globalTarget, the lack of reverting wont cause any problems.
 		globalTarget = endTarget;
-		
+
 		int xCur = positionObj.getOccupiedCube()[0];
 		int yCur = positionObj.getOccupiedCube()[1];
 		int zCur = positionObj.getOccupiedCube()[2];
