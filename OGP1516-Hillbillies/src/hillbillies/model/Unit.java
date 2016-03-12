@@ -1261,7 +1261,7 @@ public class Unit {
 		}
 		
 		//TODO: check of de fix goed is en doc aanpassen?
-		if (positionObj.isAtMiddleOfCube()) {
+		if (positionObj.isAtMiddleOfCube() || !isMoving()) {
 			int[] currentCube = positionObj.getOccupiedCube();
 			double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
 										(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
