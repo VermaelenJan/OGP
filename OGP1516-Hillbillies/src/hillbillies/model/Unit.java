@@ -1,6 +1,5 @@
 package hillbillies.model;
 
-import java.util.Random;
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
@@ -40,22 +39,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *
  */
 public class Unit {
-	
-	// WORLD DIMENSIONS
-	static int WORLD_X = 50;
-	static int WORLD_Y = 50;
-	static int WORLD_Z = 50;
-	private double CUBE_LENGTH = 1;
-	
-	// MIN,MAX VALUES (for properties)
-	private static int INIT_MIN_VAL = 25;
-	private static int INIT_MAX_VAL = 100;
-	private static int MIN_VAL = 1;
-	private static int MAX_VAL = 200;
-	
-	// Randomizer
-	private Random random = new Random();
-	
+		
 	//Location
 	public Position positionObj = new Position();
 		
@@ -108,7 +92,8 @@ public class Unit {
 	@Model
 	private Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, 
 		double orientation) throws IllegalPositionException, IllegalNameException {
-		double[] location = {CubeLocation[0]+CUBE_LENGTH/2, CubeLocation[1]+CUBE_LENGTH/2, CubeLocation[2]+CUBE_LENGTH/2};
+		double[] location = {CubeLocation[0]+ConstantsUtils.CUBE_LENGTH/2, CubeLocation[1]+
+				ConstantsUtils.CUBE_LENGTH/2, CubeLocation[2]+ConstantsUtils.CUBE_LENGTH/2};
 		positionObj.setLocation(location); //
 		setName(name);
 		setWeight(weight, true);
@@ -356,12 +341,12 @@ public class Unit {
 		int currMinVal;
 		int currMaxVal;
 		if (flag){
-			currMinVal = INIT_MIN_VAL;
-			currMaxVal = INIT_MAX_VAL;
+			currMinVal = ConstantsUtils.INIT_MIN_VAL;
+			currMaxVal = ConstantsUtils.INIT_MAX_VAL;
 		}
 		else {
-			currMinVal = MIN_VAL;
-			currMaxVal = MAX_VAL;
+			currMinVal = ConstantsUtils.MIN_VAL;
+			currMaxVal = ConstantsUtils.MAX_VAL;
 		}
 		if (weight >= (getStrength()+getAgility())/2){
 			if (weight < currMinVal) 
@@ -446,12 +431,12 @@ public class Unit {
 		int currMinVal;
 		int currMaxVal;
 		if (flag){
-			currMinVal = INIT_MIN_VAL;
-			currMaxVal = INIT_MAX_VAL;
+			currMinVal = ConstantsUtils.INIT_MIN_VAL;
+			currMaxVal = ConstantsUtils.INIT_MAX_VAL;
 		}
 		else {
-			currMinVal = MIN_VAL;
-			currMaxVal = MAX_VAL;
+			currMinVal = ConstantsUtils.MIN_VAL;
+			currMaxVal = ConstantsUtils.MAX_VAL;
 		}
 		if ( strength < currMinVal) 
 			this.strength = currMinVal;
@@ -534,12 +519,12 @@ public class Unit {
 		int currMinVal;
 		int currMaxVal;
 		if (flag){
-			currMinVal = INIT_MIN_VAL;
-			currMaxVal = INIT_MAX_VAL;
+			currMinVal = ConstantsUtils.INIT_MIN_VAL;
+			currMaxVal = ConstantsUtils.INIT_MAX_VAL;
 		}
 		else {
-			currMinVal = MIN_VAL;
-			currMaxVal = MAX_VAL;
+			currMinVal = ConstantsUtils.MIN_VAL;
+			currMaxVal = ConstantsUtils.MAX_VAL;
 		}
 
 		if ( agility < currMinVal) 
@@ -621,12 +606,12 @@ public class Unit {
 		int currMinVal;
 		int currMaxVal;
 		if (flag){
-			currMinVal = INIT_MIN_VAL;
-			currMaxVal = INIT_MAX_VAL;
+			currMinVal = ConstantsUtils.INIT_MIN_VAL;
+			currMaxVal = ConstantsUtils.INIT_MAX_VAL;
 		}
 		else {
-			currMinVal = MIN_VAL;
-			currMaxVal = MAX_VAL;
+			currMinVal = ConstantsUtils.MIN_VAL;
+			currMaxVal = ConstantsUtils.MAX_VAL;
 		}
 		if ( toughness < currMinVal) 
 			this.toughness = currMinVal;
@@ -912,7 +897,7 @@ public class Unit {
 					}
 				}
 				else if (isDefaultBehaviourEnabled()) {
-					if (random.nextDouble() <= (float) dt/10) {
+					if (ConstantsUtils.random.nextDouble() <= (float) dt/10) {
 						if (isSprinting()) { //TODO: er in laten of niet?
 							stopSprinting();
 						}
@@ -1263,9 +1248,9 @@ public class Unit {
 		//TODO: check of de fix goed is en doc aanpassen?
 		if (positionObj.isAtMiddleOfCube() || !isMoving()) {
 			int[] currentCube = positionObj.getOccupiedCube();
-			double[] currentTarget = {	(double)(currentCube[0]+ dx + CUBE_LENGTH/2), 
-										(double)(currentCube[1]+ dy + CUBE_LENGTH/2),
-										(double)(currentCube[2]+ dz + CUBE_LENGTH/2)};
+			double[] currentTarget = {	(double)(currentCube[0]+ dx + ConstantsUtils.CUBE_LENGTH/2), 
+										(double)(currentCube[1]+ dy + ConstantsUtils.CUBE_LENGTH/2),
+										(double)(currentCube[2]+ dz + ConstantsUtils.CUBE_LENGTH/2)};
 
 			
 			if (! Position.isValidLocation(currentTarget)){			
@@ -1762,7 +1747,7 @@ public class Unit {
 	 */
 	@Model
 	private boolean getDefendSucces(double possibility){
-		return (random.nextDouble() <= possibility);
+		return (ConstantsUtils.random.nextDouble() <= possibility);
 	}
 	
 	// RESTING
@@ -2055,7 +2040,7 @@ public class Unit {
 	 */
 	@Model
 	private void newDefaultBehaviour(){
-		switch (random.nextInt(3)) {
+		switch (ConstantsUtils.random.nextInt(3)) {
 			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
 			case 1: work(); break;						//Exception will never be thrown.
 			case 2: rest(); break;
