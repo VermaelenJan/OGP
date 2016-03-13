@@ -27,6 +27,13 @@ public class EmptyMap implements IByteMap3D {
 	public byte getValue(int worldX, int worldY, int worldZ) {
 		return 0;
 	}
+	
+	@Override
+	public void setValue(int x, int y, int z, byte value) {
+		if (value != 0) {
+			throw new IllegalArgumentException();
+		}
+	}
 
 	@Override
 	public int getNbX() {

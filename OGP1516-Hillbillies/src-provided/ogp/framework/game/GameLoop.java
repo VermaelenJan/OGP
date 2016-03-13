@@ -16,7 +16,7 @@ public class GameLoop {
 
 	private double maxTimeStep;
 
-	public GameLoop(IGameController game) {
+	public GameLoop(IGameController<?> game) {
 		IGameView view = game.getView();
 		this.maxTimeStep = DEFAULT_MAX_IN_GAME_TIMESTEP;
 		mainLoop = new AnimationTimer() {

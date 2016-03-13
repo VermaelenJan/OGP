@@ -2,15 +2,15 @@ package hillbillies.part1;
 
 import hillbillies.common.internal.HillbilliesApplication;
 import hillbillies.common.internal.controller.GameController;
-import hillbillies.common.internal.ui.HillbilliesView;
 import hillbillies.part1.facade.Facade;
 import hillbillies.part1.facade.IFacade;
 import hillbillies.part1.internal.Part1Options;
 import hillbillies.part1.internal.controller.GameControllerPart1;
+import hillbillies.part1.internal.controller.IHillbilliesView1;
 import hillbillies.part1.internal.ui.HillbilliesViewPart1;
 import javafx.application.Application;
 
-public class Part1 extends HillbilliesApplication<Part1Options, IFacade> {
+public class Part1 extends HillbilliesApplication<Part1Options, IFacade, IHillbilliesView1> {
 
 	public static void main(String[] args) {
 		Application.launch(args);
@@ -22,12 +22,12 @@ public class Part1 extends HillbilliesApplication<Part1Options, IFacade> {
 	}
 	
 	@Override
-	protected GameController<IFacade> createController(IFacade facade, Part1Options options) {
+	protected GameControllerPart1 createController(IFacade facade, Part1Options options) {
 		return new GameControllerPart1(facade, options);
 	}
 	
 	@Override
-	protected HillbilliesView createView(GameController<IFacade> game, Part1Options options) {
+	protected IHillbilliesView1 createView(GameController<IHillbilliesView1> game, Part1Options options) {
 		return new HillbilliesViewPart1(game.createViewProviders(), options);
 	}
 	

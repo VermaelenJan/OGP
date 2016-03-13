@@ -1,13 +1,11 @@
 package ogp.framework.game;
 
-public interface IGameController {
+public interface IGameController<V extends IGameView> {
 	
-	public IGameView getView();
+	public V getView();
 
 	public void updateGame(double inGameTime);
 
 	public void exit();
-
-	public <T> T getNextObject(Class<T> type);
 
 }

@@ -18,7 +18,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.Pane;
 
-public abstract class ViewModel {
+public abstract class ViewModel implements IViewModel {
 
 	/** Width of the world view, in pixels */
 	private final DoubleProperty viewWidth = new SimpleDoubleProperty();
@@ -68,13 +68,39 @@ public abstract class ViewModel {
 		yTileOffset.bind(_worldWindowOriginY.divide(getMeterPerTile()));
 
 		this.mapCache = createMapCache();
-		updateMapCache();
+		fillMapCache();
 
 		setupSpriteFactory();
 
-		currentZLevelProperty().addListener(e -> refreshVisibleInformation());
-		xTileOffset.addListener(e -> refreshVisibleInformation());
-		yTileOffset.addListener(e -> refreshVisibleInformation());
+		currentZLevelProperty().addListener(e -> updateAllInformation());
+		xTileOffset.addListener(e -> updateAllVisibleTiles());
+		yTileOffset.addListener(e -> updateAllVisibleTiles());
+
+		mapCache.addListener(this::worldTileChanged);
+	}
+
+	protected void worldTileChanged(int worldX, int worldY, int worldZ, byte oldValue, byte newValue) {
+		if (isWorldTileVisible(worldX, worldY, worldZ)) {
+			int visibleX = worldTileToVisibleTileX(worldX);
+			int visibleY = worldTileToVisibleTileY(worldY);
+			updateVisibleTileAndNotify(visibleX, visibleY);
+		}
+	}
+
+	public boolean isWorldTileVisible(int worldTileX, int worldTileY, int worldTileZ) {
+		return xTileOffset.get() <= worldTileX && worldTileX < xTileOffset.get() + nbVisibleTilesX
+				&& yTileOffset.get() <= worldTileY && worldTileY < yTileOffset.get() + nbVisibleTilesY
+				&& getLowestVisibleZ(worldTileToVisibleTileX(worldTileX),
+						worldTileToVisibleTileY(worldTileY)) <= worldTileZ
+				&& worldTileZ <= getCurrentZLevel();
+	}
+
+	public int worldTileToVisibleTileX(int worldTileX) {
+		return worldTileX - xTileOffset.get();
+	}
+
+	public int worldTileToVisibleTileY(int worldTileY) {
+		return worldTileY - yTileOffset.get();
 	}
 
 	public UnitInfoProvider getUnitInfoProvider() {
@@ -85,69 +111,65 @@ public abstract class ViewModel {
 
 	protected abstract void setupSpriteFactory();
 
+	@Override
 	public int getNbVisibleTilesX() {
 		return nbVisibleTilesX;
 	}
 
+	@Override
 	public int getNbVisibleTilesY() {
 		return nbVisibleTilesY;
 	}
 
-	/** Max z level (in tile coordinates) */
+	@Override
 	public int getMaxZLevel() {
 		return maxZLevel;
 	}
 
 	/** View width (in pixels) */
+	@Override
 	public ReadOnlyDoubleProperty viewWidthProperty() {
 		return viewWidth;
 	}
 
 	/** View width (in pixels) */
+	@Override
 	public ReadOnlyDoubleProperty viewHeightProperty() {
 		return viewHeight;
 	}
 
-	/** Current z level (in tile coordinates) */
+	@Override
 	public IntegerProperty currentZLevelProperty() {
 		return currentZLevel;
 	}
 
-	/** Current z level (in tile coordinates) */
-	public int getCurrentZLevel() {
-		return currentZLevel.get();
-	}
-
+	@Override
 	public void adjustLevel(int dz) {
 		int current = getCurrentZLevel();
 		int newLevel = Math.max(0, Math.min(getMaxZLevel(), current + dz));
 		currentZLevel.set(newLevel);
 	}
 
-	public void levelUp() {
-		adjustLevel(+1);
-	}
-
-	public void levelDown() {
-		adjustLevel(-1);
-	}
-
+	@Override
 	public IByteMap3D getMap() {
 		return mapCache;
 	}
 
+	@Override
 	public void update() {
-		updateMapCache();
+		fillMapCache();
 		refreshSprites();
 	}
 
 	/**
 	 * Tile size (in pixels per tile)
 	 */
+	@Override
 	public int getPixelsPerTile() {
 		return pixelsPerTile;
 	}
 
+	@Override
 	public void moveOrigin(double dxPixels, double dyPixels) {
 		int totalWidthInPixels = wip.getNbXTiles() * getPixelsPerTile();
 		int totalHeightInPixels = wip.getNbYTiles() * getPixelsPerTile();
@@ -180,10 +202,12 @@ public abstract class ViewModel {
 		return visibleY + yTileOffset.get();
 	}
 
+	@Override
 	public IntegerProperty xTileOffsetProperty() {
 		return xTileOffset;
 	}
 
+	@Override
 	public IntegerProperty yTileOffsetProperty() {
 		return yTileOffset;
 	}
@@ -198,29 +222,43 @@ public abstract class ViewModel {
 		return result;
 	}
 
-	public void refreshVisibleInformation() {
-		for (int visibleX = 0; visibleX < getNbVisibleTilesX(); visibleX++) {
-			for (int visibleY = 0; visibleY < getNbVisibleTilesY(); visibleY++) {
-				int visibleZ = calculateVisibleZFromMap(visibleX, visibleY);
-				updateVisibleZLevelAt(visibleX, visibleY, visibleZ);
-				for (RefreshListener listener : refreshListeners) {
-					listener.refreshInfo(visibleX, visibleY, visibleZ);
-				}
-			}
-		}
+	@Override
+	public void updateAllInformation() {
+		updateAllVisibleTiles();
 		updateSpriteZLevels();
 	}
 
-	protected abstract void updateVisibleZLevelAt(int visibleX, int visibleY, int visibleZ);
+	public void updateAllVisibleTiles() {
+		for (int visibleX = 0; visibleX < getNbVisibleTilesX(); visibleX++) {
+			for (int visibleY = 0; visibleY < getNbVisibleTilesY(); visibleY++) {
+				updateVisibleTileAndNotify(visibleX, visibleY);
+			}
+		}
+	}
+
+	protected void updateVisibleTileAndNotify(int visibleX, int visibleY) {
+		int visibleZ = getLowestVisibleZ(visibleX, visibleY);
+		
+		updateVisibleTileZAt(visibleX, visibleY, visibleZ);
+		notifyVisibleTileRefreshListeners(visibleX, visibleY, visibleZ);
+	}
+
+	private void notifyVisibleTileRefreshListeners(int visibleX, int visibleY, int visibleZ) {
+		for (VisibleTileRefreshListener listener : visibleTileRefreshListeners) {
+			listener.refreshVisibleTile(visibleX, visibleY, visibleZ);
+		}
+	}
+
+	protected abstract void updateVisibleTileZAt(int visibleX, int visibleY, int visibleZ);
 
 	private Set<AbstractSprite<?, ?>> visibleSprites = new HashSet<>();
 
 	protected void refreshSprites() {
-		Set<Object> visibleUnits = new HashSet<>(getVisibleObjects());
+		Set<Object> visibleObjects = new HashSet<>(getVisibleObjects());
 
 		Set<AbstractSprite<?, ?>> spritesToRemove = new HashSet<>();
 		for (AbstractSprite<?, ?> sprite : visibleSprites) {
-			if (!visibleUnits.contains(sprite.getObject())) {
+			if (!visibleObjects.contains(sprite.getObject())) {
 				sprite.getGraph().setVisible(false);
 				spritesToRemove.add(sprite);
 				if (sprite.getGraph() != null && sprite.getGraph().getParent() != null) {
@@ -228,12 +266,12 @@ public abstract class ViewModel {
 				}
 			} else {
 				sprite.update();
-				visibleUnits.remove(sprite.getObject());
+				visibleObjects.remove(sprite.getObject());
 			}
 		}
 		visibleSprites.removeAll(spritesToRemove);
 
-		for (Object object : visibleUnits) {
+		for (Object object : visibleObjects) {
 			AbstractSprite<?, ?> newSprite = SpriteFactory.INSTANCE.create(object);
 			visibleSprites.add(newSprite);
 			newSprite.screenXProperty().bind(newSprite.worldXProperty().multiply(getPixelsPerMeter())
@@ -268,54 +306,55 @@ public abstract class ViewModel {
 		sprite.depthProperty().set(depthToShow);
 	}
 
-	@FunctionalInterface
-	public static interface RefreshListener {
-		public void refreshInfo(int visibleX, int visibleY, int visibleZ);
+
+	private final Set<VisibleTileRefreshListener> visibleTileRefreshListeners = new HashSet<>();
+
+	@Override
+	public void addVisibleTileRefreshListener(VisibleTileRefreshListener listener) {
+		visibleTileRefreshListeners.add(listener);
 	}
 
-	private final Set<RefreshListener> refreshListeners = new HashSet<>();
-
-	public void addRefreshListener(RefreshListener listeners) {
-		refreshListeners.add(listeners);
-	}
-
-	@FunctionalInterface
-	public static interface NewSpriteListener {
-		public void newSprite(AbstractSprite<?, ?> sprite);
-	}
 
 	private final Set<NewSpriteListener> spriteListeners = new HashSet<>();
 
+	@Override
 	public void addNewSpriteListener(NewSpriteListener listener) {
 		spriteListeners.add(listener);
 	}
 
+	@Override
 	public Set<AbstractSprite<?, ?>> getVisibleSprites() {
 		return Collections.unmodifiableSet(visibleSprites);
 	}
 
-	protected void updateMapCache() {
+	protected void fillMapCache() {
 
 	}
 
-	public abstract int calculateVisibleZFromMap(int visibleX, int visibleY);
+	@Override
+	public abstract int getLowestVisibleZ(int visibleX, int visibleY);
 
+	@Override
 	public int screenToVisibleTileX(double screenX) {
 		return (int) (screenX / getPixelsPerTile());
 	}
 
+	@Override
 	public int screenToVisibleTileY(double screenY) {
 		return (int) (screenY / getPixelsPerTile());
 	}
 
+	@Override
 	public double screenToWorldX(double screenX) {
 		return xTileOffset.get() * getMeterPerTile() + screenX / getPixelsPerMeter();
 	}
 
+	@Override
 	public double screenToWorldY(double screenY) {
 		return yTileOffset.get() * getMeterPerTile() + screenY / getPixelsPerMeter();
 	}
 
+	@Override
 	public abstract double screenToWorldZ(double screenX, double screenY);
 
 	protected double getPixelsPerMeter() {
@@ -328,7 +367,12 @@ public abstract class ViewModel {
 
 	protected abstract Collection<? extends Object> getVisibleObjectsAt(int visibleX, int visibleY);
 
+	@Override
 	public int worldPointToWorldCube(double coord) {
 		return (int) (coord / getMeterPerTile());
+	}
+
+	public double visibleTileToScreen(int visibleTile) {
+		return visibleTile * getPixelsPerTile();
 	}
 }

@@ -10,9 +10,10 @@ import hillbillies.common.internal.ui.viewmodel.ViewModel;
 import hillbillies.model.Unit;
 import hillbillies.part1.internal.map.EmptyMap;
 import hillbillies.part1.internal.ui.sprites.UnitSprite;
+import hillbillies.part1.internal.ui.viewmodel.IViewModel1;
 import javafx.geometry.Rectangle2D;
 
-public class ViewModelPart1 extends ViewModel {
+public class ViewModelPart1 extends ViewModel implements IViewModel1 {
 
 	public ViewModelPart1(WorldInfoProvider wip, UnitInfoProvider uip, Rectangle2D initialView, int tileSize) {
 		super(wip, uip, initialView, tileSize);
@@ -30,7 +31,7 @@ public class ViewModelPart1 extends ViewModel {
 	}
 
 	@Override
-	public int calculateVisibleZFromMap(int visibleX, int visibleY) {
+	public int getLowestVisibleZ(int visibleX, int visibleY) {
 		return 0;
 	}
 
@@ -47,7 +48,7 @@ public class ViewModelPart1 extends ViewModel {
 	}
 
 	@Override
-	protected void updateVisibleZLevelAt(int visibleX, int visibleY, int visibleZ) {
+	protected void updateVisibleTileZAt(int visibleX, int visibleY, int visibleZ) {
 		// TODO: ignore
 	}
 

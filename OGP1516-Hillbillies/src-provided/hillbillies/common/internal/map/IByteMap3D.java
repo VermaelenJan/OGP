@@ -20,11 +20,20 @@ public interface IByteMap3D {
 	}
 
 
-	void fill(ValueProvider provider);
+	default void fill(ValueProvider provider) {
+		for (int x = 0; x < getNbX(); x++) {
+			for (int y = 0; y < getNbY(); y++) {
+				for (int z = 0; z < getNbZ(); z++) {
+					setValue(x, y, z, provider.getValue(x, y, z));
+				}
+			}
+		}
+	}
 
 	boolean isValidIndex(int worldX, int worldY, int worldZ);
 	
 	byte getValue(int worldX, int worldY, int worldZ);
+	void setValue(int x, int y, int z, byte value);
 
 	int getNbX();
 	int getNbY();

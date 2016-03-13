@@ -3,7 +3,7 @@ package hillbillies.common.internal.ui.viewparts;
 import hillbillies.common.internal.inputmodes.UserInputHandler;
 import hillbillies.common.internal.options.HillbilliesOptions;
 import hillbillies.common.internal.ui.sprites.AbstractSprite;
-import hillbillies.common.internal.ui.viewmodel.ViewModel;
+import hillbillies.common.internal.ui.viewmodel.IViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -36,14 +36,17 @@ public class WorldView {
 
 	private final Rectangle selectionRectangle = new Rectangle(0, 0);
 
-	private final ViewModel viewModel;
+	private final IViewModel viewModel;
 
-	private int optionShowUnderlying = -1;
+	private int optionShowUnderlying = 3;
 
 	private HillbilliesOptions options;
 	private UserInputHandler userInputHandler;
 
-	public static WorldView create(ViewModel viewModel, HillbilliesOptions options) {
+	private boolean registerSpriteClicks = true;
+	private boolean highlightCurrentTile;
+
+	public static WorldView create(IViewModel viewModel, HillbilliesOptions options) {
 		WorldView result = new WorldView(viewModel, options);
 		result.setupViewModel();
 		return result;
@@ -53,7 +56,7 @@ public class WorldView {
 		return options;
 	}
 
-	protected WorldView(ViewModel viewModel, HillbilliesOptions options) {
+	protected WorldView(IViewModel viewModel, HillbilliesOptions options) {
 		this.viewModel = viewModel;
 		this.options = options;
 
@@ -83,17 +86,18 @@ public class WorldView {
 		}
 
 		setupSelection();
+		setupHighlighting();
 		setupScroll();
 	}
 
 	protected void setupViewModel() {
-		viewModel.addRefreshListener(this::updateTileInfo);
+		viewModel.addVisibleTileRefreshListener(this::refreshVisibleTile);
 		viewModel.addNewSpriteListener(this::attachNewSprite);
 
 		for (int visibleX = 0; visibleX < viewModel.getNbVisibleTilesX(); visibleX++) {
 			for (int visibleY = 0; visibleY < viewModel.getNbVisibleTilesY(); visibleY++) {
-				int visibleZ = viewModel.calculateVisibleZFromMap(visibleX, visibleY);
-				updateTileInfo(visibleX, visibleY, visibleZ);
+				int visibleZ = viewModel.getLowestVisibleZ(visibleX, visibleY);
+				refreshVisibleTile(visibleX, visibleY, visibleZ);
 			}
 		}
 		for (AbstractSprite<?, ?> sprite : viewModel.getVisibleSprites()) {
@@ -101,7 +105,8 @@ public class WorldView {
 		}
 	}
 
-	protected void updateTileInfo(int visibleX, int visibleY, int visibleZ) {
+	protected void refreshVisibleTile(int visibleX, int visibleY, int visibleZ) {
+
 	}
 
 	protected int getMaxDepth() {
@@ -224,6 +229,29 @@ public class WorldView {
 		root.addEventHandler(MouseEvent.ANY, selectionHandler);
 	}
 
+	protected void setupHighlighting() {
+		this.highlightRect = new Rectangle(viewModel.getPixelsPerTile(), viewModel.getPixelsPerTile());
+		highlightRect.setFill(Color.rgb(0, 255, 255, 0.3));
+		
+		highlightRect.setVisible(false);
+		root.getChildren().add(highlightRect);
+		root.setOnMouseMoved(e -> highlightTileAt(e.getX(), e.getY()));
+	}
+
+	private Rectangle highlightRect;
+
+	protected void highlightTileAt(double x, double y) {
+		if (!getHighlightCurrentTile()) {
+			highlightRect.setVisible(false);
+			return;
+		}
+		int tileX = viewModel.screenToVisibleTileX(x);
+		int tileY = viewModel.screenToVisibleTileY(y);
+		highlightRect.setLayoutX(viewModel.visibleTileToScreenX(tileX));
+		highlightRect.setLayoutY(viewModel.visibleTileToScreenY(tileY));
+		highlightRect.setVisible(true);
+	}
+
 	protected void handleClick(MouseEvent e) {
 		getUserInputHandler().worldPointClicked(viewModel.screenToWorldX(e.getX()), viewModel.screenToWorldY(e.getY()),
 				viewModel.screenToWorldZ(e.getX(), e.getY()), e);
@@ -259,8 +287,8 @@ public class WorldView {
 			gridPanel.getChildren().add(line);
 		}
 		if (getOptions().showGridCoordinatesEnabled().getValue()) {
-			for (int x = 0; x <= viewModel.getNbVisibleTilesX(); x++) {
-				for (int y = 0; y <= viewModel.getNbVisibleTilesY(); y++) {
+			for (int x = 0; x < viewModel.getNbVisibleTilesX(); x++) {
+				for (int y = 0; y < viewModel.getNbVisibleTilesY(); y++) {
 					Label label = new Label();
 					label.setFont(Font.font(8));
 					label.setTextFill(Color.WHITE);
@@ -275,7 +303,7 @@ public class WorldView {
 
 	}
 
-	public ViewModel getViewModel() {
+	public IViewModel getViewModel() {
 		return viewModel;
 	}
 
@@ -320,12 +348,21 @@ public class WorldView {
 
 		newSprite.getGraph().setOnMouseClicked(e -> {
 			// can only select in current z-slice
-			if (e.getButton() == MouseButton.PRIMARY && newSprite.depthProperty().get() == 0) {
+			if (getRegisterSpriteClicks() && e.getButton() == MouseButton.PRIMARY
+					&& newSprite.depthProperty().get() == 0) {
 				getUserInputHandler().objectClicked(newSprite.getObject(), e);
 				e.consume();
 			}
 		});
 		updateSpriteParent(newSprite);
+	}
+
+	public boolean getRegisterSpriteClicks() {
+		return registerSpriteClicks;
+	}
+
+	public void setRegisterSpriteClicks(boolean value) {
+		this.registerSpriteClicks = value;
 	}
 
 	protected void updateSpriteParent(AbstractSprite<?, ?> sprite) {
@@ -339,5 +376,16 @@ public class WorldView {
 		if (depthToShow >= 0 && depthToShow <= getMaxDepth() && node.getParent() != spritePanels[depthToShow]) {
 			spritePanels[depthToShow].getChildren().add(node);
 		}
+	}
+
+	public void setHighlightCurrentTile(boolean value) {
+		this.highlightCurrentTile = value;
+		if (!value) {
+			highlightRect.setVisible(false);
+		}
+	}
+
+	public boolean getHighlightCurrentTile() {
+		return this.highlightCurrentTile;
 	}
 }

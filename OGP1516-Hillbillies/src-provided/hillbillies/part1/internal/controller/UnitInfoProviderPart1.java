@@ -3,29 +3,28 @@ package hillbillies.part1.internal.controller;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import hillbillies.common.internal.selection.Selection;
-import hillbillies.common.internal.controller.GameController;
 import hillbillies.common.internal.providers.UnitInfoProvider;
+import hillbillies.common.internal.selection.Selection;
 import hillbillies.model.Unit;
 import hillbillies.part1.facade.IFacade;
 import ogp.framework.util.ModelException;
 
-public class UnitInfoProviderPart1<F extends IFacade> implements UnitInfoProvider {
-	private final F facade;
+public class UnitInfoProviderPart1 implements UnitInfoProvider {
+	private final IFacade facade;
 	private final Consumer<ModelException> errorHandler;
-	private final GameController<F> game;
+	private final IGameController1<?> game;
 
-	public UnitInfoProviderPart1(GameController<F> game, Consumer<ModelException> errorHandler) {
+	public UnitInfoProviderPart1(IGameController1<?> game, Consumer<ModelException> errorHandler) {
 		this.game = game;
 		this.facade = game.getFacade();
 		this.errorHandler = errorHandler;
 	}
 
-	protected F getFacade() {
+	protected IFacade getFacade() {
 		return facade;
 	}
 
-	protected GameController<F> getGame() {
+	protected IGameController1<?> getGame() {
 		return game;
 	}
 

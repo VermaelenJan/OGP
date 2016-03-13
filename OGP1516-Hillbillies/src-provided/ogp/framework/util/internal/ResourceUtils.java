@@ -1,12 +1,16 @@
 package ogp.framework.util.internal;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import javafx.scene.image.Image;
 
@@ -52,5 +56,20 @@ public class ResourceUtils {
 			}
 		}
 		return url;
+	}
+
+	public static Stream<String> listFileNames(String folder) throws FileNotFoundException {
+		InputStream res = ResourceUtils.class.getResourceAsStream("/" + folder);
+		if (res != null) {
+			BufferedReader br = new BufferedReader(new InputStreamReader(res));
+			return br.lines();
+		} else {
+			File file = new File(folder);
+			if (file.exists() && file.isDirectory()) {
+				return Arrays.stream(file.list());
+			} else {
+				throw new FileNotFoundException("File not found: " + folder);
+			}
+		}
 	}
 }

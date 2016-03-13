@@ -8,4 +8,6 @@ public interface InfoAreaPart<T> {
 	void updateInfo();
 
 	public void setObject(T object);
+	
+	public T getObject();
 }

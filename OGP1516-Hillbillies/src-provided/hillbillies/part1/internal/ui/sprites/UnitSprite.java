@@ -30,22 +30,23 @@ import ogp.framework.util.internal.ResourceUtils;
 
 public class UnitSprite extends AbstractSprite<Unit, UnitInfoProvider> {
 
-	protected static final SpriteSheet defaultSpritesheet = new SpriteSheet(
+	public static final SpriteSheet defaultSpritesheet = new SpriteSheet(
 			ResourceUtils.loadImage("resources/peasant_normal.png"), 72, 72, 1, 1);
 	protected static final Duration defaultDuration = Duration.millis(150);
-	protected static final SpriteAnimation NO_ANIMATION = new SpriteAnimation(defaultSpritesheet,
+	
+	protected final SpriteAnimation NO_ANIMATION = new SpriteAnimation(this::getNoAnimationSpritesheet,
 			i -> SimpleAnimationBuilder.create(i, defaultDuration, Interpolator.DISCRETE).atNext(0)
 					.withCycleCount(Timeline.INDEFINITE));
 
-	protected static final SpriteAnimation WALK_ANIMATION = new SpriteAnimation(defaultSpritesheet,
+	protected final SpriteAnimation WALK_ANIMATION = new SpriteAnimation(this::getWalkAnimationSpritesheet,
 			i -> SimpleAnimationBuilder.create(i, defaultDuration, Interpolator.DISCRETE).atNext(5).atNext(10).atNext(0)
 					.atNext(15).atNext(20).atNext(0).withCycleCount(Timeline.INDEFINITE));
 
-	protected static final SpriteAnimation SPRINT_ANIMATION = new SpriteAnimation(defaultSpritesheet,
+	protected final SpriteAnimation SPRINT_ANIMATION = new SpriteAnimation(this::getSprintAnimationSpritesheet,
 			i -> SimpleAnimationBuilder.create(i, defaultDuration.divide(2), Interpolator.DISCRETE).atNext(5).atNext(10)
 					.atNext(0).atNext(15).atNext(20).atNext(0).withCycleCount(Timeline.INDEFINITE));
 
-	protected static final SpriteAnimation ATTACK_ANIMATION = new SpriteAnimation(defaultSpritesheet,
+	protected final SpriteAnimation ATTACK_ANIMATION = new SpriteAnimation(this::getAttackAnimationSpritesheet,
 			i -> SimpleAnimationBuilder.create(i, defaultDuration, Interpolator.DISCRETE).atNext(25).atNext(30)
 					.atNext(35).atNext(40).atNext(45).atNext(25).withCycleCount(Timeline.INDEFINITE));
 
@@ -111,6 +112,22 @@ public class UnitSprite extends AbstractSprite<Unit, UnitInfoProvider> {
 
 		orientationOffset.addListener(viewportListener);
 		updateViewport();
+	}
+	
+	protected SpriteSheet getNoAnimationSpritesheet() {
+		return defaultSpritesheet;
+	}
+	
+	protected SpriteSheet getWalkAnimationSpritesheet() {
+		return defaultSpritesheet;
+	}
+	
+	protected SpriteSheet getSprintAnimationSpritesheet() {
+		return defaultSpritesheet;
+	}
+	
+	protected SpriteSheet getAttackAnimationSpritesheet() {
+		return defaultSpritesheet;
 	}
 
 	public Unit getUnit() {

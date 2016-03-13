@@ -1,6 +1,6 @@
 package hillbillies.common.internal.ui.viewparts;
 
-import hillbillies.common.internal.ui.viewmodel.ViewModel;
+import hillbillies.common.internal.ui.viewmodel.IViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -14,7 +14,7 @@ public class LevelSlider {
 	private final Slider slider;
 	private final VBox rootBox;
 
-	public LevelSlider(ViewModel config) {
+	public LevelSlider(IViewModel config) {
 		this.rootBox = new VBox();
 		slider = new Slider(0, config.getMaxZLevel(), config.getCurrentZLevel());
 		slider.setOrientation(Orientation.VERTICAL);

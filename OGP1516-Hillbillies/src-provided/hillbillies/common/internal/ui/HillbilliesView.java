@@ -7,6 +7,7 @@ import hillbillies.common.internal.providers.ActionExecutor;
 import hillbillies.common.internal.providers.SelectionProvider;
 import hillbillies.common.internal.providers.UnitInfoProvider;
 import hillbillies.common.internal.providers.WorldInfoProvider;
+import hillbillies.common.internal.ui.viewmodel.IViewModel;
 import hillbillies.common.internal.ui.viewmodel.ViewModel;
 import hillbillies.common.internal.ui.viewparts.InfoArea;
 import hillbillies.common.internal.ui.viewparts.LevelSlider;
@@ -20,10 +21,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import ogp.framework.game.IGameView;
 import ogp.framework.ui.FPSCounter;
 
-public abstract class HillbilliesView implements IGameView {
+public abstract class HillbilliesView implements IHillbilliesView {
 
 	private final BorderPane root;
 
@@ -32,7 +32,7 @@ public abstract class HillbilliesView implements IGameView {
 
 	private final VBox leftPanel;
 	private final LevelSlider levelSlider;
-	private final ViewModel viewModel;
+	private final IViewModel viewModel;
 
 	private final ViewProviders providers;
 	private final Label status;
@@ -45,7 +45,7 @@ public abstract class HillbilliesView implements IGameView {
 		this.root = new BorderPane();
 
 		viewModel = createViewModel();
-		viewModel.refreshVisibleInformation();
+		viewModel.updateAllInformation();
 
 		this.worldView = createWorldView();
 
@@ -105,6 +105,7 @@ public abstract class HillbilliesView implements IGameView {
 
 	private UserInputHandler input;
 
+	@Override
 	public void setUserInputHandler(UserInputHandler input) {
 		this.input = input;
 		root.addEventHandler(KeyEvent.KEY_PRESSED, e -> input.onKeyPressed(e));
@@ -115,7 +116,8 @@ public abstract class HillbilliesView implements IGameView {
 		return input;
 	}
 
-	public ViewModel getViewModel() {
+	@Override
+	public IViewModel getViewModel() {
 		return viewModel;
 	}
 
@@ -131,6 +133,7 @@ public abstract class HillbilliesView implements IGameView {
 		return new MiniMap<Void>(viewModel);
 	}
 
+	@Override
 	public Parent getRoot() {
 		return root;
 	}
@@ -148,7 +151,28 @@ public abstract class HillbilliesView implements IGameView {
 		return statusText;
 	}
 
+	@Override
 	public void setStatusText(String statusText) {
 		this.statusText = statusText;
+	}
+
+	@Override
+	public void setConsumeSpriteClicks(boolean value) {
+		worldView.setRegisterSpriteClicks(value);
+	}
+	
+	@Override
+	public boolean getConsumeSpriteClicks() {
+		return worldView.getRegisterSpriteClicks();
+	}
+
+	@Override
+	public void setHighlightCurrentTile(boolean value) {
+		worldView.setHighlightCurrentTile(value);
+	}
+	
+	@Override
+	public boolean getHighlightCurrentTile() {
+		return worldView.getHighlightCurrentTile();
 	}
 }

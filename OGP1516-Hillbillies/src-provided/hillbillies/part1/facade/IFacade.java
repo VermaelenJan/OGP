@@ -37,8 +37,8 @@ import ogp.framework.util.ModelException;
  * 
  * <li><b>Each method</b> defined in the interface <code>IFacade</code> must be
  * implemented by the class <code>Facade</code>. For example, the implementation
- * of <code>getCubePosition</code> should call one or more methods on the given
- * <code>unit</code> to retrieve its current cube coordinate.</li>
+ * of {@link #getCubeCoordinate(Unit)} should call one or more methods on the
+ * given <code>unit</code> to retrieve its current cube coordinate.</li>
  * 
  * <li>Methods in this interface are <b>only allowed to throw exceptions of type
  * <code>ogp.framework.util.ModelException</code></b> (this class is provided).

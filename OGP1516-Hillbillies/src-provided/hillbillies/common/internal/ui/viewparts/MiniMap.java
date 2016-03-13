@@ -2,7 +2,7 @@ package hillbillies.common.internal.ui.viewparts;
 
 import hillbillies.common.internal.Constants;
 import hillbillies.common.internal.map.IByteMap3D;
-import hillbillies.common.internal.ui.viewmodel.ViewModel;
+import hillbillies.common.internal.ui.viewmodel.IViewModel;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -27,11 +27,11 @@ public class MiniMap<T> {
 
 	private final GraphicsContext gc;
 
-	private final ViewModel viewModel;
+	private final IViewModel viewModel;
 
 	private final Rectangle viewport;
 
-	public MiniMap(ViewModel viewModel) {
+	public MiniMap(IViewModel viewModel) {
 		this.viewModel = viewModel;
 		map = viewModel.getMap();
 		mmPixelsPerTile = Math.min(Constants.MINIMAP_SIZE / map.getNbX(), Constants.MINIMAP_SIZE / map.getNbY());
@@ -41,6 +41,7 @@ public class MiniMap<T> {
 		this.image = new Canvas(width, height);
 		this.gc = image.getGraphicsContext2D();
 		this.root = new StackPane();
+		root.setId("minimap");
 		root.getChildren().add(image);
 
 		viewport = new Rectangle();
@@ -64,7 +65,7 @@ public class MiniMap<T> {
 		viewport.setManaged(false);
 		viewport.setStroke(Color.ORANGE);
 		viewport.setStrokeWidth(2.0);
-		viewport.setFill(Color.ORANGE.deriveColor(0, 1, 1, 0.5));
+		viewport.setFill(Color.ORANGE.deriveColor(0, 1, 1, 0.2));
 		viewport.widthProperty()
 				.bind(viewModel.viewWidthProperty().multiply(mmPixelsPerTile).divide(viewModel.getPixelsPerTile()));
 		viewport.heightProperty()

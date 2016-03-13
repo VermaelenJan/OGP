@@ -20,7 +20,7 @@ public class GenericFactory {
 		Class<?> supplierClass = getSupplierClass(object.getClass());
 		if (supplierClass == null) {
 			throw new IllegalArgumentException(
-					"No sprite factory registered for class " + object.getClass() + " or any of its parents.");
+					"No factory registered for class " + object.getClass() + " or any of its parents.");
 		}
 		// if (supplierClass != object.getClass()) {
 		// System.out.println("[" + this.getClass().getName() + "] No supplier
@@ -59,5 +59,9 @@ public class GenericFactory {
 
 	public <S, T> void registerSupplier(Class<S> type, Function<S, ? extends T> supplier) {
 		suppliers.put(type, supplier);
+	}
+
+	public boolean hasSupplierFor(Object object) {
+		return getSupplierClass(object.getClass()) != null;
 	}
 }
