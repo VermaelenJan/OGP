@@ -5,5 +5,6 @@ package hillbillies.model;
  * @version 0
  */
 public class World {
+	
 
 }

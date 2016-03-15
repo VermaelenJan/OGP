@@ -8,6 +8,7 @@ import java.util.Random;
  */
 final class ConstantsUtils {
 	
+
 	// WORLD DIMENSIONS
 	static int WORLD_X = 50;
 	static int WORLD_Y = 50;
@@ -23,4 +24,7 @@ final class ConstantsUtils {
 	// Randomizer
 	static Random random = new Random();
 	
+	// LOG
+	static final int MIN_LOG_WEIGHT = 10;	
+	static final int MAX_LOG_WEIGHT = 50;
 }

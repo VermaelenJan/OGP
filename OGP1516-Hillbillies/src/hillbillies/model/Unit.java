@@ -8,8 +8,6 @@ import be.kuleuven.cs.som.annotate.Raw;
 //TODO: split AdvanceTime.
 //TODO: make internal functions nominal if necessary.
 //TODO: fix doc van Position.java en remove //code if alles werkt en doc in orde is
-//TODO: class for constants.
-//TODO: vraag iets over gevallen zoals getLoc en getOccCube
 //TODO: doc voor alle (aangepaste) methodes bekijken, @'s 
 /**
  * @invar  The location of each unit must be a valid location for any
@@ -1626,14 +1624,9 @@ public class Unit {
 	 * 			|				then this.setHitpoints(0)			
 	 */
 	public void defend(Unit other){
-		boolean defaultAfterDefend = false;
+
 		if (this != other) {
-			
-			if (isDefaultBehaviourEnabled()){
-				defaultAfterDefend = true;
-				stopDefaultBehaviour();
-			}
-			
+						
 			if (this.isResting()) {
 			this.stopResting();
 			}
@@ -1660,11 +1653,7 @@ public class Unit {
 						this.setHitpoints(newHitPoints);
 					}
 				}
-			}
-			if (defaultAfterDefend){
-				startDefaultBehaviour();				
-			}
-			
+			}			
 		}
 	}
 	
