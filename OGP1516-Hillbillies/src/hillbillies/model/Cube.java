@@ -12,9 +12,15 @@ public class Cube {
 		
 	}
 	public CubeType getCubeType(){
-		return this.type;
+		return this.cubeType;
 	}
 	
-	
+	public void setCubeType(CubeType cubeType){
+		this.cubeType = cubeType;
+	}
+
 	private CubeType cubeType;
+	
+	
 }
+

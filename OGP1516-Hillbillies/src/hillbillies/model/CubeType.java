@@ -10,7 +10,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *
  */
 enum CubeType {
-	AIR("air"), ROCK("rock"), WOOD("wood");
+	AIR("air"), ROCK("rock"), WOOD("wood"), WORKSHOP("workshop");
 	
 	
 	/**
@@ -28,6 +28,11 @@ enum CubeType {
 	}
 	
 	
+	protected boolean isPassableTerrain(){
+		return ((this.type == "air") || (this.type == "workshop"));
+	}
+	
+		
 	/**
 	 * Variable storing the type for this cubetype.
 	 */

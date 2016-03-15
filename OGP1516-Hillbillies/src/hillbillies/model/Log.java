@@ -12,10 +12,12 @@ import be.kuleuven.cs.som.annotate.*;
 public class Log {
 	//Location
 	public Position positionObj = new Position();
+	public World world;
 
-	public Log(double[] location){
+	public Log(World world, double[] location){
 		positionObj.setLocation(location);
 		this.weight = (ConstantsUtils.random.nextInt(41)+10);
+		this.world = world;
 	}
 	
 	/**
@@ -35,13 +37,45 @@ public class Log {
 	*/
 	@Raw
 	public boolean canHaveAsWeight(int weight) {
-		return ((weight >= ConstantsUtils.MIN_LOG_WEIGHT) && (weight <= ConstantsUtils.MAX_LOG_WEIGHT));
+		return ((weight >= ConstantsUtils.MIN_LOG_WEIGHT) 
+				&& (weight <= ConstantsUtils.MAX_LOG_WEIGHT));
 	}
+	
 	
 	/**
 	 * Variable registering the weight of this log.
 	 */
 	private final int weight;
+	
+	
+
+	public boolean isValidPosition(Position position) {
+		int [] occupiedCube = position.getOccupiedCube();
+		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
+		return ((world.getCubeType(cubeBelow[0], cubeBelow[1], cubeBelow[2]).isPassableTerrain())
+				|| ( position.getOccupiedCube()[2] == 0));
+	}
+	
+	public void advanceTime(double dt){
+		if (!isValidPosition(positionObj)){
+			fall(dt,getCubeBelow());
+		}
+		
+		if (isValidPosition(positionObj) && !positionObj.isAtMiddleOfCube()){
+			fall(dt);
+		}
+	}
+	
+	private int[] getCubeBelow(){
+		int [] occupiedCube = positionObj.getOccupiedCube();
+		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
+		return cubeBelow;
+	}
+	
+	private void fall(double dt, Position position){
+		
+	}
+	
 	
 	
 	
