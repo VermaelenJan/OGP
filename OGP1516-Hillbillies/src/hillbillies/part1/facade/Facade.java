@@ -79,7 +79,6 @@ public class Facade implements IFacade {
 	@Override
 	public void setAgility(Unit unit, int newValue) throws ModelException {
 		unit.setAgility(newValue);
-		
 	}
 
 	@Override
@@ -120,7 +119,6 @@ public class Facade implements IFacade {
 		} catch (IllegalAdvanceTimeException e) {
 			throw new ModelException("Illegal TimePeriod", e);
 		}
-		
 	}
 
 	@Override
@@ -172,9 +170,7 @@ public class Facade implements IFacade {
 			unit.moveTo(cube);
 		} catch (IllegalPositionException e) {
 			throw new ModelException("Illegal Position", e);
-
 		} 
-		
 	}
 
 	@Override
@@ -196,7 +192,6 @@ public class Facade implements IFacade {
 		} catch (IllegalAttackPosititonException e) {
 			throw new ModelException("Illegal AttackPosition", e);
 		}
-		
 	}
 
 	@Override
@@ -222,12 +217,10 @@ public class Facade implements IFacade {
 		else {
 			unit.stopDefaultBehaviour();
 		}
-		
 	}
 
 	@Override
 	public boolean isDefaultBehaviorEnabled(Unit unit) throws ModelException {
 		return unit.isDefaultBehaviourEnabled();
 	}
-
 }

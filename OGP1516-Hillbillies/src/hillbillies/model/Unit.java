@@ -805,112 +805,128 @@ public class Unit {
 		}
 		
 		if (! isResting()) {
-			setTimeSinceRest(getTimeSinceRest() + (float)dt);
-			if (getTimeSinceRest() > 180){
-				startResting();
-			}
+			advanceTimeNotResting(dt);
 		}
 
 		if (isAttacking()){
-			
-			stopWorking();
-			stopResting();
-						
-			setAttackTime(getAttackTime() - (float)(dt));
-			if (getAttackTime()<= 0){
-				setAttackTime(0);
-			}
+			advanceTimeAttacking(dt);
 		}
-		
 		else if (isResting() && positionObj.isAtMiddleOfCube()){
-			setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
-			setTimeResting(getTimeResting() + (float) dt);
-			
-			if (getTimePeriodicRest() >= 0.2){
-				
-				int nbTimesPeriod = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
-				setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
-				double newHitpoints = getHitpoints() + ((double)getToughness()/200.0)*(double)(nbTimesPeriod);
-				double newStamina = getStamina() + ((double) getToughness()/100.0)*(double)(nbTimesPeriod);
-				
-				if (newHitpoints <= getMaxHitpointsStamina()){
-					setHitpoints(newHitpoints);
-				}
-				else if (newStamina <= getMaxHitpointsStamina()){
-					setHitpoints(getMaxHitpointsStamina());
-					setStamina(newStamina);				
-				}
-				else{
-					setHitpoints(getMaxHitpointsStamina());
-					setStamina(getMaxHitpointsStamina());
-					stopResting();
-				}
-			}
-		}
-				
+			advanceTimeResting(dt);
+		}		
 		else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleOfCube()){
-			setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
-//			if (getTimeRemainderToWork()-(float)dt <= 0){ //TODO: controleren
-			if (getTimeRemainderToWork() <= 0){
-				setTimeRemainderToWork(0);
-				stopWorking();
-			}
+			advanceTimeWorking(dt);
 		}
-
 		else if (isMoving()){
 			if (arrived(dt)){
-				stopMoving();
-				try {
-					positionObj.setLocation(target);
-				} catch (IllegalPositionException e) {} //Exception will never be thrown.
-				
-				if (!(globalTarget == null) &&
-						!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
-						(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
-						(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
-					try {
-						interruptRWPermission = true;
-						moveTo(globalTarget);
-						interruptRWPermission = false;
-						
-					} catch (IllegalPositionException e) {} //Exception will never be thrown.
-				}
+				andvanceTimeMovingArrived();
 			}
-			
 			else{
-				double[] newLoc = {positionObj.getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
-						positionObj.getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
-						positionObj.getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
-				try {
-					positionObj.setLocation(newLoc);
-				} catch (IllegalPositionException e) {} //Exception will never be thrown.
-				
-				if (isSprinting()) {
-					if (getStamina() - dt*10 > 0){
-						setStamina(getStamina()- dt*10);
-					}
-					else {
-						setStamina(0);
-						stopSprinting();
-					}
-				}
-				else if (isDefaultBehaviourEnabled()) {
-					if (ConstantsUtils.random.nextDouble() <= (float) dt/10) {
-						if (isSprinting()) { //TODO: er in laten of niet?
-							stopSprinting();
-						}
-						else {
-							startSprinting();
-						}
-					}
-				}
-				setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
-			}
-						
-		}		
-		
+				advanceTimeMovingNotArrived(dt);
+			}		
+		}
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
+		}
+	}
+
+	private void advanceTimeMovingNotArrived(double dt) {
+		double[] newLoc = {positionObj.getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
+				positionObj.getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
+				positionObj.getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
+		try {
+			positionObj.setLocation(newLoc);
+		} catch (IllegalPositionException e) {} //Exception will never be thrown.
+		
+		if (isSprinting()) {
+			if (getStamina() - dt*10 > 0){
+				setStamina(getStamina()- dt*10);
+			}
+			else {
+				setStamina(0);
+				stopSprinting();
+			}
+		}
+		else if (isDefaultBehaviourEnabled()) {
+			if (ConstantsUtils.random.nextDouble() <= (float) dt/10) {
+				if (isSprinting()) { //TODO: er in laten of niet?
+					stopSprinting();
+				}
+				else {
+					startSprinting();
+				}
+			}
+		}
+		setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
+	}
+
+	private void andvanceTimeMovingArrived() {
+		stopMoving();
+		try {
+			positionObj.setLocation(target);
+		} catch (IllegalPositionException e) {} //Exception will never be thrown.
+		
+		if (!(globalTarget == null) &&
+				!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
+				(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
+				(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
+			try {
+				interruptRWPermission = true;
+				moveTo(globalTarget);
+				interruptRWPermission = false;
+				
+			} catch (IllegalPositionException e) {} //Exception will never be thrown.
+		}
+	}
+
+	private void advanceTimeWorking(double dt) {
+		setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
+		if (getTimeRemainderToWork() <= 0){
+			setTimeRemainderToWork(0);
+			stopWorking();
+		}
+	}
+
+	private void advanceTimeResting(double dt) {
+		setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
+		setTimeResting(getTimeResting() + (float) dt);
+		
+		if (getTimePeriodicRest() >= 0.2){
+			
+			int nbTimesPeriod = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
+			setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
+			double newHitpoints = getHitpoints() + ((double)getToughness()/200.0)*(double)(nbTimesPeriod);
+			double newStamina = getStamina() + ((double) getToughness()/100.0)*(double)(nbTimesPeriod);
+			
+			if (newHitpoints <= getMaxHitpointsStamina()){
+				setHitpoints(newHitpoints);
+			}
+			else if (newStamina <= getMaxHitpointsStamina()){
+				setHitpoints(getMaxHitpointsStamina());
+				setStamina(newStamina);				
+			}
+			else{
+				setHitpoints(getMaxHitpointsStamina());
+				setStamina(getMaxHitpointsStamina());
+				stopResting();
+			}
+		}
+	}
+
+	private void advanceTimeAttacking(double dt) {
+		stopWorking();
+		stopResting();
+					
+		setAttackTime(getAttackTime() - (float)(dt));
+		if (getAttackTime()<= 0){
+			setAttackTime(0);
+		}
+	}
+
+	private void advanceTimeNotResting(double dt) {
+		setTimeSinceRest(getTimeSinceRest() + (float)dt);
+		if (getTimeSinceRest() > 180){
+			startResting();
 		}
 	}
 	
@@ -2003,7 +2019,10 @@ public class Unit {
 	public void stopDefaultBehaviour(){
 		defaultBehaviour = false;
 		stopWorking();
-		moveTo(positionObj.getOccupiedCube());
+		if (isMoving) {
+			int[] firstTarget = {(int)target[0], (int)target[1], (int)target[2]};
+			moveTo(firstTarget);
+		}
 		stopResting();
 	}
 	

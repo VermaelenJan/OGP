@@ -61,7 +61,7 @@ public class Log {
 			fall(dt,getCubeBelow());
 		}
 		
-		if (isValidPosition(positionObj) && !positionObj.isAtMiddleOfCube()){
+		if (isValidPosition(positionObj) && !positionObj.isAtMiddleOfCube()){ //TODO: nadenken over "zelfde Z, maar niet midden"
 			fall(dt);
 		}
 	}
@@ -72,8 +72,13 @@ public class Log {
 		return cubeBelow;
 	}
 	
-	private void fall(double dt, Position position){
-		
+	
+	private void fall(double dt) {
+		fall(dt, positionObj.getOccupiedCube());
+	}
+	
+	private void fall(double dt, int[] position){
+		//TODO
 	}
 	
 	
