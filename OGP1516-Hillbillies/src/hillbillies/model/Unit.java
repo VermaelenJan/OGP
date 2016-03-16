@@ -4,6 +4,11 @@ import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.exceptions.IllegalAdjacentPositionException;
+import hillbillies.model.exceptions.IllegalAdvanceTimeException;
+import hillbillies.model.exceptions.IllegalAttackPosititonException;
+import hillbillies.model.exceptions.IllegalNameException;
+import hillbillies.model.exceptions.IllegalPositionException;
 
 //TODO: split AdvanceTime.
 //TODO: make internal functions nominal if necessary.

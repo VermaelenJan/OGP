@@ -1,4 +1,4 @@
-package hillbillies.model;
+package hillbillies.model.exceptions;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;

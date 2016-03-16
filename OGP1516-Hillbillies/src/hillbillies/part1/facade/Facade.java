@@ -1,11 +1,11 @@
 package hillbillies.part1.facade;
 
-import hillbillies.model.IllegalAdjacentPositionException;
-import hillbillies.model.IllegalAdvanceTimeException;
-import hillbillies.model.IllegalAttackPosititonException;
-import hillbillies.model.IllegalNameException;
-import hillbillies.model.IllegalPositionException;
 import hillbillies.model.Unit;
+import hillbillies.model.exceptions.IllegalAdjacentPositionException;
+import hillbillies.model.exceptions.IllegalAdvanceTimeException;
+import hillbillies.model.exceptions.IllegalAttackPosititonException;
+import hillbillies.model.exceptions.IllegalNameException;
+import hillbillies.model.exceptions.IllegalPositionException;
 import ogp.framework.util.ModelException;
 
 
