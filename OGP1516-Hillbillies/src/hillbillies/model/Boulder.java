@@ -4,6 +4,9 @@ package hillbillies.model;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 0
  */
-public class Boulder {
-
+public class Boulder extends Object{
+	
+	public Boulder(World world, double[] location){
+		super(world, location);
+	}
 }

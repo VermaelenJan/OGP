@@ -25,6 +25,9 @@ final class ConstantsUtils {
 	static final Random random = new Random();
 	
 	// LOG
-	static final int MIN_LOG_WEIGHT = 10;	
-	static final int MAX_LOG_WEIGHT = 50;
+	static final int MIN_OBJECT_WEIGHT = 10;	
+	static final int MAX_OBJECT_WEIGHT = 50;
+	
+	// FALLING
+	static final double FALLING_SPEED = 3;
 }
