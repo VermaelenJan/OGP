@@ -16,7 +16,7 @@ public class Log {
 
 	public Log(World world, double[] location){
 		positionObj.setLocation(location);
-		this.weight = (ConstantsUtils.random.nextInt(MAX_LOG_WEIGHT + 1)+10);
+		this.weight = (ConstantsUtils.random.nextInt(ConstantsUtils.MAX_LOG_WEIGHT + 1)+10);
 		this.world = world;
 	}
 	
