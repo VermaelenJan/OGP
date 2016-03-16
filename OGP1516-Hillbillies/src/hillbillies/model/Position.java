@@ -55,6 +55,12 @@ class Position {
 		return(this.getLocation()[0] == position[0] && this.getLocation()[1] == position[1] && this.getLocation()[2] == position[2]);
 	}
 	
+	protected boolean isAtMiddleZOfCube() {
+		int[] occCube = this.getOccupiedCube();
+		double Zposition = occCube[2] + 0.5;
+		return(this.getLocation()[2] == Zposition);
+	}
+	
 	@Model 
 	protected void setRandomLocation(){
 		try {
