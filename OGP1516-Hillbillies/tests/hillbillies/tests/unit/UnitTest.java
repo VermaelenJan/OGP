@@ -594,7 +594,7 @@ public class UnitTest {
 		assertFalse(unit1.isAttacking());
 
 		boolean blocked = false; boolean hitted = false; boolean dodged = false;
-		for (int i = 1; i<1000; i++){
+		for (int i = 1; i<400; i++){ //TODO: uitreken hoeveel (test-duur...)
 			
 			Unit unit3 = new Unit(location2, ValidName, 0, 0, 0, 0);
 			unit3.defend(unit1);
