@@ -9,6 +9,7 @@ import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 //TODO: split AdvanceTime.
 //TODO: make internal functions nominal if necessary.
@@ -42,12 +43,10 @@ import hillbillies.model.exceptions.IllegalPositionException;
  *
  */
 public class Unit {
-		
-	//Location
 
 	private World world;
-	public Position positionObj = new Position(world);
-		
+	public Position positionObj;
+	
 	/**
 	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
 	 * 
@@ -95,11 +94,10 @@ public class Unit {
 	 * 			| ! isValidName(name)
 	 */
 	@Model
-	private Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, 
-		double orientation) throws IllegalPositionException, IllegalNameException {
+	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, World world)
+																throws IllegalPositionException, IllegalNameException {
 		double[] location = {CubeLocation[0]+ConstantsUtils.CUBE_LENGTH/2, CubeLocation[1]+
 				ConstantsUtils.CUBE_LENGTH/2, CubeLocation[2]+ConstantsUtils.CUBE_LENGTH/2};
-		positionObj.setLocation(location); //
 		setName(name);
 		setWeight(weight, true);
 		setStrength(strength, true);
@@ -107,43 +105,63 @@ public class Unit {
 		setToughness(toughness, true);
 		setHitpoints(getMaxHitpointsStamina());
 		setStamina(getMaxHitpointsStamina());
-		setOrientation(orientation);
-		setWorld(null);
+		setOrientation(Math.PI/2);
+		setWorld(world);
+		positionObj = new Position(world);
+		positionObj.setLocation(location); //
+		}
+	
+	
+		public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
+															throws IllegalPositionException, IllegalNameException {
+			this(CubeLocation, name, weight, strength, agility, toughness, createVoidWorld());
+		}
+
+//	/**
+//	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility and the default orientation PI/2.
+//	 * 
+//	 * @param cubeLocation
+//	 *			The location for this new unit.
+//	 * @param name
+//	 * 			The name for this new unit.
+//	 * @param weight
+//	 * 			The weight for this new unit.
+//	 * @param strength
+//	 * 			The strength for this new unit.
+//	 * @param agility
+//	 * 			The agility for this new unit.
+//	 * @param toughness
+//	 * 			The toughness for this new unit.
+//	 * @effect This new unit is initialized with the given cube location as its cube location, the given name as its name, the given 
+//	 * 			weight as its weight, the given strength as its strength, the given agility as its agility, the given toughness as 
+//	 * 			its toughness, and the default value PI/2 as its orientation.
+//	 * @throws IllegalPositionException
+//	 * 			The given position is not a valid position for a unit.
+//	 * 			| ! canHaveAsPosition(position)
+//	 * @throws IllegalNameException 
+//	 * 			The given name is not a valid name for a unit.	
+//	 * 			| ! isValidName(name)
+//	 */
+//	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
+//			throws IllegalPositionException, IllegalNameException {
+//		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
+//	}
+	
+	private static World createVoidWorld() {
+		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+		CubeType[][][] worldCubes = new CubeType[50][50][50];
+		for (int xIndex = 0; xIndex<worldCubes[0].length; xIndex++) {
+			for (int yIndex = 0; yIndex<worldCubes[1].length; yIndex++) {
+				for (int zIndex = 0; zIndex<worldCubes[2].length; zIndex++) {
+					worldCubes[xIndex][yIndex][zIndex] = CubeType.AIR;
+				}	
+			}	
+		}
+
+		World voidWorld = new World(worldCubes, defaultTerrainChangeListener);
+		return voidWorld;
 	}
-	
-	/**
-	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility and the default orientation PI/2.
-	 * 
-	 * @param cubeLocation
-	 *			The location for this new unit.
-	 * @param name
-	 * 			The name for this new unit.
-	 * @param weight
-	 * 			The weight for this new unit.
-	 * @param strength
-	 * 			The strength for this new unit.
-	 * @param agility
-	 * 			The agility for this new unit.
-	 * @param toughness
-	 * 			The toughness for this new unit.
-	 * @effect This new unit is initialized with the given cube location as its cube location, the given name as its name, the given 
-	 * 			weight as its weight, the given strength as its strength, the given agility as its agility, the given toughness as 
-	 * 			its toughness, and the default value PI/2 as its orientation.
-	 * @throws IllegalPositionException
-	 * 			The given position is not a valid position for a unit.
-	 * 			| ! canHaveAsPosition(position)
-	 * @throws IllegalNameException 
-	 * 			The given name is not a valid name for a unit.	
-	 * 			| ! isValidName(name)
-	 */
-	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
-			throws IllegalPositionException, IllegalNameException {
-		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
-	}
-	
-	
-	// WORLD
-	
+			
 	@Basic @Raw
 	public World getWorld(){
 		return this.world;

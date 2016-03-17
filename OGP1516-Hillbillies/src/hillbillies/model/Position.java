@@ -20,8 +20,7 @@ class Position {
 	private World world;
 
 	protected Position(World world){
-		this.world = world;
-		
+		this.world = world;	
 	}
 	
 	@Raw @Model 
@@ -39,7 +38,7 @@ class Position {
 	
 	@Raw @Model
 	protected boolean isValidLocation(double[] location) {
-		return ((location[0] <= world.WORLD_X) && (location[1] <= world.WORLD_Y) && (location[2] <= world.WORLD_Z) && 
+		return ((location[0] <= world.getNbCubesX()) && (location[1] <= world.getNbCubesY()) && (location[2] <= world.getNbCubesZ()) && 
 				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
@@ -89,9 +88,9 @@ class Position {
 	
 	@Model
 	protected int[] getRandomPosition(){
-		int[] randLoc = {ConstantsUtils.random.nextInt(world.WORLD_X-1), 
-				ConstantsUtils.random.nextInt(world.WORLD_Y-1), 
-				ConstantsUtils.random.nextInt(world.WORLD_Z-1)};
+		int[] randLoc = {ConstantsUtils.random.nextInt(world.worldX-1), 
+				ConstantsUtils.random.nextInt(world.worldY-1), 
+				ConstantsUtils.random.nextInt(world.worldZ-1)};
 		return randLoc;
 	}
 }

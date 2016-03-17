@@ -1,11 +1,8 @@
 package hillbillies.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import hillbillies.part2.internal.ui.sprites.LogSprite;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
@@ -16,17 +13,16 @@ import hillbillies.util.ConnectedToBorder;
 public class World {
 	
 	public World(CubeType[][][] worldCubes,TerrainChangeListener terrainChangeListener){
-		this.WORLD_X = getNbCubesX();
-		this.WORLD_Y = getNbCubesY();
-		this.WORLD_Z = getNbCubesZ();
-		this.terrainChangeListener = terrainChangeListener;
 		this.worldCubes = worldCubes;
-		this.CTBTool = new ConnectedToBorder(WORLD_X,WORLD_Y,WORLD_Z);
+		this.worldX = worldCubes[0].length;
+		this.worldY = worldCubes[1].length;
+		this.worldZ = worldCubes[2].length;
+		this.terrainChangeListener = terrainChangeListener;
+		this.CTBTool = new ConnectedToBorder(worldX,worldY,worldZ);
 		
-		for (int xIndex = 1; xIndex<WORLD_X; xIndex++) {
-			for (int yIndex = 1; yIndex<WORLD_Y; yIndex++) {
-				for (int zIndex = 1; zIndex<WORLD_Z; zIndex++) {
-					
+		for (int xIndex = 1; xIndex<worldX; xIndex++) {
+			for (int yIndex = 1; yIndex<worldY; yIndex++) {
+				for (int zIndex = 1; zIndex<worldZ; zIndex++) {
 					if (!worldCubes[xIndex][yIndex][zIndex].isPassableTerrain()){
 						CTBTool.changeSolidToPassable(xIndex, yIndex, zIndex);
 					}
@@ -37,35 +33,35 @@ public class World {
 		updateConnectedTerrain();
 	}
 	
-	int getNbCubesX(){
-		return worldCubes[0].length;
+	public int getNbCubesX(){
+		return worldX;
 	}
 	
-	int getNbCubesY(){
-		return worldCubes[1].length;
+	public int getNbCubesY(){
+		return worldY;
 	}
 	
-	int getNbCubesZ(){
-		return worldCubes[2].length;
+	public int getNbCubesZ(){
+		return worldZ;
 	}
 	
-	int WORLD_X;
-	int WORLD_Y;
-	int WORLD_Z;
+	int worldX;
+	int worldY;
+	int worldZ;
 	
 	private void updateConnectedTerrain() {
 		for (int xIndex = 1; xIndex<worldCubes[0].length; xIndex++) {
 			for (int yIndex = 1; yIndex<worldCubes[1].length; yIndex++) {
 				for (int zIndex = 1; zIndex<worldCubes[2].length; zIndex++) {
-					
 					if (!CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex)){
-						caveIn(xIndex,yIndex,zIndex);					}
-				}	
+						caveIn(xIndex,yIndex,zIndex);
+					}
+				}
 			}	
 		}
 	}
 		
-	CubeType[][][] worldCubes = new CubeType[WORLD_X][WORLD_Y][WORLD_Z];
+	CubeType[][][] worldCubes;
 	
 	protected void setCubeType(int x,int y, int z, CubeType cubeType){
 		worldCubes[x][y][z] = cubeType;
