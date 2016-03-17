@@ -20,7 +20,7 @@ public class World {
 		this.terrainChangeListener = terrainChangeListener;
 		this.CTBTool = new ConnectedToBorder(worldX,worldY,worldZ);
 		
-		for (int xIndex = 1; xIndex<worldX; xIndex++) {
+		for (int xIndex = 1; xIndex<worldX; xIndex++) { //TODO vanaf 0 of 1??
 			for (int yIndex = 1; yIndex<worldY; yIndex++) {
 				for (int zIndex = 1; zIndex<worldZ; zIndex++) {
 					if (!worldCubes[xIndex][yIndex][zIndex].isPassableTerrain()){
@@ -50,7 +50,7 @@ public class World {
 	int worldZ;
 	
 	private void updateConnectedTerrain() {
-		for (int xIndex = 1; xIndex<worldCubes[0].length; xIndex++) {
+		for (int xIndex = 1; xIndex<worldCubes[0].length; xIndex++) { //TODO vanaf 0 of 1??
 			for (int yIndex = 1; yIndex<worldCubes[1].length; yIndex++) {
 				for (int zIndex = 1; zIndex<worldCubes[2].length; zIndex++) {
 					if (!CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex)){
