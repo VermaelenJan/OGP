@@ -17,6 +17,13 @@ import hillbillies.model.exceptions.IllegalPositionException;
 @Value
 class Position {
 	
+	private World world;
+
+	protected Position(World world){
+		this.world = world;
+		
+	}
+	
 	@Raw @Model 
 	protected void setLocation(double[] location) throws IllegalPositionException {
 		if (!isValidLocation(location))
@@ -31,8 +38,8 @@ class Position {
 	private double zPos = 0;
 	
 	@Raw @Model
-	protected static boolean isValidLocation(double[] location) {
-		return ((location[0] <= ConstantsUtils.WORLD_X) && (location[1] <= ConstantsUtils.WORLD_Y) && (location[2] <= ConstantsUtils.WORLD_Z) && 
+	protected boolean isValidLocation(double[] location) {
+		return ((location[0] <= world.WORLD_X) && (location[1] <= world.WORLD_Y) && (location[2] <= world.WORLD_Z) && 
 				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
@@ -82,9 +89,9 @@ class Position {
 	
 	@Model
 	protected int[] getRandomPosition(){
-		int[] randLoc = {ConstantsUtils.random.nextInt(ConstantsUtils.WORLD_X-1), 
-				ConstantsUtils.random.nextInt(ConstantsUtils.WORLD_Y-1), 
-				ConstantsUtils.random.nextInt(ConstantsUtils.WORLD_Z-1)};
+		int[] randLoc = {ConstantsUtils.random.nextInt(world.WORLD_X-1), 
+				ConstantsUtils.random.nextInt(world.WORLD_Y-1), 
+				ConstantsUtils.random.nextInt(world.WORLD_Z-1)};
 		return randLoc;
 	}
 }

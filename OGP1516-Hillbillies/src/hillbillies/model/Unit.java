@@ -44,7 +44,9 @@ import hillbillies.model.exceptions.IllegalPositionException;
 public class Unit {
 		
 	//Location
-	public Position positionObj = new Position();
+
+	private World world;
+	public Position positionObj = new Position(world);
 		
 	/**
 	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
@@ -105,7 +107,8 @@ public class Unit {
 		setToughness(toughness, true);
 		setHitpoints(getMaxHitpointsStamina());
 		setStamina(getMaxHitpointsStamina());
-		setOrientation(orientation);	
+		setOrientation(orientation);
+		setWorld(null);
 	}
 	
 	/**
@@ -136,6 +139,19 @@ public class Unit {
 	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
 			throws IllegalPositionException, IllegalNameException {
 		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
+	}
+	
+	
+	// WORLD
+	
+	@Basic @Raw
+	public World getWorld(){
+		return this.world;
+	}
+	
+	@Raw
+	public void setWorld(World world){
+		this.world = world;
 	}
 	
 	// LOCATION
@@ -1272,7 +1288,7 @@ public class Unit {
 										(double)(currentCube[2]+ dz + ConstantsUtils.CUBE_LENGTH/2)};
 
 			
-			if (! Position.isValidLocation(currentTarget)){			
+			if (! positionObj.isValidLocation(currentTarget)){			
 				throw new IllegalPositionException(currentTarget);
 			}
 			if (! (dx == 0 && dy == 0 && dz ==0)) {

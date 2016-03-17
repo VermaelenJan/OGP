@@ -11,8 +11,9 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public abstract class Object {
 	//Location
-	public Position positionObj = new Position();
+
 	public World world;
+	public Position positionObj = new Position(world);
 
 	public Object(World world, double[] location){
 		positionObj.setLocation(location);

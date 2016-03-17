@@ -11,10 +11,7 @@ import be.kuleuven.cs.som.annotate.Model;
 final class ConstantsUtils {
 	
 
-	// WORLD DIMENSIONS
-	static final int WORLD_X = 50;
-	static final int WORLD_Y = 50;
-	static final int WORLD_Z = 50;
+	// WORLD DIMENSION
 	static final double CUBE_LENGTH = 1;
 	
 	// MIN,MAX VALUES (for properties)
@@ -44,4 +41,8 @@ final class ConstantsUtils {
 	
 	// FALLING
 	static final double FALLING_SPEED = 3;
+	
+	// MAX UNITS
+	static final int MAX_UNITS_FACTION = 50;
+	static final int MAX_UNITS_WORLD = 100;
 }

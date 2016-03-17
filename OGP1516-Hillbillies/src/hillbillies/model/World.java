@@ -16,13 +16,16 @@ import hillbillies.util.ConnectedToBorder;
 public class World {
 	
 	public World(CubeType[][][] worldCubes,TerrainChangeListener terrainChangeListener){
+		this.WORLD_X = getNbCubesX();
+		this.WORLD_Y = getNbCubesY();
+		this.WORLD_Z = getNbCubesZ();
 		this.terrainChangeListener = terrainChangeListener;
 		this.worldCubes = worldCubes;
-		this.CTBTool = new ConnectedToBorder(ConstantsUtils.WORLD_X,ConstantsUtils.WORLD_Y,ConstantsUtils.WORLD_Z);
+		this.CTBTool = new ConnectedToBorder(WORLD_X,WORLD_Y,WORLD_Z);
 		
-		for (int xIndex = 1; xIndex<worldCubes[0].length; xIndex++) {
-			for (int yIndex = 1; yIndex<worldCubes[1].length; yIndex++) {
-				for (int zIndex = 1; zIndex<worldCubes[2].length; zIndex++) {
+		for (int xIndex = 1; xIndex<WORLD_X; xIndex++) {
+			for (int yIndex = 1; yIndex<WORLD_Y; yIndex++) {
+				for (int zIndex = 1; zIndex<WORLD_Z; zIndex++) {
 					
 					if (!worldCubes[xIndex][yIndex][zIndex].isPassableTerrain()){
 						CTBTool.changeSolidToPassable(xIndex, yIndex, zIndex);
@@ -33,7 +36,23 @@ public class World {
 		
 		updateConnectedTerrain();
 	}
-
+	
+	int getNbCubesX(){
+		return worldCubes[0].length;
+	}
+	
+	int getNbCubesY(){
+		return worldCubes[1].length;
+	}
+	
+	int getNbCubesZ(){
+		return worldCubes[2].length;
+	}
+	
+	int WORLD_X;
+	int WORLD_Y;
+	int WORLD_Z;
+	
 	private void updateConnectedTerrain() {
 		for (int xIndex = 1; xIndex<worldCubes[0].length; xIndex++) {
 			for (int yIndex = 1; yIndex<worldCubes[1].length; yIndex++) {
@@ -46,7 +65,7 @@ public class World {
 		}
 	}
 		
-	CubeType[][][] worldCubes = new CubeType[ConstantsUtils.WORLD_X][ConstantsUtils.WORLD_Y][ConstantsUtils.WORLD_Z];
+	CubeType[][][] worldCubes = new CubeType[WORLD_X][WORLD_Y][WORLD_Z];
 	
 	protected void setCubeType(int x,int y, int z, CubeType cubeType){
 		worldCubes[x][y][z] = cubeType;
@@ -86,9 +105,7 @@ public class World {
 	List<Boulder> boulders = new ArrayList<Boulder>();
 	
 	List<Log> logs = new ArrayList<Log>();
-	
-	List<Map<'String', V>> unit()
-		
+			
 	
 	private ConnectedToBorder CTBTool;
 	private TerrainChangeListener terrainChangeListener;
