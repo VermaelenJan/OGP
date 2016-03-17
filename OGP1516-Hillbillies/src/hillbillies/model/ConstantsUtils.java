@@ -2,6 +2,8 @@ package hillbillies.model;
 
 import java.util.Random;
 
+import be.kuleuven.cs.som.annotate.Model;
+
 /**
  * @author Win
  * @version 1.0
@@ -23,6 +25,18 @@ final class ConstantsUtils {
 	
 	// Randomizer
 	static final Random random = new Random();
+	
+	/**
+	 * Checks whether the unit's defend is successful.
+	 * @param possibility
+	 * 			The possibility to defend successful.
+	 * @return True if and only if the the unit has defended successful.
+	 * 			| result == (randomDouble <= possibility)
+	 */
+	@Model
+	protected static boolean getPossibilitySucces(double possibility){
+		return (random.nextDouble() <= possibility);
+	}
 	
 	// LOG
 	static final int MIN_OBJECT_WEIGHT = 10;	

@@ -1655,7 +1655,7 @@ public class Unit {
 			stopWorking();
 			
 			double possibilityDodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
-			if (getDefendSucces(possibilityDodge)){
+			if (ConstantsUtils.getPossibilitySucces(possibilityDodge)){
 				this.positionObj.setRandomLocation();
 				this.setOrientationInFight(other);
 
@@ -1665,7 +1665,7 @@ public class Unit {
 				double possibilityBlock = (double)(0.25*(((double) this.getStrength() + (double) this.getAgility())/
 						((double) ((double)other.getStrength()+(double) other.getAgility()))));
 				
-				if ( ! getDefendSucces(possibilityBlock)){
+				if ( ! ConstantsUtils.getPossibilitySucces(possibilityBlock)){
 					double newHitPoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
 					if (newHitPoints <= 0) {
 						this.setHitpoints(0);
@@ -1748,17 +1748,7 @@ public class Unit {
 	 */
 	private float attackTime = 0;
 	
-	/**
-	 * Checks whether the unit's defend is successful.
-	 * @param possibility
-	 * 			The possibility to defend successful.
-	 * @return True if and only if the the unit has defended successful.
-	 * 			| result == (randomDouble <= possibility)
-	 */
-	@Model
-	private boolean getDefendSucces(double possibility){
-		return (ConstantsUtils.random.nextDouble() <= possibility);
-	}
+
 	
 	// RESTING
 	
