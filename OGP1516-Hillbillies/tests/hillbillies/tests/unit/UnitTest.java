@@ -335,7 +335,7 @@ public class UnitTest {
 		unit.moveToAdjacent(1, 0, -1);
 		unit.advanceTime(0.001);
 		assertTrue(unit.isActualMoving());
-		for (int i = 1; i<100; i++) {
+		for (int i = 1; i<10; i++) {
 			try {
 				unit.advanceTime(0.1);
 			} catch (IllegalAdvanceTimeException e) {}
@@ -392,7 +392,7 @@ public class UnitTest {
 		assertEquals(20.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
 		assertEquals(30.5, unit.getLocation()[2], Util.DEFAULT_EPSILON);
 		
-		for (int i = 1; i<200; i++) {
+		for (int i = 1; i<20; i++) {
 			unit.advanceTime(0.1);
 		}
 		
@@ -465,16 +465,15 @@ public class UnitTest {
 		int[] target = {49, 49, 49};
 		validUnit.moveTo(target);
 		validUnit.startSprinting();
-		
 		for (int i = 1; i<16; i++) {
 			validUnit.advanceTime(0.1);
 		}
-		
 		assertTrue(validUnit.isSprinting());
 		validUnit.advanceTime(0.1);		
 		assertFalse(validUnit.isSprinting());
 		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
-		for (int i = 1; i<600; i++) {
+		validUnit.moveTo(validUnit.getOccupiedCube());
+		for (int i = 1; i<20; i++) {
 			validUnit.advanceTime(0.1);
 		}
 		validUnit.rest();
@@ -594,7 +593,7 @@ public class UnitTest {
 		assertFalse(unit1.isAttacking());
 
 		boolean blocked = false; boolean hitted = false; boolean dodged = false;
-		for (int i = 1; i<500; i++){ 
+		while (!(blocked && hitted && dodged)){ 
 			
 			Unit unit3 = new Unit(location2, ValidName, 0, 0, 0, 0);
 			unit3.defend(unit1);
@@ -622,9 +621,8 @@ public class UnitTest {
 				dodged = true;
 				}
 			
-			if (i==1){
-				assertTrue(blocked || hitted || dodged);
-			}
+			//only valid test for i=1
+			assertTrue(blocked || hitted || dodged);
 		}
 		assertTrue(blocked && hitted && dodged);
 	}
@@ -678,7 +676,7 @@ public class UnitTest {
 	@Test
 	public void defaultBehaviour_Posibilities() {
 	boolean working = false; boolean resting = false; boolean moving = false;
-	for (int i = 1; i<200; i++){
+	while (!(working && resting && moving)){
 		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
 		int[] target = {2,24,49};
 		unit.moveTo(target);
