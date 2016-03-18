@@ -594,7 +594,7 @@ public class UnitTest {
 
 		boolean blocked = false; boolean hitted = false; boolean dodged = false;
 		while (!(blocked && hitted && dodged)){ 
-			
+			boolean oneBlocked = false; boolean oneHitted = false; boolean oneDodged = false;
 			Unit unit3 = new Unit(location2, ValidName, 0, 0, 0, 0);
 			unit3.defend(unit1);
 			
@@ -603,6 +603,7 @@ public class UnitTest {
 					(unit3.getLocation()[2] == location2[2] + 0.5) &&
 					(unit3.getHitpoints() == unit3.getMaxHitpointsStamina())	
 				){
+				oneBlocked = true;
 				blocked = true;
 				}
 			
@@ -611,6 +612,7 @@ public class UnitTest {
 						(unit3.getLocation()[2] == location2[2] + 0.5) &&
  						(unit3.getHitpoints() <= unit2.getMaxHitpointsStamina())
  				){
+				oneHitted = true;
 				hitted = true;
 				}
 			
@@ -618,11 +620,11 @@ public class UnitTest {
 						(unit3.getLocation()[1] != location2[1] + 0.5) || 
 						(unit3.getLocation()[2] != location2[2] + 0.5)
 				){
+				oneDodged = true;
 				dodged = true;
 				}
 			
-			//only valid test for i=1
-			assertTrue(blocked || hitted || dodged);
+			assertTrue(oneBlocked ^ oneHitted ^ oneDodged);
 		}
 		assertTrue(blocked && hitted && dodged);
 	}
