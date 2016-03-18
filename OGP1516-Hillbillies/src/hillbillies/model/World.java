@@ -1,8 +1,6 @@
 package hillbillies.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import hillbillies.part2.listener.TerrainChangeListener;

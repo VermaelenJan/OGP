@@ -4,7 +4,6 @@ import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
-import be.kuleuven.cs.som.taglet.ThrowsTaglet;
 import hillbillies.model.exceptions.IllegalAdjacentPositionException;
 import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
