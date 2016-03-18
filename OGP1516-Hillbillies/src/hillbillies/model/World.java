@@ -1,10 +1,13 @@
 package hillbillies.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
+
 
 /**
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
@@ -98,11 +101,80 @@ public class World {
 	updateConnectedTerrain();
 	}
 	
-	List<Boulder> boulders = new ArrayList<Boulder>();
+	Set<Boulder> boulders = new HashSet<Boulder>();
 	
-	List<Log> logs = new ArrayList<Log>();
+	public Set<Boulder> getBoulders(){
+		return boulders;
+	}
+	
+	Set<Log> logs = new HashSet<Log>();
+	
+	public Set<Log> getLogs(){
+		return logs;
+	}
+	
+	Set<Faction> factions = new HashSet<Faction>();
+	
+	private Set<Faction> getAllFactions(){
+		return factions;
+	}
+	
+	public Set<Faction> getActiveFactions(){
+		Set<Faction> actives = new HashSet<Faction>();
+		
+		for (Faction faction : getAllFactions()){
+			if (!faction.isTerminated()){
+				actives.add(faction);
+			}
+		}
+		return actives;
+	}
+	
+	private int getTotalNbUnits(){
+		int nbUnitsSoFar = 0;
+		for (Faction faction : getActiveFactions()){
+			nbUnitsSoFar += faction.getNbUnits();
+		}
+		return nbUnitsSoFar;
+	}
+	
+	
+	public void spawnUnit(){
+		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
+			Unit newUnit = createRandomUnit();
+			if (getActiveFactions().size() < 5){
+				Faction newFaction = new Faction(this);	
+				newUnit.setFaction(newFaction);
+			}
+			else{
+				newUnit.setFaction(getSmallestFaction());
+			}
+		}	
+	}
 			
 	
+	private Unit createRandomUnit() {
+		Position positionObj = new Position(this);
+		Unit unit = new Unit(positionObj.getRandomPosition(),"name",
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24));
+		return unit;
+	}
+
+	private Faction getSmallestFaction() {
+		Faction smallestFaction = null;
+		int smallestNb = Integer.MAX_VALUE;
+		for (Faction faction : getActiveFactions()){
+			if (faction.getNbUnits() < smallestNb) {
+				smallestNb = faction.getNbUnits();
+				smallestFaction = faction;
+			}
+		}
+		return smallestFaction;
+	}
+
 	private ConnectedToBorder CTBTool;
 	private TerrainChangeListener terrainChangeListener;
 

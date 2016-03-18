@@ -88,9 +88,9 @@ class Position {
 	
 	@Model
 	protected int[] getRandomPosition(){
-		int[] randLoc = {ConstantsUtils.random.nextInt(world.worldX-1), 
-				ConstantsUtils.random.nextInt(world.worldY-1), 
-				ConstantsUtils.random.nextInt(world.worldZ-1)};
+		int[] randLoc = {ConstantsUtils.random.nextInt(world.getNbCubesX()-1), 
+				ConstantsUtils.random.nextInt(world.getNbCubesY()-1), 
+				ConstantsUtils.random.nextInt(world.getNbCubesZ()-1)};
 		return randLoc;
 	}
 }

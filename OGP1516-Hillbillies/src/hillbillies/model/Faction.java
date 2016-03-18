@@ -9,6 +9,12 @@ import java.util.Set;
  */
 public class Faction {
 	
+	private final World world;
+
+	protected Faction(World world){
+		this.world = world;
+	}
+	
 	Set<Unit> unitsOfFaction = new HashSet<Unit>();
 	
 	protected void addUnit(Unit unit){
@@ -17,5 +23,36 @@ public class Faction {
 	
 	protected Set<Unit> getUnits(){
 		return unitsOfFaction;
-	}	
+	}
+	
+	protected int getNbUnits(){
+		return getUnits().size();
+	}
+	
+	private boolean isTerminated;
+	
+	protected boolean isTerminated(){
+		return this.isTerminated;
+	}
+	
+	protected void terminate(){
+		this.isTerminated = true;
+	}
+
+	protected void checkTerminate() {
+		boolean keepFaction = false;
+		for (Unit unit : getUnits()){
+			if (!unit.isTerminated()){
+				keepFaction = true;
+			}
+		}
+		if (!keepFaction){
+			this.terminate();
+		}
+	}
+
+	public World getWorld() {
+		return world;
+	}
+	
 }

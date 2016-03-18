@@ -4,6 +4,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
+import be.kuleuven.cs.som.taglet.ThrowsTaglet;
 import hillbillies.model.exceptions.IllegalAdjacentPositionException;
 import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
@@ -45,6 +46,7 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
 public class Unit {
 
 	private World world;
+	private Faction faction;
 	public Position positionObj;
 	
 	/**
@@ -107,6 +109,9 @@ public class Unit {
 		setStamina(getMaxHitpointsStamina());
 		setOrientation(Math.PI/2);
 		setWorld(world);
+		Faction newFaction = new Faction(world);
+		setFaction(newFaction);
+		
 		positionObj = new Position(world);
 		positionObj.setLocation(location); //
 		}
@@ -170,6 +175,33 @@ public class Unit {
 	@Raw
 	public void setWorld(World world){
 		this.world = world;
+	}
+	
+	@Basic @Raw
+	public Faction getFaction(){
+		return this.faction;
+		
+	}
+	
+	@Raw
+	public void setFaction(Faction faction) throws IllegalArgumentException{
+		if (faction.getNbUnits() >= ConstantsUtils.MAX_UNITS_FACTION){
+			throw new IllegalArgumentException();
+			// TODO CHANGE EXCEPTION
+		}
+		this.faction = faction;
+		
+	}
+	
+	private boolean isTerminated;
+	
+	protected void terminate(){
+		this.isTerminated = true;
+		this.faction.checkTerminate();
+	}
+	
+	protected boolean isTerminated(){
+		return this.isTerminated;
 	}
 	
 	// LOCATION
