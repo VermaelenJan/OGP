@@ -3,6 +3,7 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
@@ -145,9 +146,11 @@ public class World {
 				newUnit.setFaction(newFaction);
 			}
 			else{
-				newUnit.setFaction(getSmallestFaction());
+				try {
+					newUnit.setFaction(getSmallestFaction());
+					} catch (IllegalValueException e) {/** TODO?**/}
 			}
-		}	
+		}
 	}
 			
 	

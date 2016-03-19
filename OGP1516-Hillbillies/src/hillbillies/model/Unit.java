@@ -9,6 +9,7 @@ import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
+import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 //TODO: split AdvanceTime.
@@ -183,10 +184,9 @@ public class Unit {
 	}
 	
 	@Raw
-	public void setFaction(Faction faction) throws IllegalArgumentException{
+	public void setFaction(Faction faction) throws IllegalValueException{
 		if (faction.getNbUnits() >= ConstantsUtils.MAX_UNITS_FACTION){
-			throw new IllegalArgumentException();
-			// TODO CHANGE EXCEPTION
+			throw new IllegalValueException(faction.getNbUnits());
 		}
 		this.faction = faction;
 		
