@@ -50,19 +50,14 @@ public abstract class Object {
 	
 	
 
-	public boolean isValidPosition(Position position) {
-		int [] occupiedCube = position.getOccupiedCube();
-		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
-		return ((!world.getCubeType(cubeBelow[0], cubeBelow[1], cubeBelow[2]).isPassableTerrain())
-				|| ( position.getOccupiedCube()[2] == 0));
-	}
+
 	
 	public void advanceTime(double dt){
-		if (!isValidPosition(positionObj)){
+		if (!positionObj.isValidZPosition()){
 			fall(dt,getCubeBelow());
 		}
 		
-		if (isValidPosition(positionObj) && !positionObj.isAtMiddleZOfCube()){
+		if (positionObj.isValidZPosition() && !positionObj.isAtMiddleZOfCube()){
 			fall(dt);
 		}
 	}

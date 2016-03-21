@@ -1337,7 +1337,7 @@ public class Unit {
 										(double)(currentCube[2]+ dz + ConstantsUtils.CUBE_LENGTH/2)};
 
 			
-			if (! positionObj.isValidLocation(currentTarget)){			
+			if (! positionObj.isValidLocationInWorld(currentTarget)){			
 				throw new IllegalPositionException(currentTarget);
 			}
 			if (! (dx == 0 && dy == 0 && dz ==0)) {
@@ -1415,56 +1415,59 @@ public class Unit {
 										// globalTarget, the lack of reverting wont cause any problems.
 		globalTarget = endTarget;
 
-		int xCur = positionObj.getOccupiedCube()[0];
-		int yCur = positionObj.getOccupiedCube()[1];
-		int zCur = positionObj.getOccupiedCube()[2];
+//		int xCur = positionObj.getOccupiedCube()[0];
+//		int yCur = positionObj.getOccupiedCube()[1];
+//		int zCur = positionObj.getOccupiedCube()[2];
+//		
+//		int xTar = endTarget[0];
+//		int yTar = endTarget[1];
+//		int zTar = endTarget[2];
+//		
+//		if (xCur != xTar || yCur != yTar || zCur != zTar){
+//			int xRes;
+//			int yRes;
+//			int zRes;
+//			
+//			// x
+//			if (xCur == xTar){
+//				xRes = 0;
+//			}
+//			else if (xCur < xTar){
+//				xRes = 1;
+//			}
+//			else{
+//				xRes = -1;
+//			}
+//			
+//			// y 
+//			if (yCur == yTar){
+//				yRes = 0;
+//			}
+//			else if (yCur < yTar){
+//				yRes = 1;
+//			}
+//			else{
+//				yRes = -1;
+//			}
+//			
+//			// z
+//			if (zCur == zTar){
+//				zRes = 0;
+//			}
+//			else if (zCur < zTar){
+//				zRes = 1;
+//			}
+//			else{
+//				zRes = -1;
+//			}
+//			try {
+//				moveToAdjacent(xRes, yRes,zRes, true);
+//			} catch (IllegalAdjacentPositionException e) {} //Exception will never be thrown.
+//		}
 		
-		int xTar = endTarget[0];
-		int yTar = endTarget[1];
-		int zTar = endTarget[2];
 		
-		if (xCur != xTar || yCur != yTar || zCur != zTar){
-			int xRes;
-			int yRes;
-			int zRes;
-			
-			// x
-			if (xCur == xTar){
-				xRes = 0;
-			}
-			else if (xCur < xTar){
-				xRes = 1;
-			}
-			else{
-				xRes = -1;
-			}
-			
-			// y 
-			if (yCur == yTar){
-				yRes = 0;
-			}
-			else if (yCur < yTar){
-				yRes = 1;
-			}
-			else{
-				yRes = -1;
-			}
-			
-			// z
-			if (zCur == zTar){
-				zRes = 0;
-			}
-			else if (zCur < zTar){
-				zRes = 1;
-			}
-			else{
-				zRes = -1;
-			}
-			try {
-				moveToAdjacent(xRes, yRes,zRes, true);
-			} catch (IllegalAdjacentPositionException e) {} //Exception will never be thrown.
-		}
 	}
+	
 	
 	/**
 	 * Variable registering the target to move to.

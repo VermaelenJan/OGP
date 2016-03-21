@@ -1,4 +1,5 @@
 package hillbillies.model;
+import javax.xml.bind.annotation.XmlList;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
@@ -25,7 +26,7 @@ class Position {
 	
 	@Raw @Model 
 	protected void setLocation(double[] location) throws IllegalPositionException {
-		if (!isValidLocation(location))
+		if (!isValidLocationInWorld(location))
 			throw new IllegalPositionException(location);	
 	this.xPos = location[0];
 	this.yPos = location[1];
@@ -37,11 +38,37 @@ class Position {
 	private double zPos = 0;
 	
 	@Raw @Model
-	protected boolean isValidLocation(double[] location) {
+	protected boolean isValidLocationInWorld(double[] location) {
+		return ( isInBoundaries(location) && isValidZPosition());
+	}
+	
+	protected boolean isInBoundaries(double[] location){
 		return ((location[0] <= world.getNbCubesX()) && (location[1] <= world.getNbCubesY()) && (location[2] <= world.getNbCubesZ()) && 
 				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
+	@Raw @Model
+	protected boolean isValidUnitPosition(double[] location){
+		if (isInBoundaries(location)){
+			int cube[] = {(int)location[0],(int)location[1],(int)location[2]};
+			int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
+			int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};
+			int [] zList = {cube[2]-1,cube[2],cube[2]+ 1};
+			for (int x : xList){
+				for (int y : yList){
+					for (int z : zList){
+						if (!world.getCubeType(x, y, z).isPassableTerrain()){
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		}
+		else{
+			return false;
+		}
+	}
 	@Basic @Raw
 	protected double[] getLocation() {
 		double[] position = {this.xPos, this.yPos, this.zPos};
@@ -65,6 +92,15 @@ class Position {
 		int[] occCube = this.getOccupiedCube();
 		double Zposition = occCube[2] + 0.5;
 		return(this.getLocation()[2] == Zposition);
+	}
+	
+	public boolean isValidZPosition() {
+		return (isValidZCube(this.getOccupiedCube()));
+	}
+	
+	public boolean isValidZCube(int[] cube){
+		int [] cubeBelow = {cube[0],cube[1],(cube[2]-1)};
+		return (( cube[2] == 0) || (!world.getCubeType(cubeBelow[0], cubeBelow[1], cubeBelow[2]).isPassableTerrain()));
 	}
 	
 	@Model 
@@ -91,6 +127,11 @@ class Position {
 		int[] randLoc = {ConstantsUtils.random.nextInt(world.getNbCubesX()-1), 
 				ConstantsUtils.random.nextInt(world.getNbCubesY()-1), 
 				ConstantsUtils.random.nextInt(world.getNbCubesZ()-1)};
-		return randLoc;
+		if (isValidZCube(randLoc)){
+			return randLoc;			
+		}
+		else{
+			return getRandomPosition();
+		}
 	}
 }
