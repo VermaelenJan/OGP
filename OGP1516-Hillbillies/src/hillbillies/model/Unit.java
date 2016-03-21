@@ -199,7 +199,7 @@ public class Unit {
 		this.faction.checkTerminate();
 	}
 	
-	protected boolean isTerminated(){
+	public boolean isTerminated(){
 		return this.isTerminated;
 	}
 	

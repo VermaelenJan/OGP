@@ -1,5 +1,4 @@
 package hillbillies.model;
-import javax.xml.bind.annotation.XmlList;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;

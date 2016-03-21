@@ -9,7 +9,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @author Maxime
  *
  */
-enum CubeType {
+public enum CubeType {
 	AIR("air"), ROCK("rock"), WOOD("wood"), WORKSHOP("workshop");
 	
 	

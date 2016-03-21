@@ -226,70 +226,102 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
-		// TODO Auto-generated method stub
-		// convert int constant to type
-		return null;
+	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException { //TODO: nakijken!
+		hillbillies.model.CubeType[][][] worldCubes =  //TODO: mag dit in facade? :p
+				new hillbillies.model.CubeType[terrainTypes[0].length][terrainTypes[1].length][terrainTypes[2].length];
+		for (int xIndex = 0; xIndex<terrainTypes[0].length; xIndex++) {
+			for (int yIndex = 0; yIndex<terrainTypes[1].length; yIndex++) {
+				for (int zIndex = 0; zIndex<terrainTypes[2].length; zIndex++) {
+					worldCubes[xIndex][yIndex][zIndex] = intToCubeType(terrainTypes[xIndex][yIndex][zIndex]);
+				}
+			}	
+		}
+		World world = new World(worldCubes, modelListener);
+		return world;
 	}
 
 	@Override
 	public int getNbCubesX(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return world.getNbCubesX();
 	}
 
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return world.getNbCubesY();
 	}
 
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return world.getNbCubesZ();
 	}
 
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		world.advanceTime(dt);
 	}
 
 	@Override
 	public int getCubeType(World world, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return cubeTypeToInt(world.getCubeType(x, y, z));
 	}
+	
+	private int cubeTypeToInt(hillbillies.model.CubeType cubeType) { //TODO: mag dit? haha
+		switch (cubeType) {
+		case AIR:
+			return 0;
+		case ROCK:
+			return 1;
+		case WOOD:
+			return 2;
+		case WORKSHOP:
+			return 3;
+		default:
+			return -1;
+		}
+	}
+	
+	private hillbillies.model.CubeType intToCubeType(int i) { //TODO: mag dit? haha
+		switch (i) {
+		case 1:
+			return hillbillies.model.CubeType.ROCK;
+		case 2:
+			return hillbillies.model.CubeType.WOOD;
+		case 3:
+			return hillbillies.model.CubeType.WORKSHOP;
+		default:
+			return hillbillies.model.CubeType.AIR;
+		}
+	}
+	
 
 	@Override
 	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		world.setCubeType(x, y, z, intToCubeType(value));
 	}
 
 	@Override
-	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
+	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException { //TODO: in worldclass!!
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public Unit spawnUnit(World world, boolean enableDefaultBehavior) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		Unit unit = world.spawnUnit();
+		if (enableDefaultBehavior) {
+			unit.startDefaultBehaviour();
+		}
+		return unit;
 	}
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		unit.setWorld(world); //TODO: zeker nakijken
 	}
 
 	@Override
 	public Set<Unit> getUnits(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getAllUnits(); //TODO: zeker nakijken
 	}
 
 	@Override
@@ -306,8 +338,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isAlive(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return (! unit.isTerminated()); //TODO: of werken met hp?
 	}
 
 	@Override
@@ -324,44 +355,37 @@ public class Facade implements IFacade {
 
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getFaction();
 	}
 
 	@Override
 	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return faction.getUnits();
 	}
 
 	@Override
 	public Set<Faction> getActiveFactions(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getActiveFactions();
 	}
 
 	@Override
 	public double[] getPosition(Boulder boulder) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return boulder.getLocation();
 	}
 
 	@Override
 	public Set<Boulder> getBoulders(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getBoulders();
 	}
 
 	@Override
 	public double[] getPosition(Log log) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return log.getLocation();
 	}
 
 	@Override
 	public Set<Log> getLogs(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getLogs();
 	}
 
 }

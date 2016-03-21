@@ -21,7 +21,7 @@ public class Faction {
 		unitsOfFaction.add(unit);
 	}
 	
-	protected Set<Unit> getUnits(){
+	public Set<Unit> getUnits(){
 		return unitsOfFaction;
 	}
 	

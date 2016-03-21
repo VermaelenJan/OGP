@@ -22,9 +22,9 @@ public class World {
 		this.terrainChangeListener = terrainChangeListener;
 		this.CTBTool = new ConnectedToBorder(worldX,worldY,worldZ);
 		
-		for (int xIndex = 1; xIndex<worldX; xIndex++) { //TODO vanaf 0 of 1??
-			for (int yIndex = 1; yIndex<worldY; yIndex++) {
-				for (int zIndex = 1; zIndex<worldZ; zIndex++) {
+		for (int xIndex = 0; xIndex<worldX; xIndex++) { //TODO vanaf 0 of 1??
+			for (int yIndex = 0; yIndex<worldY; yIndex++) {
+				for (int zIndex = 0; zIndex<worldZ; zIndex++) {
 					if (!worldCubes[xIndex][yIndex][zIndex].isPassableTerrain()){
 						CTBTool.changeSolidToPassable(xIndex, yIndex, zIndex);
 					}
@@ -52,9 +52,9 @@ public class World {
 	int worldZ;
 	
 	private void updateConnectedTerrain() {
-		for (int xIndex = 1; xIndex<worldCubes[0].length; xIndex++) { //TODO vanaf 0 of 1??
-			for (int yIndex = 1; yIndex<worldCubes[1].length; yIndex++) {
-				for (int zIndex = 1; zIndex<worldCubes[2].length; zIndex++) {
+		for (int xIndex = 0; xIndex<worldCubes[0].length; xIndex++) { //TODO vanaf 0 of 1??
+			for (int yIndex = 0; yIndex<worldCubes[1].length; yIndex++) {
+				for (int zIndex = 0; zIndex<worldCubes[2].length; zIndex++) {
 					if (!CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex)){
 						caveIn(xIndex,yIndex,zIndex);
 					}
@@ -65,7 +65,7 @@ public class World {
 		
 	CubeType[][][] worldCubes;
 	
-	protected void setCubeType(int x,int y, int z, CubeType cubeType){
+	public void setCubeType(int x,int y, int z, CubeType cubeType){
 		worldCubes[x][y][z] = cubeType;
 	}
 	
@@ -137,8 +137,16 @@ public class World {
 		return nbUnitsSoFar;
 	}
 	
+	public Set<Unit> getAllUnits() {
+		Set<Unit> allUnitsSoFar = new HashSet<>();
+		for (Faction faction : getActiveFactions()) {
+			allUnitsSoFar.addAll(faction.getUnits());
+		}
+		return allUnitsSoFar;
+	}
 	
-	public void spawnUnit(){
+	
+	public Unit spawnUnit(){
 		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
 			Unit newUnit = createRandomUnit();
 			if (getActiveFactions().size() < 5){
@@ -150,7 +158,9 @@ public class World {
 					newUnit.setFaction(getSmallestFaction());
 					} catch (IllegalValueException e) {/** TODO?**/}
 			}
+			return newUnit;
 		}
+		return null;
 	}
 			
 	

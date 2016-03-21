@@ -22,6 +22,14 @@ public abstract class Object {
 	}
 	
 	/**
+	 * Return the location of this object.
+	 */
+	@Basic @Raw
+	public double[] getLocation() {
+		return positionObj.getLocation();
+	}
+	
+	/**
 	 * Return the weight of this object.
 	 */
 	@Basic @Raw @Immutable
