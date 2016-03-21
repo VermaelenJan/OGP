@@ -13,9 +13,10 @@ public abstract class Object {
 	//Location
 
 	public World world;
-	public Position positionObj = new Position(world);
+	public Position positionObj;
 
 	public Object(World world, double[] location){
+		Position positionObj = new Position(world);
 		positionObj.setLocation(location);
 		this.weight = (ConstantsUtils.random.nextInt(ConstantsUtils.MAX_OBJECT_WEIGHT + 1)+10);
 		this.world = world;
