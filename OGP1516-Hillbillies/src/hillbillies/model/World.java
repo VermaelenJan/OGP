@@ -97,7 +97,7 @@ public class World {
 				logs.add(log);
 			}
 		}
-	updateConnectedTerrain();
+	//updateConnectedTerrain(); TODO: mag dit weg?
 	}
 	
 	Set<Boulder> boulders = new HashSet<Boulder>();
@@ -166,7 +166,7 @@ public class World {
 	
 	private Unit createRandomUnit() {
 		Position positionObj = new Position(this);
-		Unit unit = new Unit(positionObj.getRandomPosition(),"name",
+		Unit unit = new Unit(positionObj.getRandomPosition(),"Name",
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 

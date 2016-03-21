@@ -13,7 +13,7 @@ public abstract class Object {
 	//Location
 
 	public World world;
-	public Position positionObj;
+	public Position positionObj = new Position(world); //TODO: initilisatie nodig, waarom??? --> niet legit!
 
 	public Object(World world, double[] location){
 		Position positionObj = new Position(world);
