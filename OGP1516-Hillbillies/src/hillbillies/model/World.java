@@ -32,7 +32,7 @@ public class World {
 			}	
 		}
 		
-		updateConnectedTerrain();
+		//updateConnectedTerrain();
 	}
 	
 	public int getNbCubesX(){
