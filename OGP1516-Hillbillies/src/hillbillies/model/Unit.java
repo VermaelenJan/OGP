@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.HashMap;
+
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
@@ -1468,6 +1470,17 @@ public class Unit {
 		
 	}
 	
+	HashMap<int[], Integer> queue = new HashMap<int[], Integer>();
+	
+	private void search(int[] location, int n_0){
+		for (int[] cube : positionObj.getNeighbouringCubes(location)){ //TODO: isValidUnitPos int/double
+			double[] doubleLoc = {cube[0], cube[1], cube[2]};
+			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
+					positionObj.isValidUnitPosition(doubleLoc)){
+				queue.put(cube, n_0+1); //TODO: afwerken enzooooeueu
+			}
+		}
+	}
 	
 	/**
 	 * Variable registering the target to move to.

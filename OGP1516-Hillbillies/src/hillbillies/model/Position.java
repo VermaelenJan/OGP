@@ -1,5 +1,8 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -42,13 +45,13 @@ class Position {
 	}
 	
 	protected boolean isInBoundaries(double[] location){
-		return ((location[0] <= world.getNbCubesX()) && (location[1] <= world.getNbCubesY()) && (location[2] <= world.getNbCubesZ()) && 
-				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
+		return ((location[0] < world.getNbCubesX()) && (location[1] < world.getNbCubesY()) &&
+				(location[2] < world.getNbCubesZ()) && (location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
 	@Raw @Model
-	protected boolean isValidUnitPosition(double[] location){
-		if (isInBoundaries(location)){
+	protected boolean isValidUnitPosition(double[] location){ //TODO: gebruik volgende methode hierin
+		if (isInBoundaries(location)){							//TODO: overloaden? (voor int[] locaiton)
 			int cube[] = {(int)location[0],(int)location[1],(int)location[2]};
 			int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
 			int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};
@@ -56,7 +59,8 @@ class Position {
 			for (int x : xList){
 				for (int y : yList){
 					for (int z : zList){
-						if (!world.getCubeType(x, y, z).isPassableTerrain()){
+						double[] loc = {x, y, z}; // int --> double
+						if (isInBoundaries(loc) && !world.getCubeType(x, y, z).isPassableTerrain()){
 							return true;
 						}
 					}
@@ -68,6 +72,27 @@ class Position {
 			return false;
 		}
 	}
+	
+	protected List<int[]> getNeighbouringCubes(int[] cube) {
+		List<int[]> result = new ArrayList<int[]>();
+		int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
+		int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};
+		int [] zList = {cube[2]-1,cube[2],cube[2]+ 1};
+		for (int x : xList){
+			for (int y : yList){
+				for (int z : zList){
+					double[] loc = {x, y, z}; // int --> double
+					int[] locCube = {x, y, z};
+					if (isInBoundaries(loc) && !(cube[0] == locCube[0] && 
+							cube[1] == locCube[1] && cube[2] == locCube[2])){
+						result.add(locCube);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
 	@Basic @Raw
 	protected double[] getLocation() {
 		double[] position = {this.xPos, this.yPos, this.zPos};

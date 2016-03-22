@@ -55,12 +55,14 @@ public class World {
 		for (int xIndex = 0; xIndex<worldCubes[0].length; xIndex++) { //TODO vanaf 0 of 1??
 			for (int yIndex = 0; yIndex<worldCubes[1].length; yIndex++) {
 				for (int zIndex = 0; zIndex<worldCubes[2].length; zIndex++) {
-					if (!CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex)){
+					if (!(getCubeType(xIndex, yIndex, zIndex).isPassableTerrain())
+							&& !CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex)){
 						caveIn(xIndex,yIndex,zIndex);
 					}
 				}
 			}	
 		}
+		
 	}
 		
 	CubeType[][][] worldCubes;
@@ -97,7 +99,7 @@ public class World {
 				logs.add(log);
 			}
 		}
-	//updateConnectedTerrain(); TODO: mag dit weg?
+	updateConnectedTerrain(); //TODO: mag dit weg?
 	}
 	
 	Set<Boulder> boulders = new HashSet<Boulder>();
@@ -147,15 +149,20 @@ public class World {
 	
 	
 	public Unit spawnUnit(){
+		System.out.println("total units = " + getTotalNbUnits());
+		System.out.println("total factions = " + getActiveFactions().size());
 		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
 			Unit newUnit = createRandomUnit();
 			if (getActiveFactions().size() < 5){
 				Faction newFaction = new Faction(this);	
 				newUnit.setFaction(newFaction);
+				newFaction.addUnit(newUnit);
 			}
 			else{
 				try {
-					newUnit.setFaction(getSmallestFaction());
+					newUnit.setFaction(getSmallestFaction());//
+					getSmallestFaction().addUnit(newUnit); //VOLGORDE BELANGRIJK
+					
 					} catch (IllegalValueException e) {/** TODO?**/}
 			}
 			return newUnit;
