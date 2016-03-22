@@ -1,6 +1,8 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
@@ -1415,7 +1417,7 @@ public class Unit {
 										// by the coding rules, the variable "globalTarget" should be reverted to the
 										// state as at the beginning of the method. Since the method will always initiate a new
 										// globalTarget, the lack of reverting wont cause any problems.
-		globalTarget = endTarget;
+		//globalTarget = endTarget;
 
 //		int xCur = positionObj.getOccupiedCube()[0];
 //		int yCur = positionObj.getOccupiedCube()[1];
@@ -1470,18 +1472,60 @@ public class Unit {
 		
 	}
 	
+	int currentLvl = 0;
 	HashMap<int[], Integer> queue = new HashMap<int[], Integer>();
 	
 	private void search(int[] location, int n_0){
 		for (int[] cube : positionObj.getNeighbouringCubes(location)){ //TODO: isValidUnitPos int/double
 			double[] doubleLoc = {cube[0], cube[1], cube[2]};
 			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
-					positionObj.isValidUnitPosition(doubleLoc)){
-				queue.put(cube, n_0+1); //TODO: afwerken enzooooeueu
+					positionObj.isValidUnitPosition(doubleLoc) && !queue.containsKey(cube)){
+				queue.put(cube, n_0+1);
+				currentLvl = n_0+1;
 			}
 		}
 	}
 	
+	public void moveTo2(int[] endTarget){
+		globalTarget = endTarget;
+		
+		int xCur = positionObj.getOccupiedCube()[0];
+		int yCur = positionObj.getOccupiedCube()[1];
+		int zCur = positionObj.getOccupiedCube()[2];
+		
+		int xTar = endTarget[0];
+		int yTar = endTarget[1];
+		int zTar = endTarget[2];
+		
+		if (xCur != xTar || yCur != yTar || zCur != zTar){
+			queue.put(endTarget, 0);
+			if (!queue.containsKey(endTarget)) && (hasNext()){		
+				search(getNextLocation,getNextLvl);
+			}
+		}
+		
+		if (queue.containsKey(positionObj.getOccupiedCube())){
+			for (int[] cube : positionObj.getNeighbouringCubes(positionObj.getOccupiedCube())){
+				if ((queue.containsKey(cube)) &&(queue.get(cube) <= queue.get(positionObj.getOccupiedCube())) ){
+					moveToAdjacent(dx, dy, dz); // TODO
+				}
+			}
+		}
+		else{
+			//Terminate pathing?
+		}
+		
+	}
+	List<int[]> nextPossibleLocations = new ArrayList<int[]>();
+	
+	private boolean hasNext(){
+		return (queue.containsValue(currentLvl));
+	}
+	
+	
+	private int[] getNextLocation(){
+		
+	}
 	/**
 	 * Variable registering the target to move to.
 	 */
