@@ -229,9 +229,9 @@ public class Facade implements IFacade {
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException { //TODO: nakijken!
 		hillbillies.model.CubeType[][][] worldCubes =  //TODO: mag dit in facade? :p
 				new hillbillies.model.CubeType[terrainTypes[0].length][terrainTypes[1].length][terrainTypes[2].length];
-		for (int xIndex = 0; xIndex<terrainTypes[0].length; xIndex++) {
-			for (int yIndex = 0; yIndex<terrainTypes[1].length; yIndex++) {
-				for (int zIndex = 0; zIndex<terrainTypes[2].length; zIndex++) {
+		for (int xIndex = 0; xIndex<terrainTypes.length; xIndex++) { //TODO: DIT OVERAL ZO DOEN!!!
+			for (int yIndex = 0; yIndex<terrainTypes[0].length; yIndex++) {
+				for (int zIndex = 0; zIndex<terrainTypes[0][0].length; zIndex++) {
 					worldCubes[xIndex][yIndex][zIndex] = intToCubeType(terrainTypes[xIndex][yIndex][zIndex]);
 				}
 			}	

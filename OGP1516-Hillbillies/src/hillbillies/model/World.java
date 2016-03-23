@@ -27,6 +27,7 @@ public class World {
 				for (int zIndex = 0; zIndex<worldZ; zIndex++) {
 					if (!worldCubes[xIndex][yIndex][zIndex].isPassableTerrain()){
 						CTBTool.changeSolidToPassable(xIndex, yIndex, zIndex);
+						//TODO: cavein
 					}
 				}	
 			}	
