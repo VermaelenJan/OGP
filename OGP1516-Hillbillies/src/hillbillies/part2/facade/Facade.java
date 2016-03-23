@@ -227,6 +227,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException { //TODO: nakijken!
+		
+		System.out.println("facade begin");
 		hillbillies.model.CubeType[][][] worldCubes =  //TODO: mag dit in facade? :p
 				new hillbillies.model.CubeType[terrainTypes[0].length][terrainTypes[1].length][terrainTypes[2].length];
 		for (int xIndex = 0; xIndex<terrainTypes.length; xIndex++) { //TODO: DIT IN WORLD ZELF DOEN!!!! (hopelijk efficienter)
@@ -237,8 +239,9 @@ public class Facade implements IFacade {
 			}	
 		}
 		World world = new World(worldCubes, modelListener);
-		return world;
-	}
+		System.out.println("facade done");
+// TODO: het stuk tussen facade begin en facade done maakt het zo traag!!!!
+		return world;	}
 
 	@Override
 	public int getNbCubesX(World world) throws ModelException {
