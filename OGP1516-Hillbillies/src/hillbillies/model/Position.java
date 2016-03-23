@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -49,6 +50,11 @@ class Position {
 				(location[2] < world.getNbCubesZ()) && (location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
+	protected boolean isInBoundaries(int[] location) {
+		double[] loc = {(double) location[0], (double) location[1], (double) location[2]};
+		return isInBoundaries(loc);
+	}
+	
 	@Raw @Model
 	protected boolean isValidUnitPosition(double[] location){ //TODO: gebruik volgende methode hierin
 		if (isInBoundaries(location) && 
@@ -60,7 +66,7 @@ class Position {
 			for (int x : xList){
 				for (int y : yList){
 					for (int z : zList){
-						double[] loc = {x, y, z}; // int --> double
+						int[] loc = {x, y, z};
 						if (isInBoundaries(loc) && !world.getCubeType(x, y, z).isPassableTerrain()){
 							return true;
 						}
@@ -87,10 +93,8 @@ class Position {
 		for (int x : xList){
 			for (int y : yList){
 				for (int z : zList){
-					double[] loc = {x, y, z}; // int --> double
 					int[] locCube = {x, y, z};
-					if (isInBoundaries(loc) && !(cube[0] == locCube[0] && 
-							cube[1] == locCube[1] && cube[2] == locCube[2])){
+					if (isInBoundaries(locCube) && !(Arrays.equals(cube, locCube))){
 						result.add(locCube);
 					}
 				}
@@ -115,7 +119,7 @@ class Position {
 	protected boolean isAtMiddleOfCube() {
 		int[] occCube = this.getOccupiedCube();
 		double[] position = {occCube[0] + 0.5, occCube[1] + 0.5, occCube[2] + 0.5};
-		return(this.getLocation()[0] == position[0] && this.getLocation()[1] == position[1] && this.getLocation()[2] == position[2]);
+		return Arrays.equals(getLocation(), position);
 	}
 	
 	protected boolean isAtMiddleZOfCube() {
@@ -134,21 +138,22 @@ class Position {
 	}
 	
 	@Model 
-	protected void setRandomLocation(){
+	protected void setRandomDodgedLocation(){ //TODO: rekening houden met validUnitLoc (of bij getRandomDodgePosition())
 		try {
-			setLocation(randomPosition(getLocation()));
+			setLocation(getRandomDodgePosition(getLocation()));
 		} catch (IllegalPositionException e) {
-			setRandomLocation();
+			setRandomDodgedLocation();
 		}
 	}
 	
 	@Model
-	protected double[] randomPosition(double[] currLoc){
+	protected double[] getRandomDodgePosition(double[] currLoc){ //TODO: rekening houden met validUnitLoc (of bij setRandomDodgedLoc())
 		double[] newLoc = {currLoc[0]+ (ConstantsUtils.random.nextDouble()*2-1), currLoc[1] + 
 				(ConstantsUtils.random.nextDouble()*2-1), currLoc[2]};
 		if (currLoc == newLoc) {
-			return randomPosition(currLoc);
+			return getRandomDodgePosition(currLoc);
 		}
+		
 		return newLoc;
 	}
 	

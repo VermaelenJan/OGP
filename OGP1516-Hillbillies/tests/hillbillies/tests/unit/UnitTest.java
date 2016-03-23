@@ -22,7 +22,7 @@ import ogp.framework.util.Util;
  * @version 1.0
  * based on black-box testing
  */
-public class UnitTest {
+public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	private static String ValidName;
 	private static int[] ValidLocation = {0, 24, 49};

@@ -159,9 +159,9 @@ public class Unit {
 	private static World createVoidWorld() {
 		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
 		CubeType[][][] worldCubes = new CubeType[50][50][50];
-		for (int xIndex = 0; xIndex<worldCubes[0].length; xIndex++) {
-			for (int yIndex = 0; yIndex<worldCubes[1].length; yIndex++) {
-				for (int zIndex = 0; zIndex<worldCubes[2].length; zIndex++) {
+		for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+			for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+				for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
 					worldCubes[xIndex][yIndex][zIndex] = CubeType.AIR;
 				}	
 			}	
@@ -1477,9 +1477,8 @@ public class Unit {
 	
 	private void search(int[] location, int n_0){
 		for (int[] cube : positionObj.getNeighbouringCubes(location)){ //TODO: isValidUnitPos int/double
-			double[] doubleLoc = {cube[0], cube[1], cube[2]};
 			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
-					positionObj.isValidUnitPosition(doubleLoc) && !queue.containsKey(cube)){
+					positionObj.isValidUnitPosition(cube) && !queue.containsKey(cube)){
 				queue.put(cube, n_0+1);
 				currentLvl = n_0+1;
 			}

@@ -16,27 +16,27 @@ public class World {
 	
 	public World(CubeType[][][] worldCubes,TerrainChangeListener terrainChangeListener){
 		this.worldCubes = worldCubes;
-		this.worldX = worldCubes[0].length;
-		this.worldY = worldCubes[1].length;
-		this.worldZ = worldCubes[2].length;
+		this.worldX = worldCubes.length;
+		this.worldY = worldCubes[0].length;
+		this.worldZ = worldCubes[0][0].length;
 		this.terrainChangeListener = terrainChangeListener;
 		this.CTBTool = new ConnectedToBorder(worldX,worldY,worldZ);
 		
-		for (int xIndex = 0; xIndex<worldX; xIndex++) { //TODO vanaf 0 of 1??
+		for (int xIndex = 0; xIndex<worldX; xIndex++) {
 			for (int yIndex = 0; yIndex<worldY; yIndex++) {
 				for (int zIndex = 0; zIndex<worldZ; zIndex++) {
 					if (!worldCubes[xIndex][yIndex][zIndex].isPassableTerrain()){
 						CTBTool.changeSolidToPassable(xIndex, yIndex, zIndex);
-						//TODO: cavein
 					}
 				}	
 			}	
 		}
 		
-		//updateConnectedTerrain();
+		//updateConnectedTerrain(); TODO: gvd k krijg het ni gefixt
+
 	}
 	
-	public int getNbCubesX(){
+	public int getNbCubesX(){ //TODO: deze final maken?
 		return worldX;
 	}
 	
@@ -53,11 +53,11 @@ public class World {
 	int worldZ;
 	
 	private void updateConnectedTerrain() {
-		for (int xIndex = 0; xIndex<worldCubes[0].length; xIndex++) { //TODO vanaf 0 of 1??
-			for (int yIndex = 0; yIndex<worldCubes[1].length; yIndex++) {
-				for (int zIndex = 0; zIndex<worldCubes[2].length; zIndex++) {
-					if (!(getCubeType(xIndex, yIndex, zIndex).isPassableTerrain())
-							&& !CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex)){
+		for (int xIndex = 0; xIndex<getNbCubesX(); xIndex++) {
+			for (int yIndex = 0; yIndex<getNbCubesY(); yIndex++) {
+				for (int zIndex = 0; zIndex<getNbCubesZ(); zIndex++) {
+					if ((!(getCubeType(xIndex, yIndex, zIndex).isPassableTerrain()))
+							&& (!CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex))){
 						caveIn(xIndex,yIndex,zIndex);
 					}
 				}
@@ -100,7 +100,7 @@ public class World {
 				logs.add(log);
 			}
 		}
-	updateConnectedTerrain(); //TODO: mag dit weg?
+	updateConnectedTerrain();
 	}
 	
 	Set<Boulder> boulders = new HashSet<Boulder>();
