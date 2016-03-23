@@ -171,14 +171,8 @@ public class World {
 	
 	private Unit createRandomUnit() {
 		Position positionObj = new Position(this);
-		int[] position = {-1,-1,-1};
-		while (!positionObj.isValidUnitPosition(position)) {
-			position = positionObj.getRandomPosition();
-			System.out.println(position[0] + "  " + position[1] + "  " + position[2]);
-		}
-		System.out.println("done  " + position[0] + "  " + position[1] + "  " + position[2]);
 
-		Unit unit = new Unit(position,"Name",
+		Unit unit = new Unit(positionObj.getRandomPosition(),"Name",
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 
