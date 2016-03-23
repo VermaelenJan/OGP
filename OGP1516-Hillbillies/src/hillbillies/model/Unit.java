@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -1472,59 +1473,68 @@ public class Unit {
 		
 	}
 	
-	int currentLvl = 0;
-	HashMap<int[], Integer> queue = new HashMap<int[], Integer>();
+//	int currentLvl = 0;
+	HashMap<int[],int[]> queue = new HashMap<int[], int[]>();
 	
-	private void search(int[] location, int n_0){
+	private void search(int[] location, int[] n_0){ // n_0 is an array of the lvl, a 0 or 1, depending already passed or not
 		for (int[] cube : positionObj.getNeighbouringCubes(location)){ //TODO: isValidUnitPos int/double
 			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
 					positionObj.isValidUnitPosition(cube) && !queue.containsKey(cube)){
-				queue.put(cube, n_0+1);
-				currentLvl = n_0+1;
+				int[] n_next = {n_0[0]+1,n_0[1]};
+				queue.put(cube,n_next);
+//				currentLvl = n_0[0]+1;
 			}
 		}
 	}
 	
 	public void moveTo2(int[] endTarget){
 		globalTarget = endTarget;
-		
-		int xCur = positionObj.getOccupiedCube()[0];
-		int yCur = positionObj.getOccupiedCube()[1];
-		int zCur = positionObj.getOccupiedCube()[2];
-		
-		int xTar = endTarget[0];
-		int yTar = endTarget[1];
-		int zTar = endTarget[2];
-		
-		if (xCur != xTar || yCur != yTar || zCur != zTar){
-			queue.put(endTarget, 0);
-			if (!queue.containsKey(positionObj.getOccupiedCube())) && (hasNext()){		
-				search(getNextLocation,getNextLvl);
-			}
-		}
-		
-		if (queue.containsKey(positionObj.getOccupiedCube())){
-			for (int[] cube : positionObj.getNeighbouringCubes(positionObj.getOccupiedCube())){
-				if ((queue.containsKey(cube)) &&(queue.get(cube) <= queue.get(positionObj.getOccupiedCube())) ){
-					moveToAdjacent(dx, dy, dz); // TODO
+				
+		int[] currentCube = positionObj.getOccupiedCube();
+
+		if (!Arrays.equals(endTarget,currentCube)){
+			int[] n_0 = {0,0};
+			queue.put(endTarget,n_0 );
+			if (!queue.containsKey(currentCube)){
+				
+				for (HashMap.Entry<int[], int[]> cube : queue.entrySet()){
+					if (!(cube.getValue()[1] == 1)){
+						int[] markedCube = {cube.getValue()[0],1};
+						cube.setValue(markedCube);
+						search(cube.getKey(),cube.getValue());
+						moveTo2(endTarget);
+//						int[] unmarkedCube = {cube.getValue()[0],0};
+//						cube.setValue(unmarkedCube);
+					}
+
+					
 				}
 			}
 		}
+		
+		if (queue.containsKey(currentCube)){
+			
+			int[] nextCube = currentCube; // random initialization, otherwise error?
+			int smallestCurrentLvl= 1000000;
+			for (int[] cube : positionObj.getNeighbouringCubes(currentCube)){
+				if (queue.get(cube)[0] <= smallestCurrentLvl){
+					smallestCurrentLvl = queue.get(cube)[0];
+					nextCube = cube;
+				}
+			}
+			int dx = nextCube[0]-currentCube[0];
+			int dy = nextCube[1]-currentCube[1];
+			int dz = nextCube[2]-currentCube[2];
+			moveToAdjacent(dx,dy,dz);
+		}
 		else{
-			//Terminate pathing?
+			//Terminate
 		}
 		
 	}
-	List<int[]> nextPossibleLocations = new ArrayList<int[]>();
+
 	
-	private boolean hasNext(){
-		return (queue.containsValue(currentLvl));
-	}
-	
-	
-	private int[] getNextLocation(){
-		
-	}
+
 	/**
 	 * Variable registering the target to move to.
 	 */
