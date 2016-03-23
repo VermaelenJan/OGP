@@ -1499,7 +1499,7 @@ public class Unit {
 		
 		if (xCur != xTar || yCur != yTar || zCur != zTar){
 			queue.put(endTarget, 0);
-			if (!queue.containsKey(endTarget)) && (hasNext()){		
+			if (!queue.containsKey(positionObj.getOccupiedCube())) && (hasNext()){		
 				search(getNextLocation,getNextLvl);
 			}
 		}
