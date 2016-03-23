@@ -149,8 +149,6 @@ public class World {
 	
 	
 	public Unit spawnUnit(){
-		System.out.println("total units = " + getTotalNbUnits());
-		System.out.println("total factions = " + getActiveFactions().size());
 		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
 			Unit newUnit = createRandomUnit();
 			if (getActiveFactions().size() < 5){
@@ -173,7 +171,14 @@ public class World {
 	
 	private Unit createRandomUnit() {
 		Position positionObj = new Position(this);
-		Unit unit = new Unit(positionObj.getRandomPosition(),"Name",
+		int[] position = {-1,-1,-1};
+		while (!positionObj.isValidUnitPosition(position)) {
+			position = positionObj.getRandomPosition();
+			System.out.println(position[0] + "  " + position[1] + "  " + position[2]);
+		}
+		System.out.println("done  " + position[0] + "  " + position[1] + "  " + position[2]);
+
+		Unit unit = new Unit(position,"Name",
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 
