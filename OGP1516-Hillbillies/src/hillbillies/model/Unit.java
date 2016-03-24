@@ -1477,22 +1477,23 @@ public class Unit {
 	int currentLvl = 0;
 	HashMap<int[],Integer> queue = new HashMap<int[], Integer>();
 	
-	private void search(int[] location, int n_0){ // n_0 is an array of the lvl, a 0 or 1, depending already passed or not
-		for (int[] cube : positionObj.getNeighbouringCubes(location)){ //TODO: isValidUnitPos int/double
-			System.out.println("----");
-			System.out.println("passable " + world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() );
-//			System.out.println("valid " + positionObj.isValidUnitPositionInt(cube)); 
-			System.out.println("not contained " + !queue.containsKey(cube));
-			System.out.println("----");
-			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
-					 !queue.containsKey(cube)){
-				
-				queue.put(cube,n_0+1);
-				System.out.println(queue.toString());
+	private void search(int[] location, int n_0){
+		for (int[] cube : positionObj.getNeighbouringCubes(location)){
 
-				currentLvl = n_0+1;
+			//System.out.println("----");
+			//System.out.println("passable " + world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() );
+			//System.out.println("valid " + positionObj.isValidUnitPositionInt(cube)); 
+			//System.out.println("not contained " + !queue.containsKey(cube));
+			//System.out.println("----");
+			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
+					positionObj.isValidUnitPositionInt(cube) && !queue.containsKey(cube)){
+				//System.out.println(queue.containsKey(cube));
+				queue.put(cube,n_0+1);
+				//System.out.println(cube[0] + "  " + cube[1] + "  " + cube[2]);
+				//System.out.println(world.getCubeType(cube[0], cube[1], cube[2]));
+				//System.out.println(queue.toString());
+				}
 			}
-		}
 	}
 	
 	public void moveTo(int[] endTarget){
@@ -1503,19 +1504,30 @@ public class Unit {
 		if (!Arrays.equals(endTarget,currentCube)){
 
 			queue.put(endTarget,0 ); // TODO if 
-			if (!queue.containsKey(currentCube)){
+			while (!queue.containsKey(currentCube)){
+				
+				HashMap<int[],Integer> temp = new HashMap<int[], Integer>();
 				
 				for (HashMap.Entry<int[], Integer> cube : queue.entrySet()){
 					if (cube.getValue() == currentLvl){
-						search(cube.getKey(),currentLvl);
+						temp.put(cube.getKey(), currentLvl);
 
 					}
 				}
-				moveTo(endTarget);
+				for (HashMap.Entry<int[], Integer> tempCube : temp.entrySet()){
+					search(tempCube.getKey(),currentLvl);
 
+				}
+				currentLvl += 1;
+				//System.err.println("lvl " + currentLvl);
+
+				//System.out.println(queue.size());
+			//moveTo(endTarget);
 			}
+			System.out.println("laatste test van vandaag");
 			
-			else{
+			{
+				System.out.println("else reached");
 				int[] nextCube = currentCube; // random initialization, otherwise error?
 				int smallestCurrentLvl= Integer.MAX_VALUE;
 				for (int[] cube : positionObj.getNeighbouringCubes(currentCube)){

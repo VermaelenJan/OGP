@@ -67,6 +67,12 @@ class Position {
 				for (int y : yList){
 					for (int z : zList){
 						int[] loc = {x, y, z};
+						//System.out.println("+++++++");
+						//System.out.println("length " + this.world.getNbCubesX());
+						//System.out.println("boundaries    " +  isInBoundariesInt(loc));
+						//System.out.println("not passable   " + !world.getCubeType(x, y, z).isPassableTerrain());
+						//System.out.println("type  " + world.getCubeType(x, y, z));
+						//System.out.println("+++++++");
 						if (isInBoundariesInt(loc) && !world.getCubeType(x, y, z).isPassableTerrain()){
 							return true;
 						}

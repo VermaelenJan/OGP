@@ -318,7 +318,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-		unit.setWorld(world); //TODO: zeker nakijken
+		unit.setWorld(world); //TODO: zeker nakijken (faction-kies-algoritme, ...)
 	}
 
 	@Override

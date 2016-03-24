@@ -35,6 +35,7 @@ public class World {
 		//updateConnectedTerrain(); TODO: gvd k krijg het ni gefixt
 
 	}
+
 	
 	public int getNbCubesX(){ //TODO: deze final maken?
 		return worldX;
@@ -159,6 +160,7 @@ public class World {
 	
 	public Unit spawnUnit(){
 		Unit newUnit = createRandomUnit();
+		newUnit.setWorld(this);
 		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
 			if (getActiveFactions().size() < 5){
 				Faction newFaction = new Faction(this);	
@@ -186,7 +188,8 @@ public class World {
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 
-				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24));
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),this);
+
 		return unit;
 	}
 
