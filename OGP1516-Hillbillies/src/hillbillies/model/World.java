@@ -78,7 +78,15 @@ public class World {
 	
 	
 	public void advanceTime(double dt){
-		
+		for (Unit unit : getAllUnits()) {
+			unit.advanceTime(dt);
+		}
+		for (Object object : getBoulders()) {
+			object.advanceTime(dt);
+		}
+		for (Object object : getLogs()) {
+			object.advanceTime(dt);
+		}
 	}
 	
 	private void caveIn(int x,int y,int z){

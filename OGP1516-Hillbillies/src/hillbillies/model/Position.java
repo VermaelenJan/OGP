@@ -167,7 +167,7 @@ class Position {
 			return randLoc;			
 		}
 		else{
-			return getRandomPosition();
+			return getRandomPosition(); //TODO: fix inf rec
 		}
 	}
 }
