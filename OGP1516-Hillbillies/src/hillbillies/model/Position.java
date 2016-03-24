@@ -42,22 +42,22 @@ class Position {
 	
 	@Raw @Model
 	protected boolean isValidLocationInWorld(double[] location) {
-		return ( isInBoundaries(location) && isValidZPosition());
+		return ( isInBoundariesDouble(location) && isValidZPosition());
 	}
 	
-	protected boolean isInBoundaries(double[] location){
+	protected boolean isInBoundariesDouble(double[] location){
 		return ((location[0] < world.getNbCubesX()) && (location[1] < world.getNbCubesY()) &&
 				(location[2] < world.getNbCubesZ()) && (location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
-	protected boolean isInBoundaries(int[] location) {
+	protected boolean isInBoundariesInt(int[] location) {
 		double[] loc = {(double) location[0], (double) location[1], (double) location[2]};
-		return isInBoundaries(loc);
+		return isInBoundariesDouble(loc);
 	}
 	
 	@Raw @Model
-	protected boolean isValidUnitPosition(double[] location){ //TODO: gebruik volgende methode hierin
-		if (isInBoundaries(location) && 
+	protected boolean isValidUnitPositionDouble(double[] location){ //TODO: gebruik volgende methode hierin
+		if (isInBoundariesDouble(location) && 
 				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()){							//TODO: overloaden? (voor int[] locaiton)
 			int cube[] = {(int)location[0],(int)location[1],(int)location[2]};
 			int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
@@ -67,7 +67,7 @@ class Position {
 				for (int y : yList){
 					for (int z : zList){
 						int[] loc = {x, y, z};
-						if (isInBoundaries(loc) && !world.getCubeType(x, y, z).isPassableTerrain()){
+						if (isInBoundariesInt(loc) && !world.getCubeType(x, y, z).isPassableTerrain()){
 							return true;
 						}
 					}
@@ -80,9 +80,9 @@ class Position {
 		}
 	}
 	
-	protected boolean isValidUnitPosition(int[] location) {
+	protected boolean isValidUnitPositionInt(int[] location) {
 		double[] pos = {(double) location[0], (double) location[1], (double) location[2]};
-		return isValidUnitPosition(pos);
+		return isValidUnitPositionDouble(pos);
 	}
 	
 	protected List<int[]> getNeighbouringCubes(int[] cube) {
@@ -94,7 +94,8 @@ class Position {
 			for (int y : yList){
 				for (int z : zList){
 					int[] locCube = {x, y, z};
-					if (isInBoundaries(locCube) && !(Arrays.equals(cube, locCube))){
+					if (isInBoundariesInt(locCube) && !(Arrays.equals(cube, locCube))){
+
 						result.add(locCube);
 					}
 				}
@@ -163,7 +164,7 @@ class Position {
 		int[] randLoc = {ConstantsUtils.random.nextInt(world.getNbCubesX()-1), 
 				ConstantsUtils.random.nextInt(world.getNbCubesY()-1), 
 				ConstantsUtils.random.nextInt(world.getNbCubesZ()-1)};
-		if (isValidZCube(randLoc) && isValidUnitPosition(randLoc)){
+		if (isValidZCube(randLoc) && isValidUnitPositionInt(randLoc)){
 			return randLoc;			
 		}
 		else{

@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1413,7 +1414,7 @@ public class Unit {
 	 * 			The given target is not a valid position for a unit.
 	 * 			| ! canHaveAsPosition(target)
 	 */
-	public void moveTo(int[] endTarget) throws IllegalPositionException { 
+	public void moveToPrev1(int[] endTarget) throws IllegalPositionException { 
 										// When IllegalPositionException is thrown in moveToAdjacent(),
 										// by the coding rules, the variable "globalTarget" should be reverted to the
 										// state as at the beginning of the method. Since the method will always initiate a new
@@ -1473,64 +1474,62 @@ public class Unit {
 		
 	}
 	
-//	int currentLvl = 0;
-	HashMap<int[],int[]> queue = new HashMap<int[], int[]>();
+	int currentLvl = 0;
+	HashMap<int[],Integer> queue = new HashMap<int[], Integer>();
 	
-	private void search(int[] location, int[] n_0){ // n_0 is an array of the lvl, a 0 or 1, depending already passed or not
+	private void search(int[] location, int n_0){ // n_0 is an array of the lvl, a 0 or 1, depending already passed or not
 		for (int[] cube : positionObj.getNeighbouringCubes(location)){ //TODO: isValidUnitPos int/double
+			System.out.println("----");
+			System.out.println("passable " + world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() );
+//			System.out.println("valid " + positionObj.isValidUnitPositionInt(cube)); 
+			System.out.println("not contained " + !queue.containsKey(cube));
+			System.out.println("----");
 			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
-					positionObj.isValidUnitPosition(cube) && !queue.containsKey(cube)){
-				int[] n_next = {n_0[0]+1,n_0[1]};
-				queue.put(cube,n_next);
-//				currentLvl = n_0[0]+1;
+					 !queue.containsKey(cube)){
+				
+				queue.put(cube,n_0+1);
+				System.out.println(queue.toString());
+
+				currentLvl = n_0+1;
 			}
 		}
 	}
 	
-	public void moveTo2(int[] endTarget){
+	public void moveTo(int[] endTarget){
 		globalTarget = endTarget;
 				
 		int[] currentCube = positionObj.getOccupiedCube();
 
 		if (!Arrays.equals(endTarget,currentCube)){
-			int[] n_0 = {0,0};
-			queue.put(endTarget,n_0 );
+
+			queue.put(endTarget,0 ); // TODO if 
 			if (!queue.containsKey(currentCube)){
 				
-				for (HashMap.Entry<int[], int[]> cube : queue.entrySet()){
-					if (!(cube.getValue()[1] == 1)){
-						int[] markedCube = {cube.getValue()[0],1};
-						cube.setValue(markedCube);
-						search(cube.getKey(),cube.getValue());
-						moveTo2(endTarget);
-//						int[] unmarkedCube = {cube.getValue()[0],0};
-//						cube.setValue(unmarkedCube);
-					}
+				for (HashMap.Entry<int[], Integer> cube : queue.entrySet()){
+					if (cube.getValue() == currentLvl){
+						search(cube.getKey(),currentLvl);
 
-					
+					}
 				}
+				moveTo(endTarget);
+
 			}
-		}
-		
-		if (queue.containsKey(currentCube)){
 			
-			int[] nextCube = currentCube; // random initialization, otherwise error?
-			int smallestCurrentLvl= 1000000;
-			for (int[] cube : positionObj.getNeighbouringCubes(currentCube)){
-				if (queue.get(cube)[0] <= smallestCurrentLvl){
-					smallestCurrentLvl = queue.get(cube)[0];
-					nextCube = cube;
+			else{
+				int[] nextCube = currentCube; // random initialization, otherwise error?
+				int smallestCurrentLvl= Integer.MAX_VALUE;
+				for (int[] cube : positionObj.getNeighbouringCubes(currentCube)){
+					if (queue.get(cube) <= smallestCurrentLvl){
+						smallestCurrentLvl = queue.get(cube);
+						nextCube = cube;
+					}
 				}
+				int dx = nextCube[0]-currentCube[0];
+				int dy = nextCube[1]-currentCube[1];
+				int dz = nextCube[2]-currentCube[2];
+				moveToAdjacent(dx,dy,dz);	
 			}
-			int dx = nextCube[0]-currentCube[0];
-			int dy = nextCube[1]-currentCube[1];
-			int dz = nextCube[2]-currentCube[2];
-			moveToAdjacent(dx,dy,dz);
 		}
-		else{
-			//Terminate
-		}
-		
 	}
 
 	
@@ -1790,7 +1789,7 @@ public class Unit {
 			
 			double possibilityDodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
 			if (ConstantsUtils.getPossibilitySucces(possibilityDodge)){
-				this.positionObj.setRandomLocation();
+				this.positionObj.setRandomDodgedLocation();
 				this.setOrientationInFight(other);
 
 			}

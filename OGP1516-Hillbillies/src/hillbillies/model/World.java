@@ -158,8 +158,8 @@ public class World {
 	
 	
 	public Unit spawnUnit(){
+		Unit newUnit = createRandomUnit();
 		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
-			Unit newUnit = createRandomUnit();
 			if (getActiveFactions().size() < 5){
 				Faction newFaction = new Faction(this);	
 				newUnit.setFaction(newFaction);
@@ -174,7 +174,8 @@ public class World {
 			}
 			return newUnit;
 		}
-		return null;
+		newUnit.terminate();
+		return newUnit;
 	}
 			
 	
