@@ -9,7 +9,12 @@ public class Cube {
 	
 	public Cube(int[] position, CubeType cubeType){
 		this.cubeType = cubeType;
+		this.position = position;
 		
+	}
+	
+	public int[] getCubePosition() {
+		return this.position;
 	}
 	public CubeType getCubeType(){
 		return this.cubeType;
@@ -20,7 +25,7 @@ public class Cube {
 	}
 
 	private CubeType cubeType;
-	
-	
+	private int[] position;
+
 }
 

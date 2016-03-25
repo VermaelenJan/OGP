@@ -91,8 +91,8 @@ class Position {
 		return isValidUnitPositionDouble(pos);
 	}
 	
-	protected List<int[]> getNeighbouringCubes(int[] cube) {
-		List<int[]> result = new ArrayList<int[]>();
+	protected List<Cube> getNeighbouringCubes(int[] cube) {
+		List<Cube> result = new ArrayList<Cube>();
 		int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
 		int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};
 		int [] zList = {cube[2]-1,cube[2],cube[2]+ 1};
@@ -102,7 +102,7 @@ class Position {
 					int[] locCube = {x, y, z};
 					if (isInBoundariesInt(locCube) && !(Arrays.equals(cube, locCube))){
 
-						result.add(locCube);
+						result.add(world.getCube(x, y, z));
 					}
 				}
 			}

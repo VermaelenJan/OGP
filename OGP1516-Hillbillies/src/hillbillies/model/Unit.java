@@ -1,10 +1,7 @@
 package hillbillies.model;
 
-import java.awt.print.Printable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
@@ -158,13 +155,15 @@ public class Unit {
 //		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
 //	}
 	
-	private static World createVoidWorld() {
+	private static World createVoidWorld() { //TODO: nog nodig?
 		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
-		CubeType[][][] worldCubes = new CubeType[50][50][50];
+		Cube[][][] worldCubes = new Cube[50][50][50];
 		for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
 			for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
 				for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
-					worldCubes[xIndex][yIndex][zIndex] = CubeType.AIR;
+					int[] position = {xIndex, yIndex, zIndex};
+					Cube cube = new Cube(position, CubeType.AIR);
+					worldCubes[xIndex][yIndex][zIndex] = cube;
 				}	
 			}	
 		}
@@ -895,7 +894,7 @@ public class Unit {
 		}
 		else if (isMoving()){
 			if (arrived(dt)){
-				andvanceTimeMovingArrived();
+				advanceTimeMovingArrived();
 			}
 			else{
 				advanceTimeMovingNotArrived(dt);
@@ -936,7 +935,7 @@ public class Unit {
 		setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
 	}
 
-	private void andvanceTimeMovingArrived() {
+	private void advanceTimeMovingArrived() {
 		stopMoving();
 		try {
 			positionObj.setLocation(target);
@@ -1475,23 +1474,16 @@ public class Unit {
 	}
 	
 	int currentLvl = 0;
-	HashMap<int[],Integer> queue = new HashMap<int[], Integer>();
+	HashMap<Cube,Integer> queue = new HashMap<Cube, Integer>();
 	
 	private void search(int[] location, int n_0){
-		for (int[] cube : positionObj.getNeighbouringCubes(location)){
-
-			//System.out.println("----");
-			//System.out.println("passable " + world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() );
-			//System.out.println("valid " + positionObj.isValidUnitPositionInt(cube)); 
-			//System.out.println("not contained " + !queue.containsKey(cube));
-			//System.out.println("----");
-			if (world.getCubeType(cube[0], cube[1], cube[2]).isPassableTerrain() &&
-					positionObj.isValidUnitPositionInt(cube) && !queue.containsKey(cube)){
-				//System.out.println(queue.containsKey(cube));
+		for (Cube cube : positionObj.getNeighbouringCubes(location)){
+			int[] cubeLoc = cube.getCubePosition();
+			if (cube.getCubeType().isPassableTerrain() &&
+					positionObj.isValidUnitPositionInt(cubeLoc) &&
+						!queue.containsKey(cube)){
 				queue.put(cube,n_0+1);
-				//System.out.println(cube[0] + "  " + cube[1] + "  " + cube[2]);
-				//System.out.println(world.getCubeType(cube[0], cube[1], cube[2]));
-				//System.out.println(queue.toString());
+
 				}
 			}
 	}
@@ -1499,49 +1491,52 @@ public class Unit {
 	public void moveTo(int[] endTarget){
 		globalTarget = endTarget;
 				
-		int[] currentCube = positionObj.getOccupiedCube();
+		int[] currentCubeLoc = positionObj.getOccupiedCube();
+		Cube currentCube = world.getCube(currentCubeLoc[0], currentCubeLoc[1], currentCubeLoc[2]);
 
-		if (!Arrays.equals(endTarget,currentCube)){
+		if (!Arrays.equals(endTarget,currentCubeLoc)){
 
-			queue.put(endTarget,0 ); // TODO if 
+			queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 ); // TODO if 
 			while (!queue.containsKey(currentCube)){
 				
-				HashMap<int[],Integer> temp = new HashMap<int[], Integer>();
+				HashMap<Cube,Integer> temp = new HashMap<Cube, Integer>();
 				
-				for (HashMap.Entry<int[], Integer> cube : queue.entrySet()){
+				for (HashMap.Entry<Cube, Integer> cube : queue.entrySet()){
 					if (cube.getValue() == currentLvl){
 						temp.put(cube.getKey(), currentLvl);
 
 					}
 				}
-				for (HashMap.Entry<int[], Integer> tempCube : temp.entrySet()){
-					search(tempCube.getKey(),currentLvl);
+				for (HashMap.Entry<Cube, Integer> tempCube : temp.entrySet()){
+					search(tempCube.getKey().getCubePosition(),currentLvl);
 
 				}
 				currentLvl += 1;
-				//System.err.println("lvl " + currentLvl);
 
-				//System.out.println(queue.size());
-			//moveTo(endTarget);
 			}
-			System.out.println("laatste test van vandaag");
 			
-			{
-				System.out.println("else reached");
-				int[] nextCube = currentCube; // random initialization, otherwise error?
-				int smallestCurrentLvl= Integer.MAX_VALUE;
-				for (int[] cube : positionObj.getNeighbouringCubes(currentCube)){
-					if (queue.get(cube) <= smallestCurrentLvl){
-						smallestCurrentLvl = queue.get(cube);
-						nextCube = cube;
-					}
+			Cube nextCube = null;
+			
+			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+				if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
+					currentLvl = queue.get(cube);
+					nextCube = cube;
 				}
-				int dx = nextCube[0]-currentCube[0];
-				int dy = nextCube[1]-currentCube[1];
-				int dz = nextCube[2]-currentCube[2];
-				moveToAdjacent(dx,dy,dz);	
 			}
-		}
+			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+				if (nextCube != null && queue.containsKey(cube) && queue.get(cube) == currentLvl){
+					currentLvl = queue.get(cube);
+					nextCube = cube;
+				}
+			}
+
+			
+			
+			int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
+			int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
+			int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
+			moveToAdjacent(dx,dy,dz, true);	
+			queue = new HashMap<Cube, Integer>();		}
 	}
 
 	

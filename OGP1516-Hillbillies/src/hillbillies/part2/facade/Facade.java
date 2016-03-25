@@ -3,6 +3,7 @@ package hillbillies.part2.facade;
 import java.util.Set;
 
 import hillbillies.model.Boulder;
+import hillbillies.model.Cube;
 import hillbillies.model.Faction;
 import hillbillies.model.Log;
 import hillbillies.model.Unit;
@@ -228,19 +229,23 @@ public class Facade implements IFacade {
 	@Override
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException { //TODO: nakijken!
 		
-		hillbillies.model.CubeType[][][] worldCubes = 
-				new hillbillies.model.CubeType[terrainTypes.length][terrainTypes[0].length][terrainTypes[0][0].length];
+		Cube[][][] worldCubes = 
+			new Cube[terrainTypes.length][terrainTypes[0].length][terrainTypes[0][0].length];
 		for (int xIndex = 0; xIndex<terrainTypes.length; xIndex++) {
 			for (int yIndex = 0; yIndex<terrainTypes[0].length; yIndex++) {
 				for (int zIndex = 0; zIndex<terrainTypes[0][0].length; zIndex++) {
-					worldCubes[xIndex][yIndex][zIndex] = intToCubeType(terrainTypes[xIndex][yIndex][zIndex]);
+					int[] position = {xIndex, yIndex, zIndex};
+					hillbillies.model.CubeType cubeType = intToCubeType(terrainTypes[xIndex][yIndex][zIndex]);
+					Cube cube = new Cube(position, cubeType);
+					worldCubes[xIndex][yIndex][zIndex] = cube;
+
 				}
 			}	
 		}
 
 		World world = new World(worldCubes, modelListener);
-//TODO: HET CREEREN IS INEFFICIENT, NIET FACADE
-		return world;	}
+		return world;
+		}
 
 	@Override
 	public int getNbCubesX(World world) throws ModelException {

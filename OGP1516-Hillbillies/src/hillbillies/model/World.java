@@ -14,7 +14,7 @@ import hillbillies.util.ConnectedToBorder;
  */
 public class World {
 	
-	public World(CubeType[][][] worldCubes,TerrainChangeListener terrainChangeListener){
+	public World(Cube[][][] worldCubes,TerrainChangeListener terrainChangeListener){
 		this.worldCubes = worldCubes;
 		this.worldX = worldCubes.length;
 		this.worldY = worldCubes[0].length;
@@ -25,7 +25,7 @@ public class World {
 		for (int xIndex = 0; xIndex<worldX; xIndex++) {
 			for (int yIndex = 0; yIndex<worldY; yIndex++) {
 				for (int zIndex = 0; zIndex<worldZ; zIndex++) {
-					if (!worldCubes[xIndex][yIndex][zIndex].isPassableTerrain()){
+					if (!worldCubes[xIndex][yIndex][zIndex].getCubeType().isPassableTerrain()){
 						CTBTool.changeSolidToPassable(xIndex, yIndex, zIndex);
 					}
 				}	
@@ -67,13 +67,17 @@ public class World {
 		
 	}
 		
-	CubeType[][][] worldCubes;
+	Cube[][][] worldCubes;
 	
 	public void setCubeType(int x,int y, int z, CubeType cubeType){
-		worldCubes[x][y][z] = cubeType;
+		worldCubes[x][y][z].setCubeType(cubeType);
 	}
 	
 	public CubeType getCubeType(int x,int y, int z){
+		return worldCubes[x][y][z].getCubeType();
+	}
+	
+	protected Cube getCube(int x, int y, int z) {
 		return worldCubes[x][y][z];
 	}
 	
