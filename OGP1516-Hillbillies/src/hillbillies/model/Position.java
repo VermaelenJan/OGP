@@ -60,6 +60,9 @@ class Position {
 		if (isInBoundariesDouble(location) && 
 				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()){							//TODO: overloaden? (voor int[] locaiton)
 			int cube[] = {(int)location[0],(int)location[1],(int)location[2]};
+			if (isValidZCube(cube)) {
+				return true;
+			}
 			int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
 			int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};
 			int [] zList = {cube[2]-1,cube[2],cube[2]+ 1};
@@ -67,18 +70,13 @@ class Position {
 				for (int y : yList){
 					for (int z : zList){
 						int[] loc = {x, y, z};
-						//System.out.println("+++++++");
-						//System.out.println("length " + this.world.getNbCubesX());
-						//System.out.println("boundaries    " +  isInBoundariesInt(loc));
-						//System.out.println("not passable   " + !world.getCubeType(x, y, z).isPassableTerrain());
-						//System.out.println("type  " + world.getCubeType(x, y, z));
-						//System.out.println("+++++++");
 						if (isInBoundariesInt(loc) && !world.getCubeType(x, y, z).isPassableTerrain()){
 							return true;
 						}
 					}
 				}
 			}
+
 			return false;
 		}
 		else{

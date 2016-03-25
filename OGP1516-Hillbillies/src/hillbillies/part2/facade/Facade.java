@@ -236,7 +236,7 @@ public class Facade implements IFacade {
 				for (int zIndex = 0; zIndex<terrainTypes[0][0].length; zIndex++) {
 					int[] position = {xIndex, yIndex, zIndex};
 					hillbillies.model.CubeType cubeType = intToCubeType(terrainTypes[xIndex][yIndex][zIndex]);
-					Cube cube = new Cube(position, cubeType);
+					Cube cube = new Cube(position, hillbillies.model.CubeType.AIR);
 					worldCubes[xIndex][yIndex][zIndex] = cube;
 
 				}
