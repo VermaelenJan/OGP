@@ -1342,7 +1342,7 @@ public class Unit {
 										(double)(currentCube[2]+ dz + ConstantsUtils.CUBE_LENGTH/2)};
 
 			
-			if (! positionObj.isValidLocationInWorld(currentTarget)){			
+			if (! positionObj.isValidUnitPositionDouble(currentTarget)){			
 				throw new IllegalPositionException(currentTarget);
 			}
 			if (! (dx == 0 && dy == 0 && dz ==0)) {
@@ -1484,19 +1484,21 @@ public class Unit {
 						!queue.containsKey(cube)){
 				queue.put(cube,n_0+1);
 
-				}
 			}
+		}
 	}
 	
 	public void moveTo(int[] endTarget){
+
 		globalTarget = endTarget;
 				
 		int[] currentCubeLoc = positionObj.getOccupiedCube();
 		Cube currentCube = world.getCube(currentCubeLoc[0], currentCubeLoc[1], currentCubeLoc[2]);
-
+		
 		if (!Arrays.equals(endTarget,currentCubeLoc)){
-
+			
 			queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 ); // TODO if 
+						
 			while (!queue.containsKey(currentCube)){
 				
 				HashMap<Cube,Integer> temp = new HashMap<Cube, Integer>();
@@ -1509,34 +1511,33 @@ public class Unit {
 				}
 				for (HashMap.Entry<Cube, Integer> tempCube : temp.entrySet()){
 					search(tempCube.getKey().getCubePosition(),currentLvl);
-
 				}
 				currentLvl += 1;
-
 			}
-			
+
 			Cube nextCube = null;
-			
+
 			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
 				if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
 					currentLvl = queue.get(cube);
 					nextCube = cube;
 				}
 			}
+			
 			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
 				if (nextCube != null && queue.containsKey(cube) && queue.get(cube) == currentLvl){
 					currentLvl = queue.get(cube);
 					nextCube = cube;
 				}
-			}
-
-			
+			}	
 			
 			int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
 			int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
 			int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
 			moveToAdjacent(dx,dy,dz, true);	
-			queue = new HashMap<Cube, Integer>();		}
+			queue = new HashMap<Cube, Integer>();
+			currentLvl = 0;
+		}
 	}
 
 	
