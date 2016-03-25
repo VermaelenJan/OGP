@@ -36,6 +36,16 @@ class Position {
 	this.zPos = location[2];
 	}
 	
+	@Raw @Model 
+	protected void setFreeLocation(double[] location) throws IllegalPositionException {
+		if (!(isInBoundariesDouble(location) && 
+				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()))
+			throw new IllegalPositionException(location);	
+	this.xPos = location[0];
+	this.yPos = location[1];
+	this.zPos = location[2];
+	}
+	
 	private double xPos = 0;
 	private double yPos = 0;
 	private double zPos = 0;

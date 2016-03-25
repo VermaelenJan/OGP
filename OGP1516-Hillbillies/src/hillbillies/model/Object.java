@@ -13,11 +13,11 @@ public abstract class Object {
 	//Location
 
 	public World world;
-	public Position positionObj = new Position(world); //TODO: initilisatie nodig, waarom??? --> niet legit!
+	public Position positionObj;
 
 	public Object(World world, double[] location){
-		Position positionObj = new Position(world);
-		positionObj.setLocation(location);
+		positionObj = new Position(world);
+		positionObj.setFreeLocation(location);
 		this.weight = (ConstantsUtils.random.nextInt(ConstantsUtils.MAX_OBJECT_WEIGHT + 1)+10);
 		this.world = world;
 	}
@@ -57,10 +57,6 @@ public abstract class Object {
 	 */
 	private final int weight;
 	
-	
-
-
-	
 	public void advanceTime(double dt){
 		if (!positionObj.isValidZPosition()){
 			fall(dt,getCubeBelow());
@@ -88,18 +84,11 @@ public abstract class Object {
 		double[] nextPos = {currPos[0],currPos[1],currPos[2]-dt*ConstantsUtils.FALLING_SPEED};
 		
 		if (nextPos[2] >= (position[2]+0.5)){
-			positionObj.setLocation(nextPos);
+			positionObj.setFreeLocation(nextPos);
 		}
 		else{
 			double [] currMiddleCube = {currPos[0],currPos[1],position[2]+0.5};
-			positionObj.setLocation(currMiddleCube);
+			positionObj.setFreeLocation(currMiddleCube);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
 }

@@ -25,15 +25,13 @@ public class World {
 		for (int xIndex = 0; xIndex<worldX; xIndex++) {
 			for (int yIndex = 0; yIndex<worldY; yIndex++) {
 				for (int zIndex = 0; zIndex<worldZ; zIndex++) {
-					if (!worldCubes[xIndex][yIndex][zIndex].getCubeType().isPassableTerrain()){
+					if (worldCubes[xIndex][yIndex][zIndex].getCubeType().isPassableTerrain()){
 						CTBTool.changeSolidToPassable(xIndex, yIndex, zIndex);
 					}
 				}	
 			}	
 		}
-		
-		//updateConnectedTerrain(); TODO: gvd k krijg het ni gefixt
-
+		updateConnectedTerrain();
 	}
 
 	
@@ -71,6 +69,8 @@ public class World {
 	
 	public void setCubeType(int x,int y, int z, CubeType cubeType){
 		worldCubes[x][y][z].setCubeType(cubeType);
+		//TODO: call against CTBTool!!!!!
+		//TODO: load new code!
 	}
 	
 	public CubeType getCubeType(int x,int y, int z){

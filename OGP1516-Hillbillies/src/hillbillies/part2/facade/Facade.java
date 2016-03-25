@@ -242,7 +242,6 @@ public class Facade implements IFacade {
 				}
 			}	
 		}
-
 		World world = new World(worldCubes, modelListener);
 		return world;
 		}
