@@ -11,8 +11,6 @@ import be.kuleuven.cs.som.annotate.Value;
 import hillbillies.model.exceptions.IllegalPositionException;
 
 
-//TODO: indexes from 1 to 4
-//TODO: doc
 /**
  * A class of positions.
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
@@ -68,7 +66,8 @@ class Position {
 	@Raw @Model
 	protected boolean isValidUnitPositionDouble(double[] location){ //TODO: gebruik volgende methode hierin
 		if (isInBoundariesDouble(location) && 
-				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()){							//TODO: overloaden? (voor int[] locaiton)
+				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()){
+																	//TODO: overloaden? (voor int[] locaiton)
 			int cube[] = {(int)location[0],(int)location[1],(int)location[2]};
 			if (isValidZCube(cube)) {
 				return true;
@@ -109,7 +108,6 @@ class Position {
 				for (int z : zList){
 					int[] locCube = {x, y, z};
 					if (isInBoundariesInt(locCube) && !(Arrays.equals(cube, locCube))){
-
 						result.add(world.getCube(x, y, z));
 					}
 				}
@@ -153,7 +151,7 @@ class Position {
 	}
 	
 	@Model 
-	protected void setRandomDodgedLocation(){ //TODO: rekening houden met validUnitLoc (of bij getRandomDodgePosition())
+	protected void setRandomDodgedLocation(){
 		try {
 			setLocation(getRandomDodgePosition(getLocation()));
 		} catch (IllegalPositionException e) {
@@ -162,7 +160,7 @@ class Position {
 	}
 	
 	@Model
-	protected double[] getRandomDodgePosition(double[] currLoc){ //TODO: rekening houden met validUnitLoc (of bij setRandomDodgedLoc())
+	protected double[] getRandomDodgePosition(double[] currLoc){
 		double[] newLoc = {currLoc[0]+ (ConstantsUtils.random.nextDouble()*2-1), currLoc[1] + 
 				(ConstantsUtils.random.nextDouble()*2-1), currLoc[2]};
 		if (currLoc == newLoc) {
@@ -182,7 +180,7 @@ class Position {
 			return randLoc;			
 		}
 		else{
-			return getRandomPosition(); //TODO: fix inf rec
+			return getRandomPosition();
 		}
 	}
 }

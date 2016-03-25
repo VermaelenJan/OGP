@@ -35,15 +35,15 @@ public class World {
 	}
 
 	
-	public int getNbCubesX(){ //TODO: deze final maken?
+	public final int getNbCubesX(){
 		return worldX;
 	}
 	
-	public int getNbCubesY(){
+	public final int getNbCubesY(){
 		return worldY;
 	}
 	
-	public int getNbCubesZ(){
+	public final int getNbCubesZ(){
 		return worldZ;
 	}
 	
@@ -57,20 +57,24 @@ public class World {
 				for (int zIndex = 0; zIndex<getNbCubesZ(); zIndex++) {
 					if ((!(getCubeType(xIndex, yIndex, zIndex).isPassableTerrain()))
 							&& (!CTBTool.isSolidConnectedToBorder(xIndex, yIndex, zIndex))){
-						caveIn(xIndex,yIndex,zIndex);
+								caveIn(xIndex,yIndex,zIndex);
 					}
 				}
 			}	
 		}
-		
 	}
 		
 	Cube[][][] worldCubes;
 	
 	public void setCubeType(int x,int y, int z, CubeType cubeType){
+		if (cubeType.isPassableTerrain() && !this.getCubeType(x, y, z).isPassableTerrain()){
+			CTBTool.changeSolidToPassable(x, y, z);
+		}
+		else if (!cubeType.isPassableTerrain() && this.getCubeType(x, y, z).isPassableTerrain()) {
+			CTBTool.changePassableToSolid(x, y, z);
+		}
 		worldCubes[x][y][z].setCubeType(cubeType);
-		//TODO: call against CTBTool!!!!!
-		//TODO: load new code!
+
 	}
 	
 	public CubeType getCubeType(int x,int y, int z){
@@ -173,10 +177,9 @@ public class World {
 			}
 			else{
 				try {
-					newUnit.setFaction(getSmallestFaction());//
-					getSmallestFaction().addUnit(newUnit); //VOLGORDE BELANGRIJK
-					
-					} catch (IllegalValueException e) {/** TODO?**/}
+					newUnit.setFaction(getSmallestFaction());
+					getSmallestFaction().addUnit(newUnit);
+					} catch (IllegalValueException e) {/** TODO? not in part 2, 100 < 5*50**/}
 			}
 			return newUnit;
 		}
@@ -212,5 +215,7 @@ public class World {
 	private ConnectedToBorder CTBTool;
 	private TerrainChangeListener terrainChangeListener;
 
-	
+	public boolean isSolidConnectedToBorder(int x, int y, int z) {
+		return this.CTBTool.isSolidConnectedToBorder(x, y, z);
+	}	
 }

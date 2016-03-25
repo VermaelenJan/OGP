@@ -15,10 +15,9 @@ import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
-//TODO: split AdvanceTime.
 //TODO: make internal functions nominal if necessary.
-//TODO: fix doc van Position.java en remove //code if alles werkt en doc in orde is
-//TODO: doc voor alle (aangepaste) methodes bekijken, @'s 
+//TODO: fix doc van ALLES en @'s
+//TODO: remove //code if doc in orde is
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
@@ -201,7 +200,9 @@ public class Unit {
 	
 	protected void terminate(){
 		this.isTerminated = true;
-		this.faction.checkTerminate();
+		if (this.faction != null) { // ( == if (!(unit didnt get in world yet)))
+			this.faction.checkTerminate();
+		}
 	}
 	
 	public boolean isTerminated(){
@@ -873,7 +874,7 @@ public class Unit {
 	 * 			with a chance of dt/10.
 	 * @throws IllegalAdvanceTimeException(dt)
 	 * 			The given dt is not a valid advanceTime duration.
-	 */ //TODO: doc aanpassen (na splitsen)
+	 */
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
 		if (! isValidAdvanceTime(dt)){
 			throw new IllegalAdvanceTimeException(dt);
@@ -924,7 +925,7 @@ public class Unit {
 		}
 		else if (isDefaultBehaviourEnabled()) {
 			if (ConstantsUtils.random.nextDouble() <= (float) dt/10) {
-				if (isSprinting()) { //TODO: er in laten of niet?
+				if (isSprinting()) {
 					stopSprinting();
 				}
 				else {
@@ -1195,10 +1196,10 @@ public class Unit {
 	@Model 
 	private void startMoving(){
 		if ( ! interruptRWPermission && isResting() && (canHaveRecoverdOneHp())){
-			stopResting(); //TODO
+			stopResting();
 		}
 		if (! interruptRWPermission) {
-			stopWorking(); //TODO
+			stopWorking();
 
 		}
 		if (!isAttacking()){
@@ -1334,7 +1335,6 @@ public class Unit {
 			stopResting();
 		}
 		
-		//TODO: check of de fix goed is en doc aanpassen?
 		if (positionObj.isAtMiddleOfCube() || !isMoving()) {
 			int[] currentCube = positionObj.getOccupiedCube();
 			double[] currentTarget = {	(double)(currentCube[0]+ dx + ConstantsUtils.CUBE_LENGTH/2), 
@@ -1488,7 +1488,7 @@ public class Unit {
 		}
 	}
 	
-	public void moveTo(int[] endTarget){
+	public void moveTo(int[] endTarget){ //TODO: exception if unreachable???
 
 		globalTarget = endTarget;
 				
@@ -1497,7 +1497,7 @@ public class Unit {
 		
 		if (!Arrays.equals(endTarget,currentCubeLoc)){
 			
-			queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 ); // TODO if 
+			queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 );
 						
 			
 			boolean flag = true;

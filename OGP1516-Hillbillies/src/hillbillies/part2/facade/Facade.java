@@ -227,7 +227,7 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException { //TODO: nakijken!
+	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
 		
 		Cube[][][] worldCubes = 
 			new Cube[terrainTypes.length][terrainTypes[0].length][terrainTypes[0][0].length];
@@ -271,7 +271,7 @@ public class Facade implements IFacade {
 		return cubeTypeToInt(world.getCubeType(x, y, z));
 	}
 	
-	private int cubeTypeToInt(hillbillies.model.CubeType cubeType) { //TODO: mag dit? haha
+	private int cubeTypeToInt(hillbillies.model.CubeType cubeType) {
 		switch (cubeType) {
 		case AIR:
 			return 0;
@@ -286,7 +286,7 @@ public class Facade implements IFacade {
 		}
 	}
 	
-	private hillbillies.model.CubeType intToCubeType(int i) { //TODO: mag dit? haha
+	private hillbillies.model.CubeType intToCubeType(int i) {
 		switch (i) {
 		case 1:
 			return hillbillies.model.CubeType.ROCK;
@@ -306,9 +306,8 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException { //TODO: in worldclass!!
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
+		return world.isSolidConnectedToBorder(x, y, z);
 	}
 
 	@Override
@@ -323,11 +322,12 @@ public class Facade implements IFacade {
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
 		unit.setWorld(world); //TODO: zeker nakijken (faction-kies-algoritme, ...)
+		//en iets van world.addUnit waarschijnlijk
 	}
 
 	@Override
 	public Set<Unit> getUnits(World world) throws ModelException {
-		return world.getAllUnits(); //TODO: zeker nakijken
+		return world.getAllUnits();
 	}
 
 	@Override
@@ -344,7 +344,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isAlive(Unit unit) throws ModelException {
-		return (! unit.isTerminated()); //TODO: of werken met hp?
+		return (! unit.isTerminated());
 	}
 
 	@Override
