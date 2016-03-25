@@ -7,6 +7,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -70,6 +71,60 @@ public class ConnectedToBorder {
 		return isSolid(index) && !notConnected[index];
 	}
 
+	/**
+	 * Make the cube at the given position solid instead of passable, and return
+	 * the list of coordinates that became connected to a border of the world
+	 * due to this change.
+	 * 
+	 * @note This operation possibly iterates over the whole world, so it could
+	 *       take some time.
+	 * 
+	 * @param x
+	 *            The x-coordinate of the cube to make solid
+	 * @param y
+	 *            The y-coordinate of the cube to make solid
+	 * @param z
+	 *            The z-coordinate of the cube to make solid
+	 * 
+	 * @return The list of cube coordinates (where each coordinate is an array
+	 *         {x, y, z}) that have become connected to the border by performing
+	 *         this change. If non-empty, this always includes the provided
+	 *         coordinate itself.
+	 */
+	public List<int[]> changePassableToSolid(int x, int y, int z) {
+		int index = getIndex(x, y, z);
+		if (isSolid(index)) {
+			return Collections.emptyList();
+		}
+		passable[index] = false;
+		List<Integer> coord = Arrays.asList(x, y, z);
+		// if the coordinate is at the border, or one of its solid neighbours is known to be connected, the coordinate becomes connected as well
+		// any adjacent non-connected neighbours now also become connected, and this repeats recursively
+		if (isBorder(coord) || getDirectlyAdjacentSolids(coord).stream().anyMatch(c -> isSolidConnectedToBorder(c.get(0), c.get(1), c.get(2)))) {
+			List<int[]> result = new ArrayList<>();
+			Set<List<Integer>> alreadyMadeConnected = new HashSet<>();
+			Queue<List<Integer>> stillToMakeConnected = new LinkedList<>();
+			stillToMakeConnected.add(coord);
+			while (!stillToMakeConnected.isEmpty()) {
+				List<Integer> coordToMakeConnected = stillToMakeConnected.poll();
+				if (alreadyMadeConnected.contains(coordToMakeConnected)) {
+					continue;
+				}
+				notConnected[getIndex(coordToMakeConnected)] = false;
+				alreadyMadeConnected.add(coordToMakeConnected);
+				result.add(new int[] { coordToMakeConnected.get(0), coordToMakeConnected.get(1), coordToMakeConnected.get(2) });
+				for (List<Integer> neighbour : getDirectlyAdjacentSolids(coordToMakeConnected)) {
+					if (!alreadyMadeConnected.contains(neighbour) && !isSolidConnectedToBorder(neighbour.get(0), neighbour.get(1), neighbour.get(2))) {
+						stillToMakeConnected.add(neighbour);
+					}
+				}
+			}
+			return result;
+		}
+		return Collections.emptyList();
+	}
+
+	
 	/**
 	 * Make the cube at the given position passable instead of solid, and return
 	 * the list of coordinates that are no longer connected to a border of the
@@ -223,7 +278,7 @@ public class ConnectedToBorder {
 			for (int y = 0; y < nbY; y++) {
 				for (int x = 0; x < nbX; x++) {
 					int index = getIndex(x, y, z);
-					result.append((isSolidConnectedToBorder(x, y, z) ? "@@" : (isSolid(index) ? ".." : "  ")));
+					result.append((isSolidConnectedToBorder(x, y, z) ? "@@" : (isSolid(index) ? "oo" : "..")));
 				}
 				result.append("\n");
 			}
