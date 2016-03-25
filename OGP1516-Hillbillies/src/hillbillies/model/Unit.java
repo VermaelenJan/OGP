@@ -112,8 +112,8 @@ public class Unit {
 		setStamina(getMaxHitpointsStamina());
 		setOrientation(Math.PI/2);
 		setWorld(world);
-		Faction newFaction = new Faction(world);
-		setFaction(newFaction);
+//		Faction newFaction = new Faction(world);
+//		setFaction(newFaction);
 		
 		positionObj = new Position(world);
 		positionObj.setLocation(location); //

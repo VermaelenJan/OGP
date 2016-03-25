@@ -29,7 +29,7 @@ class Position {
 	
 	@Raw @Model 
 	protected void setLocation(double[] location) throws IllegalPositionException {
-		if (!isValidLocationInWorld(location))
+		if (!isValidUnitPositionDouble(location))
 			throw new IllegalPositionException(location);	
 	this.xPos = location[0];
 	this.yPos = location[1];
