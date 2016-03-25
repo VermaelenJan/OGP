@@ -1499,44 +1499,52 @@ public class Unit {
 			
 			queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 ); // TODO if 
 						
-			while (!queue.containsKey(currentCube)){
+			
+			boolean flag = true;
+
+			while (!queue.containsKey(currentCube) && flag){
 				
 				HashMap<Cube,Integer> temp = new HashMap<Cube, Integer>();
-				
 				for (HashMap.Entry<Cube, Integer> cube : queue.entrySet()){
 					if (cube.getValue() == currentLvl){
 						temp.put(cube.getKey(), currentLvl);
-
 					}
 				}
+				
+				int prevQLength = queue.size();
 				for (HashMap.Entry<Cube, Integer> tempCube : temp.entrySet()){
 					search(tempCube.getKey().getCubePosition(),currentLvl);
 				}
+				int newQLength = queue.size();
 				currentLvl += 1;
-			}
-
-			Cube nextCube = null;
-
-			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-				if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
-					currentLvl = queue.get(cube);
-					nextCube = cube;
+				if (prevQLength == newQLength) {
+					flag = false;
 				}
 			}
-			
-			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-				if (nextCube != null && queue.containsKey(cube) && queue.get(cube) == currentLvl){
-					currentLvl = queue.get(cube);
-					nextCube = cube;
+			if (flag) {
+				Cube nextCube = null;
+
+				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+					if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
+						currentLvl = queue.get(cube);
+						nextCube = cube;
+					}
 				}
-			}	
-			
-			int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
-			int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
-			int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
-			moveToAdjacent(dx,dy,dz, true);	
-			queue = new HashMap<Cube, Integer>();
-			currentLvl = 0;
+				
+				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+					if (nextCube != null && queue.containsKey(cube) && queue.get(cube) == currentLvl){
+						currentLvl = queue.get(cube);
+						nextCube = cube;
+					}
+				}	
+				
+				int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
+				int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
+				int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
+				moveToAdjacent(dx,dy,dz, true);	
+				queue = new HashMap<Cube, Integer>();
+				currentLvl = 0;
+			}
 		}
 	}
 
