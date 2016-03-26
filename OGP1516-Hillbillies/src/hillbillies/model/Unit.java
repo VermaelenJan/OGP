@@ -13,6 +13,7 @@ import hillbillies.model.exceptions.IllegalAttackPosititonException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.model.exceptions.IllegalValueException;
+import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 //TODO: make internal functions nominal if necessary.
@@ -1730,6 +1731,16 @@ public class Unit {
 	 * 			| startWorking()
 	 */			
 	public void work(){
+		
+		//int nbTasks = 5;
+		//Object object;
+		//Cube cube;
+	
+		//switch(nbTasks){
+				
+		//case 1 : if (positionObj.getOccupiedCube() == )
+				
+		//}
 		startWorking();		
 	}
 	
@@ -1848,21 +1859,25 @@ public class Unit {
 	 * 			| ! this.isValidAttackPosition(other.getOccupiedCube())
 	 * 			
 	 */
-	public void attack(Unit other) throws IllegalAttackPosititonException {
+	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
 		if (this != other) {
-			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
-				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
-			}
-			
-			if (this.isResting()) {
-				this.stopResting();	
-			}
-			
-			stopWorking();
-			
-			this.setOrientationInFight(other);
+				if (this.getFaction() == other.getFaction()){
+					throw new IllegalFightFactionException(this.getFaction());
+				}
+				if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
+					throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
+				}
 				
-			this.setAttackTime(1);
+				if (this.isResting()) {
+					this.stopResting();	
+				}
+				
+				stopWorking();
+				
+				this.setOrientationInFight(other);
+					
+				this.setAttackTime(1);
+			
 		}
 	}
 
@@ -1988,6 +2003,16 @@ public class Unit {
 
 				}
 			}			
+		}
+	}
+	
+	private void attackPotentialEnemy(){
+		for (Unit unit : world.getAllUnits()){
+			for (Cube cube : (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()))){
+				if (unit.getOccupiedCube() == cube.getCubePosition()){
+					try {attack(unit);} catch(IllegalFightFactionException e){}
+				}
+			}
 		}
 	}
 	
@@ -2360,6 +2385,7 @@ public class Unit {
 			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
 			case 1: work(); break;						//Exception will never be thrown.
 			case 2: rest(); break;
+			case 3: attackPotentialEnemy(); break;
 		}
 	}
 	

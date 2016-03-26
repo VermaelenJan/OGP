@@ -11,6 +11,7 @@ import hillbillies.model.World;
 import hillbillies.model.exceptions.IllegalAdjacentPositionException;
 import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
+import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.part2.listener.TerrainChangeListener;
@@ -193,6 +194,8 @@ public class Facade implements IFacade {
 			defender.defend(attacker);
 		} catch (IllegalAttackPosititonException e) {
 			throw new ModelException("Illegal AttackPosition", e);
+		} catch (IllegalFightFactionException e){
+			throw new ModelException("Illegal AttackFaction", e);
 		}
 	}
 
