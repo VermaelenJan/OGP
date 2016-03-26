@@ -880,6 +880,8 @@ public class Unit {
 			throw new IllegalAdvanceTimeException(dt);
 		}
 		
+		advanceTimeFalling(dt);
+		
 		if (! isResting()) {
 			advanceTimeNotResting(dt);
 		}
@@ -904,6 +906,45 @@ public class Unit {
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
 		}
+	}
+	
+	private void advanceTimeFalling(double dt){
+		int prevZPos = positionObj.getOccupiedCube()[2];
+		if ((!fallingInitiated) && (!positionObj.isValidUnitPositionDouble(positionObj.getLocation()))){
+			fallingInitiated = true;
+			positionObj.fall(dt,positionObj.getCubeBelow());
+		}
+		
+		if (fallingInitiated){
+			
+			// TODO resume pathing,defaultbehaviour,.. after 
+			stopMoving();
+			stopResting();
+			stopSprinting();
+			stopWorking();
+			stopDefaultBehaviour();
+			
+			if (!positionObj.isValidZPosition()){
+				positionObj.fall(dt,positionObj.getCubeBelow());
+				
+				if (positionObj.getOccupiedCube()[2] != prevZPos){ // update hitpoints
+					int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
+					setHitpoints(getHitpoints()-10*nbZLvls);
+				}
+				
+			}
+			if (positionObj.isValidZPosition()) {
+				if (!positionObj.isAtMiddleZOfCube()){
+					positionObj.fall(dt,positionObj.getOccupiedCube());
+				}
+				else{
+					fallingInitiated = false;
+					// TODO resume pathing, defaultbehaviour,.. after
+				}
+			}
+		}
+
+		
 	}
 
 	private void advanceTimeMovingNotArrived(double dt) {
@@ -1559,6 +1600,12 @@ public class Unit {
 	 * Variable registering the global target to move to.
 	 */
 	private int[] globalTarget = null;
+	
+
+	
+	// FALL
+	
+	private boolean fallingInitiated;
 
 	// WORKING
 	

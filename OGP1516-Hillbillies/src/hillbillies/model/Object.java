@@ -59,7 +59,7 @@ public abstract class Object {
 	
 	public void advanceTime(double dt){
 		if (!positionObj.isValidZPosition()){
-			fall(dt,getCubeBelow());
+			positionObj.fall(dt,positionObj.getCubeBelow());
 		}
 		
 		if (positionObj.isValidZPosition() && !positionObj.isAtMiddleZOfCube()){
@@ -67,28 +67,10 @@ public abstract class Object {
 		}
 	}
 	
-	private int[] getCubeBelow(){
-		int [] occupiedCube = positionObj.getOccupiedCube();
-		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
-		return cubeBelow;
-	}
-	
-	
 	private void fall(double dt) {
-		fall(dt, positionObj.getOccupiedCube());
+		positionObj.fall(dt, positionObj.getOccupiedCube());
 		
 	}
 	
-	private void fall(double dt, int[] position){
-		double[] currPos = positionObj.getLocation();
-		double[] nextPos = {currPos[0],currPos[1],currPos[2]-dt*ConstantsUtils.FALLING_SPEED};
-		
-		if (nextPos[2] >= (position[2]+0.5)){
-			positionObj.setFreeLocation(nextPos);
-		}
-		else{
-			double [] currMiddleCube = {currPos[0],currPos[1],position[2]+0.5};
-			positionObj.setFreeLocation(currMiddleCube);
-		}
-	}
+
 }

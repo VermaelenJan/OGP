@@ -183,4 +183,26 @@ class Position {
 			return getRandomPosition();
 		}
 	}
+	
+	@Model
+	protected int[] getCubeBelow(){
+		int [] occupiedCube = getOccupiedCube();
+		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
+		return cubeBelow;
+	}
+	
+	protected void fall(double dt, int[] position){
+		double[] currPos = getLocation();
+		double[] nextPos = {currPos[0],currPos[1],currPos[2]-dt*ConstantsUtils.FALLING_SPEED};
+		
+		
+		
+		if (nextPos[2] >= (position[2]+0.5)){
+			setFreeLocation(nextPos);
+		}
+		else{
+			double [] currMiddleCube = {currPos[0],currPos[1],position[2]+0.5};
+			setFreeLocation(currMiddleCube);
+		}
+	}
 }
