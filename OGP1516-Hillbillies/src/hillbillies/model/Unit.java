@@ -886,7 +886,11 @@ public class Unit {
 			advanceTimeNotResting(dt);
 		}
 
-		if (isAttacking()){
+		if (!positionObj.isValidUnitPositionDouble(positionObj.getLocation()) || !positionObj.isAtMiddleZOfCube()){
+			advanceTimeFalling(dt);
+		}
+		
+		else if (isAttacking()){
 			advanceTimeAttacking(dt);
 		}
 		else if (isResting() && positionObj.isAtMiddleOfCube()){
@@ -909,42 +913,18 @@ public class Unit {
 	}
 	
 	private void advanceTimeFalling(double dt){
+		
 		int prevZPos = positionObj.getOccupiedCube()[2];
-		if ((!fallingInitiated) && (!positionObj.isValidUnitPositionDouble(positionObj.getLocation()))){
-			fallingInitiated = true;
-			positionObj.fall(dt,positionObj.getCubeBelow());
-		}
-		
-		if (fallingInitiated){
-			
-			// TODO resume pathing,defaultbehaviour,.. after 
-			stopMoving();
-			stopResting();
-			stopSprinting();
-			stopWorking();
-			stopDefaultBehaviour();
-			
-			if (!positionObj.isValidZPosition()){
-				positionObj.fall(dt,positionObj.getCubeBelow());
-				
-				if (positionObj.getOccupiedCube()[2] != prevZPos){ // update hitpoints
-					int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
-					setHitpoints(getHitpoints()-10*nbZLvls);
-				}
-				
-			}
-			if (positionObj.isValidZPosition()) {
-				if (!positionObj.isAtMiddleZOfCube()){
-					positionObj.fall(dt,positionObj.getOccupiedCube());
-				}
-				else{
-					fallingInitiated = false;
-					// TODO resume pathing, defaultbehaviour,.. after
-				}
-			}
-		}
 
-		
+		if (!positionObj.isValidZPosition()){
+			positionObj.fall(dt,positionObj.getCubeBelow());
+			
+			if (positionObj.getOccupiedCube()[2] != prevZPos){ // update hitpoints
+				int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
+				setHitpoints(getHitpoints()-10*nbZLvls);
+			}
+			
+		}
 	}
 
 	private void advanceTimeMovingNotArrived(double dt) {
