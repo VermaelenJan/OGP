@@ -111,6 +111,7 @@ public class Unit {
 		setStamina(getMaxHitpointsStamina());
 		setOrientation(Math.PI/2);
 		setWorld(world);
+		setExperience(0);
 //		Faction newFaction = new Faction(world);
 //		setFaction(newFaction);
 		
@@ -833,6 +834,56 @@ public class Unit {
 	 */
 	private double orientation = 0;
 	private boolean interruptRWPermission;
+	
+	
+	// EXPERIENCE POINTS
+	
+	// TODO experience of work tasks
+	private int getExperience(){
+		return this.experience;
+	}
+	
+	private void setExperience(int experience){
+		this.experience = experience;
+	}
+	
+	private void increaseRandomAttributeBy1(){
+		switch (ConstantsUtils.random.nextInt(3)) {
+		case 0: setStrength(getStrength() + 1);
+		case 1: setAgility(getAgility()+ 1); break;						
+		case 2: setToughness(getToughness()+ 1); break;}
+	}
+	
+	private void increaseRandomAttributes(int experience){
+		int tempExp = getMod10Exp() + experience;
+		int nbTimes10Exp = (tempExp) / 10;
+		
+		setMod10Exp(tempExp % 10);
+		
+		int count = 0;
+		while (count < nbTimes10Exp){
+			increaseRandomAttributeBy1();
+			count++;
+		}
+		
+	}
+	
+	private void updateExperience(int experience){
+		setExperience(getExperience() + experience);
+		increaseRandomAttributes(experience);
+	}
+	
+	// VARIABLES REGISTERING THE EXPERIENCE OF THE UNIT
+	private int mod10Exp;
+	
+	private int getMod10Exp(){
+		return this.mod10Exp;
+	}
+	private void setMod10Exp(int mod10Exp){
+		this.mod10Exp = mod10Exp;
+	}
+	
+	private int experience;
 
 	// ADVANCE TIME
 	
@@ -962,6 +1013,9 @@ public class Unit {
 		try {
 			positionObj.setLocation(target);
 		} catch (IllegalPositionException e) {} //Exception will never be thrown.
+		
+		updateExperience(1);
+
 		
 		if (!(globalTarget == null) &&
 				!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
@@ -1834,6 +1888,9 @@ public class Unit {
 			if (ConstantsUtils.getPossibilitySucces(possibilityDodge)){
 				this.positionObj.setRandomDodgedLocation();
 				this.setOrientationInFight(other);
+				
+				updateExperience(20);
+			
 
 			}
 			
@@ -1841,7 +1898,10 @@ public class Unit {
 				double possibilityBlock = (double)(0.25*(((double) this.getStrength() + (double) this.getAgility())/
 						((double) ((double)other.getStrength()+(double) other.getAgility()))));
 				
-				if ( ! ConstantsUtils.getPossibilitySucces(possibilityBlock)){
+				if (ConstantsUtils.getPossibilitySucces(possibilityBlock)){
+					updateExperience(20);
+				}
+				else {
 					double newHitPoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
 					if (newHitPoints <= 0) {
 						this.setHitpoints(0);
@@ -1849,6 +1909,8 @@ public class Unit {
 					else {
 						this.setHitpoints(newHitPoints);
 					}
+					other.updateExperience(20);
+
 				}
 			}			
 		}
