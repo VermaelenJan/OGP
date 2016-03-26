@@ -67,7 +67,7 @@ class Position {
 	protected boolean isValidUnitPositionDouble(double[] location){ //TODO: gebruik volgende methode hierin
 		if (isInBoundariesDouble(location) && 
 				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()){
-																	//TODO: overloaden? (voor int[] locaiton)
+																	//TODO: overloaden? (voor int[] location)
 			int cube[] = {(int)location[0],(int)location[1],(int)location[2]};
 			if (isValidZCube(cube)) {
 				return true;
@@ -194,8 +194,6 @@ class Position {
 	protected void fall(double dt, int[] position){
 		double[] currPos = getLocation();
 		double[] nextPos = {currPos[0],currPos[1],currPos[2]-dt*ConstantsUtils.FALLING_SPEED};
-		
-		
 		
 		if (nextPos[2] >= (position[2]+0.5)){
 			setFreeLocation(nextPos);

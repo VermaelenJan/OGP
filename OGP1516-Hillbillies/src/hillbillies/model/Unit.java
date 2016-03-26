@@ -839,7 +839,7 @@ public class Unit {
 	// EXPERIENCE POINTS
 	
 	// TODO experience of work tasks
-	private int getExperience(){
+	public int getExperience(){
 		return this.experience;
 	}
 	
@@ -927,24 +927,29 @@ public class Unit {
 	 * 			The given dt is not a valid advanceTime duration.
 	 */
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
+		if (this.hitpoints <= 0) {
+			setHitpoints(0);
+			terminate();
+		}
+		
 		if (! isValidAdvanceTime(dt)){
 			throw new IllegalAdvanceTimeException(dt);
 		}
-		
-		advanceTimeFalling(dt);
 		
 		if (! isResting()) {
 			advanceTimeNotResting(dt);
 		}
 
-		if (!positionObj.isValidUnitPositionDouble(positionObj.getLocation()) || !positionObj.isAtMiddleZOfCube()){
+		if (isFalling || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
+			this.isFalling = true; //TODO: maak deftig
+			stopSprinting();
 			advanceTimeFalling(dt);
 		}
 		
 		else if (isAttacking()){
 			advanceTimeAttacking(dt);
 		}
-		else if (isResting() && positionObj.isAtMiddleOfCube()){
+		else if (isResting() && positionObj.isAtMiddleZOfCube()){
 			advanceTimeResting(dt);
 		}		
 		else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleOfCube()){
@@ -974,7 +979,19 @@ public class Unit {
 				int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
 				setHitpoints(getHitpoints()-10*nbZLvls);
 			}
-			
+		}
+		
+		else {
+			if (!positionObj.isAtMiddleZOfCube()){
+				positionObj.fall(dt,positionObj.getOccupiedCube());
+			}
+			else {
+				this.isFalling = false;
+				if (isMoving()) {
+					stopMoving();
+					moveTo(globalTarget);
+				}
+			}
 		}
 	}
 
@@ -1575,9 +1592,9 @@ public class Unit {
 			queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 );
 						
 			
-			boolean flag = true;
+			boolean expandingQueue = true;
 
-			while (!queue.containsKey(currentCube) && flag){
+			while (!queue.containsKey(currentCube) && expandingQueue){
 				
 				HashMap<Cube,Integer> temp = new HashMap<Cube, Integer>();
 				for (HashMap.Entry<Cube, Integer> cube : queue.entrySet()){
@@ -1593,26 +1610,89 @@ public class Unit {
 				int newQLength = queue.size();
 				currentLvl += 1;
 				if (prevQLength == newQLength) {
-					flag = false;
+					expandingQueue = false;
 				}
 			}
-			if (flag) {
+			if (expandingQueue) {
 				Cube nextCube = null;
+//letterlijk minder efficient hahahahahahaha
+//				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+//					if (queue.containsKey(cube) && queue.get(cube) < currentLvl &&
+//						Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])
+//							&& Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])
+//								&& Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
+//						currentLvl = queue.get(cube);
+//						nextCube = cube;
+//					}
+//				}
+//				if (nextCube == null){
+//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl &&
+//								Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])
+//									&& Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
+//							currentLvl = queue.get(cube);
+//							nextCube = cube;
+//						}
+//					}
+//				}
+//				if (nextCube == null){
+//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
+//							Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])
+//								&& Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])) {
+//							currentLvl = queue.get(cube);
+//							nextCube = cube;
+//						}
+//					}
+//				}
+//				if (nextCube == null){
+//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
+//							Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])
+//								&& Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
+//							currentLvl = queue.get(cube);
+//							nextCube = cube;
+//						}
+//					}
+//				}
+//				if (nextCube == null){
+//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
+//							Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])) {
+//							currentLvl = queue.get(cube);
+//							nextCube = cube;
+//						}
+//					}
+//				}
+//				if (nextCube == null){
+//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
+//							Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])) {
+//							currentLvl = queue.get(cube);
+//							nextCube = cube;
+//						}
+//					}
+//				}
+//				if (nextCube == null){
+//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
+//							Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
+//							currentLvl = queue.get(cube);
+//							nextCube = cube;
+//						}
+//					}
+//				}
 
-				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-					if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
-						currentLvl = queue.get(cube);
-						nextCube = cube;
+				if (nextCube == null) {
+					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+						if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
+							currentLvl = queue.get(cube);
+							nextCube = cube;
+						}
 					}
 				}
-				
-				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-					if (nextCube != null && queue.containsKey(cube) && queue.get(cube) == currentLvl){
-						currentLvl = queue.get(cube);
-						nextCube = cube;
-					}
-				}	
-				
+
+
 				int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
 				int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
 				int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
@@ -1637,9 +1717,9 @@ public class Unit {
 	
 
 	
-	// FALL
+	// FALLING
 	
-	private boolean fallingInitiated;
+	private boolean isFalling; //TODO: setter en getter maken en gebruiken!
 
 	// WORKING
 	
@@ -1903,12 +1983,7 @@ public class Unit {
 				}
 				else {
 					double newHitPoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
-					if (newHitPoints <= 0) {
-						this.setHitpoints(0);
-					}
-					else {
-						this.setHitpoints(newHitPoints);
-					}
+					this.setHitpoints(newHitPoints);
 					other.updateExperience(20);
 
 				}

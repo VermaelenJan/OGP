@@ -231,35 +231,18 @@ public class Facade implements IFacade {
 		
 		Cube[][][] worldCubes = 
 			new Cube[terrainTypes.length][terrainTypes[0].length][terrainTypes[0][0].length];
-//		for (int xIndex = 0; xIndex<terrainTypes.length; xIndex++) {
-//			for (int yIndex = 0; yIndex<terrainTypes[0].length; yIndex++) {
-//				for (int zIndex = 0; zIndex<terrainTypes[0][0].length; zIndex++) {
-//					int[] position = {xIndex, yIndex, zIndex};
-//					hillbillies.model.CubeType cubeType = intToCubeType(terrainTypes[xIndex][yIndex][zIndex]);
-//					Cube cube = new Cube(position, cubeType);
-//					worldCubes[xIndex][yIndex][zIndex] = cube;
-//
-//				}
-//			}	
-//		}
 		for (int xIndex = 0; xIndex<terrainTypes.length; xIndex++) {
 			for (int yIndex = 0; yIndex<terrainTypes[0].length; yIndex++) {
 				for (int zIndex = 0; zIndex<terrainTypes[0][0].length; zIndex++) {
 					int[] position = {xIndex, yIndex, zIndex};
-					hillbillies.model.CubeType cubeType;
-					if (zIndex <10) {
-						cubeType = hillbillies.model.CubeType.ROCK;
-					}
-					else {
-						cubeType = hillbillies.model.CubeType.AIR;
-					}
-
+					hillbillies.model.CubeType cubeType = intToCubeType(terrainTypes[xIndex][yIndex][zIndex]);
 					Cube cube = new Cube(position, cubeType);
 					worldCubes[xIndex][yIndex][zIndex] = cube;
 
 				}
 			}	
 		}
+
 		World world = new World(worldCubes, modelListener);
 		return world;
 		}
@@ -367,8 +350,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getExperiencePoints(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return unit.getExperience();
 	}
 
 	@Override

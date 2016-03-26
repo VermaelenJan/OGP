@@ -63,14 +63,8 @@ public abstract class Object {
 		}
 		
 		if (positionObj.isValidZPosition() && !positionObj.isAtMiddleZOfCube()){
-			fall(dt);
+			positionObj.fall(dt, positionObj.getOccupiedCube());
 		}
 	}
 	
-	private void fall(double dt) {
-		positionObj.fall(dt, positionObj.getOccupiedCube());
-		
-	}
-	
-
 }

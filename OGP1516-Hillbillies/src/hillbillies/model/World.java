@@ -87,15 +87,6 @@ public class World {
 	
 	
 	public void advanceTime(double dt){
-		if (getTotalNbUnits() == 80){
-			for (int xIndex = 0; xIndex<getNbCubesX(); xIndex++) {
-				for (int yIndex = 0; yIndex<getNbCubesY(); yIndex++) {
-					for (int zIndex = 0; zIndex<getNbCubesZ(); zIndex++) {
-						caveIn(xIndex, yIndex, zIndex);
-					}
-				}
-			}	
-		}
 		
 		for (Unit unit : getAllUnits()) {
 			unit.advanceTime(dt);
