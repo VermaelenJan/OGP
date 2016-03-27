@@ -118,19 +118,8 @@ class Position {
 	
 	protected List<Cube> getNeighbouringCubesIncludingOwn(int[] cube) {
 		List<Cube> result = new ArrayList<Cube>();
-		int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
-		int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};
-		int [] zList = {cube[2]-1,cube[2],cube[2]+ 1};
-		for (int x : xList){
-			for (int y : yList){
-				for (int z : zList){
-					int[] locCube = {x, y, z};
-					if (isInBoundariesInt(locCube)){
-						result.add(world.getCube(x, y, z));
-					}
-				}
-			}
-		}
+		result.addAll(getNeighbouringCubes(cube));
+		result.add(world.getCube(cube[0], cube[1], cube[2]));
 		return result;
 	}
 	

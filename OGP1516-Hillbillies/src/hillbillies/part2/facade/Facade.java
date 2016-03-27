@@ -336,14 +336,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isCarryingLog(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isCarryingLog();
 	}
 
 	@Override
 	public boolean isCarryingBoulder(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isCarryingBoulder();
 	}
 
 	@Override
@@ -358,8 +356,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		int[] target = {x, y, z};
+		unit.workAt(target);
 	}
 
 	@Override
@@ -384,7 +382,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public Set<Boulder> getBoulders(World world) throws ModelException {
-		return world.getBoulders();
+		return world.getBouldersWorld();
 	}
 
 	@Override
@@ -394,7 +392,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public Set<Log> getLogs(World world) throws ModelException {
-		return world.getLogs();
+		return world.getLogsWorld();
 	}
 
 }

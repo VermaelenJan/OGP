@@ -123,18 +123,38 @@ public class World {
 	
 	Set<Boulder> boulders = new HashSet<Boulder>();
 	
-	public Set<Boulder> getBoulders(){
+	protected Set<Boulder> getBoulders(){
 		return boulders;
+	}
+	
+	public Set<Boulder> getBouldersWorld() {
+		Set<Boulder> bouldersInWorld = new HashSet<Boulder>();
+		for (Boulder boulder : getBoulders()) {
+			if (!boulder.isTerminated()){
+				bouldersInWorld.add(boulder);
+			}
+		}
+		return bouldersInWorld;
 	}
 	
 	Set<Log> logs = new HashSet<Log>();
 	
-	public Set<Log> getLogs(){
+	protected Set<Log> getLogs(){
 		return logs;
 	}
 	
+	public Set<Log> getLogsWorld() {
+		Set<Log> logsInWorld = new HashSet<Log>();
+		for (Log log : getLogs()) {
+			if (!log.isTerminated()){
+				logsInWorld.add(log);
+			}
+		}
+		return logsInWorld;
+	}
+	
 	protected Boulder getBoulderAtCube(int[] location){
-		for (Boulder boulder : getBoulders()){
+		for (Boulder boulder : getBouldersWorld()){
 			if (boulder.getOccupiedCube() == location){
 				return boulder;
 			}
@@ -143,7 +163,7 @@ public class World {
 	}
 	
 	protected Log getLogAtCube(int[] location){
-		for (Log log : getLogs()){
+		for (Log log : getLogsWorld()){
 			if (log.getOccupiedCube() == location){
 				return log;
 			}

@@ -12,10 +12,10 @@ import be.kuleuven.cs.som.annotate.*;
 public abstract class Object {
 	//Location
 
-	public World world;
-	public Position positionObj;
+	protected World world;
+	protected Position positionObj;
 
-	public Object(World world, double[] location){
+	protected Object(World world, double[] location){
 		positionObj = new Position(world);
 		positionObj.setFreeLocation(location);
 		this.weight = (ConstantsUtils.random.nextInt(ConstantsUtils.MAX_OBJECT_WEIGHT + 1)+10);
@@ -39,7 +39,7 @@ public abstract class Object {
 	 * Return the weight of this object.
 	 */
 	@Basic @Raw @Immutable
-	public int getWeight() {
+	protected int getWeight() {
 		return this.weight;
 	}
 	
@@ -51,7 +51,7 @@ public abstract class Object {
 	 * @return The weight will be between 10 and 50.
 	*/
 	@Raw
-	public boolean canHaveAsWeight(int weight) {
+	protected boolean canHaveAsWeight(int weight) {
 		return ((weight >= ConstantsUtils.MIN_OBJECT_WEIGHT) 
 				&& (weight <= ConstantsUtils.MAX_OBJECT_WEIGHT));
 	}
@@ -62,7 +62,7 @@ public abstract class Object {
 	 */
 	private final int weight;
 	
-	public void advanceTime(double dt){
+	protected void advanceTime(double dt){
 		if (!positionObj.isValidZPosition()){
 			positionObj.fall(dt,positionObj.getCubeBelow());
 		}
@@ -72,9 +72,17 @@ public abstract class Object {
 		}
 	}
 	
-	public boolean isTerminated;
-	public void terminate(){
+	private boolean isTerminated;
+	
+	protected boolean isTerminated() {
+		return this.isTerminated;
+	}
+	
+	protected void terminate(){
 		this.isTerminated = true;
 	}
 	
+	protected void revive() {
+		this.isTerminated = false;
+	}
 }

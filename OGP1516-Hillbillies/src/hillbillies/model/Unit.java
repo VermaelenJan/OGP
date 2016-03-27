@@ -3,8 +3,6 @@ package hillbillies.model;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import javax.swing.JList.DropLocation;
-
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
@@ -715,7 +713,12 @@ public class Unit {
 	 */
 	@Raw
 	public int getMaxHitpointsStamina() {
-		 return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
+		if (this.carriedObject == null) {
+			return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
+		}
+		else {
+			 return (int) Math.ceil((((double) (getWeight()-this.carriedObject.getWeight()))*((double) getToughness()))/50);
+		}
 	}
 	
 	/**
@@ -1736,14 +1739,17 @@ public class Unit {
 	 * 			| startWorking()
 	 */			
 	public void workAt(int[] target){
-		
+		//TODO: exception/... if not neighbouring??
 		Cube targetCube = world.getCube(target[0],target[1],target[2]);
 		startWorking();	
 		
-		// first move to target, than labour?
+		// first move to target, then labour?
+		//			gaat zo niet werken, zonder dt gaat moveTo niets gedaan hebben
+		//(maar enkel moveTo als het workshop ofzo is? want als neighbouring een rock is moet ge er ni naartoe?)
+		// alst t ni gaat zal ik er straks of morgen wel naar zien ze :p
 		moveTo(target);
 
-		if ( isCarryingBoulder || isCarryingLog){
+		if (this.carriedObject != null){
 			dropObject();
 			updateExperience(10);
 		}
@@ -1777,14 +1783,15 @@ public class Unit {
 
 	}
 	
-	public boolean isCarryingBoulder; 
-	protected void setCarryingBoulder(boolean flag){
-		isCarryingBoulder = flag;
+
+	private Object carriedObject;
+	
+	public boolean isCarryingLog() {
+		return (this.carriedObject instanceof Log);
 	}
 	
-	public boolean isCarryingLog;
-	protected void setCarryingLog(boolean flag){
-		isCarryingLog = flag;
+	public boolean isCarryingBoulder() {
+		return (this.carriedObject instanceof Boulder);
 	}
 	
 	protected void improveEquipment(Boulder boulder, Log log){
@@ -1801,11 +1808,15 @@ public class Unit {
 	// EEN BOULDER DROPPEN MET HETZELFDE GEWICHT,MAAR DIT IS DAN NIET MET TERMINATE EN UN-TERMINATE MAKEN OFWEL? HEB 
 	// NU TERMINATE GEBRUIKT REEDS VOOR HET CONSUMEN VAN HET OBJECT HIERBOVEN.
 	protected void pickUpObject(Object object){
-		// TODO write function + increase weight
+		this.carriedObject = object;
+		object.terminate();
+		this.weight = (getWeight()+object.getWeight()); //TODO: maak iets van "setFreeWeight()"
 	}
 	
 	protected void dropObject(){
-		// TODO write function + decrease weight
+		this.weight = (getWeight()-this.carriedObject.getWeight()); //TODO: maak iets van "setFreeWeight()"
+		this.carriedObject.revive();
+		this.carriedObject = null;
 	}
 	/**
 	 * The unit starts working.
@@ -1924,22 +1935,23 @@ public class Unit {
 	 */
 	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
 		if (this != other) {
-				if (this.getFaction() == other.getFaction()){
-					throw new IllegalFightFactionException(this.getFaction());
-				}
-				if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
-					throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
-				}
+			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
+				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
+			}	
+			
+			if (this.getFaction() == other.getFaction()){
+				throw new IllegalFightFactionException(this.getFaction());
+			}
 				
-				if (this.isResting()) {
-					this.stopResting();	
-				}
+			if (this.isResting()) {
+				this.stopResting();	
+			}
 				
-				stopWorking();
+			stopWorking();
+			
+			this.setOrientationInFight(other);
 				
-				this.setOrientationInFight(other);
-					
-				this.setAttackTime(1);
+			this.setAttackTime(1);
 			
 		}
 	}
@@ -2070,10 +2082,10 @@ public class Unit {
 	}
 	
 	private void attackPotentialEnemy(){
-		for (Unit unit : world.getAllUnits()){
+		for (Unit other : world.getAllUnits()){
 			for (Cube cube : (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()))){
-				if (unit.getOccupiedCube() == cube.getCubePosition()){
-					try {attack(unit);} catch(IllegalFightFactionException e){}
+				if (other.getOccupiedCube() == cube.getCubePosition() && other != this){
+					try {attack(other);} catch(IllegalFightFactionException e){}
 				}
 			}
 		}
@@ -2444,7 +2456,7 @@ public class Unit {
 	 */
 	@Model
 	private void newDefaultBehaviour(){
-		switch (ConstantsUtils.random.nextInt(3)) {
+		switch (ConstantsUtils.random.nextInt(4)) {
 			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
 			case 1: work(); break;						//Exception will never be thrown.
 			case 2: rest(); break;
