@@ -2,6 +2,7 @@ package hillbillies.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.PrimitiveIterator.OfDouble;
 
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
@@ -13,6 +14,7 @@ import hillbillies.model.exceptions.IllegalAttackPosititonException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.model.exceptions.IllegalValueException;
+import hillbillies.model.exceptions.IllegalWorkPositionException;
 import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
@@ -435,6 +437,23 @@ public class Unit {
 		else{
 			this.weight = (getStrength()+getAgility())/2;
 		}
+	}
+	
+
+	
+	private void setFreeWeight(int weight){
+		
+				
+		if (weight >= (getStrength()+getAgility())/2){
+			if (weight < ConstantsUtils.MIN_VAL) 
+				this.weight = ConstantsUtils.MIN_VAL;
+			else if (weight >= ConstantsUtils.MIN_VAL){
+				this.weight = weight;
+			}
+		}
+		else{
+			this.weight = (getStrength()+getAgility())/2;
+		} 
 	}
 	
 	/**
@@ -1055,6 +1074,9 @@ public class Unit {
 
 	private void advanceTimeWorking(double dt) {
 		setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
+		
+		
+		
 		if (getTimeRemainderToWork() <= 0){
 			setTimeRemainderToWork(0);
 			stopWorking();
@@ -1738,8 +1760,12 @@ public class Unit {
 	 * @effect The unit starts working.
 	 * 			| startWorking()
 	 */			
-	public void workAt(int[] target){
-		//TODO: exception/... if not neighbouring??
+	public void workAt(int[] target) throws IllegalWorkPositionException{
+
+		
+		if (!positionObj.isNeighBouringCube(target)){
+			throw new IllegalWorkPositionException(target);
+		}
 		Cube targetCube = world.getCube(target[0],target[1],target[2]);
 		startWorking();	
 		
@@ -1747,9 +1773,11 @@ public class Unit {
 		//			gaat zo niet werken, zonder dt gaat moveTo niets gedaan hebben
 		//(maar enkel moveTo als het workshop ofzo is? want als neighbouring een rock is moet ge er ni naartoe?)
 		// alst t ni gaat zal ik er straks of morgen wel naar zien ze :p
-		moveTo(target);
 
 		if (this.carriedObject != null){
+			
+			//  TODO walk to adjacant cube
+			
 			dropObject();
 			updateExperience(10);
 		}
@@ -1757,6 +1785,9 @@ public class Unit {
 		
 		else if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(target) != null)
 				&& (world.getLogAtCube(target) != null) ){
+			
+			// TODO walk to adjacant cube
+			
 			Boulder currBoulder = world.getBoulderAtCube(target);
 			Log currLog = world.getLogAtCube(target); // could be other boulder/log but doesnt matter?
 			improveEquipment(currBoulder,currLog);
@@ -1777,6 +1808,7 @@ public class Unit {
 		
 		else if ((world.getCubeType(target[0],target[1],target[2]) == CubeType.WOOD)
 			  || (world.getCubeType(target[0],target[1],target[2]) == CubeType.ROCK)){
+			
 			world.caveIn(target[0], target[1], target[2]);	
 			updateExperience(10);
 		}
@@ -1810,14 +1842,18 @@ public class Unit {
 	protected void pickUpObject(Object object){
 		this.carriedObject = object;
 		object.terminate();
-		this.weight = (getWeight()+object.getWeight()); //TODO: maak iets van "setFreeWeight()"
+		setFreeWeight(getWeight()+object.getWeight());
+
 	}
 	
 	protected void dropObject(){
-		this.weight = (getWeight()-this.carriedObject.getWeight()); //TODO: maak iets van "setFreeWeight()"
+		setFreeWeight(getWeight()-this.carriedObject.getWeight());
+
 		this.carriedObject.revive();
 		this.carriedObject = null;
 	}
+	
+
 	/**
 	 * The unit starts working.
 	 * 

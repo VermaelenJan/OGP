@@ -14,6 +14,7 @@ import hillbillies.model.exceptions.IllegalAttackPosititonException;
 import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
+import hillbillies.model.exceptions.IllegalWorkPositionException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
@@ -357,8 +358,10 @@ public class Facade implements IFacade {
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
 		int[] target = {x, y, z};
-		unit.workAt(target);
+		try {unit.workAt(target);} catch (IllegalWorkPositionException e) {
+				throw new ModelException("Illegal Work Position", e);}
 	}
+	
 
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -121,6 +123,11 @@ class Position {
 		result.addAll(getNeighbouringCubes(cube));
 		result.add(world.getCube(cube[0], cube[1], cube[2]));
 		return result;
+	}
+	
+	protected boolean isNeighBouringCube(int[] cubePos){
+		
+		return (getNeighbouringCubesIncludingOwn(getOccupiedCube()).contains(world.getCube(cubePos[0], cubePos[1], cubePos[2])));
 	}
 	
 	@Basic @Raw
