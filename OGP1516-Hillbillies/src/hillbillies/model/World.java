@@ -99,7 +99,7 @@ public class World {
 		}
 	}
 	
-	private void caveIn(int x,int y,int z){
+	protected void caveIn(int x,int y,int z){
 		
 		CubeType cubeType = getCubeType(x, y, z);
 		setCubeType(x, y, z, CubeType.AIR);
@@ -132,6 +132,25 @@ public class World {
 	public Set<Log> getLogs(){
 		return logs;
 	}
+	
+	protected Boulder getBoulderAtCube(int[] location){
+		for (Boulder boulder : getBoulders()){
+			if (boulder.getOccupiedCube() == location){
+				return boulder;
+			}
+		}
+		return null;  // TODO wat als er geen boulder of log is?
+	}
+	
+	protected Log getLogAtCube(int[] location){
+		for (Log log : getLogs()){
+			if (log.getOccupiedCube() == location){
+				return log;
+			}
+		}
+		return null;  // TODO wat als er geen boulder of log is?
+	}
+	
 	
 	Set<Faction> factions = new HashSet<Faction>();
 	

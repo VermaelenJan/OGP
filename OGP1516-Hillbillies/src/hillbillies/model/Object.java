@@ -30,6 +30,11 @@ public abstract class Object {
 		return positionObj.getLocation();
 	}
 	
+	@Basic @Raw
+	protected int[] getOccupiedCube(){
+		return positionObj.getOccupiedCube();
+	}
+	
 	/**
 	 * Return the weight of this object.
 	 */
@@ -65,6 +70,11 @@ public abstract class Object {
 		if (positionObj.isValidZPosition() && !positionObj.isAtMiddleZOfCube()){
 			positionObj.fall(dt, positionObj.getOccupiedCube());
 		}
+	}
+	
+	public boolean isTerminated;
+	public void terminate(){
+		this.isTerminated = true;
 	}
 	
 }

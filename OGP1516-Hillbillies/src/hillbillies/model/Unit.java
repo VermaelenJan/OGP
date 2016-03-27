@@ -3,6 +3,8 @@ package hillbillies.model;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import javax.swing.JList.DropLocation;
+
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
@@ -1724,26 +1726,87 @@ public class Unit {
 
 	// WORKING
 	
+	public void work(){
+		startWorking();
+	}
 	/**
 	 * Enable the unit's working.
 	 * 
 	 * @effect The unit starts working.
 	 * 			| startWorking()
 	 */			
-	public void work(){
+	public void workAt(int[] target){
 		
-		//int nbTasks = 5;
-		//Object object;
-		//Cube cube;
-	
-		//switch(nbTasks){
-				
-		//case 1 : if (positionObj.getOccupiedCube() == )
-				
-		//}
-		startWorking();		
+		Cube targetCube = world.getCube(target[0],target[1],target[2]);
+		startWorking();	
+		
+		// first move to target, than labour?
+		moveTo(target);
+
+		if ( isCarryingBoulder || isCarryingLog){
+			dropObject();
+			updateExperience(10);
+		}
+		
+		
+		else if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(target) != null)
+				&& (world.getLogAtCube(target) != null) ){
+			Boulder currBoulder = world.getBoulderAtCube(target);
+			Log currLog = world.getLogAtCube(target); // could be other boulder/log but doesnt matter?
+			improveEquipment(currBoulder,currLog);
+			updateExperience(10);
+		}
+		
+		else if (world.getBoulderAtCube(target) != null){
+			Boulder currBoulder = world.getBoulderAtCube(target);
+			pickUpObject(currBoulder);
+			updateExperience(10);
+		}
+		
+		else if (world.getLogAtCube(target) != null){
+			Log currLog = world.getLogAtCube(target);
+			pickUpObject(currLog);
+			updateExperience(10);
+		}
+		
+		else if ((world.getCubeType(target[0],target[1],target[2]) == CubeType.WOOD)
+			  || (world.getCubeType(target[0],target[1],target[2]) == CubeType.ROCK)){
+			world.caveIn(target[0], target[1], target[2]);	
+			updateExperience(10);
+		}
+
 	}
 	
+	public boolean isCarryingBoulder; 
+	protected void setCarryingBoulder(boolean flag){
+		isCarryingBoulder = flag;
+	}
+	
+	public boolean isCarryingLog;
+	protected void setCarryingLog(boolean flag){
+		isCarryingLog = flag;
+	}
+	
+	protected void improveEquipment(Boulder boulder, Log log){
+		setWeight(getWeight() + boulder.getWeight()/2);
+		setToughness(getToughness() + log.getWeight()/2); // kheb maar random ding genomen zenne
+		
+		boulder.terminate();
+		log.terminate();
+		world.boulders.remove(boulder);
+		world.logs.remove(log);
+	}
+	
+	// TODO HOE DOEN WE DIT? WANT OBJECT MAG GEEN DEEL MEER UITMAKEN VAN DE GAME WORLD, MAAR BIJ HET DROPPEN MOET JE WEL 
+	// EEN BOULDER DROPPEN MET HETZELFDE GEWICHT,MAAR DIT IS DAN NIET MET TERMINATE EN UN-TERMINATE MAKEN OFWEL? HEB 
+	// NU TERMINATE GEBRUIKT REEDS VOOR HET CONSUMEN VAN HET OBJECT HIERBOVEN.
+	protected void pickUpObject(Object object){
+		// TODO write function + increase weight
+	}
+	
+	protected void dropObject(){
+		// TODO write function + decrease weight
+	}
 	/**
 	 * The unit starts working.
 	 * 
