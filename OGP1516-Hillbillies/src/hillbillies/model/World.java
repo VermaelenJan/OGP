@@ -160,7 +160,7 @@ public class World {
 				return boulder;
 			}
 		}
-		return null;  // TODO wat als er geen boulder of log is?
+		return null;  
 	}
 	
 	protected Log getLogAtCube(int[] location){
@@ -169,7 +169,7 @@ public class World {
 				return log;
 			}
 		}
-		return null;  // TODO wat als er geen boulder of log is?
+		return null;  
 	}
 	
 	

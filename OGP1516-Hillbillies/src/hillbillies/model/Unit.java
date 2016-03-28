@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -965,8 +966,8 @@ public class Unit {
 			advanceTimeNotResting(dt);
 		}
 
-		if (isFalling || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
-			this.isFalling = true; //TODO: maak deftig
+		if (isFalling() || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
+			setFalling(true); 
 			stopSprinting();
 			advanceTimeFalling(dt);
 		}
@@ -1016,7 +1017,7 @@ public class Unit {
 				positionObj.fall(dt,positionObj.getOccupiedCube());
 			}
 			else {
-				this.isFalling = false;
+				setFalling(false);;
 				if (isMoving()) {
 					stopMoving();
 					moveTo(globalTarget);
@@ -1828,7 +1829,15 @@ public class Unit {
 	
 	// FALLING
 	
-	private boolean isFalling; //TODO: setter en getter maken en gebruiken!
+	private boolean isFalling;
+	
+	private void setFalling(boolean bool){
+		this.isFalling = bool;
+	}
+	
+	private boolean isFalling(){
+		return this.isFalling;
+	}
 	private int workType;
 	private int[] workTarget;
 
@@ -2103,15 +2112,11 @@ public class Unit {
 	 * 			| other.setOrientation(arctangens(this.getLocation()[y]-other.getLocation()[y],
 	 * 			|	this.getLocation()[x]-other.getLocation()[x])
 	 */
-	@Model  //TODO: setOrientationTo() hierin gebruiken?
+	@Model  
 	private void setOrientationInFight(Unit other) {
-		double orientUnitThis = Math.atan2(other.positionObj.getLocation()[1]-this.positionObj.getLocation()[1],
-				other.positionObj.getLocation()[0]-this.positionObj.getLocation()[0]);
-		double orientUnitOther = Math.atan2(this.positionObj.getLocation()[1]-other.positionObj.getLocation()[1],
-				this.positionObj.getLocation()[0]-other.positionObj.getLocation()[0]);
-		
-		this.setOrientation(orientUnitThis);
-		other.setOrientation(orientUnitOther);
+		this.setOrientationTo(other.positionObj.getLocation());
+		other.setOrientationTo(this.positionObj.getLocation());
+
 	}
 	
 	@Model
@@ -2164,7 +2169,9 @@ public class Unit {
 	 */
 	public void defend(Unit other){
 
+
 		if (this != other) {
+
 						
 			if (this.isResting()) {
 			this.stopResting();
@@ -2200,9 +2207,10 @@ public class Unit {
 	}
 	
 	private void attackPotentialEnemy(){
+
 		for (Unit other : world.getAllUnits()){
 			for (Cube cube : (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()))){
-				if (other.getOccupiedCube() == cube.getCubePosition() && other != this){
+				if (Arrays.equals(other.getOccupiedCube(),cube.getCubePosition()) && other != this){
 					try {attack(other);} catch(IllegalFightFactionException e){}
 				}
 			}

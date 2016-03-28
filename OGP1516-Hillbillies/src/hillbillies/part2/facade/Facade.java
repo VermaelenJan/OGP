@@ -180,7 +180,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public void work(Unit unit) throws ModelException {
-		unit.work();
+
+		
 	}
 
 	@Override
