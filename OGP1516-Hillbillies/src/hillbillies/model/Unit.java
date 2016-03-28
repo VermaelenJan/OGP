@@ -2,6 +2,7 @@ package hillbillies.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
@@ -1096,8 +1097,10 @@ public class Unit {
 				setTimeRemainderToWork(0);
 				Boulder currBoulder = world.getBoulderAtCube(workTarget);
 				Log currLog = world.getLogAtCube(workTarget); // could be other boulder/log but doesnt matter?
-				improveEquipment(currBoulder,currLog);
-				updateExperience(10);
+				if (currBoulder != null && currLog != null) {
+					improveEquipment(currBoulder,currLog);
+					updateExperience(10);
+				}
 				this.workType = 0;
 			}
 			else {
@@ -1110,8 +1113,10 @@ public class Unit {
 			if (!isMoving()) {
 				setTimeRemainderToWork(0);
 				Boulder currBoulder = world.getBoulderAtCube(workTarget);
-				pickUpObject(currBoulder);
-				updateExperience(10);
+				if (currBoulder != null) {
+					pickUpObject(currBoulder);
+					updateExperience(10);
+				}
 				this.workType = 0;
 			}
 			else {
@@ -1124,8 +1129,10 @@ public class Unit {
 			if (!isMoving()) {
 				setTimeRemainderToWork(0);
 				Log currLog = world.getLogAtCube(workTarget);
-				pickUpObject(currLog);
-				updateExperience(10);
+				if (currLog != null) {
+					pickUpObject(currLog);
+					updateExperience(10);
+				}
 				this.workType = 0;
 			}
 			else {
@@ -1783,12 +1790,22 @@ public class Unit {
 						}
 					}
 				}
+				
+				//van hier
+				try {
+					if (nextCube != null) { //TODO: proberen snappen? hoe kan nextCube op deze plaats ooit null zijn? (zonder de if() krijgen we nullpointers
+						// als we 100 units elkaar laten forceren
+						int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
+						int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
+						int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
+						moveToAdjacent(dx,dy,dz, true);	
+					}
+				} catch (Exception e) {
+					queue = new HashMap<Cube, Integer>();
+					currentLvl = 0;
+				}
+				//tot hier is louche
 
-
-				int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
-				int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
-				int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
-				moveToAdjacent(dx,dy,dz, true);	
 				queue = new HashMap<Cube, Integer>();
 				currentLvl = 0;
 			}
@@ -1818,7 +1835,8 @@ public class Unit {
 	// WORKING
 	
 	public void work(){
-		startWorking();
+		List<Cube> neighbs = (positionObj.getNeighbouringCubes(positionObj.getOccupiedCube()));
+		workAt(neighbs.get(ConstantsUtils.random.nextInt(neighbs.size())).getCubePosition());
 	}
 	/**
 	 * Enable the unit's working.
