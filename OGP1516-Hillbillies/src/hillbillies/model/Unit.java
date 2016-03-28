@@ -2,7 +2,6 @@ package hillbillies.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.PrimitiveIterator.OfDouble;
 
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
@@ -11,11 +10,11 @@ import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.exceptions.IllegalAdjacentPositionException;
 import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
+import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.model.exceptions.IllegalWorkPositionException;
-import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 //TODO: make internal functions nominal if necessary.
@@ -981,15 +980,20 @@ public class Unit {
 			advanceTimeWorking(dt);
 		}
 		else if (isMoving()){
-			if (arrived(dt)){
-				advanceTimeMovingArrived();
-			}
-			else{
-				advanceTimeMovingNotArrived(dt);
-			}		
+			advanceTimeMoving(dt);		
 		}
 		else if (isDefaultBehaviourEnabled()) {
 			newDefaultBehaviour();
+		}
+	}
+
+
+	private void advanceTimeMoving(double dt) {
+		if (arrived(dt)){
+			advanceTimeMovingArrived();
+		}
+		else{
+			advanceTimeMovingNotArrived(dt);
 		}
 	}
 	
@@ -1073,13 +1077,73 @@ public class Unit {
 	}
 
 	private void advanceTimeWorking(double dt) {
-		setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);	
+		setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);
+		if (this.workType == 1) {
+			if (!isMoving()) {
+				setTimeRemainderToWork(0);
+				dropObject();
+				updateExperience(10);
+				this.workType = 0;
+			}
+			else {
+				setTimeRemainderToWork(Float.MAX_VALUE);
+				advanceTimeMoving(dt);
+			}
+		}
 		
+		if (this.workType == 2) {
+			if (!isMoving()) {
+				setTimeRemainderToWork(0);
+				Boulder currBoulder = world.getBoulderAtCube(workTarget);
+				Log currLog = world.getLogAtCube(workTarget); // could be other boulder/log but doesnt matter?
+				improveEquipment(currBoulder,currLog);
+				updateExperience(10);
+				this.workType = 0;
+			}
+			else {
+				setTimeRemainderToWork(Float.MAX_VALUE);
+				advanceTimeMoving(dt);
+			}
+		}
 		
+		if (this.workType == 3) {
+			if (!isMoving()) {
+				setTimeRemainderToWork(0);
+				Boulder currBoulder = world.getBoulderAtCube(workTarget);
+				pickUpObject(currBoulder);
+				updateExperience(10);
+				this.workType = 0;
+			}
+			else {
+				setTimeRemainderToWork(Float.MAX_VALUE);
+				advanceTimeMoving(dt);
+			}
+		}
+		
+		if (this.workType == 4) {
+			if (!isMoving()) {
+				setTimeRemainderToWork(0);
+				Log currLog = world.getLogAtCube(workTarget);
+				pickUpObject(currLog);
+				updateExperience(10);
+				this.workType = 0;
+			}
+			else {
+				setTimeRemainderToWork(Float.MAX_VALUE);
+				advanceTimeMoving(dt);
+			}
+		}
 		
 		if (getTimeRemainderToWork() <= 0){
 			setTimeRemainderToWork(0);
 			stopWorking();
+
+			if (this.workType == 5) {
+				world.caveIn(workTarget[0], workTarget[1], workTarget[2]);	
+				updateExperience(10);
+				this.workType = 0;
+			}
+			
 		}
 	}
 
@@ -1748,6 +1812,8 @@ public class Unit {
 	// FALLING
 	
 	private boolean isFalling; //TODO: setter en getter maken en gebruiken!
+	private int workType;
+	private int[] workTarget;
 
 	// WORKING
 	
@@ -1760,59 +1826,50 @@ public class Unit {
 	 * @effect The unit starts working.
 	 * 			| startWorking()
 	 */			
-	public void workAt(int[] target) throws IllegalWorkPositionException{
+	public void workAt(int[] workTarget) throws IllegalWorkPositionException{
 
-		
-		if (!positionObj.isNeighBouringCube(target)){
-			throw new IllegalWorkPositionException(target);
+		if (!positionObj.isNeighBouringCube(workTarget)){
+			throw new IllegalWorkPositionException(workTarget);
 		}
-		Cube targetCube = world.getCube(target[0],target[1],target[2]);
-		startWorking();	
 		
-		// first move to target, then labour?
-		//			gaat zo niet werken, zonder dt gaat moveTo niets gedaan hebben
-		//(maar enkel moveTo als het workshop ofzo is? want als neighbouring een rock is moet ge er ni naartoe?)
-		// alst t ni gaat zal ik er straks of morgen wel naar zien ze :p
+		this.workTarget = workTarget;
+		
+		Cube targetCube = world.getCube(workTarget[0],workTarget[1],workTarget[2]);
 
 		if (this.carriedObject != null){
-			
-			//  TODO walk to adjacant cube
-			
-			dropObject();
-			updateExperience(10);
+			moveTo(workTarget);
+			this.workType = 1;
+			startWorking();
 		}
 		
 		
-		else if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(target) != null)
-				&& (world.getLogAtCube(target) != null) ){
-			
-			// TODO walk to adjacant cube
-			
-			Boulder currBoulder = world.getBoulderAtCube(target);
-			Log currLog = world.getLogAtCube(target); // could be other boulder/log but doesnt matter?
-			improveEquipment(currBoulder,currLog);
-			updateExperience(10);
+		else if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(workTarget) != null)
+				&& (world.getLogAtCube(workTarget) != null) ){
+			this.workType = 2;
+			moveTo(workTarget);
+			startWorking();
 		}
 		
-		else if (world.getBoulderAtCube(target) != null){
-			Boulder currBoulder = world.getBoulderAtCube(target);
-			pickUpObject(currBoulder);
-			updateExperience(10);
+		else if (world.getBoulderAtCube(workTarget) != null){
+			this.workType = 3;
+			moveTo(workTarget);
+			startWorking();
 		}
 		
-		else if (world.getLogAtCube(target) != null){
-			Log currLog = world.getLogAtCube(target);
-			pickUpObject(currLog);
-			updateExperience(10);
+		else if (world.getLogAtCube(workTarget) != null){
+			this.workType = 4;
+			moveTo(workTarget);
+			startWorking();
 		}
 		
-		else if ((world.getCubeType(target[0],target[1],target[2]) == CubeType.WOOD)
-			  || (world.getCubeType(target[0],target[1],target[2]) == CubeType.ROCK)){
-			
-			world.caveIn(target[0], target[1], target[2]);	
-			updateExperience(10);
-		}
-
+		else if (((world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.WOOD)
+				  || (world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.ROCK))
+					&& this.carriedObject == null){
+				this.workType = 5;
+				startWorking();
+				double[] targetCenter = {workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5};
+				setOrientationTo(targetCenter);
+			}
 	}
 	
 
@@ -1848,7 +1905,7 @@ public class Unit {
 	
 	protected void dropObject(){
 		setFreeWeight(getWeight()-this.carriedObject.getWeight());
-
+		this.carriedObject.positionObj.setFreeLocation(this.getLocation());
 		this.carriedObject.revive();
 		this.carriedObject = null;
 	}
@@ -2028,7 +2085,7 @@ public class Unit {
 	 * 			| other.setOrientation(arctangens(this.getLocation()[y]-other.getLocation()[y],
 	 * 			|	this.getLocation()[x]-other.getLocation()[x])
 	 */
-	@Model 
+	@Model  //TODO: setOrientationTo() hierin gebruiken?
 	private void setOrientationInFight(Unit other) {
 		double orientUnitThis = Math.atan2(other.positionObj.getLocation()[1]-this.positionObj.getLocation()[1],
 				other.positionObj.getLocation()[0]-this.positionObj.getLocation()[0]);
@@ -2037,6 +2094,13 @@ public class Unit {
 		
 		this.setOrientation(orientUnitThis);
 		other.setOrientation(orientUnitOther);
+	}
+	
+	@Model
+	private void setOrientationTo(double[] target) {
+		double orientUnitThis = Math.atan2(target[1]-this.positionObj.getLocation()[1],
+				target[0]-this.positionObj.getLocation()[0]);
+		this.setOrientation(orientUnitThis);
 	}
 	
 	/**

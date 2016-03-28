@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -155,7 +156,7 @@ public class World {
 	
 	protected Boulder getBoulderAtCube(int[] location){
 		for (Boulder boulder : getBouldersWorld()){
-			if (boulder.getOccupiedCube() == location){
+			if (Arrays.equals(boulder.getOccupiedCube(), location)){
 				return boulder;
 			}
 		}
@@ -164,7 +165,7 @@ public class World {
 	
 	protected Log getLogAtCube(int[] location){
 		for (Log log : getLogsWorld()){
-			if (log.getOccupiedCube() == location){
+			if (Arrays.equals(log.getOccupiedCube(), location)){
 				return log;
 			}
 		}
