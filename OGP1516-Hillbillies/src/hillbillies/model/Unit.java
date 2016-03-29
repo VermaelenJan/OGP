@@ -1030,11 +1030,9 @@ public class Unit {
 			}
 			else {
 				setFalling(false);
-				double[] newCurrMiddle =  {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5};
-				this.target = newCurrMiddle; //TODO vreemd vinden
-				if (isMoving()) {
-					stopMoving();
-					moveTo(globalTarget);
+				if (positionObj.isValidUnitPositionInt(positionObj.getOccupiedCube())) {
+					double[] nextCurrMiddle =  {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5};
+					this.target = nextCurrMiddle; //TODO vreemd vinden
 				}
 			}
 		}
@@ -1858,7 +1856,7 @@ public class Unit {
 	// WORKING
 	
 	public void work(){
-		List<Cube> neighbs = (positionObj.getNeighbouringCubes(positionObj.getOccupiedCube()));
+		List<Cube> neighbs = (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()));
 		try {
 			workAt(neighbs.get(ConstantsUtils.random.nextInt(neighbs.size())).getCubePosition());
 		} catch (IllegalPositionException e) {} //cant work here
@@ -2232,6 +2230,7 @@ public class Unit {
 						this.attack(other);
 						other.defend(this);
 					} catch(IllegalFightFactionException e){}//do nothing
+					return;
 				}
 			}
 		}
