@@ -1117,9 +1117,8 @@ public class Unit {
 				if (currBoulder != null && currLog != null) {
 					improveEquipment(currBoulder,currLog);
 					updateExperience(10);
-					this.workType = 0;
 				}
-				
+				this.workType = 0;
 			}
 			else {
 				setTimeRemainderToWork(Float.MAX_VALUE);
@@ -1134,9 +1133,8 @@ public class Unit {
 				if (currBoulder != null) {
 					pickUpObject(currBoulder);
 					updateExperience(10);
-					this.workType = 0;
 				}
-				
+				this.workType = 0;
 			}
 			else {
 				setTimeRemainderToWork(Float.MAX_VALUE);
@@ -1151,9 +1149,8 @@ public class Unit {
 				if (currLog != null) {
 					pickUpObject(currLog);
 					updateExperience(10);
-					this.workType = 0;
 				}
-				
+				this.workType = 0;
 			}
 			else {
 				setTimeRemainderToWork(Float.MAX_VALUE);
