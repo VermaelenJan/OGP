@@ -952,39 +952,52 @@ public class Unit {
 	 * 			The given dt is not a valid advanceTime duration.
 	 */
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
-		if (this.hitpoints <= 0) {
-			setHitpoints(0);
-			terminate();
+		
+		if (!this.isTerminated()) {
+			if (this.hitpoints <= 0) {
+				setHitpoints(0);
+				terminate();
+			}
+			
+			if (! isValidAdvanceTime(dt)){
+				throw new IllegalAdvanceTimeException(dt);
+			}
+			
+			if (! isResting()) {
+				advanceTimeNotResting(dt);
+			}
+	
+			if (isFalling() || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
+				setFalling(true); 
+				stopSprinting();
+				advanceTimeFalling(dt);
+			}
+			
+			else if (isAttacking()){
+				advanceTimeAttacking(dt);
+			}
+			else if (isResting() && positionObj.isAtMiddleZOfCube()){
+				advanceTimeResting(dt);
+			}		
+			else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleOfCube()){
+				advanceTimeWorking(dt);
+			}
+			else if (isMoving()){
+				advanceTimeMoving(dt);		
+			}
+			else if (isDefaultBehaviourEnabled()) {
+				newDefaultBehaviour();
+			}
 		}
 		
-		if (! isValidAdvanceTime(dt)){
-			throw new IllegalAdvanceTimeException(dt);
-		}
-		
-		if (! isResting()) {
-			advanceTimeNotResting(dt);
-		}
-
-		if (isFalling() || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
-			setFalling(true); 
-			stopSprinting();
-			advanceTimeFalling(dt);
-		}
-		
-		else if (isAttacking()){
-			advanceTimeAttacking(dt);
-		}
-		else if (isResting() && positionObj.isAtMiddleZOfCube()){
-			advanceTimeResting(dt);
-		}		
-		else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleOfCube()){
-			advanceTimeWorking(dt);
-		}
-		else if (isMoving()){
-			advanceTimeMoving(dt);		
-		}
-		else if (isDefaultBehaviourEnabled()) {
-			newDefaultBehaviour();
+		else {
+			this.stopMoving();
+			this.stopSprinting();
+			this.stopWorking();
+			this.stopDefaultBehaviour();
+			this.stopResting();
+			this.setFalling(false);
+			//TODO: nog iets?
 		}
 	}
 
