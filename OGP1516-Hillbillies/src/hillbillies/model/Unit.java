@@ -957,6 +957,9 @@ public class Unit {
 			if (this.hitpoints <= 0) {
 				setHitpoints(0);
 				terminate();
+				if (this.carriedObject != null) {
+					dropObject();
+				}
 			}
 			
 			if (! isValidAdvanceTime(dt)){
@@ -1030,10 +1033,7 @@ public class Unit {
 			}
 			else {
 				setFalling(false);
-				if (positionObj.isValidUnitPositionInt(positionObj.getOccupiedCube())) {
-					double[] nextCurrMiddle =  {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5};
-					this.target = nextCurrMiddle; //TODO vreemd vinden
-				}
+				this.target = positionObj.getLocation();
 			}
 		}
 	}
@@ -1164,6 +1164,10 @@ public class Unit {
 				this.workType = 0;
 			}
 			
+		}
+		
+		if (this.workType == 0) {
+			stopWorking();
 		}
 	}
 
@@ -2225,7 +2229,7 @@ public class Unit {
 
 		for (Unit other : world.getAllUnits()){
 			for (Cube cube : (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()))){
-				if (Arrays.equals(other.getOccupiedCube(),cube.getCubePosition()) && other != this){
+				if (Arrays.equals(other.getOccupiedCube(),cube.getCubePosition()) && other != this && !other.isTerminated){
 					try {
 						this.attack(other);
 						other.defend(this);

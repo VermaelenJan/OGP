@@ -166,7 +166,7 @@ class Position {
 	@Model 
 	protected void setRandomDodgedLocation(){
 		try {
-			setLocation(getRandomDodgePosition(getLocation()));
+			setFreeLocation(getRandomDodgePosition(getLocation()));
 		} catch (IllegalPositionException e) {
 			setRandomDodgedLocation();
 		}
