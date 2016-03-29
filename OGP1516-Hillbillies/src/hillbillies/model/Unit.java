@@ -982,7 +982,7 @@ public class Unit {
 			else if (isResting() && positionObj.isAtMiddleZOfCube()){
 				advanceTimeResting(dt);
 			}		
-			else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleOfCube()){
+			else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleZOfCube()){
 				advanceTimeWorking(dt);
 			}
 			else if (isMoving()){
