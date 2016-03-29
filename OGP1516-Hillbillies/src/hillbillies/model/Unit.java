@@ -1,6 +1,5 @@
 package hillbillies.model;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -1017,7 +1016,9 @@ public class Unit {
 				positionObj.fall(dt,positionObj.getOccupiedCube());
 			}
 			else {
-				setFalling(false);;
+				setFalling(false);
+				double[] newCurrMiddle =  {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5};
+				this.target = newCurrMiddle; //TODO vreemd vinden
 				if (isMoving()) {
 					stopMoving();
 					moveTo(globalTarget);
@@ -1801,7 +1802,7 @@ public class Unit {
 						int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
 						moveToAdjacent(dx,dy,dz, true);	
 					}
-				} catch (Exception e) {
+				} catch (IllegalPositionException e) {
 					queue = new HashMap<Cube, Integer>();
 					currentLvl = 0;
 				}
@@ -1845,8 +1846,11 @@ public class Unit {
 	
 	public void work(){
 		List<Cube> neighbs = (positionObj.getNeighbouringCubes(positionObj.getOccupiedCube()));
-		workAt(neighbs.get(ConstantsUtils.random.nextInt(neighbs.size())).getCubePosition());
+		try {
+			workAt(neighbs.get(ConstantsUtils.random.nextInt(neighbs.size())).getCubePosition());
+		} catch (IllegalPositionException e) {} //cant work here
 	}
+	
 	/**
 	 * Enable the unit's working.
 	 * 
@@ -2054,6 +2058,7 @@ public class Unit {
 	 * 			
 	 */
 	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
+
 		if (this != other) {
 			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
 				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
@@ -2168,8 +2173,7 @@ public class Unit {
 	 * 			|				then this.setHitpoints(0)			
 	 */
 	public void defend(Unit other){
-
-
+		
 		if (this != other) {
 
 						
@@ -2211,7 +2215,10 @@ public class Unit {
 		for (Unit other : world.getAllUnits()){
 			for (Cube cube : (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()))){
 				if (Arrays.equals(other.getOccupiedCube(),cube.getCubePosition()) && other != this){
-					try {attack(other);} catch(IllegalFightFactionException e){}
+					try {
+						this.attack(other);
+						other.defend(this);
+					} catch(IllegalFightFactionException e){}//do nothing
 				}
 			}
 		}
