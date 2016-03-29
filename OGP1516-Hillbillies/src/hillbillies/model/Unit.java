@@ -1033,7 +1033,8 @@ public class Unit {
 			}
 			else {
 				setFalling(false);
-				this.target = positionObj.getLocation();
+				double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
+				this.target = back;
 			}
 		}
 	}
@@ -1044,7 +1045,10 @@ public class Unit {
 				positionObj.getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
 		try {
 			positionObj.setLocation(newLoc);
-		} catch (IllegalPositionException e) {} //Exception will never be thrown.
+		} catch (IllegalPositionException e) {
+			double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
+			this.target = back;
+		}
 		
 		if (isSprinting()) {
 			if (getStamina() - dt*10 > 0){
