@@ -2360,6 +2360,7 @@ public class Unit {
 		if ( (getHitpoints() != getMaxHitpointsStamina()) || ( (getStamina() != getMaxHitpointsStamina()) )){
 			setTimeResting(0);
 			stopWorking();
+
 			this.resting = true;
 			setStartRestHitpoints(getHitpoints());
 			setStartRestStamina(getStamina());
