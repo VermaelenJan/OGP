@@ -956,7 +956,9 @@ public class Unit {
 		if (!this.isTerminated()) {
 			if (this.hitpoints <= 0) {
 				setHitpoints(0);
-				terminate();
+				terminate(); 
+				// Hier zeggen we we al terminate, en daarna in dropobject gaan we de weight van de unit nog aanpassen enzo, droppen
+				// van object mee in terminate zetten dan of niet?
 				if (this.carriedObject != null) {
 					dropObject();
 				}
@@ -979,7 +981,7 @@ public class Unit {
 			else if (isAttacking()){
 				advanceTimeAttacking(dt);
 			}
-			else if (isResting() && positionObj.isAtMiddleZOfCube()){
+			else if (isResting() && positionObj.isAtMiddleZOfCube()){ 
 				advanceTimeResting(dt);
 			}		
 			else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleZOfCube()){
