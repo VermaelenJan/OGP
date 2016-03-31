@@ -175,6 +175,10 @@ public class World {
 	
 	Set<Faction> factions = new HashSet<Faction>();
 	
+	protected void addFaction(Faction faction) {
+		factions.add(faction);
+	}
+	
 	private Set<Faction> getAllFactions(){
 		return factions;
 	}
@@ -210,22 +214,31 @@ public class World {
 	public Unit spawnUnit(){
 		Unit newUnit = createRandomUnit();
 		newUnit.setWorld(this);
-		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
-			if (getActiveFactions().size() < 5){
-				Faction newFaction = new Faction(this);	
-				newUnit.setFaction(newFaction);
-				newFaction.addUnit(newUnit);
-			}
-			else{
-				try {
-					newUnit.setFaction(getSmallestFaction());
-					getSmallestFaction().addUnit(newUnit);
-					} catch (IllegalValueException e) {/** TODO? not in part 2, 100 < 5*50**/}
-			}
+		if(addUnit(newUnit)) {
 			return newUnit;
 		}
-		newUnit.terminate();
-		return newUnit;
+		else {
+			newUnit.terminate();
+			return newUnit;
+		}
+	}
+	
+	public boolean addUnit(Unit unit) {
+		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
+			if (getActiveFactions().size() < ConstantsUtils.MAX_FACTIONS){
+				Faction newFaction = new Faction(this);	
+				unit.setFaction(newFaction);
+				newFaction.addUnit(unit);
+			}
+			else{ // else if (try-catch-condition (max Units in world))
+				try {
+					unit.setFaction(getSmallestFaction());
+					getSmallestFaction().addUnit(unit);
+				} catch (IllegalValueException e) {/** TODO? not in part 2, 100 < 5*50**/}
+			}
+			return true;
+		}
+		return false;
 	}
 			
 	

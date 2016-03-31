@@ -65,33 +65,21 @@ class Position {
 	}
 	
 	@Raw @Model
-	protected boolean isValidUnitPositionDouble(double[] location){ //TODO: gebruik volgende methode hierin
+	protected boolean isValidUnitPositionDouble(double[] location){
 		if (isInBoundariesDouble(location) && 
 				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()){
-																	//TODO: overloaden? (voor int[] location)
 			int cube[] = {(int)location[0],(int)location[1],(int)location[2]};
 			if (isValidZCube(cube)) {
 				return true;
 			}
-			int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
-			int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};
-			int [] zList = {cube[2]-1,cube[2],cube[2]+ 1};
-			for (int x : xList){
-				for (int y : yList){
-					for (int z : zList){
-						int[] loc = {x, y, z};
-						if (isInBoundariesInt(loc) && !world.getCubeType(x, y, z).isPassableTerrain()){
-							return true;
-						}
-					}
+			
+			for (Cube neighCube : getNeighbouringCubes(cube)) {
+				if (!neighCube.getCubeType().isPassableTerrain()) {
+					return true;
 				}
 			}
-
-			return false;
 		}
-		else{
-			return false;
-		}
+		return false;
 	}
 	
 	protected boolean isValidUnitPositionInt(int[] location) {

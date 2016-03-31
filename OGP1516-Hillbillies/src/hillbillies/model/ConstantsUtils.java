@@ -45,4 +45,7 @@ final class ConstantsUtils {
 	// MAX UNITS
 	static final int MAX_UNITS_FACTION = 50;
 	static final int MAX_UNITS_WORLD = 100;
+	
+	// MAX FACTIONS
+	static final int MAX_FACTIONS = 5;
 }

@@ -13,7 +13,7 @@ public class Faction {
 
 	protected Faction(World world){
 		this.world = world;
-		world.factions.add(this);
+		world.addFaction(this);
 	}
 	
 	Set<Unit> unitsOfFaction = new HashSet<Unit>();

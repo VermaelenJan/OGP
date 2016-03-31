@@ -17,7 +17,6 @@ import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.model.exceptions.IllegalWorkPositionException;
 
-//TODO: make internal functions nominal if necessary.
 //TODO: fix doc van ALLES en @'s
 //TODO: remove //code if doc in orde is
 /**
@@ -843,7 +842,6 @@ public class Unit {
 	
 	// EXPERIENCE POINTS
 	
-	// TODO experience of work tasks
 	public int getExperience(){
 		return this.experience;
 	}
@@ -1682,7 +1680,7 @@ public class Unit {
 		}
 	}
 	
-	public void moveTo(int[] endTarget){ //TODO: exception if unreachable???
+	public void moveTo(int[] endTarget){ //TODO: exception if unreachable??? of gewoon negeren?
 
 		globalTarget = endTarget;
 				
@@ -1717,95 +1715,22 @@ public class Unit {
 			}
 			if (expandingQueue) {
 				Cube nextCube = null;
-//letterlijk minder efficient hahahahahahaha
-//				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-//					if (queue.containsKey(cube) && queue.get(cube) < currentLvl &&
-//						Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])
-//							&& Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])
-//								&& Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
-//						currentLvl = queue.get(cube);
-//						nextCube = cube;
-//					}
-//				}
-//				if (nextCube == null){
-//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl &&
-//								Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])
-//									&& Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
-//							currentLvl = queue.get(cube);
-//							nextCube = cube;
-//						}
-//					}
-//				}
-//				if (nextCube == null){
-//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
-//							Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])
-//								&& Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])) {
-//							currentLvl = queue.get(cube);
-//							nextCube = cube;
-//						}
-//					}
-//				}
-//				if (nextCube == null){
-//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
-//							Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])
-//								&& Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
-//							currentLvl = queue.get(cube);
-//							nextCube = cube;
-//						}
-//					}
-//				}
-//				if (nextCube == null){
-//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
-//							Math.abs(cube.getCubePosition()[0]-endTarget[0]) < Math.abs(currentCubeLoc[0]-endTarget[0])) {
-//							currentLvl = queue.get(cube);
-//							nextCube = cube;
-//						}
-//					}
-//				}
-//				if (nextCube == null){
-//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
-//							Math.abs(cube.getCubePosition()[1]-endTarget[1]) < Math.abs(currentCubeLoc[1]-endTarget[1])) {
-//							currentLvl = queue.get(cube);
-//							nextCube = cube;
-//						}
-//					}
-//				}
-//				if (nextCube == null){
-//					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-//						if (queue.containsKey(cube) && queue.get(cube) < currentLvl && 
-//							Math.abs(cube.getCubePosition()[2]-endTarget[2]) < Math.abs(currentCubeLoc[2]-endTarget[2])) {
-//							currentLvl = queue.get(cube);
-//							nextCube = cube;
-//						}
-//					}
-//				}
-
-				if (nextCube == null) {
-					for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-						if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
-							currentLvl = queue.get(cube);
-							nextCube = cube;
-						}
+				
+				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+					if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
+						currentLvl = queue.get(cube);
+						nextCube = cube;
 					}
 				}
 				
+				
 				//van hier
-				try {
-					if (nextCube != null) { //TODO: proberen snappen? hoe kan nextCube op deze plaats ooit null zijn? (zonder de if() krijgen we nullpointers
-						// als we 100 units elkaar laten forceren
-						int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
-						int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
-						int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
-						moveToAdjacent(dx,dy,dz, true);	
-					}
-				} catch (IllegalPositionException e) {
-					queue = new HashMap<Cube, Integer>();
-					currentLvl = 0;
+				if (nextCube != null) { //TODO: proberen snappen? hoe kan nextCube op deze plaats ooit null zijn? (zonder de if() krijgen we nullpointers
+					// als we 100 units elkaar laten forceren)
+					int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
+					int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
+					int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
+					moveToAdjacent(dx,dy,dz, true);	
 				}
 				//tot hier is louche
 
@@ -1925,9 +1850,6 @@ public class Unit {
 		world.logs.remove(log);
 	}
 	
-	// TODO HOE DOEN WE DIT? WANT OBJECT MAG GEEN DEEL MEER UITMAKEN VAN DE GAME WORLD, MAAR BIJ HET DROPPEN MOET JE WEL 
-	// EEN BOULDER DROPPEN MET HETZELFDE GEWICHT,MAAR DIT IS DAN NIET MET TERMINATE EN UN-TERMINATE MAKEN OFWEL? HEB 
-	// NU TERMINATE GEBRUIKT REEDS VOOR HET CONSUMEN VAN HET OBJECT HIERBOVEN.
 	protected void pickUpObject(Object object){
 		this.carriedObject = object;
 		object.terminate();
