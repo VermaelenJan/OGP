@@ -16,7 +16,6 @@ import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.model.exceptions.IllegalWorkPositionException;
-import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 //TODO: make internal functions nominal if necessary.
 //TODO: fix doc van ALLES en @'s
@@ -115,8 +114,6 @@ public class Unit {
 		setOrientation(Math.PI/2);
 		setWorld(world);
 		setExperience(0);
-//		Faction newFaction = new Faction(world);
-//		setFaction(newFaction);
 		
 		positionObj = new Position(world);
 		positionObj.setLocation(location); //
@@ -125,7 +122,7 @@ public class Unit {
 	
 		public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
 															throws IllegalPositionException, IllegalNameException {
-			this(CubeLocation, name, weight, strength, agility, toughness, createVoidWorld());
+			this(CubeLocation, name, weight, strength, agility, toughness, null);
 		}
 
 //	/**
@@ -157,24 +154,7 @@ public class Unit {
 //			throws IllegalPositionException, IllegalNameException {
 //		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
 //	}
-	
-	private static World createVoidWorld() { //TODO: nog nodig?
-		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
-		Cube[][][] worldCubes = new Cube[50][50][50];
-		for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
-			for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
-				for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
-					int[] position = {xIndex, yIndex, zIndex};
-					Cube cube = new Cube(position, CubeType.AIR);
-					worldCubes[xIndex][yIndex][zIndex] = cube;
-				}	
-			}	
-		}
-
-		World voidWorld = new World(worldCubes, defaultTerrainChangeListener);
-		return voidWorld;
-	}
-			
+				
 	@Basic @Raw
 	public World getWorld(){
 		return this.world;
