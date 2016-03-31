@@ -1391,7 +1391,7 @@ public class Unit {
 	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
 	 */
 	public boolean isActualMoving(){
-		return (isMoving() && !(positionObj.isAtMiddleOfCube() && (isWorking() || isResting())));
+		return (isMoving() && !(positionObj.isAtMiddleZOfCube() && (isWorking() || isResting())));
 	}
 	
 	/**
