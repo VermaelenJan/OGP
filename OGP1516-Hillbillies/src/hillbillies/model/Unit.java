@@ -980,7 +980,7 @@ public class Unit {
 			this.stopDefaultBehaviour();
 			this.stopResting();
 			this.setFalling(false);
-			//TODO: nog iets?
+
 		}
 	}
 
@@ -1013,8 +1013,10 @@ public class Unit {
 			}
 			else {
 				setFalling(false);
-				double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
-				this.target = back;
+				if (!positionObj.isAtMiddleOfCube()){
+					double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
+					this.target = back;
+				}
 			}
 		}
 	}
@@ -1026,8 +1028,11 @@ public class Unit {
 		try {
 			positionObj.setLocation(newLoc);
 		} catch (IllegalPositionException e) {
-			double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
-			this.target = back;
+			if (!positionObj.isAtMiddleOfCube()){
+				double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
+				this.target = back;
+			}
+
 		}
 		
 		if (isSprinting()) {
@@ -1369,7 +1374,7 @@ public class Unit {
 	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
 	 */
 	public boolean isActualMoving(){
-		return (isMoving() && !(positionObj.isAtMiddleZOfCube() && (isWorking() || isResting())));
+		return (isMoving() && !(positionObj.isAtMiddleOfCube() && (isWorking() || isResting())));
 	}
 	
 	/**
@@ -1680,7 +1685,7 @@ public class Unit {
 		}
 	}
 	
-	public void moveTo(int[] endTarget){ //TODO: exception if unreachable??? of gewoon negeren?
+	public void moveTo(int[] endTarget){ //TODO: exception if unreachable??? of gewoon negeren? kzou voor exception gaan
 
 		globalTarget = endTarget;
 				
@@ -1982,7 +1987,7 @@ public class Unit {
 	 */
 	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
 
-		if (this != other) {
+		if ( (this != other) && (!other.isTerminated()) ) {
 			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
 				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
 			}	
@@ -2514,12 +2519,13 @@ public class Unit {
 	 */
 	@Model
 	private void newDefaultBehaviour(){
-		switch (ConstantsUtils.random.nextInt(4)) {
-			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
-			case 1: work(); break;						//Exception will never be thrown.
-			case 2: rest(); break;
-			case 3: attackPotentialEnemy(); break;
-		}
+//		switch (ConstantsUtils.random.nextInt(4)) {
+//			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
+//			case 1: work(); break;						//Exception will never be thrown.
+//			case 2: rest(); break;
+//			case 3: attackPotentialEnemy(); break;
+//		}
+	work();
 	}
 	
 //	/**
