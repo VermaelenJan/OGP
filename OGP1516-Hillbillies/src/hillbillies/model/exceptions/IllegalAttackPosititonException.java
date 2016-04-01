@@ -10,14 +10,10 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalAttackPosititonException extends RuntimeException {
 	
-	/**
-	 * Variables registering the x,y and z value of the unit to attack.
-	 */
-	private final double x;
-	private final double y;
-	private final double z;
 
 	/**
+	 * 
+	 * Initialize this new illegal attack position exception with the given location.
 	 * 
 	 * @param	location
 	 * 			The location involved in this new illegal attack position exception.
@@ -40,7 +36,7 @@ public class IllegalAttackPosititonException extends RuntimeException {
 	
 	/**
 	 * 
-	 * Return the x value of the unit to attack involved in this illegal attack position exception.
+	 * Return the x value of the unit to attack registered for this illegal attack position exception.
 	 */
 	@Basic @Immutable
 	public double getXpos() {
@@ -49,7 +45,7 @@ public class IllegalAttackPosititonException extends RuntimeException {
 	
 	/**
 	 * 
-	 * Return the y value of the unit to attack involved in this illegal attack position exception.
+	 * Return the y value of the unit to attack registered for this illegal attack position exception.
 	 */
 	@Basic @Immutable
 	public double getYpos() {
@@ -58,12 +54,20 @@ public class IllegalAttackPosititonException extends RuntimeException {
 
 	/**
 	 * 
-	 * Return the z value of the unit to attack involved in this illegal attack position exception.
+	 * Return the z value of the unit to attack registered for this illegal attack position exception.
 	 */
 	@Basic @Immutable
 	public double getZpos() {
 		return this.z;
 	}
+	
+	/**
+	 * Variables registering the x,y and z value involved in this illegal attack position exception.
+	 */
+	private final double x;
+	private final double y;
+	private final double z;
+
 	
 	private static final long serialVersionUID = 5531748912930885221L;
 }

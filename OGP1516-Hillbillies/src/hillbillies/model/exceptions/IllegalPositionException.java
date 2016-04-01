@@ -11,15 +11,11 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalPositionException extends RuntimeException {
 	
-	/**
-	 * Variables registering the x,y and z value.
-	 */
 
-	private final double x;
-	private final double y;
-	private final double z;
 	
 	/**
+	 * 
+	 * Initialize this new illegal position exception with the given location.
 	 * 
 	 * @param	location
 	 * 			The location involved in this new illegal position exception.
@@ -41,7 +37,7 @@ public class IllegalPositionException extends RuntimeException {
 	}
 	
 	/**
-	 * Return the x value involved in this illegal position exception.
+	 * Return the x value registered for this illegal position exception.
 	 */
 	@Basic @Immutable
 	public double getXpos() {
@@ -49,7 +45,7 @@ public class IllegalPositionException extends RuntimeException {
 	}
 	
 	/**
-	 * Return the y value involved in this illegal position exception.
+	 * Return the y value registered for this illegal position exception.
 	 */
 	@Basic @Immutable
 	public double getYpos() {
@@ -57,13 +53,19 @@ public class IllegalPositionException extends RuntimeException {
 	}
 
 	/**
-	 * Return the z value involved in this illegal position exception.
+	 * Return the z value registered for this illegal position exception.
 	 */
 	@Basic @Immutable
 	public double getZpos() {
 		return this.z;
 	}
 	
+	/**
+	 * Variables registering the x,y and z value involved in this illegal position exception.
+	 */
+	private final double x;
+	private final double y;
+	private final double z;
 	
 
 	private static final long serialVersionUID = -3414498906993155864L;

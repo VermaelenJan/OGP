@@ -9,13 +9,11 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalNameException extends RuntimeException {
 	
-	/**
-	 * 
-	 * Variable referencing the name of this illegal name exception.
-	 */
-	private final String name;
+
 	
 	/**
+	 * 
+	 * Initialize this new illegal name exception with the given name.
 	 * 
 	 * @param	name
 	 * 			The name for this new illegal name exception.
@@ -28,13 +26,19 @@ public class IllegalNameException extends RuntimeException {
 	
 	/**
 	 * 
-	 * Return the name of this new illegal name exception.
+	 * Return the name registered for this illegal name exception.
 	 */
 	@Basic @Immutable
 	public String getName(){
 		return this.name;
 	}
 	
+	
+	/**
+	 * 
+	 * Variable registering the name involved in this illegal name exception.
+	 */
+	private final String name;
 	
 	
 	private static final long serialVersionUID = -2008524175821070107L;

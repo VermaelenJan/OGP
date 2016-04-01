@@ -11,15 +11,11 @@ import be.kuleuven.cs.som.annotate.Immutable;
 public class IllegalAdjacentPositionException extends RuntimeException{
 	
 
-	/**
-	 * 
-	 * Variables registering the dx,dy and dz movement.
-	 */
-	private final int dx;
-	private final int dy;
-	private final int dz;
+
 	
 	/**
+	 * 
+	 * Initialize this new illegal adjacent position exception with the given operands.
 	 * 
 	 * @param	dx
 	 * 			The dx movement involved in this new illegal adjacent position exception.
@@ -45,7 +41,7 @@ public class IllegalAdjacentPositionException extends RuntimeException{
 	
 	/**
 	 * 
-	 * Return the dx value involved in this illegal adjacent position exception.
+	 * Return the dx value registered for this illegal adjacent position exception.
 	 */
 	
 	@Basic @Immutable
@@ -54,7 +50,7 @@ public class IllegalAdjacentPositionException extends RuntimeException{
 	}
 	
 	/**
-	 * Return the dy value involved in this illegal adjacent position exception.
+	 * Return the dy value registered for this illegal adjacent position exception.
 	 */
 	@Basic @Immutable
 	public double getDyMov() {
@@ -62,12 +58,20 @@ public class IllegalAdjacentPositionException extends RuntimeException{
 	}
 
 	/**
-	 * Return the dz value involved in this illegal adjacent position exception.
+	 * Return the dz value registered for this illegal adjacent position exception.
 	 */
 	@Basic @Immutable
 	public double getDzMov() {
 		return this.dz;
 	}
+	
+	/**
+	 * 
+	 * Variables registering the dx,dy and dz movement involved in this illegal adjacent position exception.
+	 */
+	private final int dx;
+	private final int dy;
+	private final int dz;
 	
 	
 	

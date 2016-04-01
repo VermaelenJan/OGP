@@ -5,26 +5,22 @@ import be.kuleuven.cs.som.annotate.Immutable;
 
 public class IllegalWorkPositionException extends RuntimeException{
 
-	/**
-	 * Variables registering the x,y and z value.
-	 */
 
-	private final int x;
-	private final int y;
-	private final int z;
 	
 	/**
 	 * 
+	 * Initialize this new illegal work position exception with the given location.
+	 * 
 	 * @param	location
-	 * 			The location involved in this new illegal position exception.
+	 * 			The location involved in this new illegal work position exception.
 	 * 			The location has an x, y and z value stored in a list.
-	 * @post	The x value of this new illegal position exception is equal to 
+	 * @post	The x value of this new illegal work position exception is equal to 
 	 * 			the given x value on index 0 of the list location.
 	 * 			| new.getXpos() == location.get(0)
-	 * @post	The y value of this new illegal position exception is equal to 
+	 * @post	The y value of this new illegal work position exception is equal to 
 	 * 			the given y value on index 1 of the list location.
 	 * 			| new.getYpos() == location.get(1)
-	 * @post	The z value of this new illegal position exception is equal to 
+	 * @post	The z value of this new illegal work position exception is equal to 
 	 * 			the given z value on index 2 of the list location.
 	 * 			| new.getZpos() == location.get(2)
 	 */
@@ -35,7 +31,7 @@ public class IllegalWorkPositionException extends RuntimeException{
 	}
 	
 	/**
-	 * Return the x value involved in this illegal position exception.
+	 * Return the x value registered for this illegal work position exception.
 	 */
 	@Basic @Immutable
 	public double getXpos() {
@@ -43,7 +39,7 @@ public class IllegalWorkPositionException extends RuntimeException{
 	}
 	
 	/**
-	 * Return the y value involved in this illegal position exception.
+	 * Return the y value registered for this illegal work position exception.
 	 */
 	@Basic @Immutable
 	public double getYpos() {
@@ -51,7 +47,7 @@ public class IllegalWorkPositionException extends RuntimeException{
 	}
 
 	/**
-	 * Return the z value involved in this illegal position exception.
+	 * Return the z value registered for this illegal work position exception.
 	 */
 	@Basic @Immutable
 	public double getZpos() {
@@ -59,7 +55,12 @@ public class IllegalWorkPositionException extends RuntimeException{
 	}
 	
 	/**
-	 * 
+	 * Variables registering the x,y and z value of the location involved in this illegal work position exception.
 	 */
+	private final int x;
+	private final int y;
+	private final int z;
+	
+
 	private static final long serialVersionUID = -7773940502964173992L;
 }
