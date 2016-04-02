@@ -5,47 +5,70 @@ import java.util.Random;
 import be.kuleuven.cs.som.annotate.Model;
 
 /**
- * @author Win
- * @version 1.0
+ * A class with constants used in this project.
+ * 
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 0
  */
 final class ConstantsUtils {
 	
 
-	// WORLD DIMENSION
+	/**
+	 * Variable registering the cube length.
+	 */
 	static final double CUBE_LENGTH = 1;
 	
-	// MIN,MAX VALUES (for properties)
+	
+	/**
+	 * Variables registering the (initial) minimum and maximum value for attributes of a unit.
+	 */
 	static final int INIT_MIN_VAL = 25;
 	static final int INIT_MAX_VAL = 100;
 	static final int MIN_VAL = 1;
 	static final int MAX_VAL = 200;
 	
-	// Randomizer
+	/**
+	 * Variable registering a randomizer.
+	 */
 	static final Random random = new Random();
 	
 	/**
-	 * Checks whether the unit's defend is successful.
+	 * Checks whether the a possibility is greater than a random number between 0 and 1.
 	 * @param possibility
-	 * 			The possibility to defend successful.
-	 * @return True if and only if the the unit has defended successful.
-	 * 			| result == (randomDouble <= possibility)
+	 * 			The possibility in the specific case.
+	 * @return True if and only if the the possibility is greater than the random number chosen.
 	 */
 	@Model
 	protected static boolean getPossibilitySucces(double possibility){
 		return (random.nextDouble() <= possibility);
 	}
 	
-	// LOG
-	static final int MIN_OBJECT_WEIGHT = 10;	
+	/**
+	 * Variable registering the minimum weight of an object.
+	 */
+	static final int MIN_OBJECT_WEIGHT = 10;
+	/**
+	 * Variable registering the minimum weight of an object.
+	 */
 	static final int MAX_OBJECT_WEIGHT = 50;
 	
-	// FALLING
+	/**
+	 * Variable registering the falling speed of a unit or object.
+	 */
 	static final double FALLING_SPEED = 3;
 	
-	// MAX UNITS
+	/**
+	 * Variable registering the maximum number of units in a faction.
+	 */
 	static final int MAX_UNITS_FACTION = 50;
+	
+	/**
+	 * Variable registering the maximum number of units in a world.
+	 */
 	static final int MAX_UNITS_WORLD = 100;
 	
-	// MAX FACTIONS
+	/**
+	 * Variable registering the maximum number of factions in a world.
+	 */
 	static final int MAX_FACTIONS = 5;
 }
