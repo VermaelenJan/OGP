@@ -1374,7 +1374,8 @@ public class Unit {
 	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
 	 */
 	public boolean isActualMoving(){
-		return (isMoving() && !(positionObj.isAtMiddleOfCube() && (isWorking() || isResting())));
+		return ((isMoving() && !(positionObj.isAtMiddleOfCube() && isWorking())) && 
+				!(positionObj.isAtMiddleZOfCube() && isResting()));
 	}
 	
 	/**
@@ -2519,13 +2520,12 @@ public class Unit {
 	 */
 	@Model
 	private void newDefaultBehaviour(){
-//		switch (ConstantsUtils.random.nextInt(4)) {
-//			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
-//			case 1: work(); break;						//Exception will never be thrown.
-//			case 2: rest(); break;
-//			case 3: attackPotentialEnemy(); break;
-//		}
-	work();
+		switch (ConstantsUtils.random.nextInt(4)) {
+			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
+			case 1: work(); break;						//Exception will never be thrown.
+			case 2: rest(); break;
+			case 3: attackPotentialEnemy(); break;
+		}
 	}
 	
 //	/**
