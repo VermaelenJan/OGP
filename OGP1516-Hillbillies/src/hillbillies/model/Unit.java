@@ -1015,7 +1015,9 @@ public class Unit {
 				setFalling(false);
 				if (!positionObj.isAtMiddleOfCube()){
 					double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
-					this.target = back;
+					if (!Arrays.equals(positionObj.getLocation(), back)) {
+						this.target = back;
+					}
 				}
 			}
 		}
@@ -1030,7 +1032,9 @@ public class Unit {
 		} catch (IllegalPositionException e) {
 			if (!positionObj.isAtMiddleOfCube()){
 				double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
-				this.target = back;
+				if (!Arrays.equals(positionObj.getLocation(), back)) {
+					this.target = back;
+				}
 			}
 
 		}
@@ -1923,7 +1927,7 @@ public class Unit {
 	}
 	
 	public boolean isWorkingShow(){
-		return (isWorking() && !isActualMoving());
+		return (isWorking() && !isActualMoving() && workType == 5 );
 	}
 	
 	/**
