@@ -1003,7 +1003,13 @@ public class Unit {
 			
 			if (positionObj.getOccupiedCube()[2] != prevZPos){ // update hitpoints
 				int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
-				setHitpoints(getHitpoints()-10*nbZLvls);
+				double newHitpoints = getHitpoints()-10*nbZLvls;
+				if (newHitpoints > 0) {
+					setHitpoints(newHitpoints);
+				}
+				else {
+					setHitpoints(0);
+				}
 			}
 		}
 		
@@ -1691,63 +1697,68 @@ public class Unit {
 	}
 	
 	public void moveTo(int[] endTarget){ //TODO: exception if unreachable??? of gewoon negeren? kzou voor exception gaan
-
-		globalTarget = endTarget;
+		if (!world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()) {
+			return; //TODO: exception if target not passable? of gewoon negeren? :p (nu ist gewoon negeren)
+		}
 				
 		int[] currentCubeLoc = positionObj.getOccupiedCube();
 		Cube currentCube = world.getCube(currentCubeLoc[0], currentCubeLoc[1], currentCubeLoc[2]);
 		
-		if (!Arrays.equals(endTarget,currentCubeLoc)){
-			
-			queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 );
-						
-			
-			boolean expandingQueue = true;
+		if (Arrays.equals(endTarget, currentCubeLoc)){
+			return;
+		}
+		
+		globalTarget = endTarget;
+					
+		queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 );		
+		
+		boolean expandingQueue = true;
 
-			while (!queue.containsKey(currentCube) && expandingQueue){
-				
-				HashMap<Cube,Integer> temp = new HashMap<Cube, Integer>();
-				for (HashMap.Entry<Cube, Integer> cube : queue.entrySet()){
-					if (cube.getValue() == currentLvl){
-						temp.put(cube.getKey(), currentLvl);
-					}
-				}
-				
-				int prevQLength = queue.size();
-				for (HashMap.Entry<Cube, Integer> tempCube : temp.entrySet()){
-					search(tempCube.getKey().getCubePosition(),currentLvl);
-				}
-				int newQLength = queue.size();
-				currentLvl += 1;
-				if (prevQLength == newQLength) {
-					expandingQueue = false;
+		while (!queue.containsKey(currentCube) && expandingQueue){
+			
+			HashMap<Cube,Integer> temp = new HashMap<Cube, Integer>();
+			for (HashMap.Entry<Cube, Integer> cube : queue.entrySet()){
+				if (cube.getValue() == currentLvl){
+					temp.put(cube.getKey(), currentLvl);
 				}
 			}
-			if (expandingQueue) {
-				Cube nextCube = null;
-				
-				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-					if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
-						currentLvl = queue.get(cube);
-						nextCube = cube;
-					}
-				}
-				
-				
-				//van hier
-				if (nextCube != null) { //TODO: proberen snappen? hoe kan nextCube op deze plaats ooit null zijn? (zonder de if() krijgen we nullpointers
-					// als we 100 units elkaar laten forceren)
-					int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
-					int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
-					int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
-					moveToAdjacent(dx,dy,dz, true);	
-				}
-				//tot hier is louche
-
-				queue = new HashMap<Cube, Integer>();
-				currentLvl = 0;
+			
+			int prevQLength = queue.size();
+			for (HashMap.Entry<Cube, Integer> tempCube : temp.entrySet()){
+				search(tempCube.getKey().getCubePosition(),currentLvl);
+			}
+			int newQLength = queue.size();
+			currentLvl += 1;
+			if (prevQLength == newQLength) {
+				expandingQueue = false;
 			}
 		}
+		
+		if (expandingQueue) {
+			Cube nextCube = null;
+			
+			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+				if (queue.containsKey(cube) && queue.get(cube) == currentLvl){
+					currentLvl = queue.get(cube);
+					nextCube = cube;
+				}
+			}
+			
+			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+				if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
+					currentLvl = queue.get(cube);
+					nextCube = cube;
+				}
+			}
+			
+			int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
+			int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
+			int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
+			moveToAdjacent(dx,dy,dz, true);	
+		}
+		
+		queue = new HashMap<Cube, Integer>();
+		currentLvl = 0;
 	}
 
 	
@@ -2120,10 +2131,8 @@ public class Unit {
 			if (ConstantsUtils.getPossibilitySucces(possibilityDodge)){
 				this.positionObj.setRandomDodgedLocation();
 				this.setOrientationInFight(other);
-				
 				updateExperience(20);
-			
-
+		
 			}
 			
 			else{
@@ -2135,7 +2144,12 @@ public class Unit {
 				}
 				else {
 					double newHitPoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
-					this.setHitpoints(newHitPoints);
+					if (newHitPoints > 0) {
+						this.setHitpoints(newHitPoints);
+					}
+					else {
+						this.setHitpoints(0);
+					}
 					other.updateExperience(20);
 
 				}

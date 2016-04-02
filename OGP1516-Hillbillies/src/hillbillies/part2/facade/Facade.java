@@ -269,6 +269,9 @@ public class Facade implements IFacade {
 
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
+		for (int i = 0; i<10; i++){
+			world.advanceTime(dt);
+		}
 		world.advanceTime(dt);
 	}
 
