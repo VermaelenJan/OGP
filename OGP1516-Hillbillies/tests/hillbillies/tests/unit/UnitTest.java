@@ -8,12 +8,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.Cube;
+import hillbillies.model.CubeType;
 import hillbillies.model.Unit;
+import hillbillies.model.World;
 import hillbillies.model.exceptions.IllegalAdjacentPositionException;
 import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import ogp.framework.util.Util;
 
 /**
@@ -25,20 +29,39 @@ import ogp.framework.util.Util;
 public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	private static String ValidName;
-	private static int[] ValidLocation = {0, 24, 49};
+	private static int[] ValidLocation = {0, 2, 4};
 	private static Unit testUnit;
 	private static Unit validUnit;
+	private static World smallWorld;
 
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	ValidName = "This 's a \"test\"";
+	DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+	Cube[][][] worldCubes = new Cube[5][5][5];
+	for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+		for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+			for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+				int[] position = {xIndex, yIndex, zIndex};
+				Cube cube = new Cube(position, CubeType.AIR);
+				worldCubes[xIndex][yIndex][zIndex] = cube;
+			}	
+		}	
+	}
+	int[] pos1 = {0, 2, 3};
+	Cube cube1 = new Cube(pos1, CubeType.ROCK);
+	worldCubes[0][2][3] = cube1;
+	int[] pos2 = {0, 3, 3};
+	Cube cube2 = new Cube(pos2, CubeType.ROCK);
+	worldCubes[0][3][3] = cube2;
+	smallWorld = new World(worldCubes, defaultTerrainChangeListener);
 	}
 	
 	@Before
 	public void setUp() throws Exception {
-		validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
-		testUnit = new Unit(ValidLocation, ValidName, 60, 50, 70, 90);
+		validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
+		testUnit = new Unit(ValidLocation, ValidName, 60, 50, 70, 90, smallWorld);
 	}
 	
 	
@@ -46,12 +69,12 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 
 	@Test
 	public void constructor_Legal() throws Exception {
-		int[] location = {10, 20, 30};
-		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
+		int[] location = {0, 2, 4};
+		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
 		double[] position = unit.getLocation();
-		assertEquals(10.5, position[0], Util.DEFAULT_EPSILON);
-		assertEquals(20.5, position[1], Util.DEFAULT_EPSILON);
-		assertEquals(30.5, position[2], Util.DEFAULT_EPSILON);
+		assertEquals(0.5, position[0], Util.DEFAULT_EPSILON);
+		assertEquals(2.5, position[1], Util.DEFAULT_EPSILON);
+		assertEquals(4.5, position[2], Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
@@ -66,14 +89,14 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 
 	@Test (expected=IllegalPositionException.class)
 	public void constructor_OutOfWorldPos() throws Exception {
-		int[] location = {0, 0, 50};
-		new Unit(location, ValidName, 0, 0, 0, 0);
+		int[] location = {0, 0, 5};
+		new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
 	}
 	
 	@Test (expected=IllegalPositionException.class)
 	public void constructor_OutOfWorldNeg() throws Exception {
-		int[] location = {10, 10, -1};
-		new Unit(location, ValidName, 0, 0, 0, 0);
+		int[] location = {0, 0, -1};
+		new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
 	}	
 
 	
@@ -81,7 +104,7 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void constructor_LegalName() throws Exception {
-		new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
 	}
 	
 	@Test
@@ -111,7 +134,7 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void construction_PropertiesMin() throws Exception {
-		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
 		assertEquals(25,unit.getWeight(),Util.DEFAULT_EPSILON);
 		assertEquals(25,unit.getStrength(),Util.DEFAULT_EPSILON);
 		assertEquals(25,unit.getToughness(),Util.DEFAULT_EPSILON);
@@ -120,7 +143,7 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void construction_PropertiesMax() throws Exception {
-		Unit unit = new Unit(ValidLocation, ValidName, 4000, 3989, 2045, 20000);
+		Unit unit = new Unit(ValidLocation, ValidName, 4000, 3989, 2045, 20000, smallWorld);
 		assertEquals(100,unit.getWeight(),Util.DEFAULT_EPSILON);
 		assertEquals(100,unit.getStrength(),Util.DEFAULT_EPSILON);
 		assertEquals(100,unit.getToughness(),Util.DEFAULT_EPSILON);
@@ -330,9 +353,9 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	@Test
 	public void moveToAdjacent_Check() throws Exception {
 
-		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
 		assertFalse(unit.isActualMoving());
-		unit.moveToAdjacent(1, 0, -1);
+		unit.moveToAdjacent(0, 1, 0);
 		unit.advanceTime(0.001);
 		assertTrue(unit.isActualMoving());
 		for (int i = 1; i<10; i++) {
@@ -342,7 +365,7 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 		}
 		assertFalse(unit.isActualMoving());
 		List <Double> expectedLocation = new ArrayList <Double>();
-		expectedLocation.add(1.5);expectedLocation.add(24.5);expectedLocation.add(48.5);
+		expectedLocation.add(0.5);expectedLocation.add(3.5);expectedLocation.add(4.5);
 		assertEquals(expectedLocation.get(0), unit.getLocation()[0], Util.DEFAULT_EPSILON);
 		assertEquals(expectedLocation.get(1), unit.getLocation()[1], Util.DEFAULT_EPSILON);
 		assertEquals(expectedLocation.get(2), unit.getLocation()[2], Util.DEFAULT_EPSILON);
@@ -372,31 +395,31 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void moveTo_Check() throws Exception {
-		int[] location = {10, 20, 30};
-		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
+		int[] location = {0, 2, 4};
+		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
 		
-		int[] target = {12, 20, 30};
+		int[] target = {0, 3, 4};
 		
-		assertEquals(10.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
-		assertEquals(20.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
-		assertEquals(30.5, unit.getLocation()[2], Util.DEFAULT_EPSILON);
+		assertEquals(0.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
+		assertEquals(2.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
+		assertEquals(4.5, unit.getLocation()[2], Util.DEFAULT_EPSILON);
 
 		unit.moveTo(target);
 		unit.advanceTime(0.1);
+		
+		assertEquals(0.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
+		assertNotEquals(2.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
+		assertEquals(4.5, unit.getLocation()[2], Util.DEFAULT_EPSILON);
 
-		assertEquals(10, (int) unit.getOccupiedCube()[0]);
-		assertEquals(20, (int) unit.getOccupiedCube()[1]);
-		assertEquals(30, (int) unit.getOccupiedCube()[2]);
-		
-		assertNotEquals(10.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
-		assertEquals(20.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
-		assertEquals(30.5, unit.getLocation()[2], Util.DEFAULT_EPSILON);
-		
-		for (int i = 1; i<20; i++) {
+		assertEquals(0, (int) unit.getOccupiedCube()[0]);
+		assertEquals(2, (int) unit.getOccupiedCube()[1]);
+		assertEquals(4, (int) unit.getOccupiedCube()[2]);
+				
+		for (int i = 1; i<10; i++) {
 			unit.advanceTime(0.1);
 		}
 		
-		assertEquals((double) 12.5, unit.getLocation()[0], Util.DEFAULT_EPSILON);
+		assertEquals((double) 3.5, unit.getLocation()[1], Util.DEFAULT_EPSILON);
 	}
 	
 	@Test (expected=IllegalPositionException.class)
@@ -411,82 +434,46 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	// Speed tests
 	
 	@Test
-	public void getSpeed_XYWalk() {
-		int[] target = {24, 0, 49}; 
+	public void getSpeed_Walk() {
+		int[] target = {0, 3, 4}; 
 		testUnit.moveTo(target);
 		assertEquals(1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
-	public void getSpeed_XYSprint() {
-		int[] target = {24, 0, 49}; 
+	public void getSpeed_Sprint() {
+		int[] target = {0, 3, 4}; 
 		testUnit.moveTo(target);
 		testUnit.startSprinting();
 		assertEquals(2*1.5*(50.0+70.0)/(200.0*60.0/100.0), testUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
-	}
-	
-	@Test
-	public void getSpeed_ZWalkUp() {
-		int[] location = {0,0,0};
-		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
-		int[] target = {0, 0, 2}; 
-		unit.moveTo(target);
-		assertEquals(0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
-	}
-	
-	@Test
-	public void getSpeed_ZWalkDown() {
-		int[] target = {0, 24, 40}; 
-		validUnit.moveTo(target);
-		assertEquals(1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
-	}
-	
-	public void getSpeed_ZSprintUp() {
-		int[] location = {0,0,0};
-		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
-		int[] target = {0, 0, 2}; 
-		unit.moveTo(target);
-		unit.startSprinting();
-		assertEquals(2.0*0.5*1.5*(50.0+70.0)/(200.0*60.0/100.0), unit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
-	}
-	
-	@Test
-	public void getSpeed_XYZSprintDown() {
-		int[] target = {24, 0, 0}; 
-		validUnit.moveTo(target);
-		validUnit.startSprinting();
-		assertEquals(2.0*1.2*1.5*(50.0+70.0)/(200.0*60.0/100.0), validUnit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
 	}
 	
 	// Rest test (eg. stamina)
 	
 	@Test
 	public void rest_Check() {
-		int[] target = {49, 49, 49};
+		int[] target = {0, 3, 4};
 		validUnit.moveTo(target);
 		validUnit.startSprinting();
-		for (int i = 1; i<16; i++) {
-			validUnit.advanceTime(0.1);
-		}
+		validUnit.advanceTime(0.1);
 		assertTrue(validUnit.isSprinting());
-		validUnit.advanceTime(0.1);		
-		assertFalse(validUnit.isSprinting());
-		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
-		validUnit.moveTo(validUnit.getOccupiedCube());
-		for (int i = 1; i<20; i++) {
+		for (int i = 1; i<10; i++) {
 			validUnit.advanceTime(0.1);
 		}
+		assertFalse(validUnit.isActualMoving());
+		assertNotEquals(validUnit.getMaxHitpointsStamina(), validUnit.getStamina(), Util.DEFAULT_EPSILON);
+		validUnit.moveTo(validUnit.getOccupiedCube());
 		validUnit.rest();
+		double prevStamina = validUnit.getStamina();
 		validUnit.advanceTime(0.1);
-		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
+		assertEquals(prevStamina, validUnit.getStamina(), Util.DEFAULT_EPSILON);
 		validUnit.advanceTime(0.1);
-		assertEquals((double) validUnit.getToughness()/100, validUnit.getStamina(), Util.DEFAULT_EPSILON);
+		assertEquals((double) prevStamina + (double) validUnit.getToughness()/100, validUnit.getStamina(), Util.DEFAULT_EPSILON);
 		
-		for (int i = 1; i<57; i++) {
+		for (int i = 1; i<13; i++) {
 			validUnit.advanceTime(0.18);
 			assertTrue(validUnit.getMaxHitpointsStamina() > (int) validUnit.getStamina());
 		}
-		
 		validUnit.advanceTime(0.18);
 		assertEquals(validUnit.getMaxHitpointsStamina(), (int) validUnit.getStamina());
 		
@@ -495,26 +482,21 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	// Rest oneHP test
 	@Test
 	public void rest_OneHPRestTimeCheck() {
-		int[] target = {49, 49, 49};
+		int[] target = {0, 3, 4};
 		validUnit.moveTo(target);
 		validUnit.startSprinting();
-		while (validUnit.getStamina() > 0) {
+		for (int i = 1; i<10; i++) {
 			validUnit.advanceTime(0.1);
 		}
-		assertEquals(0, validUnit.getStamina(), Util.DEFAULT_EPSILON);
-		validUnit.moveTo(validUnit.getOccupiedCube());
-		
-		for (int i = 1; i<50; i++) {
-			validUnit.advanceTime(0.1);
-		}
+		assertNotEquals(validUnit.getMaxHitpointsStamina(), validUnit.getStamina(), Util.DEFAULT_EPSILON);
 		
 		float timeForOneHP = (float) ((float) 1/(float)(validUnit.getToughness()/200.0/0.2));
 		validUnit.rest();
-		while (timeForOneHP >= 0.1) {
+		while (timeForOneHP > 0.1) {
 			timeForOneHP-=0.1;
 			validUnit.advanceTime(0.1);
 		}
-		int[] target2 = {49, 0, 0};
+		int[] target2 = {0, 2, 4};
 		validUnit.moveTo(target2);
 		assertFalse(validUnit.isActualMoving());
 		assertTrue(validUnit.isResting());
@@ -522,15 +504,19 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 		assertTrue(validUnit.isResting());
 		assertFalse(validUnit.isWorkingShow());
 		validUnit.advanceTime(0.1);
-		validUnit.work();
+		int[] workCube = {0, 2, 3}; 
+		validUnit.workAt(workCube);
 		assertTrue(validUnit.isWorkingShow());
 		assertFalse(validUnit.isResting());
 		
 		validUnit.rest();
+		assertTrue(validUnit.isResting());
 		
 		int[] location = {validUnit.getOccupiedCube()[0], validUnit.getOccupiedCube()[1], validUnit.getOccupiedCube()[2]};
-		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
+		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
 		
+		smallWorld.addUnit(validUnit);
+		smallWorld.addUnit(validUnit);
 		validUnit.attack(unit);
 		assertTrue(validUnit.isAttacking());
 		assertFalse(validUnit.isResting());
@@ -646,7 +632,8 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	@Test
 	public void work_Check() {
 		assertFalse(validUnit.isWorkingShow());
-		validUnit.work();
+		int[] cubeWork = {0, 3, 3};
+		validUnit.workAt(cubeWork);
 		assertTrue(validUnit.isWorkingShow());
 		
 		float timeToWork = (float) 500/validUnit.getStrength();
