@@ -13,15 +13,19 @@ import hillbillies.model.exceptions.IllegalPositionException;
 
 
 /**
- * A class of positions.
+ * A class of position in a world.
+ * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
 @Value
 class Position {
 	
-	private World world;
-
+	/**
+	 * Initialize this new position with the given world.
+	 * 
+	 * @param world
+	 */
 	protected Position(World world){
 		this.world = world;	
 	}
@@ -204,4 +208,9 @@ class Position {
 			setFreeLocation(currMiddleCube);
 		}
 	}
+	
+	/**
+	 * Variable registering the world of this position.
+	 */
+	private World world;
 }
