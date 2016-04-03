@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.security.acl.Owner;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -210,6 +211,11 @@ public class Unit {
 		}
 		this.faction = faction;
 		
+	}
+	
+	@Raw
+	protected boolean canHaveAsFaction(Faction faction){
+		return ((faction == null) || (!faction.isTerminated()));
 	}
 	
 	private boolean isTerminated;
@@ -938,7 +944,7 @@ public class Unit {
 	// ADVANCE TIME
 	
 	/**
-	 * Advances the game with duration dt.
+	 * Advance the game with duration dt.
 	 * @param dt
 	 * 		  	The duration which the game time is advanced.
 	 * @effect The new time since the unit has stopped resting is equal to the previous time

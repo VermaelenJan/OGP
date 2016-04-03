@@ -4,17 +4,36 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
 import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
 
 /**
+ * A class of worlds in which units can conduct activities.
+ * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 0
  */
 public class World {
 	
+	/**
+	 * Initialize this world with the given worldcubes.
+	 * 
+	 * @param worldCubes
+	 * 		The worldcubes for this new world.
+	 * @param terrainChangeListener
+	 * 		The terrainChangeListener for this new world.
+	 * 
+	 * @post The x, y and z dimensions of this new world are equal to 
+	 * 	the x, y and z dimensions of the worldcubes.
+	 * @effect If a worldcube on a position x,y,z is passable terrain, 
+	 * 		the connected to border tool is notified to change from solid to passable.
+	 * @effect The terrain is updated.
+	 * 
+	 */
 	public World(Cube[][][] worldCubes,TerrainChangeListener terrainChangeListener){
 		this.worldCubes = worldCubes;
 		this.worldX = worldCubes.length;
@@ -34,24 +53,15 @@ public class World {
 		}
 		updateConnectedTerrain();
 	}
-
 	
-	public final int getNbCubesX(){
-		return worldX;
-	}
 	
-	public final int getNbCubesY(){
-		return worldY;
-	}
-	
-	public final int getNbCubesZ(){
-		return worldZ;
-	}
-	
-	int worldX;
-	int worldY;
-	int worldZ;
-	
+	// TODO boeit da van die forlussen da da ni in doc staat?
+	/**
+	 * Update the solid terrain for all cubes.
+	 * 
+	 * @effect If the cube is not solid terrain and the cube is not connected to the border
+	 * 		directly or via other solid cubes, the cubes caves in.
+	 */
 	private void updateConnectedTerrain() {
 		for (int xIndex = 0; xIndex<getNbCubesX(); xIndex++) {
 			for (int yIndex = 0; yIndex<getNbCubesY(); yIndex++) {
@@ -64,9 +74,27 @@ public class World {
 			}	
 		}
 	}
-		
-	Cube[][][] worldCubes;
 	
+	/**
+	 * Set the cube on x, y and z position to the given cubetype.
+	 * 
+	 * @param x
+	 * 		The x position of the cube to set.
+	 * @param y
+	 * 		The y position of the cube to set. 
+	 * @param z
+	 * 		The z position of the cube to set.
+	 * @param cubeType
+	 * 		The new cubetype for this cube.
+	 * 
+	 * @effect if the cubetype to set is passable terrain, and the cubetype of the
+	 * 		cube on x,y and z position is not passable terrain, the connected to border tool is notified
+	 * 		to change solid to passable.
+	 * @effect if the cubetype to set is not passable terrain and the cubetype of the 
+	 * 		cube on x,y and z position is passable terrain, the connected to border tool is notified
+	 * 		to change passable to solid.
+	 * @effect the cube at x,y and z position is set in worldcubes to the given cubetype.
+	 */
 	public void setCubeType(int x,int y, int z, CubeType cubeType){
 		if (cubeType.isPassableTerrain() && !this.getCubeType(x, y, z).isPassableTerrain()){
 			CTBTool.changeSolidToPassable(x, y, z);
@@ -78,15 +106,45 @@ public class World {
 
 	}
 	
+	/**
+	 * Return the cube type at the given x,y and z position.
+	 * 
+	 * @param x
+	 * 		The x position of the cube.
+	 * @param y
+	 * 		The y position of the cube.
+	 * @param z
+	 * 		The z position of the cube.
+	 * @return The cubetype of the cube at the given x,y and z position of worldcubes.
+	 */
 	public CubeType getCubeType(int x,int y, int z){
 		return worldCubes[x][y][z].getCubeType();
 	}
 	
+	/**
+	 * Return the cube at the given x,y and z position.
+	 * 
+	 * @param x
+	 * 		The x position of the cube.
+	 * @param y
+	 * 		The y position of the cube.
+	 * @param z
+	 * 		The z position of the cube.
+	 * @return The cube at the given x,y and z position of worldcubes.
+	 */
 	protected Cube getCube(int x, int y, int z) {
 		return worldCubes[x][y][z];
 	}
 	
-	
+	/**
+	 * Advance the game with time step dt. 
+	 * 
+	 * @param dt
+	 * 		The duration dt which the game is advanced.
+	 * @effect time is advanced for all units.
+	 * @effect time is advanced for all boulders.
+	 * @effect time is advanced forr all logs.
+	 */
 	public void advanceTime(double dt){
 		
 		for (Unit unit : getAllUnits()) {
@@ -100,6 +158,24 @@ public class World {
 		}
 	}
 	
+	/**
+	 * Cave in the solid terrain at given x,y and z position.
+	 * 
+	 * @param x
+	 * 		The x position of the cube to cave in.
+	 * @param y
+	 * 		The y position of the cube to cave in.
+	 * @param z
+	 * 		The z position of the cube to cave in.
+	 * 
+	 * @effect The cubetype of the cube at x,y and z position is air.
+	 * @effect the connected to border tool is notified of the changed terrain.
+	 * @effect with a chance of 25% , if the cubetype was rock, there is a new bolder
+	 * 		on the x,y and z position.
+	 * @effect with a chance of 25% , if the cubetype was wood, there is a new log
+	 * 		on the x,y and z position.
+	 * @effect update the terrain.
+	 */
 	protected void caveIn(int x,int y,int z){
 		
 		CubeType cubeType = getCubeType(x, y, z);
@@ -265,11 +341,56 @@ public class World {
 		}
 		return smallestFaction;
 	}
-
-	private ConnectedToBorder CTBTool;
-	private TerrainChangeListener terrainChangeListener;
-
+	
 	public boolean isSolidConnectedToBorder(int x, int y, int z) {
 		return this.CTBTool.isSolidConnectedToBorder(x, y, z);
 	}	
+
+	
+	/**
+	 * Variable registering the connected to border tool of this world.
+	 */
+	private ConnectedToBorder CTBTool;
+	
+	/**
+	 * Variable registeirng the terrainchangelistener of this world.
+	 */
+	private TerrainChangeListener terrainChangeListener;
+
+
+	
+	/**
+	 * Variable registering the wordcubes.
+	 */
+	Cube[][][] worldCubes;
+
+	/**
+	 * Return the number of cubes of this world in the x direction.
+	 */
+	@Basic @Immutable
+	public final int getNbCubesX(){
+		return worldX;
+	}
+	
+	/**
+	 * Return the number of cubes of this world in the y direction.
+	 */
+	@Basic @Immutable
+	public final int getNbCubesY(){
+		return worldY;
+	}
+	
+	/**
+	 * Return the number of cubes of this world in the z direction.
+	 */
+	public final int getNbCubesZ(){
+		return worldZ;
+	}
+	
+	/**
+	 * Variables registering the dimensions of this world.
+	 */
+	int worldX;
+	int worldY;
+	int worldZ;
 }
