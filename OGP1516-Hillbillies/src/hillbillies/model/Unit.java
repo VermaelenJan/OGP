@@ -3,7 +3,6 @@ package hillbillies.model;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
@@ -16,6 +15,7 @@ import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.model.exceptions.IllegalWorkPositionException;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 //TODO: fix doc van ALLES en @'s
 //TODO: remove //code if doc in orde is
@@ -121,8 +121,26 @@ public class Unit {
 	
 		public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
 															throws IllegalPositionException, IllegalNameException {
-			this(CubeLocation, name, weight, strength, agility, toughness, null);
+			this(CubeLocation, name, weight, strength, agility, toughness, createVoidWorld());
 		}
+		
+		private static World createVoidWorld() { //TODO: nog nodig?
+				DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+				int size = 5;
+				Cube[][][] worldCubes = new Cube[size][size][size];
+				for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+					for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+						for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+							int[] position = {xIndex, yIndex, zIndex};
+							Cube cube = new Cube(position, CubeType.AIR);
+							worldCubes[xIndex][yIndex][zIndex] = cube;
+						}	
+					}	
+				}
+		
+				World voidWorld = new World(worldCubes, defaultTerrainChangeListener);
+				return voidWorld;
+			}
 
 //	/**
 //	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility and the default orientation PI/2.
@@ -153,7 +171,8 @@ public class Unit {
 //			throws IllegalPositionException, IllegalNameException {
 //		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
 //	}
-				
+
+		
 	@Basic @Raw
 	public World getWorld(){
 		return this.world;
@@ -161,7 +180,21 @@ public class Unit {
 	
 	@Raw
 	public void setWorld(World world){
-		this.world = world;
+		if (this.world != null) {
+			double[] prevPos = positionObj.getLocation();
+			this.world = world;
+			this.positionObj = new Position(world);
+			try {
+				positionObj.setLocation(prevPos);
+			} catch (IllegalPositionException e) {
+				int[] randomCube = positionObj.getRandomPosition();
+				double[] randomPos = {randomCube[0]+0.5, randomCube[1]+0.5, randomCube[2]+0.5};
+				positionObj.setLocation(randomPos);
+			}
+		}
+		else {
+			this.world = world;
+		}
 	}
 	
 	@Basic @Raw
@@ -519,7 +552,13 @@ public class Unit {
 		else if (strength > currMaxVal)
 			this.strength = currMaxVal;
 		
-		setWeight(getWeight());
+		if (this.carriedObject == null) {
+			setWeight(getWeight());
+		}
+		else {
+			setWeight(getWeight()-carriedObject.getWeight());
+			setFreeWeight(getWeight()+carriedObject.getWeight());
+		}
 	}
 	
 	/**
@@ -608,7 +647,13 @@ public class Unit {
 		else if (agility > currMaxVal)
 			this.agility = currMaxVal; 
 		
-		setWeight(getWeight());
+		if (this.carriedObject == null) {
+			setWeight(getWeight());
+		}
+		else {
+			setWeight(getWeight()-carriedObject.getWeight());
+			setFreeWeight(getWeight()+carriedObject.getWeight());
+		}
 	}
 	
 	/**
@@ -712,10 +757,11 @@ public class Unit {
 	@Raw
 	public int getMaxHitpointsStamina() {
 		if (this.carriedObject == null) {
-			return (int) Math.ceil((((double) getWeight())*((double) getToughness()))/50);
+			return (int) (Math.ceil((double) (((double) getWeight())*((double) getToughness()))/50));
 		}
 		else {
-			 return (int) Math.ceil((((double) (getWeight()-this.carriedObject.getWeight()))*((double) getToughness()))/50);
+			return (int) (Math.ceil((double) (((double) ((double) getWeight()- (double) this.carriedObject.getWeight()))*
+					 																	((double) getToughness()))/50));
 		}
 	}
 	
@@ -852,9 +898,10 @@ public class Unit {
 	
 	private void increaseRandomAttributeBy1(){
 		switch (ConstantsUtils.random.nextInt(3)) {
-		case 0: setStrength(getStrength() + 1);
+		case 0: setStrength(getStrength() + 1);break;
 		case 1: setAgility(getAgility()+ 1); break;						
-		case 2: setToughness(getToughness()+ 1); break;}
+		case 2: setToughness(getToughness()+ 1); break;
+		}
 	}
 	
 	private void increaseRandomAttributes(int experience){
@@ -1004,11 +1051,14 @@ public class Unit {
 			if (positionObj.getOccupiedCube()[2] != prevZPos){ // update hitpoints
 				int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
 				double newHitpoints = getHitpoints()-10*nbZLvls;
-				if (newHitpoints > 0) {
+				if (newHitpoints > 0 && newHitpoints < getMaxHitpointsStamina()) {
 					setHitpoints(newHitpoints);
 				}
-				else {
+				else if (newHitpoints <= 0){
 					setHitpoints(0);
+				}
+				else {
+					setHitpoints(getMaxHitpointsStamina());
 				}
 			}
 		}
@@ -1046,12 +1096,16 @@ public class Unit {
 		}
 		
 		if (isSprinting()) {
-			if (getStamina() - dt*10 > 0){
-				setStamina(getStamina()- dt*10);
+			double newStamina = getStamina() - dt*10;
+			if (0 < newStamina && newStamina < getMaxHitpointsStamina()){
+				setStamina(newStamina);
 			}
-			else {
+			else if (newStamina <= 0) {
 				setStamina(0);
 				stopSprinting();
+			}
+			else {
+				setStamina(getMaxHitpointsStamina());
 			}
 		}
 		else if (isDefaultBehaviourEnabled()) {
@@ -1738,23 +1792,26 @@ public class Unit {
 			Cube nextCube = null;
 			
 			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
-				if (queue.containsKey(cube) && queue.get(cube) == currentLvl){
-					currentLvl = queue.get(cube);
-					nextCube = cube;
-				}
-			}
-			
-			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
 				if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
 					currentLvl = queue.get(cube);
 					nextCube = cube;
 				}
 			}
+			if (nextCube == null) {
+				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+					if (queue.containsKey(cube) && queue.get(cube) == currentLvl){
+						currentLvl = queue.get(cube);
+						nextCube = cube;
+					}
+				}
+			}
 			
-			int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
-			int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
-			int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
-			moveToAdjacent(dx,dy,dz, true);	
+			if (nextCube != null) { //TODO: nog steeds proberen snappen waarom
+				int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
+				int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
+				int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
+				moveToAdjacent(dx,dy,dz, true);	
+			}
 		}
 		
 		queue = new HashMap<Cube, Integer>();
@@ -2143,12 +2200,15 @@ public class Unit {
 					updateExperience(20);
 				}
 				else {
-					double newHitPoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
-					if (newHitPoints > 0) {
-						this.setHitpoints(newHitPoints);
+					double newHitpoints = this.getHitpoints() - (double)((double)other.getStrength()/10);
+					if (newHitpoints > 0 && newHitpoints < getMaxHitpointsStamina()) {
+						this.setHitpoints(newHitpoints);
+					}
+					else if (newHitpoints <= 0) {
+						this.setHitpoints(0);
 					}
 					else {
-						this.setHitpoints(0);
+						this.setHitpoints(getMaxHitpointsStamina());
 					}
 					other.updateExperience(20);
 
@@ -2290,8 +2350,8 @@ public class Unit {
 			stopWorking();
 
 			this.resting = true;
-			setStartRestHitpoints(getHitpoints());
-			setStartRestStamina(getStamina());
+			setStartRestHitpoints((int) getHitpoints());
+			setStartRestStamina((int) getStamina());
 		}
 	}
 	
@@ -2422,7 +2482,7 @@ public class Unit {
 	 * Return the initial hitpoints on the moment the unit started resting.
 	 */
 	@Basic @Model
-	private double getStartRestHitpoints(){
+	private int getStartRestHitpoints(){
 		return this.startRestHitpoints;
 	}
 	
@@ -2436,20 +2496,26 @@ public class Unit {
 	 * 			
 	 */
 	@Model
-	private void setStartRestHitpoints(double hitpoints){
-		this.startRestHitpoints = hitpoints;
+	private void setStartRestHitpoints(int hitpoints){
+		if (hitpoints < getMaxHitpointsStamina()){
+			this.startRestHitpoints = hitpoints;
+
+		}
+		else {
+			this.startRestHitpoints = getMaxHitpointsStamina();
+		}
 	}
 	
 	/**
 	 * Variable registering the hitpoints on the moment the unit started resting. 
 	 */
-	private double startRestHitpoints = 0;
+	private int startRestHitpoints = 0;
 	
 	/**
 	 * Return the initial stamina on the moment the unit started resting.
 	 */
 	@Basic @Model
-	private double getStartRestStamina(){
+	private int getStartRestStamina(){
 		return this.startRestStamina;
 	}
 	
@@ -2462,14 +2528,19 @@ public class Unit {
 	 * 			| new.getStartRestStamina() == stamina	
 	 */
 	@Model
-	private void setStartRestStamina(double stamina){
-		this.startRestStamina = stamina;
+	private void setStartRestStamina(int stamina){
+		if (stamina < getMaxHitpointsStamina()) {
+			this.startRestStamina = stamina;
+		}
+		else {
+			this.startRestStamina = getMaxHitpointsStamina();
+		}
 	}
 	
 	/**
 	 * Variable registering the stamina on the moment the unit started resting.
 	 */
-	private double startRestStamina = 0;
+	private int startRestStamina = 0;
 
 	// DEFAULT BEHAVIOUR
 	
