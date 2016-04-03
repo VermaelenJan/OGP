@@ -79,12 +79,12 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void constructor_EdgeWorld() throws Exception {
-		int[] location = {0, 0, 49};
-		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0);
+		int[] location = {4, 4, 0};
+		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
 		double[] position = unit.getLocation();
-		assertEquals(0.5, position[0], Util.DEFAULT_EPSILON);
-		assertEquals(0.5, position[1], Util.DEFAULT_EPSILON);
-		assertEquals(49.5, position[2], Util.DEFAULT_EPSILON);
+		assertEquals(4.5, position[0], Util.DEFAULT_EPSILON);
+		assertEquals(4.5, position[1], Util.DEFAULT_EPSILON);
+		assertEquals(0.5, position[2], Util.DEFAULT_EPSILON);
 	}
 
 	@Test (expected=IllegalPositionException.class)
@@ -109,7 +109,7 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void constructor_LegalNameSetNGet() throws Exception {
-		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
 		unit.setName("This is OK");
 		assertEquals("This is OK", unit.getName());
 	}
@@ -322,10 +322,10 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	@Test
 	public void getCurrentStamina_SprintCheck() {
 		int[] location = {0, 0, 0};
-		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
+		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90, smallWorld);
 		assertEquals(108,unit.getStamina(),Util.DEFAULT_EPSILON);
 		unit.startSprinting();
-		int[] target = {10, 20, 30};
+		int[] target = {4, 4, 0};
 		unit.moveTo(target);
 		unit.advanceTime(0.1);
 		assertEquals(107, unit.getStamina(),Util.DEFAULT_EPSILON);
@@ -373,7 +373,7 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test (expected=IllegalAdjacentPositionException.class)
 	public void moveToAdjacent_AdjacentException() throws Exception {
-		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
 		unit.moveToAdjacent(2, 0, -1);
 	}
 	
@@ -537,12 +537,12 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void orientation_MovingWheck () throws Exception {
-		int[] location = {10,10,10};
+		int[] location = {0,0,0};
 		Unit unit = new Unit(location, ValidName, 60, 50, 70, 90);
 		assertEquals(Math.PI/2,unit.getOrientation(), Util.DEFAULT_EPSILON);
-		unit.moveToAdjacent(-1, 0, 0);
+		unit.moveToAdjacent(0, 1, 0);
 		unit.advanceTime(0.1);
-		assertEquals(Math.PI, unit.getOrientation(), Util.DEFAULT_EPSILON);
+		assertEquals(Math.PI/2, unit.getOrientation(), Util.DEFAULT_EPSILON);
 	}
 	
 	@Test
@@ -558,14 +558,16 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void fight() throws Exception {
-		int[] location1 = {10, 10, 10};
+		int[] location1 = {0, 0, 0};
 		Unit unit1 = new Unit(location1, ValidName, 0, 0, 0, 0);
-		int[] location2 = {11, 10, 10};
+		smallWorld.addUnit(unit1);
+		int[] location2 = {0, 1, 0};
 		Unit unit2 = new Unit(location2, ValidName, 0, 0, 0, 0);
+		smallWorld.addUnit(unit2);
 		
 		unit1.attack(unit2);
 		unit1.advanceTime(0.1);
-		assertEquals(0, unit1.getOrientation(), Util.DEFAULT_EPSILON);
+		assertEquals(Math.PI/2, unit1.getOrientation(), Util.DEFAULT_EPSILON);
 		assertTrue(unit1.isAttacking());
 		
 		for (int i = 1; i<9; i++) {
@@ -617,11 +619,11 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test (expected=IllegalAttackPosititonException.class)
 	public void fight_IllegalAttPos() throws Exception {
-		int[] location1 = {10, 10, 10};
-		Unit unit1 = new Unit(location1, ValidName, 0, 0, 0, 0);
+		int[] location1 = {0, 0, 0};
+		Unit unit1 = new Unit(location1, ValidName, 0, 0, 0, 0, smallWorld);
 		
-		int[] location2 = {12, 10, 10};
-		Unit unit2 = new Unit(location2, ValidName, 0, 0, 0, 0);
+		int[] location2 = {0, 2, 0};
+		Unit unit2 = new Unit(location2, ValidName, 0, 0, 0, 0, smallWorld);
 		
 		unit1.attack(unit2);
 	}
@@ -666,8 +668,8 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	public void defaultBehaviour_Posibilities() {
 	boolean working = false; boolean resting = false; boolean moving = false;
 	while (!(working && resting && moving)){
-		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0);
-		int[] target = {2,24,49};
+		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
+		int[] target = {0,3,4};
 		unit.moveTo(target);
 		unit.startSprinting();
 		for (int j = 1; j<20; j++) {
@@ -688,5 +690,4 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 		}
 	assertTrue(working && resting && moving);
 	}
-	
 }

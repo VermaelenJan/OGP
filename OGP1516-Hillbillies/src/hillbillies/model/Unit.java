@@ -124,7 +124,7 @@ public class Unit {
 			this(CubeLocation, name, weight, strength, agility, toughness, createVoidWorld());
 		}
 		
-		private static World createVoidWorld() { //TODO: nog nodig?
+		private static World createVoidWorld() {
 				DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
 				int size = 5;
 				Cube[][][] worldCubes = new Cube[size][size][size];
@@ -1806,7 +1806,7 @@ public class Unit {
 				}
 			}
 			
-			if (nextCube != null) { //TODO: nog steeds proberen snappen waarom
+			if (nextCube != null) {
 				int dx = nextCube.getCubePosition()[0]-currentCube.getCubePosition()[0];
 				int dy = nextCube.getCubePosition()[1]-currentCube.getCubePosition()[1];
 				int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
