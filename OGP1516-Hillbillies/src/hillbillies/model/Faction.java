@@ -147,9 +147,8 @@ public class Faction {
 		this.isTerminated = true;
 	}
 	
-	// TODO doc for loop
 	/**
-	 * Check whether or not this faction has units.
+	 * Check whether or not this faction has units, terminates this faction if not.
 	 * @post If this faction consists a unit that is not terminated, the faction is not terminated.
 	 * @post If this faction does not consist of a unit anymore, the faction is terminated.
 	 */
