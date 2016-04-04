@@ -2,6 +2,7 @@ package hillbillies.tests.unit;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -26,9 +27,9 @@ import ogp.framework.util.Util;
  * @version 1.0
  * based on black-box testing
  */
-public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
+public class UnitTest {
 	
-	private static String ValidName;
+	private static String ValidName = "This 's a \"test\"";
 	private static int[] ValidLocation = {0, 2, 4};
 	private static Unit testUnit;
 	private static Unit validUnit;
@@ -37,33 +38,37 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-	ValidName = "This 's a \"test\"";
-	DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
-	Cube[][][] worldCubes = new Cube[5][5][5];
-	for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
-		for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
-			for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
-				int[] position = {xIndex, yIndex, zIndex};
-				Cube cube = new Cube(position, CubeType.AIR);
-				worldCubes[xIndex][yIndex][zIndex] = cube;
-			}	
-		}	
-	}
-	int[] pos1 = {0, 2, 3};
-	Cube cube1 = new Cube(pos1, CubeType.ROCK);
-	worldCubes[0][2][3] = cube1;
-	int[] pos2 = {0, 3, 3};
-	Cube cube2 = new Cube(pos2, CubeType.ROCK);
-	worldCubes[0][3][3] = cube2;
-	smallWorld = new World(worldCubes, defaultTerrainChangeListener);
 	}
 	
 	@Before
 	public void setUp() throws Exception {
+		smallWorld = createSmallWorld();
+		
 		validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
 		testUnit = new Unit(ValidLocation, ValidName, 60, 50, 70, 90, smallWorld);
 	}
 	
+	public World createSmallWorld() {
+		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+		Cube[][][] worldCubes = new Cube[5][5][5];
+		for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+			for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+				for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+					int[] position = {xIndex, yIndex, zIndex};
+					Cube cube = new Cube(position, CubeType.AIR);
+					worldCubes[xIndex][yIndex][zIndex] = cube;
+				}	
+			}	
+		}
+		int[] pos1 = {0, 2, 3};
+		Cube cube1 = new Cube(pos1, CubeType.ROCK);
+		worldCubes[0][2][3] = cube1;
+		int[] pos2 = {0, 3, 3};
+		Cube cube2 = new Cube(pos2, CubeType.ROCK);
+		worldCubes[0][3][3] = cube2;
+		smallWorld = new World(worldCubes, defaultTerrainChangeListener);
+		return smallWorld;
+	}
 	
 	// Position tests
 
@@ -658,36 +663,48 @@ public class UnitTest { //TODO: alles fixen en [2] --> [0][0]
 	
 	@Test
 	public void defaultBehaviour_Check() {
-	validUnit.startDefaultBehaviour();
-	assertTrue(validUnit.isDefaultBehaviourEnabled());
-	validUnit.stopDefaultBehaviour();
-	assertFalse(validUnit.isDefaultBehaviourEnabled());
+		validUnit.startDefaultBehaviour();
+		assertTrue(validUnit.isDefaultBehaviourEnabled());
+		validUnit.stopDefaultBehaviour();
+		assertFalse(validUnit.isDefaultBehaviourEnabled());
 	}
 	
 	@Test
 	public void defaultBehaviour_Posibilities() {
-	boolean working = false; boolean resting = false; boolean moving = false;
-	while (!(working && resting && moving)){
-		Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
-		int[] target = {0,3,4};
-		unit.moveTo(target);
-		unit.startSprinting();
-		for (int j = 1; j<20; j++) {
-		unit.advanceTime(0.2);
+		boolean working = false; boolean resting = false; boolean moving = false; boolean attacking = false;
+		while (!(working && resting && moving && attacking)){
+			smallWorld = createSmallWorld();
+			Unit unit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
+			validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
+			int[] target = {0,3,4};
+			unit.moveTo(target);
+			unit.startSprinting();
+			for (int j = 1; j<20; j++) {
+			smallWorld.advanceTime(0.2);
+			}
+			assertTrue(Arrays.equals(target, unit.getOccupiedCube()));
+			assertFalse(unit.isActualMoving()||unit.isResting()||unit.isWorkingShow()||unit.isAttacking());
+			unit.startDefaultBehaviour();
+			assertTrue(unit.isDefaultBehaviourEnabled());
+			
+			while (!(unit.isWorkingShow() || unit.isActualMoving() || unit.isResting() || unit.isAttacking())) {
+				smallWorld.advanceTime(0.01);
+			}
+
+			if (!working){
+				working = unit.isWorkingShow();
+			}
+			if (!resting){
+				resting = unit.isResting();
+			}
+			if (!moving){
+				moving = unit.isActualMoving();
+			}
+			if (!attacking){
+				attacking = unit.isAttacking();
+			}
+			assertTrue((unit.isWorkingShow() || unit.isActualMoving() || unit.isResting() || unit.isAttacking()));
 		}
-		unit.startDefaultBehaviour();
-		unit.advanceTime(0.001);
-		if (!working){
-			working = unit.isWorkingShow();
-		}
-		if (!resting){
-			resting = unit.isResting();
-		}
-		if (!moving){
-			moving = unit.isActualMoving();
-		}
-		assertTrue((unit.isWorkingShow() || unit.isActualMoving() || unit.isResting()));
-		}
-	assertTrue(working && resting && moving);
+	assertTrue(working && resting && moving && attacking);
 	}
 }
