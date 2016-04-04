@@ -25,6 +25,7 @@ class Position {
 	 * Initialize this new position with the given world.
 	 * 
 	 * @param world
+	 * 		The world for this new position.
 	 */
 	protected Position(World world){
 		this.world = world;	

@@ -198,150 +198,21 @@ public class World {
 	updateConnectedTerrain();
 	}
 	
-	Set<Boulder> boulders = new HashSet<Boulder>();
-	
-	protected Set<Boulder> getBoulders(){
-		return boulders;
-	}
-	
-	public Set<Boulder> getBouldersWorld() {
-		Set<Boulder> bouldersInWorld = new HashSet<Boulder>();
-		for (Boulder boulder : getBoulders()) {
-			if (!boulder.isTerminated()){
-				bouldersInWorld.add(boulder);
-			}
-		}
-		return bouldersInWorld;
-	}
-	
-	Set<Log> logs = new HashSet<Log>();
-	
-	protected Set<Log> getLogs(){
-		return logs;
-	}
-	
-	public Set<Log> getLogsWorld() {
-		Set<Log> logsInWorld = new HashSet<Log>();
-		for (Log log : getLogs()) {
-			if (!log.isTerminated()){
-				logsInWorld.add(log);
-			}
-		}
-		return logsInWorld;
-	}
-	
-	protected Boulder getBoulderAtCube(int[] location){
-		for (Boulder boulder : getBouldersWorld()){
-			if (Arrays.equals(boulder.getOccupiedCube(), location)){
-				return boulder;
-			}
-		}
-		return null;  
-	}
-	
-	protected Log getLogAtCube(int[] location){
-		for (Log log : getLogsWorld()){
-			if (Arrays.equals(log.getOccupiedCube(), location)){
-				return log;
-			}
-		}
-		return null;  
-	}
-	
-	
-	Set<Faction> factions = new HashSet<Faction>();
-	
-	protected void addFaction(Faction faction) {
-		factions.add(faction);
-	}
-	
-	private Set<Faction> getAllFactions(){
-		return factions;
-	}
-	
-	public Set<Faction> getActiveFactions(){
-		Set<Faction> actives = new HashSet<Faction>();
-		
-		for (Faction faction : getAllFactions()){
-			if (!faction.isTerminated()){
-				actives.add(faction);
-			}
-		}
-		return actives;
-	}
-	
-	private int getTotalNbUnits(){
-		int nbUnitsSoFar = 0;
-		for (Faction faction : getActiveFactions()){
-			nbUnitsSoFar += faction.getNbUnits();
-		}
-		return nbUnitsSoFar;
-	}
-	
-	public Set<Unit> getAllUnits() {
-		Set<Unit> allUnitsSoFar = new HashSet<>();
-		for (Faction faction : getActiveFactions()) {
-			allUnitsSoFar.addAll(faction.getUnits());
-		}
-		return allUnitsSoFar;
-	}
-	
-	
-	public Unit spawnUnit(){
-		Unit newUnit = createRandomUnit();
-		newUnit.setWorld(this);
-		if(addUnit(newUnit)) {
-			return newUnit;
-		}
-		else {
-			newUnit.terminate();
-			return newUnit;
-		}
-	}
-	
-	public boolean addUnit(Unit unit) {
-		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
-			if (getActiveFactions().size() < ConstantsUtils.MAX_FACTIONS){
-				Faction newFaction = new Faction(this);	
-				unit.setFaction(newFaction);
-				newFaction.addUnit(unit);
-			}
-			else{ // else if (try-catch-condition (max Units in world))
-				try {
-					unit.setFaction(getSmallestFaction());
-					getSmallestFaction().addUnit(unit);
-				} catch (IllegalValueException e) {/** TODO? not in part 2, 100 < 5*50**/}
-			}
-			return true;
-		}
-		return false;
-	}
-			
-	
-	private Unit createRandomUnit() {
-		Position positionObj = new Position(this);
 
-		Unit unit = new Unit(positionObj.getRandomPosition(),"Name",
-				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
-				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
-				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 
-				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),this);
-
-		return unit;
-	}
-
-	private Faction getSmallestFaction() {
-		Faction smallestFaction = null;
-		int smallestNb = Integer.MAX_VALUE;
-		for (Faction faction : getActiveFactions()){
-			if (faction.getNbUnits() < smallestNb) {
-				smallestNb = faction.getNbUnits();
-				smallestFaction = faction;
-			}
-		}
-		return smallestFaction;
-	}
 	
+	/**
+	 * Check whether the cube at position x,y,z is directly or indirectly
+	 * connected to the borders via other solid cubes.
+	 * 
+	 * @param x
+	 * 		The x position to check.
+	 * @param y
+	 * 		The y position to check.
+	 * @param z
+	 * 		The z position to check.
+	 * @return True if and only if the cube at x,y,z is connected to the borders
+	 * 		directly or indirectly via other solid cubes.
+	 */
 	public boolean isSolidConnectedToBorder(int x, int y, int z) {
 		return this.CTBTool.isSolidConnectedToBorder(x, y, z);
 	}	
@@ -393,4 +264,248 @@ public class World {
 	int worldX;
 	int worldY;
 	int worldZ;
+
+	// BOULDER
+	
+	/**
+	 * Return a set with all the boulders of this world.
+	 */
+	protected Set<Boulder> getBoulders(){
+		return boulders;
+	}
+	
+	/**
+	 * Return a set with all the boulders of this world which are not terminated.
+	 * 
+	 * @effect If the boulder is not terminated, the boulder is in the set to return.
+	 */
+	public Set<Boulder> getBouldersWorld() {
+		Set<Boulder> bouldersInWorld = new HashSet<Boulder>();
+		for (Boulder boulder : getBoulders()) {
+			if (!boulder.isTerminated()){
+				bouldersInWorld.add(boulder);
+			}
+		}
+		return bouldersInWorld;
+	}
+	
+	/**
+	 * Return the boulder at the given location.
+	 * 
+	 * @param location
+	 * 		The location to
+	 * @return
+	 */
+	protected Boulder getBoulderAtCube(int[] location){
+		for (Boulder boulder : getBouldersWorld()){
+			if (Arrays.equals(boulder.getOccupiedCube(), location)){
+				return boulder;
+			}
+		}
+		return null;  
+	}
+	
+	/**
+	 * @invar Each boulder referenced in this set is effective.
+	 */
+	Set<Boulder> boulders = new HashSet<Boulder>();
+	
+	
+	// LOGS
+	
+	/**
+	 * Return a set with all the logs of this world.
+	 */
+	protected Set<Log> getLogs(){
+		return logs;
+	}
+	
+	/**
+	 * Return a set with all the logs of this world which are not terminated.
+	 * 
+	 * @effect If the log is not terminated, the log is in the set to return.
+	 */
+	public Set<Log> getLogsWorld() {
+		Set<Log> logsInWorld = new HashSet<Log>();
+		for (Log log : getLogs()) {
+			if (!log.isTerminated()){
+				logsInWorld.add(log);
+			}
+		}
+		return logsInWorld;
+	}
+	
+	/**
+	 * Return the log at the given location.
+	 * 
+	 * @param location
+	 * 		The location to check for a log.
+	 * @return a log if a log is present on the givene location.	 * 
+	 */
+	protected Log getLogAtCube(int[] location){
+		for (Log log : getLogsWorld()){
+			if (Arrays.equals(log.getOccupiedCube(), location)){
+				return log;
+			}
+		}
+		return null;  
+	}
+	
+	/**
+	 * @invar Each log referenced in this set is effective.
+	 */
+	Set<Log> logs = new HashSet<Log>();
+
+	
+	// FACTION 
+	
+	/**
+	 * Return a set with all the factions.
+	 */
+	private Set<Faction> getAllFactions(){
+		return factions;
+	}
+	
+	/**
+	 * Return a set with all the active(= not terminated) factions.
+	 */
+	public Set<Faction> getActiveFactions(){
+		Set<Faction> actives = new HashSet<Faction>();
+		
+		for (Faction faction : getAllFactions()){
+			if (!faction.isTerminated()){
+				actives.add(faction);
+			}
+		}
+		return actives;
+	}
+	
+	/**
+	 * Return the smallest active faction.
+	 */
+	private Faction getSmallestFaction() {
+		Faction smallestFaction = null;
+		int smallestNb = Integer.MAX_VALUE;
+		for (Faction faction : getActiveFactions()){
+			if (faction.getNbUnits() < smallestNb) {
+				smallestNb = faction.getNbUnits();
+				smallestFaction = faction;
+			}
+		}
+		return smallestFaction;
+	}
+	
+	/**
+	 * Add the given faction to the set of factions of this world.
+	 * @param faction
+	 * 		The faction to be added.
+	 * @pre The given faction is effective and already referencing this world.
+	 * @post This world has the given faction as one of its factions.
+	 */
+	protected void addFaction(Faction faction) {
+		assert ((faction != null) && (faction.getWorld() == this) );
+		factions.add(faction);
+	}
+	
+	
+	/**
+	 * @invar Each faction in this set is effective.
+	 */
+	Set<Faction> factions = new HashSet<Faction>();
+	
+	
+	// UNITS
+	
+	/**
+	 * Return the number of units associated with this world.
+	 * 
+	 * @return The total number of non terminated units collected in this world.
+	 */
+	private int getTotalNbUnits(){
+		int nbUnitsSoFar = 0;
+		for (Faction faction : getActiveFactions()){
+			nbUnitsSoFar += faction.getNbUnits();
+		}
+		return nbUnitsSoFar;
+	}
+	
+	/**
+	 * Return all the non terminated units of this world.
+	 */
+	public Set<Unit> getAllUnits() {
+		Set<Unit> allUnitsSoFar = new HashSet<>();
+		for (Faction faction : getActiveFactions()) {
+			allUnitsSoFar.addAll(faction.getUnits());
+		}
+		return allUnitsSoFar;
+	}
+	
+	/**
+	 * Spawn a unit at a random position in this world.
+	 * 
+	 * @return A new unit at a random position in this world if the unit can
+	 * 			be added.
+	 * 		  Otherwise, a new unit that is immediatly terminated.
+	 */
+	public Unit spawnUnit(){
+		Unit newUnit = createRandomUnit();
+		newUnit.setWorld(this);
+		if(addUnit(newUnit)) {
+			return newUnit;
+		}
+		else {
+			newUnit.terminate();
+			return newUnit;
+		}
+	}
+	 // TODO doc
+	/**
+	 * 
+	 * @param unit
+	 * 		The unit to check.
+	 * @return true if and only if the the total number of units is smaller 
+	 * 		   than the maximum units allowed in a world and if the number of 
+	 * 		   active factions is smaller than the maximum factions allowed
+	 * 		   or if number of active factions is not smaller than maximum factions
+	 * 		   allowed.
+	 * 		   Otherwise false.
+	 * 		
+	 */
+	public boolean addUnit(Unit unit) {
+		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
+			if (getActiveFactions().size() < ConstantsUtils.MAX_FACTIONS){
+				Faction newFaction = new Faction(this);	
+				unit.setFaction(newFaction);
+				newFaction.addUnit(unit);
+			}
+			else{ // else if (try-catch-condition (max Units in world))
+				try {
+					unit.setFaction(getSmallestFaction());
+					getSmallestFaction().addUnit(unit);
+				} catch (IllegalValueException e) {/** TODO? not in part 2, 100 < 5*50**/}
+			}
+			return true;
+		}
+		return false;
+	}
+			
+	/**
+	 * Create a random unit.
+	 * 
+	 * @return A unit with a random position in this world, with "name" as default name, and with random attributes
+	 * 		   for strength, agility, toughness and weight.
+	 */
+	private Unit createRandomUnit() {
+		Position positionObj = new Position(this);
+
+		Unit unit = new Unit(positionObj.getRandomPosition(),"Name",
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 
+				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),this);
+
+		return unit;
+	}
+	
+
 }
