@@ -179,9 +179,9 @@ class Position {
 	@Model
 	protected int[] getRandomPosition(){
 		
-		int[] randLoc = {ConstantsUtils.random.nextInt(world.getNbCubesX()-1), 
-				ConstantsUtils.random.nextInt(world.getNbCubesY()-1), 
-				ConstantsUtils.random.nextInt(world.getNbCubesZ()-1)};
+		int[] randLoc = {ConstantsUtils.random.nextInt(world.getNbCubesX()), 
+				ConstantsUtils.random.nextInt(world.getNbCubesY()), 
+				ConstantsUtils.random.nextInt(world.getNbCubesZ())};
 		if (isValidZCube(randLoc) && isValidUnitPositionInt(randLoc)){
 			return randLoc;			
 		}
