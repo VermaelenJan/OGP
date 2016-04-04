@@ -1819,6 +1819,11 @@ public class Unit {
 				int dz = nextCube.getCubePosition()[2]-currentCube.getCubePosition()[2];
 				moveToAdjacent(dx,dy,dz, true);	
 			}
+			else {
+				queue = new HashMap<Cube, Integer>();
+				currentLvl = 0;
+				moveTo(endTarget);
+			}
 		}
 		
 		queue = new HashMap<Cube, Integer>();
