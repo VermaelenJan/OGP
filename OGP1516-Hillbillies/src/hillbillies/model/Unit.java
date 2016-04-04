@@ -2228,7 +2228,8 @@ public class Unit {
 
 		for (Unit other : world.getAllUnits()){
 			for (Cube cube : (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()))){
-				if (Arrays.equals(other.getOccupiedCube(),cube.getCubePosition()) && other != this && !other.isTerminated){
+				if (Arrays.equals(other.getOccupiedCube(),cube.getCubePosition()) 
+						&& other.getFaction() != this.getFaction() && !other.isTerminated){
 					try {
 						this.attack(other);
 						other.defend(this);
