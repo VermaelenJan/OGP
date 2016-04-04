@@ -328,7 +328,6 @@ public class Facade implements IFacade {
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
 		unit.setWorld(world);
-		world.addUnit(unit);
 	}
 
 	@Override
