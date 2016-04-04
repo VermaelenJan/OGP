@@ -147,11 +147,11 @@ class Position {
 		return(this.getLocation()[2] == Zposition);
 	}
 	
-	public boolean isValidZPosition() {
+	protected boolean isValidZPosition() {
 		return (isValidZCube(this.getOccupiedCube()));
 	}
 	
-	public boolean isValidZCube(int[] cube){
+	protected boolean isValidZCube(int[] cube){
 		int [] cubeBelow = {cube[0],cube[1],(cube[2]-1)};
 		return (( cube[2] == 0) || (!world.getCubeType(cubeBelow[0], cubeBelow[1], cubeBelow[2]).isPassableTerrain()));
 	}

@@ -135,6 +135,4 @@ public abstract class Object {
 	protected void revive() {
 		this.isTerminated = false;
 	}
-	
-
 }

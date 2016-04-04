@@ -50,7 +50,7 @@ public class Unit {
 
 	private World world;
 	private Faction faction;
-	public Position positionObj;
+	private Position positionObj;
 	
 	/**
 	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
@@ -174,7 +174,7 @@ public class Unit {
 
 		
 	@Basic @Raw
-	public World getWorld(){
+	protected World getWorld(){
 		return this.world;
 	}
 	
@@ -206,7 +206,7 @@ public class Unit {
 	}
 	
 	@Raw
-	public void setFaction(Faction faction) throws IllegalValueException{
+	protected void setFaction(Faction faction) throws IllegalValueException{
 		if (faction.getNbUnits() >= ConstantsUtils.MAX_UNITS_FACTION){
 			throw new IllegalValueException(faction.getNbUnits());
 		}
@@ -1682,7 +1682,7 @@ public class Unit {
 	 * 			The given target is not a valid position for a unit.
 	 * 			| ! canHaveAsPosition(target)
 	 */
-	public void moveToPrev1(int[] endTarget) throws IllegalPositionException { 
+//	public void moveToPrev1(int[] endTarget) throws IllegalPositionException { 
 										// When IllegalPositionException is thrown in moveToAdjacent(),
 										// by the coding rules, the variable "globalTarget" should be reverted to the
 										// state as at the beginning of the method. Since the method will always initiate a new
@@ -1738,9 +1738,9 @@ public class Unit {
 //				moveToAdjacent(xRes, yRes,zRes, true);
 //			} catch (IllegalAdjacentPositionException e) {} //Exception will never be thrown.
 //		}
-		
-		
-	}
+//		
+//	
+//	}
 	
 	int currentLvl = 0;
 	HashMap<Cube,Integer> queue = new HashMap<Cube, Integer>();

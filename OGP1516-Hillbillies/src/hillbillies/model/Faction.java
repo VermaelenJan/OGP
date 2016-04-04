@@ -35,7 +35,7 @@ public class Faction {
 	 * Return the world of this faction.
 	 */
 	@Basic @Raw @Immutable
-	public World getWorld() {
+	protected World getWorld() {
 		return world;
 	}
 	
@@ -98,7 +98,7 @@ public class Faction {
 	 * @post The number of units of this faction is incremented by 1.
 	 * @post This faction has the given unit as one of its units.
 	 */
-	public void addUnit(Unit unit){
+	protected void addUnit(Unit unit){
 		assert ((unit != null) && (unit.getFaction() == this));
 		unitsOfFaction.add(unit);
 	}
