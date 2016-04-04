@@ -2187,7 +2187,7 @@ public class Unit {
 	 */
 	public void defend(Unit other){
 		
-		if (this != other) {
+		if (this != other && !this.isFalling()) {
 
 						
 			if (this.isResting()) {
