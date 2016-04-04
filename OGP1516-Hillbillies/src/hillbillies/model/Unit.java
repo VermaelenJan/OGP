@@ -1,6 +1,5 @@
 package hillbillies.model;
 
-import java.security.acl.Owner;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -184,6 +183,7 @@ public class Unit {
 		if (this.world != null) {
 			double[] prevPos = positionObj.getLocation();
 			this.world = world;
+			world.addUnit(this);
 			this.positionObj = new Position(world);
 			try {
 				positionObj.setLocation(prevPos);
@@ -195,6 +195,7 @@ public class Unit {
 		}
 		else {
 			this.world = world;
+			world.addUnit(this);
 		}
 	}
 	
