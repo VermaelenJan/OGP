@@ -449,14 +449,11 @@ public class World {
 	 */
 	public Unit spawnUnit(){
 		Unit newUnit = createRandomUnit();
-		newUnit.setWorld(this);
-		if(addUnit(newUnit)) {
-			return newUnit;
-		}
-		else {
+		if(!this.getAllUnits().contains(newUnit)) {
 			newUnit.terminate();
-			return newUnit;
 		}
+
+		return newUnit;
 	}
 	 // TODO doc
 	/**
@@ -471,7 +468,7 @@ public class World {
 	 * 		   Otherwise false.
 	 * 		
 	 */
-	public boolean addUnit(Unit unit) {
+	public void addUnit(Unit unit) {
 		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
 			if (getActiveFactions().size() < ConstantsUtils.MAX_FACTIONS){
 				Faction newFaction = new Faction(this);	
@@ -484,9 +481,7 @@ public class World {
 					getSmallestFaction().addUnit(unit);
 				} catch (IllegalValueException e) {/** TODO? not in part 2, 100 < 5*50**/}
 			}
-			return true;
 		}
-		return false;
 	}
 			
 	/**
@@ -503,7 +498,7 @@ public class World {
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),this);
-
+		
 		return unit;
 	}
 	
