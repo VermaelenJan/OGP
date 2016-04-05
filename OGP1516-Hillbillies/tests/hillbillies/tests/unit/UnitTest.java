@@ -1,14 +1,12 @@
 package hillbillies.tests.unit;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import hillbillies.model.Cube;
 import hillbillies.model.CubeType;
 import hillbillies.model.Unit;
@@ -16,6 +14,7 @@ import hillbillies.model.World;
 import hillbillies.model.exceptions.IllegalAdjacentPositionException;
 import hillbillies.model.exceptions.IllegalAdvanceTimeException;
 import hillbillies.model.exceptions.IllegalAttackPosititonException;
+import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
@@ -43,7 +42,6 @@ public class UnitTest {
 	@Before
 	public void setUp() throws Exception {
 		smallWorld = createSmallWorld();
-		
 		validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
 		testUnit = new Unit(ValidLocation, ValidName, 60, 50, 70, 90, smallWorld);
 	}
@@ -435,6 +433,38 @@ public class UnitTest {
 		
 	}
 	
+	@Test
+	public void falling() {
+		Unit unit = new Unit(ValidLocation, ValidName, 90, 90, 90, 90, smallWorld); 
+
+		smallWorld.setCubeType(0, 2, 3, CubeType.AIR);
+		smallWorld.setCubeType(0, 3, 3, CubeType.AIR);
+		smallWorld.advanceTime(0.1);
+		
+		assertEquals(3, unit.getCurrentSpeedMagShow(), Util.DEFAULT_EPSILON);
+		unit.startSprinting();
+		assertFalse(unit.isSprinting());
+		
+		smallWorld.setCubeType(0, 3, 3, CubeType.ROCK);
+
+		unit.moveTo(new int[] {0, 3, 4});
+		double first = unit.getLocation()[2];
+		smallWorld.advanceTime(0.1);
+		double next = unit.getLocation()[2];
+		assertTrue(next < first);
+		
+		Unit unit2 = new Unit(new int[] {0, 3, 4}, ValidName, 90, 90, 90, 90, smallWorld); 
+		unit.attack(unit2);
+		assertFalse(unit.isAttacking());
+		
+		while (unit.getLocation()[2] != 0.5) {
+			int prevZ = unit.getOccupiedCube()[2]; double prevHp = unit.getHitpoints();
+			smallWorld.advanceTime(0.1);
+			if (unit.getOccupiedCube()[2] < prevZ) {
+				assertEquals(prevHp-10, unit.getHitpoints(),  Util.DEFAULT_EPSILON);
+			}			
+		}
+	}
 	
 	// Speed tests
 	
@@ -584,27 +614,35 @@ public class UnitTest {
 		assertFalse(unit1.isAttacking());
 
 		boolean blocked = false; boolean hitted = false; boolean dodged = false;
-		while (!(blocked && hitted && dodged)){ 
+		while (!(blocked && hitted && dodged)){
 			boolean oneBlocked = false; boolean oneHitted = false; boolean oneDodged = false;
 			Unit unit3 = new Unit(location2, ValidName, 0, 0, 0, 0);
+			int currDefExp = unit3.getExperience();
+			int currAttExp = unit1.getExperience();
+			
+			int hpBeforeDef = (int) unit3.getHitpoints();
 			unit3.defend(unit1);
 			
 			if (	(unit3.getLocation()[0] == location2[0] + 0.5) && 
 					(unit3.getLocation()[1] == location2[1] + 0.5) && 
 					(unit3.getLocation()[2] == location2[2] + 0.5) &&
-					(unit3.getHitpoints() == unit3.getMaxHitpointsStamina())	
+					(unit3.getHitpoints() == hpBeforeDef)	
 				){
 				oneBlocked = true;
 				blocked = true;
+				assertTrue(unit3.getExperience() == currDefExp+20);
+				assertTrue(unit1.getExperience() == currAttExp);
 				}
 			
 			else if (	(unit3.getLocation()[0] == location2[0] + 0.5) && 
 						(unit3.getLocation()[1] == location2[1] + 0.5) && 
 						(unit3.getLocation()[2] == location2[2] + 0.5) &&
- 						(unit3.getHitpoints() <= unit2.getMaxHitpointsStamina())
+ 						(unit3.getHitpoints() < hpBeforeDef)
  				){
 				oneHitted = true;
 				hitted = true;
+				assertTrue(unit3.getExperience() == currDefExp);
+				assertTrue(unit1.getExperience() == currAttExp+20);
 				}
 			
 			else if(	(unit3.getLocation()[0] != location2[0] + 0.5) ||
@@ -613,11 +651,28 @@ public class UnitTest {
 				){
 				oneDodged = true;
 				dodged = true;
+				assertTrue(unit3.getExperience() == currDefExp+20);
+				assertTrue(unit1.getExperience() == currAttExp);
 				}
+			else {
+				assertTrue(false);
+			}
 			
 			assertTrue(oneBlocked ^ oneHitted ^ oneDodged);
 		}
 		assertTrue(blocked && hitted && dodged);
+	}
+	
+	@Test
+	public void defendAgainstMultiple() {
+		while (smallWorld.getAllUnits().size() != 10 && Arrays.equals(testUnit.getOccupiedCube(), new int [] {0, 2, 4})) {
+			validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
+			try {
+				validUnit.attack(testUnit);
+				testUnit.defend(validUnit);
+			}catch(IllegalFightFactionException e) {/**do nothing**/}
+		}
+		smallWorld.advanceTime(0.1);
 	}
 	
 	@Test (expected=IllegalAttackPosititonException.class)
@@ -629,6 +684,21 @@ public class UnitTest {
 		Unit unit2 = new Unit(location2, ValidName, 0, 0, 0, 0, smallWorld);
 		
 		unit1.attack(unit2);
+	}
+	
+	@Test (expected=IllegalFightFactionException.class)
+	public void sameFactionFight() throws Exception {
+		while (smallWorld.getAllUnits().size() != 6) {
+			validUnit = new Unit(ValidLocation, ValidName, 0, 0, 0, 0, smallWorld);
+		}
+		
+		for (Unit unit1 : smallWorld.getAllUnits()) {
+			for (Unit unit2 : smallWorld.getAllUnits()) {
+				if (!unit1.equals(unit2) && unit1.getFaction().equals(unit2.getFaction())) {
+					unit1.attack(unit2);
+				}
+			}
+		}
 	}
 	
 	
@@ -704,5 +774,52 @@ public class UnitTest {
 			assertTrue((unit.isWorkingShow() || unit.isActualMoving() || unit.isResting() || unit.isAttacking()));
 		}
 	assertTrue(working && resting && moving && attacking);
+	}
+	
+	// Experience tests
+	
+	@Test
+	public void experienceGetAndEarn() throws Exception {
+		Unit unit = new Unit(ValidLocation, ValidName, 90, 90, 90, 90, smallWorld); 
+		assertEquals(0, unit.getExperience());
+		int unitsStrength = unit.getStrength();
+		int unitsAgility = unit.getAgility();
+		int unitsToughness = unit.getToughness();
+		
+		unit.moveTo(new int[] {0, 3, 4});
+		for (int j = 1; j<20; j++) {
+		smallWorld.advanceTime(0.1);
+		}
+
+		assertEquals(1, unit.getExperience());
+		
+		unit.workAt(new int[] {0, 3, 3});
+		smallWorld.advanceTime(0.1);
+		assertTrue(unit.isWorkingShow());
+		unit.moveTo(new int[] {0, 2, 4});
+		assertEquals(1,  unit.getExperience());
+		
+		unit.workAt(new int[] {0, 3, 3});
+		while (unit.isWorkingShow()) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		assertEquals(11, unit.getExperience());
+		
+		assertTrue((unit.getAgility() == unitsAgility+1) ^ (unit.getStrength() == unitsStrength+1) ^ (unit.getToughness() == unitsToughness+1));
+		
+		unit.moveTo(new int[] {0, 2, 4});
+		smallWorld.advanceTime(0.01);
+		assertTrue(unit.isActualMoving()); 
+		smallWorld.setCubeType(0, 2, 3, CubeType.AIR);
+		smallWorld.setCubeType(0, 3, 3, CubeType.AIR);
+		
+		while (unit.getLocation()[2] != 0.5) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		assertEquals(11, unit.getExperience());
+		
+		fight();
 	}
 }
