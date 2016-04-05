@@ -24,7 +24,7 @@ import ogp.framework.util.Util;
 /**
  *
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.0
+ * @version 1.8
  * based on black-box testing
  */
 public class UnitTest {
@@ -519,9 +519,7 @@ public class UnitTest {
 		
 		int[] location = {validUnit.getOccupiedCube()[0], validUnit.getOccupiedCube()[1], validUnit.getOccupiedCube()[2]};
 		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
-		
-		smallWorld.addUnit(validUnit);
-		smallWorld.addUnit(validUnit);
+		validUnit.setWorld(smallWorld);
 		validUnit.attack(unit);
 		assertTrue(validUnit.isAttacking());
 		assertFalse(validUnit.isResting());
@@ -565,10 +563,10 @@ public class UnitTest {
 	public void fight() throws Exception {
 		int[] location1 = {0, 0, 0};
 		Unit unit1 = new Unit(location1, ValidName, 0, 0, 0, 0);
-		smallWorld.addUnit(unit1);
+		unit1.setWorld(smallWorld);
 		int[] location2 = {0, 1, 0};
 		Unit unit2 = new Unit(location2, ValidName, 0, 0, 0, 0);
-		smallWorld.addUnit(unit2);
+		unit2.setWorld(smallWorld);
 		
 		unit1.attack(unit2);
 		unit1.advanceTime(0.1);

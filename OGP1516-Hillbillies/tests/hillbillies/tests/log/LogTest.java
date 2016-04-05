@@ -9,6 +9,11 @@ import hillbillies.model.Log;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
+/**
+* @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+* @version 1.0
+* based on black-box testing
+*/
 public class LogTest {
 
 	private static World smallWorld;
