@@ -1410,7 +1410,9 @@ public class Unit {
 	 * 
 	 */
 	public void startSprinting(){
-		this.sprinting = true;
+		if (! isFalling()) {
+			this.sprinting = true;
+		}
 	}
 	
 	/**
