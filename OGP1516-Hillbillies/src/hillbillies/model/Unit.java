@@ -1392,7 +1392,7 @@ public class Unit {
 	
 	public double getCurrentSpeedMagShow() {
 		if (isFalling()) {
-			return 3;
+			return ConstantsUtils.FALLING_SPEED;
 		}
 		if (isMoving() && (isWorking() || isResting())) {
 			return 0;
