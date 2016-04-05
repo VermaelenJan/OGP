@@ -1942,8 +1942,8 @@ public class Unit {
 	}
 	
 	protected void improveEquipment(Boulder boulder, Log log){
-		setWeight(getWeight() + boulder.getWeight()/2);
-		setToughness(getToughness() + log.getWeight()/2);
+		setWeight(getWeight() + boulder.getWeight()/3 + log.getWeight()/3);
+		setToughness(getToughness() + log.getWeight()/4 + boulder.getWeight()/4);
 		
 		boulder.terminate();
 		log.terminate();
