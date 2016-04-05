@@ -776,7 +776,7 @@ public class UnitTest {
 	assertTrue(working && resting && moving && attacking);
 	}
 	
-	// Experience tests
+	// Experience test
 	
 	@Test
 	public void experienceGetAndEarn() throws Exception {
@@ -821,5 +821,75 @@ public class UnitTest {
 		assertEquals(11, unit.getExperience());
 		
 		fight();
+	}
+	
+	
+	// Death test
+	
+	@Test
+	public void death() {
+		while (smallWorld.getBouldersWorld().size() == 0) {
+			DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+			Cube[][][] worldCubes = new Cube[3][3][20];
+			for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+				for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+					for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+						int[] position = {xIndex, yIndex, zIndex};
+						Cube cube = new Cube(position, CubeType.AIR);
+						worldCubes[xIndex][yIndex][zIndex] = cube;
+					}	
+				}	
+			}
+			int[] pos1 = {1, 1, 18};
+			Cube cube1 = new Cube(pos1, CubeType.ROCK);
+			worldCubes[1][1][18] = cube1;
+			int[] pos2 = {1, 1, 16};
+			Cube cube2 = new Cube(pos2, CubeType.ROCK);
+			worldCubes[1][1][16] = cube2;
+			int[] pos3 = {0, 1, 16};
+			Cube cube3 = new Cube(pos3, CubeType.ROCK);
+			worldCubes[0][1][16] = cube3;
+			smallWorld = new World(worldCubes, defaultTerrainChangeListener);
+			smallWorld.advanceTime(0.2);
+			
+		}
+		
+		Unit unit = new Unit(new int[] {1, 1, 17}, ValidName, 0, 0, 0, 0, smallWorld);
+		for (int i = 0; i<=20; i++) {
+			smallWorld.advanceTime(0.1);
+		}
+
+		unit.workAt(unit.getOccupiedCube());
+		smallWorld.advanceTime(0);
+		assertTrue(unit.isCarryingBoulder());
+		
+		smallWorld.setCubeType(1, 1, 16, CubeType.AIR);
+		smallWorld.setCubeType(0, 1, 16, CubeType.AIR);
+		
+		smallWorld.advanceTime(0.1);
+		assertFalse(unit.isTerminated());
+		assertEquals(0, smallWorld.getBouldersWorld().size());
+		
+		while (unit.getHitpoints() > 0) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		double[] deathpos = unit.getLocation();
+		
+		smallWorld.advanceTime(0);
+		assertTrue(unit.isTerminated());
+		assertEquals(1, smallWorld.getBouldersWorld().size());
+		assertTrue(Arrays.equals(smallWorld.getBouldersWorld().iterator().next().getLocation(), deathpos));
+		
+		smallWorld.advanceTime(0.2);
+		
+		assertTrue(smallWorld.getBouldersWorld().iterator().next().getLocation()[2] < deathpos[2]);
+		
+		while (smallWorld.getBouldersWorld().iterator().next().getLocation()[2] != 0.5) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		assertTrue(Arrays.equals(smallWorld.getBouldersWorld().iterator().next().getLocation(), 
+				new double[] {deathpos[0], deathpos[1], 0.5}));
 	}
 }
