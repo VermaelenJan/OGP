@@ -1943,7 +1943,7 @@ public class Unit {
 	
 	protected void improveEquipment(Boulder boulder, Log log){
 		setWeight(getWeight() + boulder.getWeight()/2);
-		setToughness(getToughness() + log.getWeight()/2); // kheb maar random ding genomen zenne
+		setToughness(getToughness() + log.getWeight()/2);
 		
 		boulder.terminate();
 		log.terminate();
