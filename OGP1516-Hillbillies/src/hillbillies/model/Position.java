@@ -13,7 +13,7 @@ import hillbillies.model.exceptions.IllegalPositionException;
 
 
 /**
- * A class of position in a world.
+ * A class of positions related to units and objects in a world.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
@@ -31,6 +31,45 @@ class Position {
 		this.world = world;	
 	}
 	
+	/**
+	 * Return the location of this positionobject in its world.
+	 */
+	@Basic @Raw
+	protected double[] getLocation() {
+		double[] position = {this.xPos, this.yPos, this.zPos};
+		return(position);
+	}
+	
+	/**
+	 * Return the occupied cube location of this positionobject in its world.
+	 */
+	@Raw
+	protected int[] getOccupiedCube() {
+		double[] location = this.getLocation();
+		int[] position = {(int) location[0], (int) location[1], (int) location[2]};
+		return(position);
+	}
+	
+	/**
+	 * Return the location of the cube below the occupying cube of this positionobject in the world.
+	 */
+	@Model
+	protected int[] getCubeBelow(){
+		int [] occupiedCube = getOccupiedCube();
+		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
+		return cubeBelow;
+	}
+	
+	/**
+	 * Set the location of this positionobject to the given location on solid terrain
+	 * below the given location in its world.
+	 * 
+	 * @param location
+	 * 		The location for this positionobject.
+	 * @post The new location of this positionobject is equal to the given location.
+	 * @throws IllegalPositionException
+	 * 		The given location is not a valid location for this positionobject.
+	 */
 	@Raw @Model 
 	protected void setLocation(double[] location) throws IllegalPositionException {
 		if (!isValidUnitPositionDouble(location))
@@ -40,6 +79,14 @@ class Position {
 	this.zPos = location[2];
 	}
 	
+	/**
+	 * Set the location of this positionobject to the given location in its world.
+	 * 
+	 * @param location
+	 * 		the location for this positionobject.
+	 * @throws IllegalPositionException
+	 * 		The given location is not a valid location for this positionobject.
+	 */
 	@Raw @Model 
 	protected void setFreeLocation(double[] location) throws IllegalPositionException {
 		if (!(isInBoundariesDouble(location) && 
@@ -50,25 +97,68 @@ class Position {
 	this.zPos = location[2];
 	}
 	
+	/**
+	 * Variable referencing the x location of this positionobject.
+	 */
 	private double xPos = 0;
+	/**
+	 * Variable referencing the y location of this positionobject.
+	 */
 	private double yPos = 0;
+	/**
+	 * Variable referencing the z location of this positionobject.
+	 */
 	private double zPos = 0;
 	
+	
+	/**
+	 * Check whether the given location is a valid location for a positionobject in its world.
+	 * @param location
+	 * 		the location to check.
+	 * @return True if and only if the given location is in the boundaries of the world and there is 
+	 * 		a solid terrain cube below the given location.
+	 */
 	@Raw @Model
 	protected boolean isValidLocationInWorld(double[] location) {
 		return ( isInBoundariesDouble(location) && isValidZPosition());
 	}
 	
+	/**
+	 * Check whether the double precision location is in the boundaries of the world.
+	 * 
+	 * @param location
+	 * 		The location to check.
+	 * @return True if and only if the double precision x,y,z coordinates of the given location are 
+	 * 		between 0 and respectively the maximum x,y,z coordinates of the world.
+	 */
+	@Raw @Model
 	protected boolean isInBoundariesDouble(double[] location){
 		return ((location[0] < world.getNbCubesX()) && (location[1] < world.getNbCubesY()) &&
 				(location[2] < world.getNbCubesZ()) && (location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
 	}
 	
+	/**
+	 * Check whether the integer location is in the boundaries of the world.
+	 * 
+	 * @param location
+	 * 		The location to check
+	 * @return True if and only if the integer x,y,z coordinates of the given location are 
+	 * 		between 0 and respectively the maximum x,y,z coordinates of the world.
+	 */
+	@Raw @Model
 	protected boolean isInBoundariesInt(int[] location) {
 		double[] loc = {(double) location[0], (double) location[1], (double) location[2]};
 		return isInBoundariesDouble(loc);
 	}
 	
+	/**
+	 * Check whether the given double precision location is a valid location for a positionobject in its world.
+	 * @param location
+	 * 		The location to check.
+	 * @return True if and only if the location is in the boundaries of the world, and the cube type at the 
+	 * 		given location is passable terrain, and a neighbouring cube of the cube at the given location is 
+	 * 		of solid terrain.
+	 */
 	@Raw @Model
 	protected boolean isValidUnitPositionDouble(double[] location){
 		if (isInBoundariesDouble(location) && 
@@ -87,11 +177,78 @@ class Position {
 		return false;
 	}
 	
+	/**
+	 * Check whether the given integer location is a valid location for a positionobject in its world.
+	 * @param location
+	 * 		The location to check.
+	 * @return True if and only if the location is in the boundaries of the world, and the cube type at the 
+	 * 		given location is passable terrain, and a neighbouring cube of the cube at the given location is 
+	 * 		of solid terrain.
+	 */
 	protected boolean isValidUnitPositionInt(int[] location) {
 		double[] pos = {(double) location[0], (double) location[1], (double) location[2]};
 		return isValidUnitPositionDouble(pos);
 	}
 	
+	/**
+	 * Check whether the location of this positionobject is at the centre of the cube it 
+	 * is occupying in its world.
+	 * 
+	 * @return True if and only of the location of this positionobject is equal to the centre
+	 * 		of the cube the positionobject is occupying.
+	 */
+	protected boolean isAtMiddleOfCube() {
+		int[] occCube = this.getOccupiedCube();
+		double[] position = {occCube[0] + 0.5, occCube[1] + 0.5, occCube[2] + 0.5};
+		return Arrays.equals(getLocation(), position);
+	}
+	
+	/**
+	 * Check whether the positionobject is at middle of of a cube in z direction.
+	 * 
+	 * @return True if and only if the location of this positionobject is at the 
+	 * middle in z direction of the cube it is currently in. 
+	 */
+	protected boolean isAtMiddleZOfCube() {
+		int[] occCube = this.getOccupiedCube();
+		double Zposition = occCube[2] + 0.5;
+		return(this.getLocation()[2] == Zposition);
+	}
+	
+	/**
+	 * Check whether the occupied cube of this positionobject is above
+	 * a solid terrain or at the bottom of the world.
+	 * 
+	 * @return True if and only if the there is a solid terrain cube below
+	 * 		the occupied cube of this positionobject or is at the bottom
+	 * 		of the world.
+	 */
+	protected boolean isValidZPosition() {
+		return (isValidZCube(this.getOccupiedCube()));
+	}
+	
+	/**
+	 * Check whether the given cube location is above
+	 * a solid terrain or at the bottom of the world.
+	 * 
+	 * @param cube
+	 * 		The cube location to check.
+	 * @return True if and only if the there is a solid terrain cube below
+	 * 		the occupied cube of cub location or is at the bottom of the world.
+	 */
+	protected boolean isValidZCube(int[] cube){
+		int [] cubeBelow = {cube[0],cube[1],(cube[2]-1)};
+		return (( cube[2] == 0) || (!world.getCubeType(cubeBelow[0], cubeBelow[1], cubeBelow[2]).isPassableTerrain()));
+	}
+	
+	/**
+	 * Return a list of the neighbouring cubes of the given cube location.
+	 * 
+	 * @param cube
+	 * 		The cube location to get the neighbouring cubes of.
+	 * @return A list of the neighbouring cubes which are in the boundaries of the world and its location 
+	 * 		is not equal to the given cube location.
+	 */
 	protected List<Cube> getNeighbouringCubes(int[] cube) {
 		List<Cube> result = new ArrayList<Cube>();
 		int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
@@ -110,6 +267,14 @@ class Position {
 		return result;
 	}
 	
+	/**
+	 * Return a list of the neighbouring cubes, including the own cube of the given cube location.
+	 * 
+	 * @param cube
+	 * 		The cube location to get the neighbouring cubes of.
+	 * @return A list of the neighbouring cubes, including the cube of the given location,
+	 * 		which are in the boundaries of the world.
+	 */
 	protected List<Cube> getNeighbouringCubesIncludingOwn(int[] cube) {
 		List<Cube> result = new ArrayList<Cube>();
 		result.addAll(getNeighbouringCubes(cube));
@@ -117,45 +282,26 @@ class Position {
 		return result;
 	}
 	
+	/**
+	 * Check whether the given location is a neighbouring cube of this positionobject.
+	 * 
+	 * @param cubePos
+	 * 		The cube location to check.
+	 * @return	True if and only if the given cube location is a neighbouring cube of
+	 * 		this positionobject.
+	 */
 	protected boolean isNeighBouringCube(int[] cubePos){
 		
 		return (getNeighbouringCubesIncludingOwn(getOccupiedCube()).contains(world.getCube(cubePos[0], cubePos[1], cubePos[2])));
 	}
 	
-	@Basic @Raw
-	protected double[] getLocation() {
-		double[] position = {this.xPos, this.yPos, this.zPos};
-		return(position);
-	}
 	
-	@Raw
-	protected int[] getOccupiedCube() {
-		double[] location = this.getLocation();
-		int[] position = {(int) location[0], (int) location[1], (int) location[2]};
-		return(position);
-	}
-	
-	protected boolean isAtMiddleOfCube() {
-		int[] occCube = this.getOccupiedCube();
-		double[] position = {occCube[0] + 0.5, occCube[1] + 0.5, occCube[2] + 0.5};
-		return Arrays.equals(getLocation(), position);
-	}
-	
-	protected boolean isAtMiddleZOfCube() {
-		int[] occCube = this.getOccupiedCube();
-		double Zposition = occCube[2] + 0.5;
-		return(this.getLocation()[2] == Zposition);
-	}
-	
-	protected boolean isValidZPosition() {
-		return (isValidZCube(this.getOccupiedCube()));
-	}
-	
-	protected boolean isValidZCube(int[] cube){
-		int [] cubeBelow = {cube[0],cube[1],(cube[2]-1)};
-		return (( cube[2] == 0) || (!world.getCubeType(cubeBelow[0], cubeBelow[1], cubeBelow[2]).isPassableTerrain()));
-	}
-	
+	/**
+	 * Set the positionobject to a random valid dodge position in its world.
+	 * 
+	 * @effect the location of the positionobject is set to a random location with
+	 * 		the restrictions of the valid dodging places.
+	 */
 	@Model 
 	protected void setRandomDodgedLocation(){
 		try {
@@ -165,6 +311,15 @@ class Position {
 		}
 	}
 	
+	/**
+	 * Return a random dodge location for the given location in its world.
+	 * 
+	 * @param currLoc
+	 * 		The location to get a random dodge location for.
+	 * @return A random location with the x and y coordinate between +- 1 of the 
+	 * 		x and y coordinate of the given location, and the same z coordinate as
+	 * 		the z coordinate of the given location.
+	 */
 	@Model
 	protected double[] getRandomDodgePosition(double[] currLoc){
 		double[] newLoc = {currLoc[0]+ (ConstantsUtils.random.nextDouble()*2-1), currLoc[1] + 
@@ -176,6 +331,12 @@ class Position {
 		return newLoc;
 	}
 	
+	/**
+	 * Return a random location for this positionobject in its world.
+	 * 
+	 * @return A random location in the boundaries of the world of this positionobject,
+	 * 		if the location is a valid position.
+	 */
 	@Model
 	protected int[] getRandomPosition(){
 		
@@ -190,22 +351,31 @@ class Position {
 		}
 	}
 	
-	@Model
-	protected int[] getCubeBelow(){
-		int [] occupiedCube = getOccupiedCube();
-		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
-		return cubeBelow;
-	}
-	
-	protected void fall(double dt, int[] position){
+	/**
+	 * Fall.
+	 *  
+	 * @param dt
+	 * 		The time step dt for this action fall.
+	 * @param location.
+	 * 		The location for this action fall.
+	 * The x and y coordinates of the next location are equal to the x and y coordinates
+	 * 	of the location of this positionobject, the z location of the next location is equal to the z coordinate
+	 * 	of the location of this positionobject minus the time step dt times the falling speed.
+	 *@post If the z coordinate of the next location is greater than the middle of the occupying cube in 
+	 *		z direction of the given location, the location of this positionobject is set to the next location.
+	 *@post If the z coordinate of the next location is smaller than the middle of the occupying cube in 
+	 *		z direction of the given location, the location of this positionobject is set to the x and y coordinate of 
+	 *		the next location, and the z coordinate to the middle of the given location.
+	 */
+	protected void fall(double dt, int[] location){
 		double[] currPos = getLocation();
 		double[] nextPos = {currPos[0],currPos[1],currPos[2]-dt*ConstantsUtils.FALLING_SPEED};
 		
-		if (nextPos[2] >= (position[2]+0.5)){
+		if (nextPos[2] >= (location[2]+0.5)){
 			setFreeLocation(nextPos);
 		}
 		else{
-			double [] currMiddleCube = {currPos[0],currPos[1],position[2]+0.5};
+			double [] currMiddleCube = {currPos[0],currPos[1],location[2]+0.5};
 			setFreeLocation(currMiddleCube);
 		}
 	}
@@ -214,4 +384,6 @@ class Position {
 	 * Variable registering the world of this position.
 	 */
 	private World world;
+	
+
 }
