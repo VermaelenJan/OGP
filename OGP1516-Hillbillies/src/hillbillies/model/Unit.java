@@ -2223,7 +2223,6 @@ public class Unit {
 						this.setHitpoints(getMaxHitpointsStamina());
 					}
 					other.updateExperience(20);
-
 				}
 			}			
 		}
