@@ -1869,6 +1869,9 @@ public class Unit {
 	// WORKING
 	
 	public void work(){
+		if (isFalling()) {
+			return;
+		}
 		List<Cube> neighbs = (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()));
 		try {
 			workAt(neighbs.get(ConstantsUtils.random.nextInt(neighbs.size())).getCubePosition());
@@ -2079,7 +2082,9 @@ public class Unit {
 	 * 			
 	 */
 	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
-
+		if (isFalling) {
+			return;
+		}
 		if ( (this != other) && (!other.isTerminated()) ) {
 			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
 				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
@@ -2195,7 +2200,7 @@ public class Unit {
 	 */
 	public void defend(Unit other){
 		
-		if (this != other && !this.isFalling()) {
+		if (this.getFaction() != other.getFaction() && !this.isFalling()) {
 
 						
 			if (this.isResting()) {
