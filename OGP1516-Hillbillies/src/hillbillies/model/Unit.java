@@ -48,12 +48,85 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
  */
 public class Unit {
 
-	private World world;
-	private Faction faction;
-	private Position positionObj;
+	// CONSTRUCTORS
 	
 	/**
-	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,orientation.
+	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility,world, a default orientation of PI/2,
+	 * and experience 0.
+	 * 
+	 * @param cubeLocation
+	 *			The location for this new unit.
+	 * @param name
+	 * 			The name for this new unit.
+	 * @param weight
+	 * 			The weight for this new unit.
+	 * @param strength
+	 * 			The strength for this new unit.
+	 * @param agility
+	 * 			The agility for this new unit.
+	 * @param toughness
+	 * 			The toughness for this new unit.
+	 * @param orientation
+	 * 			The orientation for this new unit.
+	 * @param world.
+	 * 			The world for this new unit.
+	 * @post The location of this new unit is equal to the given location.
+	 * 			| new.getLocation() == location
+	 * @post The name of this new unit is equal to the given name.
+	 * 			| new.getName() == name
+	 * @effect The given weight is set as the weight of this new unit.
+	 * 			| setWeight(weight)
+	 * @effect The given strength is set as the strength of this new unit.
+	 * 			| setStrength(strength)
+	 * @effect The given agility is set as the agility of this new unit.
+	 * 			| setAgility(agility)
+	 * @effect The given toughness is set as the toughness of this new unit.
+	 * 			| setToughness(toughness)
+	 * @pre The given hitpoints must be a valid hitpoints for this unit.
+	 *          | isValidHitpoints(hitpoints)
+	 * @post The hitpoints of this new unit is equal to the given hitpoints.
+	 *          | new.getHitpoints() == hitpoints
+	 * @pre The given stamina must be a valid stamina for this unit.
+	 *       	| isValidStamina(stamina)
+	 * @post The stamina of this new unit is equal to the given stamina.
+	 *       	| new.getStamina() == stamina												
+	 * @effect The orientation of this new unit is set to PI/2.
+	 * 			| setOrientation(PI/2)
+	 * @effect The given world is set as the world of this new unit.
+	 * 			| setWorld(world)
+	 * @effect The experience of this new unit is equal to 0.
+	 * 			| setExperience(0)
+	 * @throws IllegalPositionException
+	 * 			The given position is not a valid position for a unit.
+	 * 			| ! canHaveAsPosition(position)
+	 * @throws IllegalNameException 
+	 * 			The given name is not a valid name for a unit.	
+	 * 			| ! isValidName(name)
+	 */
+	@Model
+	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, World world)
+																throws IllegalPositionException, IllegalNameException {
+		double[] location = {CubeLocation[0]+ConstantsUtils.CUBE_LENGTH/2, CubeLocation[1]+
+				ConstantsUtils.CUBE_LENGTH/2, CubeLocation[2]+ConstantsUtils.CUBE_LENGTH/2};
+		setName(name);
+		setWeight(weight, true);
+		setStrength(strength, true);
+		setAgility(agility, true);
+		setToughness(toughness, true);
+		setHitpoints(getMaxHitpointsStamina());
+		setStamina(getMaxHitpointsStamina());
+		setOrientation(Math.PI/2);
+		setWorld(world);
+		setExperience(0);
+		
+		positionObj = new Position(world);
+		positionObj.setLocation(location); //
+		}
+	
+	
+	/**
+	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility, an empty default world, 
+	 * a default orientation of PI/2 and experience 0.
 	 * 
 	 * @param cubeLocation
 	 *			The location for this new unit.
@@ -88,9 +161,13 @@ public class Unit {
 	 * @pre The given stamina must be a valid stamina for this unit.
 	 *       	| isValidStamina(stamina)
 	 * @post The stamina of this new unit is equal to the given stamina.
-	 *       	| new.getStamina() == stamina													
-	 * @effect The given orientation is set as the orientation of this new unit.
-	 * 			| setOrientation(orientation)
+	 *       	| new.getStamina() == stamina												
+	 * @effect The orientation of this new unit is set to PI/2.
+	 * 			| setOrientation(PI/2)
+	 * @effect The world for this new unit is set to a default empty world.
+	 * 			| setWorld(createVoidWorld())
+	 * @effect The experience of this new unit is equal to 0.
+	 * 			| setExperience(0)
 	 * @throws IllegalPositionException
 	 * 			The given position is not a valid position for a unit.
 	 * 			| ! canHaveAsPosition(position)
@@ -98,205 +175,11 @@ public class Unit {
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
 	 */
-	@Model
-	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, World world)
-																throws IllegalPositionException, IllegalNameException {
-		double[] location = {CubeLocation[0]+ConstantsUtils.CUBE_LENGTH/2, CubeLocation[1]+
-				ConstantsUtils.CUBE_LENGTH/2, CubeLocation[2]+ConstantsUtils.CUBE_LENGTH/2};
-		setName(name);
-		setWeight(weight, true);
-		setStrength(strength, true);
-		setAgility(agility, true);
-		setToughness(toughness, true);
-		setHitpoints(getMaxHitpointsStamina());
-		setStamina(getMaxHitpointsStamina());
-		setOrientation(Math.PI/2);
-		setWorld(world);
-		setExperience(0);
-		
-		positionObj = new Position(world);
-		positionObj.setLocation(location); //
-		}
-	
-	
-		public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
+	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
 															throws IllegalPositionException, IllegalNameException {
 			this(CubeLocation, name, weight, strength, agility, toughness, createVoidWorld());
 		}
 		
-		private static World createVoidWorld() {
-				DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
-				int size = 5;
-				Cube[][][] worldCubes = new Cube[size][size][size];
-				for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
-					for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
-						for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
-							int[] position = {xIndex, yIndex, zIndex};
-							Cube cube = new Cube(position, CubeType.AIR);
-							worldCubes[xIndex][yIndex][zIndex] = cube;
-						}	
-					}	
-				}
-		
-				World voidWorld = new World(worldCubes, defaultTerrainChangeListener);
-				return voidWorld;
-			}
-
-//	/**
-//	 * Initialize this new unit with the given cubeLocation, name, weight, strength,toughness,agility and the default orientation PI/2.
-//	 * 
-//	 * @param cubeLocation
-//	 *			The location for this new unit.
-//	 * @param name
-//	 * 			The name for this new unit.
-//	 * @param weight
-//	 * 			The weight for this new unit.
-//	 * @param strength
-//	 * 			The strength for this new unit.
-//	 * @param agility
-//	 * 			The agility for this new unit.
-//	 * @param toughness
-//	 * 			The toughness for this new unit.
-//	 * @effect This new unit is initialized with the given cube location as its cube location, the given name as its name, the given 
-//	 * 			weight as its weight, the given strength as its strength, the given agility as its agility, the given toughness as 
-//	 * 			its toughness, and the default value PI/2 as its orientation.
-//	 * @throws IllegalPositionException
-//	 * 			The given position is not a valid position for a unit.
-//	 * 			| ! canHaveAsPosition(position)
-//	 * @throws IllegalNameException 
-//	 * 			The given name is not a valid name for a unit.	
-//	 * 			| ! isValidName(name)
-//	 */
-//	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness)
-//			throws IllegalPositionException, IllegalNameException {
-//		this(CubeLocation, name, weight, strength, agility, toughness,Math.PI/2);
-//	}
-
-		
-	@Basic @Raw
-	protected World getWorld(){
-		return this.world;
-	}
-	
-	@Raw
-	public void setWorld(World world){
-		if (this.world != null) {
-			double[] prevPos = positionObj.getLocation();
-			this.world = world;
-			world.addUnit(this);
-			this.positionObj = new Position(world);
-			try {
-				positionObj.setLocation(prevPos);
-			} catch (IllegalPositionException e) {
-				int[] randomCube = positionObj.getRandomPosition();
-				double[] randomPos = {randomCube[0]+0.5, randomCube[1]+0.5, randomCube[2]+0.5};
-				positionObj.setLocation(randomPos);
-			}
-		}
-		else {
-			this.world = world;
-			world.addUnit(this);
-		}
-	}
-	
-	@Basic @Raw
-	public Faction getFaction(){
-		return this.faction;
-		
-	}
-	
-	@Raw
-	protected void setFaction(Faction faction) throws IllegalValueException{
-		if (faction.getNbUnits() >= ConstantsUtils.MAX_UNITS_FACTION){
-			throw new IllegalValueException(faction.getNbUnits());
-		}
-		this.faction = faction;
-		
-	}
-	
-	@Raw
-	protected boolean canHaveAsFaction(Faction faction){
-		return ((faction == null) || (!faction.isTerminated()));
-	}
-	
-	private boolean isTerminated;
-	
-	protected void terminate(){
-		this.isTerminated = true;
-		if (this.faction != null) { // ( == if (!(unit didnt get in world yet)))
-			this.faction.checkTerminate();
-		}
-	}
-	
-	public boolean isTerminated(){
-		return this.isTerminated;
-	}
-	
-	// LOCATION
-	
-	/**
-	 * Return the location of this unit.
-	 */
-	@Basic @Raw
-	public double[] getLocation() {
-		return positionObj.getLocation();
-	}
-	
-//	/**
-//	 * Check whether the given location is a valid location for
-//	 * any unit.
-//	 * 
-//	 * @param location
-//	 * 			The location to check.
-//	 * @return True if and only if the location is in the dimensions of the predefined world. So if the x,y and z value 
-//	 * 			are smaller than the WORLD_X, WORLD_Y and WORLD_Z values and the x,y and z value are greater than 0.
-//	 * 			| result == (location[x] <= WORLD_X) && (location[y] <= WORLD_Y) && (location[z] <= WORLD_Z) && 
-//	 *			| (location[x] >= 0) && (location[y] >= 0) && (location[z] >= 0))
-//	 */
-//	@Raw @Model
-//	private static boolean isValidLocation(double[] location) {
-//		return ((location[0] <= WORLD_X) && (location[1] <= WORLD_Y) && (location[2] <= WORLD_Z) && 
-//				(location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
-//	}
-	
-//	/**
-//	 * Set the location of this unit to the given location.
-//	 * 
-//	 * @param location
-//	 *         	The new location for this unit.
-//	 * @post The new location of this unit is equal to the given location.
-//	 *       	| new.getLocation() == location
-//	 * @throws IllegalPositionException
-//	 *         	The given location is not a valid location for any unit.
-//	 *       	| ! isValidLocation(location)
-//	 */
-//	@Raw @Model
-//	private void setLocation(double[] location) throws IllegalPositionException{
-//		positionObj.setLocation(location);
-////		if (!isValidLocation(location))
-////			throw new IllegalPositionException(location);
-////		this.xPos = location[0];
-////		this.yPos = location[1];
-////		this.zPos = location[2];
-//	}
-//	
-//	/**
-//	 * Variables registering the location of this unit.
-//	 */
-//	private double xPos = 0;
-//	private double yPos = 0;
-//	private double zPos = 0;
-	
-	// CUBE
-	
-	/**
-	 * @return The coordinates of the cube the unit is in.
-	 */
-	@Raw
-	public int[] getOccupiedCube() {
-		return positionObj.getOccupiedCube();
-	}
-	
 	// NAME 
 	
 	/**
@@ -345,9 +228,10 @@ public class Unit {
 	 * Check whether all the given name's characters are valid for a name of any unit. 
 	 * 
 	 * @param name
+	 * 		The name to check.
 	 * @return True if and only if the name has letters, spaces, double quotes or single quotes as characters.
 	 * 		   	| result == (for char in name
-	 *						 ( char.isLetter ||  (char == ' ')  || (char == '"') || (char == ''')))
+	 *						 ( char.isLetter ||  (char == ' ')  || (char == ' " ') || (char == ' ' ')))
 	 */
 	@Model
 	private static boolean areValidCharacters(String name){
@@ -389,7 +273,7 @@ public class Unit {
 	}
 	
 	/**
-	 * Set the weight of this unit to the given weight
+	 * Set the weight of this unit to the given weight.
 	 * 
 	 * @param weight
 	 *          The new weight for this unit.
@@ -458,8 +342,29 @@ public class Unit {
 		}
 	}
 	
-
-	
+	/**
+	 * Set the weight of this unit to the given weight, without maximum restrictions on the weight, when
+	 * picking up an object in the world to add its weight to the units weight.
+	 * 
+	 * @param weight
+	 * 		The new weight for this unit.
+	 * @post If the given weight is greater than or equal to the units strength plus agility, divided by 2, 
+	 * 			and if the given weight is smaller than the minimum value of the weight,
+	 * 			the weight of this unit is equal to the minimum value.
+	 * 			| if (weight >= (getStrength()+getAgility())/2)
+	 * 			|	if (weight < MinVal)
+	 * 			|		then (new.getWeight() == MinVal) 
+	 * @post If the given weight is greater than or equal to the units strength plus agility, divided by 2, 
+	 * 			and if the given weight is greater than the minimum value of the weight,
+	 * 			the weight of this unit is equal to the given weight.
+	 * 			| if (weight >= (getStrength()+getAgility())/2)
+	 * 			|	if (weight > currMaxVal)
+	 * 			|		then (new.getWeight() == MaxVal)
+	 * @post If the given weight is smaller than the units strength plus agility, divided by 2, 
+	 * 			the weight of this unit is equal to the units strength plus agility, divided by 2.
+	 * 			| if (weight < (getStrength()+getAgility())/2)
+	 * 			|	then (new.getWeight() == (getStrength()+getAgility())/2) 
+	 */
 	private void setFreeWeight(int weight){
 		
 				
@@ -479,6 +384,7 @@ public class Unit {
 	 * Variable registering the weight of this unit.
 	 */
 	private int weight = 0;
+	
 	
 	// STRENGTH
 	
@@ -537,8 +443,17 @@ public class Unit {
 	 * 			the strength of this unit is equal to the current maximum value.
 	 * 			| if (strength > currMaxVal)
 	 * 			|		then (new.getStrength() == currMaxVal) 
-	 * @effect The weight is set to the the weight of the unit, depending on the restrictions of the weight according
+	 * @effect If the unit does not carry an object, 
+	 * 			The weight is set to the the weight of the unit, depending on the restrictions of the weight according
 	 * 			to the strength, due to possible changes of the strength. 
+	 * 			| if (this.carriedObject == null)
+	 * 			|		then setWeight(getWeight())
+	 * @effect If the unit carries an object, the weight is set to the weight of the unit plus the weight of the carried
+	 * 			object, depending on the restrictions of the weight according to the strength, 
+	 * 			due to possible changes of the strength. 
+	 * 			| if (this.carriedObject != null)
+	 *				 then setWeight(getWeight()-carriedObject.getWeight())
+	 *					  setFreeWeight(getWeight()+carriedObject.getWeight())
 	 */
 	@Raw @Model
 	private void setStrength(int strength, boolean flag){
@@ -576,7 +491,6 @@ public class Unit {
 	// AGILITY
 		
 	/**
-	 * 
 	 * Return the agility of this unit.
 	 */
 	@Basic @Raw
@@ -631,8 +545,17 @@ public class Unit {
 	 * 			the agility of this unit is equal to the current maximum value.
 	 * 			| if (agility > currMaxVal)
 	 * 			|		then (new.getAgility() == currMaxVal) 
-	 * @effect The weight is set to the the weight of the unit, depending on the restrictions of the weight according
+	 * @effect If the unit does not carry an object, 
+	 * 			The weight is set to the the weight of the unit, depending on the restrictions of the weight according
 	 * 			to the agility, due to possible changes of the agility. 
+	 * 			| if (this.carriedObject == null)
+	 * 			|		then setWeight(getWeight())
+	 * @effect If the unit carries an object, the weight is set to the weight of the unit plus the weight of the carried
+	 * 			object, depending on the restrictions of the weight according to the agility,
+	 * 			due to possible changes of the agility. 
+	 * 			| if (this.carriedObject != null)
+	 *				 then setWeight(getWeight()-carriedObject.getWeight())
+	 *					  setFreeWeight(getWeight()+carriedObject.getWeight())
 	 */
 	@Raw @Model
 	private void setAgility(int agility, boolean flag){
@@ -693,7 +616,7 @@ public class Unit {
 	}
 	
 	/**
-	 * Set the toughness of this unit to the given agility.
+	 * Set the toughness of this unit to the given toughness.
 	 * 
 	 * @param toughness
 	 *          The new toughness for this unit.
@@ -758,8 +681,11 @@ public class Unit {
 	 * Return the maximum hitpoints of this unit.
 	 * 
 	 * @return The weight times the toughness divided by 50, rounded up to the first
-	 * 			larger integer.
+	 * 			larger integer, if the weight does not carries an object.
 	 * 		   | result == ceil((getWeight()*getToughness())/50)
+	 * 		   Otherwise, the weight minus the weight of the carried object, times the toughness
+	 * 		   divided by 50, rounded up to the first larger integer, if the weight carries an object.
+	 * 		   | result == ceil((((getWeight()- carriedObject.getWeight())*getToughness()))/50)
 	 */
 	@Raw
 	public int getMaxHitpointsStamina() {
@@ -767,7 +693,7 @@ public class Unit {
 			return (int) (Math.ceil((double) (((double) getWeight())*((double) getToughness()))/50));
 		}
 		else {
-			return (int) (Math.ceil((double) (((double) ((double) getWeight()- (double) this.carriedObject.getWeight()))*
+			return (int) (Math.ceil((double) (((double) ((double) getWeight()- (double) carriedObject.getWeight()))*
 					 																	((double) getToughness()))/50));
 		}
 	}
@@ -781,7 +707,7 @@ public class Unit {
 	}
 	
 	/**
-	 * Check whether the given hitpoints is a valid hitpoints for the unit.
+	 * Check whether the given hitpoints are valid hitpoints for the unit.
 	 *  
 	 * @param hitpoints
 	 *         	The hitpoints to check.
@@ -827,7 +753,6 @@ public class Unit {
 		return this.stamina;
 	}
 
-	
 	/**
 	 * Check whether the given stamina is a valid stamina for this unit.
 	 *  
@@ -863,6 +788,7 @@ public class Unit {
 	 */
 	private double stamina = 0;
 	
+	
 	// ORIENTATION
 
 	/**
@@ -890,19 +816,37 @@ public class Unit {
 	 * Variable registering the orientation of this unit.
 	 */
 	private double orientation = 0;
-	private boolean interruptRWPermission;
-	
+
 	
 	// EXPERIENCE POINTS
 	
+	/**
+	 * Return the experience of this unit.
+	 */
 	public int getExperience(){
 		return this.experience;
 	}
 	
+	/**
+	 * Set the experience of the of this unit to the given experience.
+	 */
 	private void setExperience(int experience){
 		this.experience = experience;
 	}
 	
+	/**
+	 * Increase at random the strength or agility or toughness by 1.
+	 * 
+	 * @effect if situation 0 is chosen at random, the strength of this unit is increased by 1.
+	 * 			| if (situation 0)
+	 * 			| 	then setStrength(getStrength()+1)
+	 * @effect if situation 1 is chosen at random, the agility of this unit is increased by 1.
+	 * 			| if (situation 1)
+	 * 			| 	then setAgility(getAgility()+1)
+	 * @effect if situation 2 is chosen at random, the toughness of this unit is increased by 1.
+	 * 			| if (situation 2)
+	 * 			| 	then setToughness(getToughness()+1)
+	 */
 	private void increaseRandomAttributeBy1(){
 		switch (ConstantsUtils.random.nextInt(3)) {
 		case 0: setStrength(getStrength() + 1);break;
@@ -911,6 +855,17 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * Increase a random attribute for every 10 experience points a unit gains.
+	 * 
+	 * @param experience
+	 * 		The experience the unit has gain.
+	 *
+	 *@effect For every 10 experience of the given experience points, a random attribute 
+	 *		(i.e strength,agility or toughness) will be increased by 1.
+	 *			| for (nbTimes10Exp)
+	 *			|	then increaseRandomAttributeBy1()
+	 */
 	private void increaseRandomAttributes(int experience){
 		int tempExp = getMod10Exp() + experience;
 		int nbTimes10Exp = (tempExp) / 10;
@@ -922,64 +877,280 @@ public class Unit {
 			increaseRandomAttributeBy1();
 			count++;
 		}
-		
 	}
 	
+	/**
+	 * Update the experience points of the unit.
+	 * 
+	 * @param experience
+	 * 		The extra experience points for this unit.
+	 * @effect The experience of this unit is incremented with the given experience.
+	 * 		| setExperience(getExperience() + experience);
+	 * @effect Increase a random attribute for every 10 experience points a unit gains.
+	 * 		| increaseRandomAttributes(experience)
+	 */
 	private void updateExperience(int experience){
 		setExperience(getExperience() + experience);
 		increaseRandomAttributes(experience);
 	}
 	
-	// VARIABLES REGISTERING THE EXPERIENCE OF THE UNIT
-	private int mod10Exp;
-	
+	/**
+	 * Return the modulo 10 experience of the units experience.
+	 */
 	private int getMod10Exp(){
 		return this.mod10Exp;
 	}
+	
+	/**
+	 * Set the modulo 10 experience to the given experience.
+	 * 
+	 * @param mod10Exp
+	 * 		The new modulo 10 experience for this unit.
+	 * @post The new modulo 10 experience is equal to the given experience.
+	 * 		| new.getMod10Exp() == mod10Exp
+	 */
 	private void setMod10Exp(int mod10Exp){
 		this.mod10Exp = mod10Exp;
 	}
-	
-	private int experience;
 
+	/**
+	 * Variable registering the modulo 10 experience of this unit.
+	 */
+	private int mod10Exp;
+	
+	/**
+	 * Variable registering the experience of this unit.
+	 */
+	private int experience;
+	
+	
+	// WORLD
+
+	/**
+	 * Return the world of this unit.
+	 */
+	@Basic @Raw
+	protected World getWorld(){
+		return this.world;
+	}
+	
+	/**
+	 * Check whether this unit can have the given world as its world.
+	 * 
+	 * @return True if and only if the given world is effective.
+	 */
+	@Raw
+	protected boolean hasWorld(){
+		return (this.world!=null);
+	}
+	
+	/**
+	 * Set the world of this unit to the given world.
+	 * 
+	 * @param world
+	 * 		The new world for this unit.
+	 * @post If the unit has a world, the new world for this unit is the given world, the given 
+	 * 		world has this unit as one of its units and the position of the unit in the old world 
+	 * 		is set as the new position in the new world if possible, otherwise random position is chosen.
+	 * 		| if (hasworld())
+	 * 		|	then new.getWorld() == world
+	 * 		|		 world.hasUnit(this)
+	 * 		|		if (isValidLocation(previousLocation)
+	 * 		|				then setLocation(previousLocation)
+	 * 		|		if (!isValidLocation(priviousLocation)
+	 * 		|				then setLocation(getRandomlocation)
+	 * @post If the unit has not a world, the new world for this unit is the given world,
+	 * 		and the given world has this unit as one of its units.
+	 * 		| if (!hasworld())
+	 * 		|	then new.getWorld() == world
+	 * 				 world.hasUnit(this)
+	 */
+	@Raw
+	public void setWorld(World world){
+		if (hasWorld()) {
+			double[] prevPos = positionObj.getLocation();
+			this.world = world;
+			world.addUnit(this);
+			this.positionObj = new Position(world);
+			try {
+				positionObj.setLocation(prevPos);
+			} catch (IllegalPositionException e) {
+				int[] randomCube = positionObj.getRandomPosition();
+				double[] randomPos = {randomCube[0]+0.5, randomCube[1]+0.5, randomCube[2]+0.5};
+				positionObj.setLocation(randomPos);
+			}
+		}
+		else {
+			this.world = world;
+			world.addUnit(this);
+		}
+	}
+	
+	/**
+	 * Create an empty world for this unit.
+	 * 
+	 * @return A new 5 x 5 x 5 world with all the cubes of cube type air.
+	 * 		| result == new world with for each cube in worldcubes:
+	 * 		|	(cube.getCubeType() == type.AIR)
+	 */
+	private static World createVoidWorld() {
+		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+		int size = 5;
+		Cube[][][] worldCubes = new Cube[size][size][size];
+		for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+			for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+				for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+					int[] position = {xIndex, yIndex, zIndex};
+					Cube cube = new Cube(position, CubeType.AIR);
+					worldCubes[xIndex][yIndex][zIndex] = cube;
+				}	
+			}	
+		}
+	
+			World voidWorld = new World(worldCubes, defaultTerrainChangeListener);
+			return voidWorld;
+		}
+
+	/**
+	 * Variable registering the world for this unit.
+	 */
+	private World world;
+
+		
+	// FACTION
+	
+	/**
+	 * Return the faction of this unit.
+	 */
+	@Basic @Raw
+	public Faction getFaction(){
+		return this.faction;	
+	}
+	
+	/**
+	 * Check whether this unit can have the given faction as its faction.
+	 * 
+	 * @param faction
+	 * 		The faction to check.
+	 * @return True if and only if the faction is effective or not terminated.
+	 * 		| ((faction == null) || (!faction.isTerminated()))
+	 */
+	@Raw
+	protected boolean canHaveAsFaction(Faction faction){
+		return ((faction == null) || (!faction.isTerminated()));
+	}
+	
+	/**
+	 * Set the faction of this unit to the given faction.
+	 * 
+	 * @param faction
+	 * 		The new faction for this unit.
+	 * @throws IllegalValueException
+	 * 		The given number of units in the faction are greater than or equal 
+	 * 		to the maximum number of units allowed in a faction.
+	 * 		| (faction.getNbUnits() >= MAX_UNITS_FACTION)
+	 */
+	@Raw
+	protected void setFaction(Faction faction) throws IllegalValueException{
+		if (faction.getNbUnits() >= ConstantsUtils.MAX_UNITS_FACTION){
+			throw new IllegalValueException(faction.getNbUnits());
+		}
+		this.faction = faction;
+	}
+	
+	/**
+	 * Variable registering the faction of this world.
+	 */
+	private Faction faction;
+	
+	
+	// TERMINATE
+	
+	/**
+	 * Check whether this unit is terminated.
+	 */
+	@Basic @Raw
+	public boolean isTerminated(){
+		return this.isTerminated;
+	}
+
+	/**
+	 * Terminate this unit.
+	 * 
+	 * @post this unit is terminated.
+	 * 		| new.isTerminated()
+	 * @effect If this unit has a faction, check whether the faction
+	 * 		is effective.
+	 * 		| if (faction != null)
+	 * 		|	then faction.checkTerminate()
+	 */
+	protected void terminate(){
+		this.isTerminated = true;
+		if (this.faction != null) { // ( == if (!(unit didnt get in world yet)))
+			this.faction.checkTerminate();
+		}
+	}
+	
+	/**
+	 * Variable reflecting whether or not this unit is terminated.
+	 */
+	private boolean isTerminated;
+	
+	
+	// LOCATION
+	
+	/**
+	 * Return the location of this unit.
+	 * 
+	 * @return The location of the positionobject of this unit.
+	 * 		| result == positionObj.getLocation()
+	 */
+	@Raw
+	public double[] getLocation() {
+		return positionObj.getLocation();
+	}
+	
+	// CUBE
+	
+	/**
+	 * Return The coordinates of the occupying cube of this unit.
+	 * 
+	 * @return The occupied cube location of the positionobject of this unit.
+	 * 		| result == positionObj.getOccupiedCube()
+	 */
+	@Raw
+	public int[] getOccupiedCube() {
+		return positionObj.getOccupiedCube();
+	}
+
+	/**
+	 * Variable registering the positionobject of this unit.
+	 */
+	private Position positionObj;
+	
+	
 	// ADVANCE TIME
 	
 	/**
-	 * Advance the game with duration dt.
+	 * Advance the game time with the given time step dt.
+	 * 
 	 * @param dt
-	 * 		  	The duration which the game time is advanced.
-	 * @effect The new time since the unit has stopped resting is equal to the previous time
-	 * 			the unit has stopped resting, plus dt.
-	 * @effect If the time since the unit has last stopped resting is larger than 3 minutes,
-	 * 			the unit starts resting.
-	 * @effect If the unit is attacking, the unit stops working and resting, and the new attackTime
-	 * 			is equal to the previous attackTime minus dt.
-	 * @effect If the unit is attacking and the remainder attackTime drops below 0, the attackTime is
-	 * 			set to 0.
-	 * @effect If the unit is resting, the new hitpoints of the unit are equal to the previous hitpoints
-	 * 			plus his toughness divided by 200, for each 0,2 seconds, until the unit reaches its maximum
-	 * 			amount of hitpoints.
-	 * @effect If the unit is resting and the hitpoints of the unit are equal to its maximum hitpoints,
-	 * 			the new stamina of the unit is equal to the previous stamina of the unit, plus his toughness
-	 * 			divided by 100, for each 0,2 seconds, until the unit reaches its maximum amount of stamina.
-	 * @effect If the unit is resting and the hitpoints of the unit are equal to its maximum hitpoints,
-	 * 			and the stamina of the unit is equal its maximum stamina, the unit stops resting.
-	 * @effect If the unit is working, the new time remainder to work is equal to the previous time remainder 
-	 * 			to work	minus dt.
-	 * @effect If the time remainder to work drops below 0, the unit stops working.
-	 * @effect If the unit is moving and the unit is arrived, the unit stops moving.
-	 * @effect If the unit is arrived at the middle of a cube, and the target is another cube, the unit 
-	 * 			starts moving to the target
-	 * @effect If the unit is moving and not arrived, the new location of the unit is equal to the previous 
-	 * 			location of the unit plus its speed multiplied by dt in x, y and z direction.
-	 * @effect If the unit is moving, not arrived and sprinting, the new stamina of the unit is equal to the 
-	 * 			previous stamina of the unit minus 10 times dt.
-	 * @effect If the unit is moving, not arrived, sprinting and the stamina drops below 0, the new stamina
-	 * 			is equal to 0 and the unit stops sprinting.
-	 * @effect If the unit is moving and not arrived, its orientation will be updated to the direction the
-	 * 			unit is moving in.
-	 * @effect If the unit is moving, not arrived and defaultBehaviour is enabled, the unit starts or stops sprinting
-	 * 			with a chance of dt/10.
+	 *		The time step which the game time is advanced.
+	 * @effect If the unit is not terminated and if the hitpoints are equal to or below 0, the hitpoints
+	 * 		are set 0 and the unit terminates.
+	 * @effect If the unit is not terminated and if the hitpoints are equal or below 0 and the unit carries
+	 * 		an object, the unit drops the object.
+	 * @effect If the unit is not terminated and not resting, advance time not resting.
+	 * @effect If the unit is not terminated is falling or the location of the positionobject of this unit is not a valid unit
+	 * 		location, the unit falls and is not sprinting and advance time falling.
+	 * @effect If the unit is not terminated and if the unit is attacking, advance time attacking.
+	 * @effect If the unit is not terminated and resting and its location of its positionobject is at the middle in the z direction
+	 * 			of a cube, advance time resting.
+	 * @effect If the unit is not terminated and working and rested enough to recover one hitpoint and at the middle in the z direction
+	 * 			of a cube, advance time working.
+	 * @effect If the unit is not terminated and moving, advance time moving.
+	 * @effect If the unit its default behaviour is enabled, a new default behaviour is started.
+	 * @effect If the unit is terminated, the unit stops moving,sprinting,working,defaultbehaviour,resting and falling.
 	 * @throws IllegalAdvanceTimeException(dt)
 	 * 			The given dt is not a valid advanceTime duration.
 	 */
@@ -988,7 +1159,7 @@ public class Unit {
 		if (!this.isTerminated()) {
 			if (this.hitpoints <= 0) {
 				setHitpoints(0);
-				terminate(); 
+				terminate(); // TODO
 				// Hier zeggen we we al terminate, en daarna in dropobject gaan we de weight van de unit nog aanpassen enzo, droppen
 				// van object mee in terminate zetten dan of niet?
 				if (this.carriedObject != null) {
@@ -1037,17 +1208,30 @@ public class Unit {
 
 		}
 	}
-
-
-	private void advanceTimeMoving(double dt) {
-		if (arrived(dt)){
-			advanceTimeMovingArrived();
-		}
-		else{
-			advanceTimeMovingNotArrived(dt);
+	
+	/**
+	 * Advance the time not resting with the given time step dt.
+	 * 
+	 * @param dt
+	 *		The time step which the game time is advanced.
+	 * @effect Increment the since the end of the last time resting with the given dt.
+	 * @effect if the time since the last time resting is greater than 180, the unit starts resting.
+	 */
+	private void advanceTimeNotResting(double dt) {
+		setTimeSinceRest(getTimeSinceRest() + (float)dt);
+		if (getTimeSinceRest() > 180){
+			startResting();
 		}
 	}
-	
+
+	/**
+	 * Advance the time falling with the given time step dt.
+	 * 
+	 * @param dt
+	 *		The time step which the game time is advanced.
+	 *
+	 *
+	 */
 	private void advanceTimeFalling(double dt){
 		
 		int prevZPos = positionObj.getOccupiedCube()[2];
@@ -1055,7 +1239,7 @@ public class Unit {
 		if (!positionObj.isValidZPosition()){
 			positionObj.fall(dt,positionObj.getCubeBelow());
 			
-			if (positionObj.getOccupiedCube()[2] != prevZPos){ // update hitpoints
+			if (positionObj.getOccupiedCube()[2] != prevZPos){ 
 				int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
 				double newHitpoints = getHitpoints()-10*nbZLvls;
 				if (newHitpoints > 0 && newHitpoints < getMaxHitpointsStamina()) {
@@ -1126,6 +1310,21 @@ public class Unit {
 			}
 		}
 		setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
+	}
+	
+
+	/**
+	 * 
+	 * 
+	 * @param dt
+	 */
+	private void advanceTimeMoving(double dt) {
+		if (arrived(dt)){
+			advanceTimeMovingArrived();
+		}
+		else{
+			advanceTimeMovingNotArrived(dt);
+		}
 	}
 
 	private void advanceTimeMovingArrived() {
@@ -1267,12 +1466,7 @@ public class Unit {
 		}
 	}
 
-	private void advanceTimeNotResting(double dt) {
-		setTimeSinceRest(getTimeSinceRest() + (float)dt);
-		if (getTimeSinceRest() > 180){
-			startResting();
-		}
-	}
+
 	
 	/**
 	 * Checks whether the duration can have the given dt as its value.
@@ -1653,99 +1847,7 @@ public class Unit {
 				((dz == 0) || (dz == 1) || (dz == -1)));
 	}
 	
-	/**
-	 * Move to the given target.
-	 * 	
-	 * @param	endTarget
-	 * 			The target of the unit to move to.
-	 * 
-	 * The unit paths the shortest way reachable with moveToAdjacent.
-	 * | if (currentLocation[x] == targetLocation[x])
-	 * | 	then dx = 0
-	 * | else if (currentLocation[x] < targetLocation[x])
-	 * | 	then dx = 1
-	 * | else if (currentLocation[x] > targetLocation[x])
-	 * | 	then dx = -1
-	 * | 
-	 * | if (currentLocation[y] == targetLocation[y])
-	 * | 	then dy = 0
-	 * | else if (currentLocation[y] < targetLocation[y])
-	 * | 	then dy = 1
-	 * | else if (currentLocation[y] > targetLocation[y])
-	 * | 	then dy = -1
-	 * | 
-	 * | if (currentLocation[z] == targetLocation[z])
-	 * | 	then dz = 0
-	 * | else if (currentLocation[z] < targetLocation[z])
-	 * | 	then dz = 1
-	 * | else if (currentLocation[z] > targetLocation[z])
-	 * | 	then dz = -1
-	 * 
-	 * @effect 	The unit will move to the first relative cube (dx, dy, dz) heading to his target.
-	 * 			| moveToAdjacent(dx, dy, dz, true)
-	 * @throws	IllegalPositionException
-	 * 			The given target is not a valid position for a unit.
-	 * 			| ! canHaveAsPosition(target)
-	 */
-//	public void moveToPrev1(int[] endTarget) throws IllegalPositionException { 
-										// When IllegalPositionException is thrown in moveToAdjacent(),
-										// by the coding rules, the variable "globalTarget" should be reverted to the
-										// state as at the beginning of the method. Since the method will always initiate a new
-										// globalTarget, the lack of reverting wont cause any problems.
-		//globalTarget = endTarget;
 
-//		int xCur = positionObj.getOccupiedCube()[0];
-//		int yCur = positionObj.getOccupiedCube()[1];
-//		int zCur = positionObj.getOccupiedCube()[2];
-//		
-//		int xTar = endTarget[0];
-//		int yTar = endTarget[1];
-//		int zTar = endTarget[2];
-//		
-//		if (xCur != xTar || yCur != yTar || zCur != zTar){
-//			int xRes;
-//			int yRes;
-//			int zRes;
-//			
-//			// x
-//			if (xCur == xTar){
-//				xRes = 0;
-//			}
-//			else if (xCur < xTar){
-//				xRes = 1;
-//			}
-//			else{
-//				xRes = -1;
-//			}
-//			
-//			// y 
-//			if (yCur == yTar){
-//				yRes = 0;
-//			}
-//			else if (yCur < yTar){
-//				yRes = 1;
-//			}
-//			else{
-//				yRes = -1;
-//			}
-//			
-//			// z
-//			if (zCur == zTar){
-//				zRes = 0;
-//			}
-//			else if (zCur < zTar){
-//				zRes = 1;
-//			}
-//			else{
-//				zRes = -1;
-//			}
-//			try {
-//				moveToAdjacent(xRes, yRes,zRes, true);
-//			} catch (IllegalAdjacentPositionException e) {} //Exception will never be thrown.
-//		}
-//		
-//	
-//	}
 	
 	int currentLvl = 0;
 	HashMap<Cube,Integer> queue = new HashMap<Cube, Integer>();
@@ -1994,6 +2096,8 @@ public class Unit {
 			setTimeRemainderToWork((float) 500/getStrength());			
 		}
 	}
+	
+	private boolean interruptRWPermission;
 	
 	/**
 	 * The unit stops working.
