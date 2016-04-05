@@ -59,8 +59,8 @@ public class World {
 	/**
 	 * Update the solid terrain for all cubes.
 	 * 
-	 * @effect If the cube is not solid terrain and the cube is not connected to the border
-	 * 		directly or via other solid cubes, the cubes caves in.
+	 * @effect If any of the cubes is solid terrain and the cube is not connected to the border
+	 * 		directly or via other solid cubes, the cube caves in.
 	 */
 	private void updateConnectedTerrain() {
 		for (int xIndex = 0; xIndex<getNbCubesX(); xIndex++) {
@@ -94,6 +94,7 @@ public class World {
 	 * 		cube on x,y and z position is passable terrain, the connected to border tool is notified
 	 * 		to change passable to solid.
 	 * @effect the cube at x,y and z position is set in worldcubes to the given cubetype.
+	 * @effect The terrain is updated.
 	 */
 	public void setCubeType(int x,int y, int z, CubeType cubeType){
 		if (cubeType.isPassableTerrain() && !this.getCubeType(x, y, z).isPassableTerrain()){
@@ -103,7 +104,7 @@ public class World {
 			CTBTool.changePassableToSolid(x, y, z);
 		}
 		worldCubes[x][y][z].setCubeType(cubeType);
-
+		updateConnectedTerrain();
 	}
 	
 	/**
@@ -174,14 +175,13 @@ public class World {
 	 * 		on the x,y and z position.
 	 * @effect with a chance of 25% , if the cubetype was wood, there is a new log
 	 * 		on the x,y and z position.
-	 * @effect update the terrain.
 	 */
 	protected void caveIn(int x,int y,int z){
 		
 		CubeType cubeType = getCubeType(x, y, z);
+		CTBTool.changeSolidToPassable(x, y, z);
 		setCubeType(x, y, z, CubeType.AIR);
 		terrainChangeListener.notifyTerrainChanged(x, y, z);
-		CTBTool.changeSolidToPassable(x, y, z);
 		
 		double [] location = {x+0.5,y+0.5,z+0.5};
 		
@@ -195,7 +195,6 @@ public class World {
 				logs.add(log);
 			}
 		}
-	updateConnectedTerrain();
 	}
 	
 
@@ -452,7 +451,7 @@ public class World {
 		if(!this.getAllUnits().contains(newUnit)) {
 			newUnit.terminate();
 		}
-
+		
 		return newUnit;
 	}
 	 // TODO doc
@@ -501,6 +500,4 @@ public class World {
 		
 		return unit;
 	}
-	
-
 }
