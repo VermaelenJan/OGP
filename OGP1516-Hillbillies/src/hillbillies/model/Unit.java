@@ -1450,8 +1450,8 @@ public class Unit {
 	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
 	 */
 	public boolean isActualMoving(){
-		return ((isMoving() && !(positionObj.isAtMiddleOfCube() && isWorking())) && 
-				!(positionObj.isAtMiddleZOfCube() && isResting()));
+		return (((isMoving() && !(positionObj.isAtMiddleOfCube() && isWorking())) && 
+				!(positionObj.isAtMiddleZOfCube() && isResting())) || isFalling());
 	}
 	
 	/**
@@ -1762,9 +1762,12 @@ public class Unit {
 		}
 	}
 	
-	public void moveTo(int[] endTarget){ //TODO: exception if unreachable??? of gewoon negeren? kzou voor exception gaan
+	public void moveTo(int[] endTarget) throws IllegalPositionException {
+		if (isFalling()) {
+			return;
+		}
 		if (!world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()) {
-			return; //TODO: exception if target not passable? of gewoon negeren? :p (nu ist gewoon negeren)
+			throw new IllegalPositionException(new double[] {(double) endTarget[0]+0.5, (double) endTarget[1]+0.5, (double) endTarget[2]+0.5});
 		}
 				
 		int[] currentCubeLoc = positionObj.getOccupiedCube();
