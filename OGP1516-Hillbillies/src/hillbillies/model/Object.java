@@ -27,7 +27,7 @@ public abstract class Object {
 	protected Object(World world, double[] location){
 		positionObj = new Position(world);
 		positionObj.setFreeLocation(location);
-		this.weight = (ConstantsUtils.random.nextInt(ConstantsUtils.MAX_OBJECT_WEIGHT + 1)-10);
+		this.weight = (ConstantsUtils.random.nextInt(ConstantsUtils.MAX_OBJECT_WEIGHT + 1)+10);
 		this.world = world;
 	}
 	
