@@ -1391,6 +1391,9 @@ public class Unit {
 	}
 	
 	public double getCurrentSpeedMagShow() {
+		if (isFalling()) {
+			return 3;
+		}
 		if (isMoving() && (isWorking() || isResting())) {
 			return 0;
 		}
