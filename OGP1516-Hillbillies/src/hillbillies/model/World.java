@@ -468,7 +468,7 @@ public class World {
 	 * 		   Otherwise false.
 	 * 		
 	 */
-	public void addUnit(Unit unit) {
+	protected void addUnit(Unit unit) {
 		if (getTotalNbUnits() < ConstantsUtils.MAX_UNITS_WORLD){
 			if (getActiveFactions().size() < ConstantsUtils.MAX_FACTIONS){
 				Faction newFaction = new Faction(this);	
