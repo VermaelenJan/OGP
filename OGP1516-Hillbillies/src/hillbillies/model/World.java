@@ -55,11 +55,10 @@ public class World {
 	}
 	
 	
-	// TODO boeit da van die forlussen da da ni in doc staat?
 	/**
 	 * Update the solid terrain for all cubes.
 	 * 
-	 * @effect If any of the cubes is solid terrain and the cube is not connected to the border
+	 * @effect If any of the cubes is solid terrain and that cube is not connected to the border
 	 * 		directly or via other solid cubes, the cube caves in.
 	 */
 	private void updateConnectedTerrain() {
