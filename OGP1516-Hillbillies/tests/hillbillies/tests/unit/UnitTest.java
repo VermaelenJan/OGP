@@ -17,6 +17,7 @@ import hillbillies.model.exceptions.IllegalAttackPosititonException;
 import hillbillies.model.exceptions.IllegalFightFactionException;
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.IllegalPositionException;
+import hillbillies.model.exceptions.IllegalWorkPositionException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import ogp.framework.util.Util;
 
@@ -705,11 +706,188 @@ public class UnitTest {
 	// Work test
 	
 	@Test
-	public void work_Check() {
+	public void work1_check() {
+		work3_check();
+		work4_check();
+	}
+	
+	@Test
+	public void work2_check() {
+		while (smallWorld.getBouldersWorld().size() == 0 || smallWorld.getLogsWorld().size() == 0) {
+			DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+			Cube[][][] worldCubes = new Cube[3][3][20];
+			for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+				for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+					for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+						int[] position = {xIndex, yIndex, zIndex};
+						Cube cube = new Cube(position, CubeType.AIR);
+						worldCubes[xIndex][yIndex][zIndex] = cube;
+					}	
+				}	
+			}
+			int[] pos1 = {1, 1, 18};
+			Cube cube1 = new Cube(pos1, CubeType.ROCK);
+			worldCubes[1][1][18] = cube1;
+			int[] pos2 = {1, 1, 16};
+			Cube cube2 = new Cube(pos2, CubeType.WOOD);
+			worldCubes[1][1][16] = cube2;
+			smallWorld = new World(worldCubes, defaultTerrainChangeListener);
+			smallWorld.advanceTime(0.2);
+		}
+		
+		Unit unit = new Unit(new int[] {1, 1, 0}, ValidName, 25, 25, 25, 25, smallWorld);
+		for (int i = 0; i<=100; i++) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		smallWorld.setCubeType(1, 1, 0, CubeType.WORKSHOP);
+		
+		assertTrue(Arrays.equals(smallWorld.getBouldersWorld().iterator().next().getLocation(), unit.getLocation()));
+		assertTrue(Arrays.equals(smallWorld.getLogsWorld().iterator().next().getLocation(), unit.getLocation()));
+		
+		int prevExp = unit.getExperience();
+		int prevWeight = unit.getWeight();
+		int prevToughness = unit.getToughness();
+		
+		unit.workAt(unit.getOccupiedCube());
+		smallWorld.advanceTime(0);
+		
+		assertEquals(prevExp + 10, unit.getExperience());
+		
+		assertEquals(0, smallWorld.getBouldersWorld().size());
+		assertEquals(0, smallWorld.getLogsWorld().size());
+		
+		assertTrue(unit.getToughness() > prevToughness);
+		assertTrue(unit.getWeight() > prevWeight);
+
+	}
+	
+	@Test
+	public void work3_check() {
+		while (smallWorld.getBouldersWorld().size() == 0 || smallWorld.getLogsWorld().size() == 0) {
+			DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+			Cube[][][] worldCubes = new Cube[3][3][20];
+			for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+				for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+					for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+						int[] position = {xIndex, yIndex, zIndex};
+						Cube cube = new Cube(position, CubeType.AIR);
+						worldCubes[xIndex][yIndex][zIndex] = cube;
+					}	
+				}	
+			}
+			int[] pos1 = {1, 1, 18};
+			Cube cube1 = new Cube(pos1, CubeType.ROCK);
+			worldCubes[1][1][18] = cube1;
+			int[] pos2 = {1, 1, 16};
+			Cube cube2 = new Cube(pos2, CubeType.WOOD);
+			worldCubes[1][1][16] = cube2;
+			smallWorld = new World(worldCubes, defaultTerrainChangeListener);
+			smallWorld.advanceTime(0.2);
+		}
+		
+		for (int i = 0; i<=100; i++) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		Unit unit = new Unit(new int[] {1, 1, 0}, ValidName, 0, 0, 0, 0, smallWorld);
+		
+		int prevExp = unit.getExperience();
+		
+		unit.workAt(unit.getOccupiedCube());
+		
+		smallWorld.advanceTime(0);
+		
+		assertEquals(prevExp+10, unit.getExperience());
+		prevExp = unit.getExperience();
+		
+		assertTrue(unit.isCarryingBoulder());
+		assertFalse(unit.isCarryingLog());
+		assertEquals(0, smallWorld.getBouldersWorld().size());
+		
+		unit.workAt(new int[] {0, 0, 0});
+		
+		smallWorld.advanceTime(0.1);
+		
+		assertTrue(unit.isActualMoving());
+		assertEquals(prevExp, unit.getExperience());
+		
+		while (unit.isActualMoving()) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		smallWorld.advanceTime(0);
+		assertFalse(unit.isCarryingBoulder());
+		assertEquals(prevExp + 10 + 1, unit.getExperience());
+		assertEquals(1, smallWorld.getBouldersWorld().size());
+	}
+	
+	@Test
+	public void work4_check() {
+		while (smallWorld.getLogsWorld().size() == 0) {
+			DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
+			Cube[][][] worldCubes = new Cube[3][3][20];
+			for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
+				for (int yIndex = 0; yIndex<worldCubes[0].length; yIndex++) {
+					for (int zIndex = 0; zIndex<worldCubes[0][0].length; zIndex++) {
+						int[] position = {xIndex, yIndex, zIndex};
+						Cube cube = new Cube(position, CubeType.AIR);
+						worldCubes[xIndex][yIndex][zIndex] = cube;
+					}	
+				}	
+			}
+			int[] pos2 = {1, 1, 16};
+			Cube cube2 = new Cube(pos2, CubeType.WOOD);
+			worldCubes[1][1][16] = cube2;
+			smallWorld = new World(worldCubes, defaultTerrainChangeListener);
+			smallWorld.advanceTime(0.2);
+		}
+		
+		for (int i = 0; i<=100; i++) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		Unit unit = new Unit(new int[] {1, 1, 0}, ValidName, 0, 0, 0, 0, smallWorld);
+		
+		int prevExp = unit.getExperience();
+		
+		unit.workAt(unit.getOccupiedCube());
+		
+		smallWorld.advanceTime(0);
+		
+		assertEquals(prevExp + 10, unit.getExperience());
+		prevExp = unit.getExperience();
+		
+		assertTrue(unit.isCarryingLog());
+		assertEquals(0, smallWorld.getLogsWorld().size());
+		
+		unit.workAt(new int[] {0, 0, 0});
+		
+		smallWorld.advanceTime(0.1);
+		
+		assertTrue(unit.isActualMoving());
+		assertEquals(prevExp, unit.getExperience());
+		
+		while (unit.isActualMoving()) {
+			smallWorld.advanceTime(0.1);
+		}
+		
+		smallWorld.advanceTime(0.01);
+		assertFalse(unit.isCarryingLog());
+		assertEquals(prevExp + 10 + 1, unit.getExperience());
+		assertEquals(1, smallWorld.getLogsWorld().size());
+	}
+	
+	@Test
+	public void work5_Check() {
+		int startExp = validUnit.getExperience();
+		
 		assertFalse(validUnit.isWorkingShow());
+		
 		int[] cubeWork = {0, 3, 3};
 		validUnit.workAt(cubeWork);
 		assertTrue(validUnit.isWorkingShow());
+		assertTrue(smallWorld.getCubeType(0, 3, 3) == CubeType.ROCK);
 		
 		float timeToWork = (float) 500/validUnit.getStrength();
 		
@@ -719,11 +897,16 @@ public class UnitTest {
 			assertTrue(validUnit.isWorkingShow());
 		}
 		
-		validUnit.advanceTime(timeToWork-0.0001);
-		assertTrue(validUnit.isWorkingShow());
-		
-		validUnit.advanceTime(0.0001);
+		validUnit.advanceTime(timeToWork);
 		assertFalse(validUnit.isWorkingShow());
+		assertTrue(smallWorld.getCubeType(0, 3, 3) == CubeType.AIR);
+		
+		assertEquals(startExp + 10, validUnit.getExperience());
+	}
+		
+	@Test(expected=IllegalWorkPositionException.class)
+	public void illegalWork_check() throws Exception {
+		validUnit.workAt(new int[] {0, 0, 4});
 	}
 	
 	
@@ -821,6 +1004,17 @@ public class UnitTest {
 		assertEquals(11, unit.getExperience());
 		
 		fight();
+		
+		setUp();
+		work1_check();
+		setUp();
+		work2_check();
+		setUp();
+		work3_check();
+		setUp();
+		work4_check();
+		setUp();
+		work5_Check();
 	}
 	
 	
