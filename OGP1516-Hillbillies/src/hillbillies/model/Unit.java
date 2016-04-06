@@ -1229,7 +1229,17 @@ public class Unit {
 	 * 
 	 * @param dt
 	 *		The time step which the game time is advanced.
-	 *
+	 *	start cube is equal to the occupying cube.
+	 * @effect If the unit is not above a cube of solid terrain, the units falls 
+	 * 		to the cube below.
+	 * @effect If the unit is not above a cube of solid terrain and if the cube the 
+	 * 		the unit is occupying is not the same as the start cube, the hitpoints decrement
+	 * 		with 10 points for every z level the unit falls.
+	 * @effect If the unit is above a cube of solid terrain, and if the unit is not at the middle 
+	 * 		of the cube in z direction, the unit falls to the current
+	 * 		occupying cube, to the middle in z direction.
+	 * @effect If the unit is above a cube of solid terrain, and if the unit is at the middle of
+	 * 		of the cube in z direction, the unit stops falling.
 	 *
 	 */
 	private void advanceTimeFalling(double dt){
@@ -1269,86 +1279,104 @@ public class Unit {
 			}
 		}
 	}
-
-	private void advanceTimeMovingNotArrived(double dt) {
-		double[] newLoc = {positionObj.getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
-				positionObj.getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
-				positionObj.getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
-		try {
-			positionObj.setLocation(newLoc);
-		} catch (IllegalPositionException e) {
-			if (!positionObj.isAtMiddleOfCube()){
-				double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
-				if (!Arrays.equals(positionObj.getLocation(), back)) {
-					this.target = back;
-				}
-			}
-
-		}
-		
-		if (isSprinting()) {
-			double newStamina = getStamina() - dt*10;
-			if (0 < newStamina && newStamina < getMaxHitpointsStamina()){
-				setStamina(newStamina);
-			}
-			else if (newStamina <= 0) {
-				setStamina(0);
-				stopSprinting();
-			}
-			else {
-				setStamina(getMaxHitpointsStamina());
-			}
-		}
-		else if (isDefaultBehaviourEnabled()) {
-			if (ConstantsUtils.random.nextDouble() <= (float) dt/10) {
-				if (isSprinting()) {
-					stopSprinting();
-				}
-				else {
-					startSprinting();
-				}
-			}
-		}
-		setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
-	}
 	
-
 	/**
-	 * 
+	 * Advance the time attacking with the given time step dt.
 	 * 
 	 * @param dt
+	 *		The time step which the game time is advanced.
+	 * @effect The unit stops working.
+	 * @effect The unit stops resting.
+	 * @effect If the time attacking is smaller or equal to 0,
+	 * 		the attack is set to 0.
 	 */
-	private void advanceTimeMoving(double dt) {
-		if (arrived(dt)){
-			advanceTimeMovingArrived();
-		}
-		else{
-			advanceTimeMovingNotArrived(dt);
-		}
-	}
-
-	private void advanceTimeMovingArrived() {
-		stopMoving();
-		try {
-			positionObj.setLocation(target);
-		} catch (IllegalPositionException e) {} //Exception will never be thrown.
-		
-		updateExperience(1);
-
-		
-		if (!(globalTarget == null) &&
-				!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
-				(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
-				(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
-			try {
-				interruptRWPermission = true;
-				moveTo(globalTarget);
-				interruptRWPermission = false;
-				
-			} catch (IllegalPositionException e) {} //Exception will never be thrown.
+	private void advanceTimeAttacking(double dt) {
+		stopWorking();
+		stopResting();
+					
+		setAttackTime(getAttackTime() - (float)(dt));
+		if (getAttackTime()<= 0){
+			setAttackTime(0);
 		}
 	}
-
+	
+	/**
+	 * Advance the time attacking with the given time step dt.
+	 * 
+	 * @param dt
+	 *		The time step which the game time is advanced.
+	 * @effect The periodic time rested increments with the given time step dt.
+	 * @effect The time rested increments with the given time step dt.
+	 * @effect The new hitpoints of the unit are equal to the previous hitpoints.
+	 * 			plus his toughness divided by 200, for each 0,2 seconds, until the unit reaches its maximum
+	 * 			amount of hitpoints.
+	 * @effect If the hitpoints of the unit are equal to its maximum hitpoints,
+	 * 			the new stamina of the unit is equal to the previous stamina of the unit, plus his toughness
+	 * 			divided by 100, for each 0,2 seconds, until the unit reaches its maximum amount of stamina.
+	 * @effect If the hitpoints of the unit are equal to its maximum hitpoints,
+	 * 			and the stamina of the unit is equal its maximum stamina, the unit stops resting.
+	 */
+	private void advanceTimeResting(double dt) {
+		setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
+		setTimeResting(getTimeResting() + (float) dt);
+		
+		if (getTimePeriodicRest() >= 0.2){
+			
+			int nbTimesPeriod = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
+			setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
+			double newHitpoints = getHitpoints() + ((double)getToughness()/200.0)*(double)(nbTimesPeriod);
+			double newStamina = getStamina() + ((double) getToughness()/100.0)*(double)(nbTimesPeriod);
+			
+			if (newHitpoints <= getMaxHitpointsStamina()){
+				setHitpoints(newHitpoints);
+			}
+			else if (newStamina <= getMaxHitpointsStamina()){
+				setHitpoints(getMaxHitpointsStamina());
+				setStamina(newStamina);				
+			}
+			else{
+				setHitpoints(getMaxHitpointsStamina());
+				setStamina(getMaxHitpointsStamina());
+				stopResting();
+			}
+		}
+	}
+	
+	/**
+	 * Advance the time working with the given time step dt.
+	 * 
+	 * @param dt
+	 *		The time step which the game time is advanced.
+	 * @effect The time time remainder to work is decremented with the given time step dt.
+	 * @effect If the worktype is equal to 1 and if the unit is not moving, the time remaining
+	 * 		to work is set to 0, the unit drops its object, the experience is updated with 10
+	 * 		points and the worktype is set to 0.
+	 * @effect If the worktype is equal to 1 and if the unit is moving, the time remainder to 
+	 * 		work is set to a very large number, and advance time moving with the given time step dt.
+	 * @effect If the worktype is equal to 2 and if the unit is not moving, the time remaining to 
+	 * 		work is set to 0, the worktype is set to 0, and if there is a boulder and a log at
+	 * 		the worktarget, the unit improves its equipment with a boulder and a log, and updates
+	 * 		its experience with 10 points.
+	 * @effect If the worktype is equal to 2 and if the unit is moving, the time remainder to 
+	 * 		work is set to a very large number, and advance time moving with the given time step dt.
+	 * @effect If the worktype is equal to 3 and if the unit is not moving, the time remaining to 
+	 * 		work is set to 0, the worktype is set to 0, and if there is a boulder at
+	 * 		the worktarget, the unit picks up a boulder, and updates its experience with 10 points.
+	 * @effect If the worktype is equal to 3 and if the unit is moving, the time remainder to 
+	 * 		work is set to a very large number, and advance time moving with the given time step dt.
+	 * @effect If the worktype is equal to 4 and if the unit is not moving, the time remaining to 
+	 * 		work is set to 0, the worktype is set to 0, and if there is a log at
+	 * 		the worktarget, the unit picks up a log, and updates its experience with 10 points.
+	 * @effect If the worktype is equal to 4 and if the unit is moving, the time remainder to 
+	 * 		work is set to a very large number, and advance time moving with the given time step dt.
+	 * @effect If the time remaining to work is smaller or equal to 0, the unit stops working.
+	 * @effect If the time remaining to work is smaller or equal to 0 and the the worktype is equal 
+	 * 		to 5, the cube at the worktarget caves in, the unit updates its experience with 10 points,
+	 * 		and the worktype is set to 0.
+	 * @effect If the worktype is equal to 0, the unit stops working.
+	 * @note The meaning of the different worktypes are explained in the documentation of the function 
+	 * 		workAt below.
+	 */
 	private void advanceTimeWorking(double dt) {
 		setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);
 		if (this.workType == 1) {
@@ -1429,56 +1457,126 @@ public class Unit {
 			stopWorking();
 		}
 	}
-
-	private void advanceTimeResting(double dt) {
-		setTimePeriodicRest(getTimePeriodicRest() + (float) dt);
-		setTimeResting(getTimeResting() + (float) dt);
+	
+	/**
+	 * Advance the time moving with the given time step dt.
+	 * 
+	 * @param dt
+	 *		The time step which the game time is advanced.
+	 * @effect If the unit is arrived at the target, advance time moving arrived.
+	 * @effect If the unit is not arrived at the target, advance time moving not arrived
+	 * 		with the given time step dt.
+	 */
+	private void advanceTimeMoving(double dt) {
+		if (arrived(dt)){
+			advanceTimeMovingArrived();
+		}
+		else{
+			advanceTimeMovingNotArrived(dt);
+		}
+	}
+	
+	/**
+	 * The unit arrives at his target.
+	 * 
+	 * @effect The unit stops moving.
+	 * @effect The unit updates its experience with 1 points.
+	 * @effect If the unit has a global target to move to, the unit moves
+	 * 		to its global target.
+	 */
+	private void advanceTimeMovingArrived() {
+		stopMoving();
+		try {
+			positionObj.setLocation(target);
+		} catch (IllegalPositionException e) {} //Exception will never be thrown.
 		
-		if (getTimePeriodicRest() >= 0.2){
-			
-			int nbTimesPeriod = (int)Math.floor((double)(getTimePeriodicRest()/0.2));
-			setTimePeriodicRest((float)(getTimePeriodicRest() % 0.2));
-			double newHitpoints = getHitpoints() + ((double)getToughness()/200.0)*(double)(nbTimesPeriod);
-			double newStamina = getStamina() + ((double) getToughness()/100.0)*(double)(nbTimesPeriod);
-			
-			if (newHitpoints <= getMaxHitpointsStamina()){
-				setHitpoints(newHitpoints);
+		updateExperience(1);
+
+		
+		if (!(globalTarget == null) &&
+				!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
+				(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
+				(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
+			try {
+				interruptRWPermission = true;
+				moveTo(globalTarget);
+				interruptRWPermission = false;
+				
+			} catch (IllegalPositionException e) {} //Exception will never be thrown.
+		}
+	}
+	
+	/**
+	 * Advance the time moving with the given time step dt.
+	 * 
+	 * @param dt
+	 *		The time step which the game time is advanced.
+	 * @effect The new location of the unit is equal to the previous 
+	 * 		location of the unit plus its speed multiplied by dt in x, y and z direction.
+	 * @effect If the unit is sprinting, the new stamina of the unit is equal to the 
+	 * 		previous stamina of the unit minus 10 times dt.
+	 * @effect If the unit is sprinting and the stamina drops below 0, the new stamina
+	 * 		is equal to 0 and the unit stops sprinting.
+	 * @effect If the unit its defaultBehaviour is enabled, the unit starts or stops sprinting
+	 * 			with a chance of dt/10.
+	 * @effect The unit its orientation will be updated to the direction the
+	 * 			unit is moving in.
+	 */
+	private void advanceTimeMovingNotArrived(double dt) {
+		double[] newLoc = {positionObj.getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
+				positionObj.getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
+				positionObj.getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
+		try {
+			positionObj.setLocation(newLoc);
+		} catch (IllegalPositionException e) {
+			if (!positionObj.isAtMiddleOfCube()){
+				double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
+				if (!Arrays.equals(positionObj.getLocation(), back)) {
+					this.target = back;
+				}
 			}
-			else if (newStamina <= getMaxHitpointsStamina()){
-				setHitpoints(getMaxHitpointsStamina());
-				setStamina(newStamina);				
+
+		}
+		
+		if (isSprinting()) {
+			double newStamina = getStamina() - dt*10;
+			if (0 < newStamina && newStamina < getMaxHitpointsStamina()){
+				setStamina(newStamina);
 			}
-			else{
-				setHitpoints(getMaxHitpointsStamina());
+			else if (newStamina <= 0) {
+				setStamina(0);
+				stopSprinting();
+			}
+			else {
 				setStamina(getMaxHitpointsStamina());
-				stopResting();
 			}
 		}
-	}
-
-	private void advanceTimeAttacking(double dt) {
-		stopWorking();
-		stopResting();
-					
-		setAttackTime(getAttackTime() - (float)(dt));
-		if (getAttackTime()<= 0){
-			setAttackTime(0);
+		else if (isDefaultBehaviourEnabled()) {
+			if (ConstantsUtils.random.nextDouble() <= (float) dt/10) {
+				if (isSprinting()) {
+					stopSprinting();
+				}
+				else {
+					startSprinting();
+				}
+			}
 		}
+		setOrientation(Math.atan2(getCurrentSpeed()[1],getCurrentSpeed()[0]));
 	}
-
-
 	
 	/**
 	 * Checks whether the duration can have the given dt as its value.
+	 * 
 	 * @param dt
-	 * 		  	The duration which the game time is advanced.
+	 * 		The duration which the game time is advanced.
 	 * @return True if and only if dt is greater or equal to 0 and smaller or equal to 0.2.
-	 * 			result == ((dt >=0)&&(dt <= 0.2))
+	 * 		| result == ((dt >=0)&&(dt <= 0.2))
 	 */
 	@Model
 	private static boolean isValidAdvanceTime(double dt){
 		return ((dt >=0)&&(dt <= 0.2));
 	}
+	
 	
 	// SPEED
 	
@@ -1493,7 +1591,6 @@ public class Unit {
 	private double getBaseSpeed(){
 		return 1.5*(getStrength()+getAgility())/(2*getWeight());
 	}
-	
 	
 	/**
 	 * Get the walking speed of this unit.
@@ -1567,7 +1664,30 @@ public class Unit {
 	private double velocity = 0;
 	
 	/**
-	 * Returns the magnitude of the units speed.
+	 * Return the magnitude of the units speed.
+	 * 
+	 * @return The falling speed, if the unit is falling.
+	 * 		| if (isFalling())
+	 * 		|	then result == FALLING_SPEED
+	 * @return 0, if the unit is moving and working or if the unit is 
+	 * 		moving and resting.
+	 * 		| if (isMoving() && (isWorking() || isResting()))
+	 * 		|	then result == 0
+	 * @return the current magnitude of the speed while moving towards a target.
+	 * 		| result == getCurrentSpeedMag()
+	 */
+	public double getCurrentSpeedMagShow() {
+		if (isFalling()) {
+			return ConstantsUtils.FALLING_SPEED;
+		}
+		if (isMoving() && (isWorking() || isResting())) {
+			return 0;
+		}
+		return getCurrentSpeedMag();
+	}
+	
+	/**
+	 * Returns the magnitude of the units speed while moving towards a target.
 	 * 
 	 * @return 0, if the unit is not moving.
 	 * 			| if (!isMoving())
@@ -1583,17 +1703,8 @@ public class Unit {
 		return Math.sqrt(Math.pow((getCurrentSpeed()[0] ), 2) +
 		Math.pow((getCurrentSpeed()[1] ), 2) + Math.pow((getCurrentSpeed()[2]), 2));
 	}
-	
-	public double getCurrentSpeedMagShow() {
-		if (isFalling()) {
-			return ConstantsUtils.FALLING_SPEED;
-		}
-		if (isMoving() && (isWorking() || isResting())) {
-			return 0;
-		}
-		return getCurrentSpeedMag();
-	}
 
+	
 	// SPRINTING 
 	
 	/**
@@ -1601,7 +1712,6 @@ public class Unit {
 	 * 
 	 * @post	The new state of sprinting of this unit is true.
 	 * 			| new.isSprinting() == true
-	 * 
 	 */
 	public void startSprinting(){
 		if (! isFalling()) {
@@ -1630,18 +1740,22 @@ public class Unit {
 	}
 	
 	/**
-	 * Variable registering sprinting of this unit.
+	 * Variable registering whether or not this unit is sprinting.
 	 */
 	private boolean sprinting = false;
 	
+
 	// MOVING
 	
 	/**
 	 * Checks whether the unit is moving.
 	 * 
-	 * @return True if and only if the unit is moving and the unit is not working and 
-	 * 			the unit is not resting and the unit is not attacking.
-	 * 			| result == (isMoving() && !isWorking() && !isResting() && !isAttacking())
+	 * @return True if and only if the unit is moving and the unit is not, at the middle of a cube
+	 * 		and working, and the unit is not, at the middle of a cube in z direction and resting,
+	 * 		or the unit is falling.
+	 * 		| result == (((isMoving() && !(positionObj.isAtMiddleOfCube() && isWorking())) &&
+	 * 		| !(positionObj.isAtMiddleZOfCube() && isResting())) || isFalling())
+	 * 
 	 */
 	public boolean isActualMoving(){
 		return (((isMoving() && !(positionObj.isAtMiddleOfCube() && isWorking())) && 
@@ -1651,15 +1765,16 @@ public class Unit {
 	/**
 	 * Enable the movement of this unit.
 	 * 
-	 * @effect If the unit is resting and has rested long enough to have recovered one hitpoint,
-	 * 			the units stops resting.
-	 * 			| if ( isResting() && (canHaveRecoverdOneHp()))
-	 * 			|	then stopResting()
+	 * @effect If the unit is resting and has rested long enough to have recovered one hitpoint
+	 * 		and the unit is not interupted by resting or working during a movement to a global target,
+	 * 		the units stops resting.
+	 * 		| if ( !interruptRWPermission && isResting() && (canHaveRecoverdOneHp()))
+	 * 		|	then stopResting()
 	 * @effect The unit stops working.
-	 * 			| stopWorking()
+	 * 		| stopWorking()
 	 * @effect If the unit is not attacking, the unit starts moving.
-	 * 			| if (!isAttacking())
-	 * 			|	then new.isMoving == true.
+	 * 		| if (!isAttacking())
+	 * 		|	then new.isMoving == true.
 	 */
 	@Model 
 	private void startMoving(){
@@ -1679,11 +1794,23 @@ public class Unit {
 	 * Disable the movement of this unit.
 	 * 
 	 * @post The new state of moving of the unit is false.
-	 * 			| new.isMoving == false				
+	 * 		| new.isMoving == false				
 	 */
 	@Model 
 	private void stopMoving(){
 		this.isMoving = false;
+	}
+	
+	
+	/**
+	 * Checks whether the unit is (globally) moving, possibly temporary interrupted.
+	 * 
+	 * @return True if and only if the unit is moving.
+	 * 		| result == isMoving			
+	 */
+	@Basic @Model
+	private boolean isMoving(){
+		return isMoving;
 	}
 	
 	/**
@@ -1691,25 +1818,15 @@ public class Unit {
 	 */
 	private boolean isMoving = false;
 	
-	/**
-	 * Checks whether the unit is (globally) moving, possibly temporary interrupted.
-	 * 
-	 * @return True if and only if the unit is moving.
-	 * 			| result == isMoving			
-	 */
-	@Basic @Model
-	private boolean isMoving(){
-		return isMoving;
-	}
 
 	/**
 	 * Returns the distance from the unit's current location to the target.
 	 * @return 0 if there is no target.
-	 * 			| if (target == null)
-	 * 			|	then result == 0
+	 * 		| if (target == null)
+	 * 		|	then result == 0
 	 * @return The 2-norm of the distance between the target and the current location in x y and z direction.
-	 * 			| result == ((target[x]-getLocation()[x])^2+ (target[y] - getLocation()[y])^2 + 
-	 * 			| (target[z]-getLocation()[z])^2)^(1/2)			 
+	 * 		| result == ((target[x]-getLocation()[x])^2+ (target[y] - getLocation()[y])^2 + 
+	 * 		| (target[z]-getLocation()[z])^2)^(1/2)			 
 	 */
 	@Model
 	private double getDistanceToTarget() {
@@ -1726,10 +1843,10 @@ public class Unit {
 	 * Checks whether the unit is arrived at the target.
 	 * 
 	 * @param dt
-	 * 		  	The duration dt of game time advancement.
+	 * 	 	The time step dt which the game time is advanced.
 	 * @return True if and only if the distance to the target is smaller than the duration dt times the magnitude of
-	 * 			the current speed.
-	 * 			| result == (getDistanceToTarget() < dt*getCurrentSpeedMag())
+	 * 		the current speed.
+	 * 		| result == (getDistanceToTarget() < dt*getCurrentSpeedMag())
 	 */
 	@Model
 	private boolean arrived(double dt){
@@ -1740,55 +1857,60 @@ public class Unit {
 	 * Move to the adjacent cube.
 	 * 
 	 * @param dx
-	 * 			The movement of the unit in the x direction.
+	 * 		The movement of the unit in the x direction.
 	 * @param dy
-	 * 			The movement of the unit in the y direction. 
+	 * 		The movement of the unit in the y direction. 
 	 * @param dz
-	 * 			The movement of the unit in the z direction.
+	 * 		The movement of the unit in the z direction.
 	 * @effect The unit moves to an adjacent cube with movements dx, dy and dz and the boolean
-	 * 			calledByTo on false, which means this function is not called by the function moveTo,
-	 * 			but only a single moveToAdjacent request.
-	 * 			| moveToAdjacent(dx, dy, dz, false)
+	 * 		calledByTo on false, which means this function is not called by the function moveTo,
+	 * 		but only a single moveToAdjacent request.
+	 * 		| moveToAdjacent(dx, dy, dz, false)
 	 * @throws IllegalPositionException(currentTarget)
-	 * 			The currentTarget (location after the moveToAdjacent) is not a valid location.
-	 * 			| ! isValidLocation(currentTarget)
+	 * 		The currentTarget (location after the moveToAdjacent) is not a valid location.
+	 * 		| ! positionObj.isValidUnitPosition(currentTarget)
 	 * @throws IllegalAdjacentPositionException(dx,dy,dz)
-	 * 			The given dx,dy and dz movement is not a valid moveToAdjacent movement.
-	 * 			| ! isValidAdjacentMovement(dx,dy,dz)
+	 * 		The given dx,dy and dz movement is not a valid moveToAdjacent movement.
+	 * 		| ! isValidAdjacentMovement(dx,dy,dz)
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalPositionException , IllegalAdjacentPositionException {
 		moveToAdjacent(dx, dy, dz, false);
 	}
-	
+
 	/**
 	 * Move to the adjacent cube.
 	 * 
 	 * @param dx
-	 * 			The movement of the unit in the x direction.
+	 * 		The movement of the unit in the x direction.
 	 * @param dy
-	 * 			The movement of the unit in the y direction. 
+	 * 		The movement of the unit in the y direction. 
 	 * @param dz
-	 * 			The movement of the unit in the z direction.
+	 * 		The movement of the unit in the z direction.
 	 * @param calledBy_moveTo
-	 * 			Boolean for defining the function called by the function MoveTo.
-	 * @effect If the movement in x,y and z direction is not zero, the unit starts moving towards
-	 * 			the new current target, equal to the cube position of the current cube plus the dx, 
-	 * 			dy and dz movement, respectively in x, y and z direction.
-	 * 			|    new.currentTargetCube[x] == this.currentCube[x] + dx
-	 * 			| && new.currentTargetCube[y] == this.currentCube[y] + dy
-	 * 			| && new.currentTargetCube[z] == this.currentCube[z] + dz
-	 * 			| startMoving()				 	
+	 * 		Boolean for defining the function called by the function MoveTo.
+	 * @effect If the unit is moving and the unit has rested long enough to have recovered one hitpoint
+	 * 		and the unit is not interupted by resting or working during a movement to a global target,
+	 * 		the units stops resting and stops working.
+	 * @effect If the movement in x,y and z direction is not zero,and the unit is at the middle
+	 * 		of a cube and the unit is not moving, the unit starts moving towards
+	 * 		the new current target, equal to the cube position of the current cube plus the dx, 
+	 * 		dy and dz movement, respectively in x, y and z direction.
+	 * 		|    new.currentTargetCube[x] == this.currentCube[x] + dx
+	 * 		| && new.currentTargetCube[y] == this.currentCube[y] + dy
+	 * 		| && new.currentTargetCube[z] == this.currentCube[z] + dz
+	 * 		| startMoving()				 	
 	 * @post If the boolean calledBy_moveTo is false, the new global target cube is equal to 
-	 * 			the current target.
+	 * 		the current target.
+	 * 		| globalTarget == {currentCube[0] + dx, currentCube[1]+ dy, currentCube[2] + dz}
 	 * 		Note: If the boolean calledBy_moveTo is true, the globalTarget remains unchanged.
 	 * 		The global target is the position of the middle of the cube, where the unit would
 	 * 		move to after the dx,dy and dz movement.
 	 * @throws IllegalPositionException(currentTarget)
-	 * 			The currentTarget (location after the moveToAdjacent) is not a valid location.
-	 * 			| ! isValidLocation(currentTarget)
+	 * 		The currentTarget (location after the moveToAdjacent) is not a valid location.
+	 * 		| ! positionObj.isValidUnitPosition(currentTarget)
 	 * @throws IllegalAdjacentPositionException(dx,dy,dz)
-	 * 			The given dx,dy and dz movement is not a valid moveToAdjacent movement.
-	 * 			| ! isValidAdjacentMovement(dx,dy,dz)
+	 * 		The given dx,dy and dz movement is not a valid moveToAdjacent movement.
+	 * 		| ! isValidAdjacentMovement(dx,dy,dz)
 	 * 			
 	 */
 	@Model
@@ -1830,16 +1952,16 @@ public class Unit {
 	 * Checks whether the dx, dy and dz movement is a valid adjacent movement.
 	 * 
 	 * @param dx
-	 * 			The movement of the unit in the x direction.
+	 * 		The movement of the unit in the x direction.
 	 * @param dy
-	 * 			The movement of the unit in the y direction. 
+	 * 		The movement of the unit in the y direction. 
 	 * @param dz
-	 * 			The movement of the unit in the z direction.
+	 * 		The movement of the unit in the z direction.
 	 * @return True if and only if the movement is 0 or 1 or -1,
-	 * 			for dx, dy and dz.
-	 * 			| result == (((dx == 0) || (dx == 1) || (dx == -1))
-	 * 			|         && ((dy == 0) || (dy == 1) || (dy == -1))
-	 * 			|         && ((dz == 0) || (dz == 1) || (dz == -1)))
+	 * 		for dx, dy and dz.
+	 * 		| result == (((dx == 0) || (dx == 1) || (dx == -1))
+	 * 		|         && ((dy == 0) || (dy == 1) || (dy == -1))
+	 * 		|         && ((dz == 0) || (dz == 1) || (dz == -1)))
 	 */
 	private boolean isValidAdjacentMovement(int dx, int dy, int dz){
 		return (((dx == 0) || (dx == 1) || (dx == -1)) && 
@@ -1848,10 +1970,22 @@ public class Unit {
 	}
 	
 
-	
-	int currentLvl = 0;
-	HashMap<Cube,Integer> queue = new HashMap<Cube, Integer>();
-	
+	/**
+	 * Search next possible cubes to move to.
+	 * 
+	 * @param location
+	 * 		The location to check.
+	 * @param n_0
+	 * 		The level of pathing of the given location.
+	 * @effect for all the neigbouring cubes of the given location, if the is passable terrain
+	 * 		and if the cube is a valid unit location en if the cube is not already in the queue 
+	 * 		of pathing, the cube is added to the queue of pathing, with correspending level of 
+	 * 		pathing (value of the key in the map), the given level of pathing n_0, plus 1.
+	 * 		| for each cube in positionObj.getNeighbouringCubes(location) :
+	 * 		|	if 	(cube.getCubeType().isPassableTerrain() &&
+	 * 		|		positionObj.isValidUnitPositionInt(cubeLoc) && !queue.containsKey(cube))
+	 * 		| 		then queue.put(cube,n_0+1)
+	 */
 	private void search(int[] location, int n_0){
 		for (Cube cube : positionObj.getNeighbouringCubes(location)){
 			int[] cubeLoc = cube.getCubePosition();
@@ -1859,11 +1993,53 @@ public class Unit {
 					positionObj.isValidUnitPositionInt(cubeLoc) &&
 						!queue.containsKey(cube)){
 				queue.put(cube,n_0+1);
-
 			}
 		}
 	}
-	
+	// TODO empty returns
+	/**
+	 * move To the given end target.
+	 * 
+	 * @param endTarget
+	 * 		The end target to move to.
+	 * 
+	 * @throws IllegalPositionException
+	 * 		The cubetype of the target is not passible terrain.
+	 * 		| !world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()
+	 * @effect The global target is set to the endtarget.
+	 * 		| globalTarget == endTarget
+	 * @post the cube of the position of the endTarget is put in the map queue, with as value
+	 * 		the level of the pathing which is 0.
+	 * 		| queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 )
+	 * @effect As long as the queue does not contains the current cube of the positionobject
+	 * 		of this unit, and the queue is still getting bigger each step, search for new possible
+	 * 		cube on the cubes in the queue that have the current level of pathing as their value.
+	 * 		| while (!queue.containsKey(currentCube) && expandingQueue) : 
+	 * 		|	then 
+	 * 		|		for (cube in queue) : 
+	 * 		|			if (cube.getValue() == currentLvl)
+	 * 		|				then search(cube.getKey().getCubePosition(),currentLvl)
+	 * @post If the queue contains the cube of the current location of this unit, the next cube
+	 * 		for the path is equal to a neighbouring cube of the current location, with the smallest
+	 * 		level of pathing.
+	 * 		| for each cube in positionobj.getneighbouring(currentcube) : 
+	 * 		|	if (queue.containsKey(cube) && queue.get(cube) =< currentLvl)
+	 * 		|		then nextcube == cube
+	 * @effect If the queue contains the cube of the current location of this unit, 
+	 * 		and if the nextcube is effective, the unit will move to this next cube.
+	 * 		| if ((queue.containsKey(cube) && (nextCube != null))
+	 * 		|	then moveToAdjacent(nextcube_x-currentCube_x,nextcube_y-currentCube_y,nextcube_z-currentCube_z, true)
+	 * @effect If the queue containts the cube of this current location of this unit,
+	 * 		and if the nextcube is not effective, clear the queue, set the current level of the path finding
+	 * 		on 0 and move to the endtarget.
+	 * 		| if ((queue.containsKey(cube) && (nextCube == null))
+	 * 		| 		then queue.isEmpty()
+	 * 		|			 currentLvl == 0
+	 * 		|			 moveTo(EndTarget)
+	 * @effect Clear the queue and set the current level of the path finding on 0.
+	 * 		| queue.isEmpty()
+	 * 		| currentLvl == 0
+	 */
 	public void moveTo(int[] endTarget) throws IllegalPositionException {
 		if (isFalling()) {
 			return;
@@ -1939,8 +2115,17 @@ public class Unit {
 		queue = new HashMap<Cube, Integer>();
 		currentLvl = 0;
 	}
-
 	
+	/**
+	 * Variable registering the level of pathing the unit is in.
+	 */
+	int currentLvl = 0;
+	
+	/**
+	 * Variable referencing a map collecting all the cubes with the corresponding level of pathing,
+	 * of the path. 
+	 */
+	HashMap<Cube,Integer> queue = new HashMap<Cube, Integer>();
 
 	/**
 	 * Variable registering the target to move to.
@@ -1952,27 +2137,46 @@ public class Unit {
 	 */
 	private int[] globalTarget = null;
 	
-
 	
 	// FALLING
 	
-	private boolean isFalling;
-	
+	/**
+	 * Set falling of this unit to the given boolean
+	 * @post The new state of falling of this unit is equal to the given boolean.
+	 *		| new.isFalling() == bool
+	 */
 	private void setFalling(boolean bool){
 		this.isFalling = bool;
 	}
 	
+	/**
+	 * Check whether or not the unit is falling.
+	 * 
+	 * @return True if and only if the unit is falling.
+	 * 		| result == isFalling
+	 */
 	private boolean isFalling(){
 		return this.isFalling;
 	}
-	private int workType;
-	private int[] workTarget;
-
-	// WORKING
 	
+	/**
+	 * Variable referencing whether or not the unit is falling.
+	 */
+	private boolean isFalling;
+	
+	
+	// WORKING
+ 
+	/**
+	 * The unit works at a random neighbouring cube or at its occupying cube.
+	 * 
+	 * @effect The unit starts working at one of the neighbouring cubes if possible.
+	 * 		| workAt(random Neighbouringcube.getCubePosition())
+	 * @note this function is used in default behaviour.
+	 */
 	public void work(){
 		if (isFalling()) {
-			return;
+			return; // TODO doc return
 		}
 		List<Cube> neighbs = (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()));
 		try {
@@ -1981,14 +2185,69 @@ public class Unit {
 	}
 	
 	/**
-	 * Enable the unit's working.
+	 * The unit starts working at the given cube.
 	 * 
-	 * @effect The unit starts working.
-	 * 			| startWorking()
+	 * @param workTarget
+	 * 		The cube at which the unit starts working.
+	 * @post The new workTarget of this unit is equal to the given workTarget.
+	 * 		| new.workTarget == workTarget
+	 * @effect If the unit is carrying an object, the unit moves to the workTarget,
+	 * 		the worktype is set to 1 and the unit starts working.
+	 * 		| if (this.carriedObject != null)
+	 * 		|	then moveTo(workTarget)
+	 * 		|		 this.worktype == 1
+	 * 		|        startWorking()
+	 * @note Worktype 1 means that the unit is carrying a boulder and will drop it at the 
+	 * 		given target cube.
+	 * @effect If the cubeType of the target is equal to a workshop, and there is a boulder and a 
+	 * 		a log at the cube of the target, the worktype is set to 2, the unit moves to the workTarget
+	 * 		and the unit starts working.
+	 * 		the worktype is set to 1 and the unit starts working.
+	 * 		| if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(workTarget) != null)
+	 * 		|    && (world.getLogAtCube(workTarget) != null) )
+	 * 		|	then this.worktype == 2
+	 * 		|		 moveTo(workTarget)
+	 * 		|        startWorking()	
+	 * @note Worktype 2 means that the target cube is a workshop and a boulder and a log are available on that cube.
+	 * @effect If there is a boulder at the cube of the workTarget, the worktype is set to 3 and the unit moves to 
+	 * 		the workTarget and the unit starts working.
+	 * 		| if ( world.getBoulderAtCube(workTarget) != null)
+	 * 		|	then this.worktype == 3
+	 * 		|		 moveTo(workTarget)
+	 * 		|        startWorking()	
+	 * @note Worktype 3 means that there is a boulder at the workTarget and the unit moves to the workTarget to pick
+	 * 		the boulder up.
+	 * @effect If there is a log at the cube of the workTarget, the worktype is set to 4 and the unit moves to 
+	 * 		the workTarget and the unit starts working.
+	 * 		| if ( world.getLogAtCube(workTarget) != null)
+	 * 		|	then this.worktype == 4
+	 * 		|		 moveTo(workTarget)
+	 * 		|        startWorking()	
+	 * @note Worktype 4 means that there is a log at the workTarget and the unit moves to the workTarget to pick
+	 * 		the boulder up.
+	 * @effect If the cubetype of the workTarget is equal to wood and if the unit does not carry an object, the worktype
+	 * 		is set to 5 and the unit starts working and the units orientation is set to the workTarget.
+	 * 		| if ((world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.WOOD
+	 * 		|    && this.carriedObject == null)
+	 * 		| 	then this.workType == 5
+	 * 		|		 startWorking()
+	 * 		|        setOrientationTo({workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5})
+	 * @effect If the cubetype of the workTarget is equal to wood and if the unit does not carry an object, the worktype
+	 * 		is set to 5 and the unit starts working and the units orientation is set to the workTarget.
+	 * 		| if ((world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.ROCK
+	 * 		|    && this.carriedObject == null)
+	 * 		| 	then this.workType == 5
+	 * 		|		 startWorking()
+	 * 		|        setOrientationTo({workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5})
+	 * @note Worktype 5 means that the cube of the workTarget collapses and leaves a boulder or a log, depending
+	 * 		if the cube was rock or wood.
+	 * @throws IllegalWorkPositionException
+	 * 		The workTarget is not a valid work position for this unit.
+	 * 		| !(isValidWorkPosition)
 	 */			
 	public void workAt(int[] workTarget) throws IllegalWorkPositionException{
 
-		if (!positionObj.isNeighBouringCube(workTarget)){
+		if (!isValidWorkLocation(workTarget)){
 			throw new IllegalWorkPositionException(workTarget);
 		}
 		
@@ -2001,7 +2260,6 @@ public class Unit {
 			this.workType = 1;
 			startWorking();
 		}
-		
 		
 		else if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(workTarget) != null)
 				&& (world.getLogAtCube(workTarget) != null) ){
@@ -2032,56 +2290,33 @@ public class Unit {
 			}
 	}
 	
-
-	private Object carriedObject;
-	
-	public boolean isCarryingLog() {
-		return (this.carriedObject instanceof Log);
+	/**
+	 * Check whether the given workTarget is a valid location for this unit to work on.
+	 * 
+	 * @param workTarget
+	 * 		The workTarget to check.
+	 * @return True if and only if the cube of the workTarget is a neighbouring cube 
+	 * 		of the cube of the current location of this unit.
+	 * 		| result == positionObj.isNeighBouringCube(workTarget)
+	 */
+	private boolean isValidWorkLocation(int[] workTarget){
+		return (positionObj.isNeighBouringCube(workTarget));
 	}
-	
-	public boolean isCarryingBoulder() {
-		return (this.carriedObject instanceof Boulder);
-	}
-	
-	protected void improveEquipment(Boulder boulder, Log log){
-		setWeight(getWeight() + boulder.getWeight()/3 + log.getWeight()/3);
-		setToughness(getToughness() + log.getWeight()/4 + boulder.getWeight()/4);
-		
-		boulder.terminate();
-		log.terminate();
-		world.boulders.remove(boulder);
-		world.logs.remove(log);
-	}
-	
-	protected void pickUpObject(Object object){
-		this.carriedObject = object;
-		object.terminate();
-		setFreeWeight(getWeight()+object.getWeight());
-
-	}
-	
-	protected void dropObject(){
-		setFreeWeight(getWeight()-this.carriedObject.getWeight());
-		this.carriedObject.positionObj.setFreeLocation(this.getLocation());
-		this.carriedObject.revive();
-		this.carriedObject = null;
-	}
-	
 
 	/**
 	 * The unit starts working.
 	 * 
 	 * @effect If the unit is resting and the unit has rested for a time at least long enough to recover
-	 * 			one hitpoint, the unit stops resting, starts working and its time remainder to work is equal to 
-	 * 			500 divided by the strength of the unit.
-	 * 			| if ( isResting() && canHaveRecoverdOneHp() )
-	 * 			|	then (new.isWorking() == true)
-	 * 			|		&& (setTimeRemainderToWork(500/getStrength()))
+	 * 		one hitpoint, the unit stops resting, starts working and its time remainder to work is equal to 
+	 * 		500 divided by the strength of the unit.
+	 * 		| if ( isResting() && canHaveRecoverdOneHp() )
+	 * 		|	then (new.isWorking() == true)
+	 * 		|		&& (setTimeRemainderToWork(500/getStrength()))
 	 * @effect If the unit is not resting, the units starts working and its time remainder to work
-	 * 			is equal to 500 divided by the strength of the unit.
-	 * 			| if (! isResting())
-	 * 			|	then ((new.isWorking() == true)
-	 * 			|		&& (setTimeRemainderToWork(500/getStrength())))
+	 * 		is equal to 500 divided by the strength of the unit.
+	 * 		| if (! isResting())
+	 * 		|	then ((new.isWorking() == true)
+	 * 		|		&& (setTimeRemainderToWork(500/getStrength())))
 	 */
 	@Model
 	private void startWorking(){
@@ -2096,24 +2331,22 @@ public class Unit {
 			setTimeRemainderToWork((float) 500/getStrength());			
 		}
 	}
-	
-	private boolean interruptRWPermission;
-	
+
 	/**
 	 * The unit stops working.
 	 * 
 	 * @post The unit is not working.
-	 * 			| new.isWorking() == false
+	 * 		| new.isWorking() == false
 	 */
 	@Model
 	private void stopWorking(){
 		this.working = false;
 
 	/**
-	 * Checks whether the unit is working.
+	 * Check whether the unit is working.
 	 * 
 	 * @return True if and only if  the unit is working.
-	 * 			| result == working
+	 * 		| result == working
 	 */
 	}
 	@Basic
@@ -2121,7 +2354,15 @@ public class Unit {
 		return working;
 	}
 	
-	public boolean isWorkingShow(){
+	// TODO documentation is ctually working, legit??
+	/**
+	 * Check whether the unit is actually working.
+	 * 
+	 * @return True if and only if the unit is working en the unit is not 
+	 * 		actually moving and the worktype is equal to 5.
+	 * 		| result == (isWorking() && !isActualMoving() && workType == 5 ) 		
+	 */
+	public boolean isWorkingShow(){ 
 		return (isWorking() && !isActualMoving() && workType == 5 );
 	}
 	
@@ -2142,10 +2383,9 @@ public class Unit {
 	 * Set the time remaining to work of this unit to the given time.
 	 * 
 	 * @param time
-	 * 			The new time remaining to work for this unit.
+	 * 		The new time remaining to work for this unit.
 	 * @post The new time remaining to work of this unit is equal to the given time.
-	 *       	| new.getTimeRemainderToWork() == time
-	 * 			
+	 *      | new.getTimeRemainderToWork() == time	
 	 */
 	@Model
 	private void setTimeRemainderToWork(float time){
@@ -2157,33 +2397,153 @@ public class Unit {
 	 */
 	private float timeRemainderToWork = 0;
 	
+	/**
+	 * Variable registering the workType.
+	 */
+	private int workType;
+	
+	/**
+	 * Variable registering the workTarget of this unit.
+	 */
+	private int[] workTarget;
+	
+	/**
+	 * Variable to check whether the movement to a global target is interrupted by
+	 * resting or working.
+	 */
+	private boolean interruptRWPermission;
+
+	
+	// OBJECT : LOG AND BOULDER
+	
+	/**
+	 * Check whether the unit is carrying a log.
+	 * 
+	 * @return True if and only if the unit is carrying a log.
+	 * 		| result == this.carriedObject instanceof Log)
+	 */
+	public boolean isCarryingLog() {
+		return (this.carriedObject instanceof Log);
+	}
+	
+	/**
+	 * Check whether the unit is carrying a boulder.
+	 * 
+	 * @return True if and only if the unit is carrying a boulder.
+	 * 		| result == this.carriedObject instanceof Boulder)
+	 */
+	public boolean isCarryingBoulder() {
+		return (this.carriedObject instanceof Boulder);
+	}
+	
+	/**
+	 * Improve the equipment of the unit with a boulder and a log.
+	 * 
+	 * @param boulder
+	 * 		The boulder to improve the equipment.
+	 * @param log
+	 * 		The log to improve the equipment.
+	 * @effect The weight of the unit is increased with the weight of the boulder
+	 * 		divided by 3 plus the weight of the log divided by 3.
+	 * 		| setWeight(getWeight() + boulder.getWeight()/3 + log.getWeight()/3);
+	 * @effect The toughness of the unit is increased with the weight of the boulder
+	 * 		divided by 4 plus the weight of the log divided by 4.
+	 * 		| setWeight(getWeight() + boulder.getWeight()/3 + log.getWeight()/3);
+	 * @effect The boulder is terminated.
+	 * 		| boulder.terminate()
+	 * @effect The log is terminated.
+	 * 		| log.terminate()
+	 * @post The boulder is not in the set of boulders of the world.
+	 * 		| !world.boulders.contains(boulder)
+	 * @post The log is not in the set of logs of the world.
+	 * 		| !world.logs.contains(log)
+	 */
+	protected void improveEquipment(Boulder boulder, Log log){
+		setWeight(getWeight() + boulder.getWeight()/3 + log.getWeight()/3);
+		setToughness(getToughness() + log.getWeight()/4 + boulder.getWeight()/4);
+		
+		boulder.terminate();
+		log.terminate();
+		world.boulders.remove(boulder);
+		world.logs.remove(log);
+	}
+	
+	/**
+	 * The unit picks up the object.
+	 * 
+	 * @param object
+	 * 		The object to pick up.
+	 * @post The new carried object for this unit is equal to the given object.
+	 * 		| new.carriedObject == object
+	 * @effect The object is terminated.
+	 * 		| object.terminate()
+	 * @effect The weight of this unit is increased with the weight of the object.
+	 * 		| setFreeWeight(getWeight()+object.getWeight())
+	 */
+	protected void pickUpObject(Object object){
+		this.carriedObject = object;
+		object.terminate();
+		setFreeWeight(getWeight()+object.getWeight());
+	}
+	
+	/**
+	 * The unit drops its object. 
+	 * 
+	 * @pre The unit carries an object.
+	 * @effect The weight of the unit is decreased with the weight of the object the unit
+	 * 		carried.
+	 * 		| setFreeWeight(getWeight()-this.carriedObject.getWeight())
+	 * @effect The carried object is unterminated.
+	 * 		| this.carrieObject.revive()
+	 * @effect The carried object is set to the location where the unit is.
+	 * 		| this.carriedObject.positionObj.setFreeLocation(this.getLocation())
+	 * @effect The carried object of this unit is removed.
+	 * 		| this.carriedObject == null
+	 */
+	protected void dropObject(){
+		setFreeWeight(getWeight()-this.carriedObject.getWeight());
+		this.carriedObject.revive();
+		this.carriedObject.positionObj.setFreeLocation(this.getLocation());
+		this.carriedObject = null;
+	}
+	
+	/**
+	 * Variable registering the object of this unit.
+	 */
+	private Object carriedObject;
+	
+	
 	// FIGHTING
 	
 	/**
-	 * Attack an other unit.
+	 * Attack an other unit. // TODO isfalling
 	 * 
 	 * @param other
 	 * 		 	Unit to attack.
-	 * @effect If the unit is not equal to the unit to attack and if the unit
-	 * 			is resting, the unit stops resting.
-	 * 			| if (this != other)
-	 * 			|	if (this.isResting())
-	 * 			|		then this.stopResting()
+	 * @effect If the unit is not equal to the unit to attack and if the unit to attack
+	 * 		is not terminated and if the unit is resting, the unit stops resting.
+	 * 		| if ((this != other) &&  (!other.isTerminated()))
+	 * 		|	if (this.isResting())
+	 * 		|		then this.stopResting()
 	 * @effect If the unit is not equal to the unit to attack, the unit stops working.
-	 * 			| if (this != other)
-	 * 			|	then this.stopWorking()
-	 * @effect If the unit is not equal to the unit to attack,
-	 * 			the new orientation is set to the to the orientation in fight.
-	 * 			| if (this != other)
-	 * 			|	then this.setOrientationInFight(other)
-	 * @effect If the unit is not equal to the unit to attack,
-	 * 			the new attack time of this unit is equal to 1 second.
-	 * 			| if (this != other)
-	 * 			|	then this.setAttackTime(1)
+	 * 		| if ((this != other) &&  (!other.isTerminated()))
+	 * 		|	then this.stopWorking()
+	 * @effect If the unit is not equal to the unit to attack, and if the unit to attack
+	 * 		is not terminated, 
+	 * 		the new orientation is set to the to the orientation in fight.
+	 * 		| if ((this != other) &&  (!other.isTerminated()))
+	 * 		|	then this.setOrientationInFight(other)
+	 * @effect If the unit is not equal to the unit to attack, and if the unit to attack
+	 * 		is not terminated,
+	 * 		the new attack time of this unit is equal to 1 second.
+	 * 		| if ((this != other) &&  (!other.isTerminated()))
+	 * 		|	then this.setAttackTime(1)
 	 * @throws IllegalAttackPosititonException(other.getOccupiedCube())
-	 * 			The unit cannot attack the given other unit.
-	 * 			| ! this.isValidAttackPosition(other.getOccupiedCube())
-	 * 			
+	 * 		The unit cannot attack the given other unit.
+	 * 		| ! this.isValidAttackPosition(other.getOccupiedCube())
+	 * @throws IllegalFightFactionException(this.getFaction)
+	 * 		The unit cannot attack the given other unit.
+	 * 		| this.getFaction() == other.getFaction() 			
 	 */
 	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
 		if (isFalling) {
@@ -2215,12 +2575,12 @@ public class Unit {
 	 * Checks whether the given position of the unit to attack is a valid position to attack.
 	 * 
 	 * @param attackCubePosition
-	 * 			The position of the cube of the unit to attack.
+	 * 		The position of the cube of the unit to attack.
 	 * @return True if and only if the distance between the cube of the unit 
-	 * 			and the cube of the unit to attack is 0 or 1 in the x, y and z direction.
-	 * 			| result ==((this.getOccupiedCube()[x] - attackCubePosition[x] <= 1)
-	 * 					  &&(this.getOccupiedCube()[y] - attackCubePosition[y] <= 1)
-	 * 				      &&(this.getOccupiedCube()[z] - attackCubePosition[z] <= 1))
+	 * 		and the cube of the unit to attack is 0 or 1 in the x, y and z direction.
+	 * 		| result ==((this.getOccupiedCube()[x] - attackCubePosition[x] <= 1)
+	 * 				 &&(this.getOccupiedCube()[y] - attackCubePosition[y] <= 1)
+	 * 				 &&(this.getOccupiedCube()[z] - attackCubePosition[z] <= 1))
 	 */
 	@Model
 	private boolean isValidAttackPosition(int[] attackCubePosition){
@@ -2233,27 +2593,30 @@ public class Unit {
 	 * Set the orientation of the units in the fight to each other.
 	 * 
 	 * @param other
-	 * 			The other unit in the fight.
-	 * @effect The orientation of this unit is set in the direction of the other unit, 
-	 * 			using the arc tangens of the distance difference in y direction of the other unit and
-	 * 			this unit, and the distance difference in x direction of the other unit and 
-	 * 			this unit.
-	 * 			| this.setOrientation(arctangens(other.getLocation()[y]-this.getLocation()[y],
-	 * 			|	other.getLocation()[x]-this.getLocation()[x])
-	 * @effect The orientation of the other unit is set in the direction of the this unit, 
-	 * 			using the arc tangens of the distance difference in y direction of this unit and
-	 * 			the other unit, and the distance difference in x direction of this unit and 
-	 * 			the other unit.
-	 * 			| other.setOrientation(arctangens(this.getLocation()[y]-other.getLocation()[y],
-	 * 			|	this.getLocation()[x]-other.getLocation()[x])
+	 * 		The other unit in the fight.
+	 * @effect Set the orientation of this unit in the direction of the other unit.
+	 * 		| this.setOrientationTo(other.positionObj.getLocation())
+	 * @effect Set the orientation of the other unit in the direction of this unit.
+	 * 		| other.setOrientationTo(this.positionObj.getLocation())
 	 */
 	@Model  
 	private void setOrientationInFight(Unit other) {
 		this.setOrientationTo(other.positionObj.getLocation());
 		other.setOrientationTo(this.positionObj.getLocation());
-
 	}
 	
+	/**
+	 * Set the orientation of this unit to the given target location.
+	 * 
+	 * @param target
+	 * 		The target location to set the units orientation to.
+	 * @effect The orientation of this unit is set in the direction of the target, 
+	 * 			using the arc tangens of the distance difference in y direction of the target location and
+	 * 			and the location of this unit, and the distance difference in x direction of the target location and 
+	 * 			the location of this unit.
+	 * 			| this.setOrientation(arctangens(target[y]-this.getLocation()[y],
+	 * 			|	target[x]-this.getLocation()[x])
+	 */
 	@Model
 	private void setOrientationTo(double[] target) {
 		double orientUnitThis = Math.atan2(target[1]-this.positionObj.getLocation()[1],
@@ -2265,42 +2628,66 @@ public class Unit {
 	 * Defend against an other unit.
 	 * 
 	 * @param other
-	 * 			The unit to defend against.
-	 * @effect If the unit is not equal to the other unit and the unit is resting, the unit stops resting.
-	 * 			| if (this!=other)
-	 * 			|	if (this.isResting())
-	 * 			|		then this.stopResting()
-	 * @effect If the unit is not equal to the other unit, the unit stops working.
-	 * 			| if (this!=other)
-	 * 			|	then this.stopWorking()
-	 *  If the unit is not equal to the other unit, the possibility to dodge is 0.2 times this units agility,
+	 * 		The unit to defend against.
+	 * @effect If the faction of this unit is not equal to the faction of the other unit and
+	 * 		the unit is not falling and the unit is resting, the unit stops resting.
+	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
+	 * 		|	if (this.isResting())
+	 * 		|		then this.stopResting()
+	 * @effect If the faction of this unit is not equal to the faction of the other unit and
+	 * 		the unit is not falling, the unit stops working.
+	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
+	 * 		|	then this.stopWorking()
+	 *  If the faction of the unit is not equal to the faction of the other unit,
+	 *  and the unit is not falling, the possibility to dodge is 0.2 times this units agility,
 	 * 	divided by the other units agility.
-	 * 	| if (this != other)
+	 * 	| if (this.getFaction() != other.getFaction() && !this.isFalling())
 	 * 	|	then possibilityDodge = (0.2* this.getAgility()/other.getAgility())
-	 * @effect If this unit is not equal to the other unit, and the unit dodges successfully, the unit's location is set
-	 * 			to a random location and its orientation is set in the direction of the attacking unit.
-	 * 			| if (this != other)
-	 * 			|	if (getDefendSucces(possibilityDodge))
-	 * 			|		then (this.setRandomLocation && this.setOrientationInFight(other))
-	 *	If this unit is not equal to the other unit, and the unit is not resting,
-	 * 	the possibility to block is equal to 0.25 times the strength plus agility of this unit, 
+	 * @effect If the faction of the unit is not equal to the faction of the other unit
+	 * 		and the unit is not falling, and the unit dodges successfully, the unit's location is set
+	 * 		to a random location and its orientation is set in the direction of the attacking unit
+	 * 		and the experience is updated with 20 points.
+	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
+	 * 		|	if (getPossibilitySucces(possibilityDodge))
+	 * 		|		then (this.setRandomLocation && this.setOrientationInFight(other)
+	 * 		|		&& updateExperience(20))
+	 *	If the faction of the unit is not equal to the faction of the other unit,
+	 * 	and the unit is not falling, the possibility to block is equal to 0.25 times the strength plus agility of this unit, 
 	 * 	divided by the strength plus agility of the other unit.
 	 * 	| possibilityBlock = 0.25*(( this.getStrength() + this.getAgility())/(other.getStrength()+other.getAgility()))
-	 * @post If this unit is not equal to the other unit, and if the unit does not 
-	 * 			dodge successfully, and if the unit does not block successfully,
-	 * 			the new hitpoints are equal to the old hitpoints reduced with the strength
-	 * 			of the other unit divided by 10.	
-	 * 			| if (this != other)
-	 * 			|	if ( ! getDefendSucces(possibilityDodge))
-	 * 			|		if (! getDefendSucces(possibilityBlock))
-	 * 			|			then (new.getHitpoints() = this.getHitpoints - this.getStrength()/10)
-	 * @effect If this unit is not equal to the other unit, and if the unit fails to dodge, and the unit fails
-	 * 			to block, and if the hitpoints are less than or equal to 0, then the hitpoints are set to 0.
-	 * 			| if (this != other)
-	 * 			|	if ( ! getDefendSucces(possibilityDodge))
-	 * 			|		if (! getDefendSucces(possibilityBlock))
-	 * 			|			if (this.getHitpoints) <=0)
-	 * 			|				then this.setHitpoints(0)			
+	 * @effect If the faction of the unit is not equal to the faction of the other unit,
+	 * 		and the unit is not falling, and if the unit does not dodge succesfully and
+	 * 		if the unit blocks succesfully, the experience is updated with 20 points.
+	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
+	 * 		|	if ( ! getPossibilitySucces(possibilityDodge))
+	 * 		|		if ( getPossibilitySucces(possibilityBlock))
+	 * 		|			then updateExperience(20)
+	 * @post If the faction of the unit is not equal to the faction of the other unit,
+	 * 		and the unit is not falling, and if the unit does not 
+	 * 		dodge successfully, and if the unit does not block successfully,
+	 * 		the new hitpoints are equal to the old hitpoints reduced with the strength
+	 * 		of the other unit divided by 10.	
+	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
+	 * 		|	if ( ! getPossibilitySucces(possibilityDodge))
+	 * 		|		if (! getPossibilitySucces(possibilityBlock))
+	 * 		|			then (new.getHitpoints() = this.getHitpoints - this.getStrength()/10)
+	 * @effect If the faction of the unit is not equal to the faction of the other unit,
+	 * 		and the unit is not falling, and if the unit fails to dodge, and the unit fails
+	 * 		to block, and if the hitpoints are less than or equal to 0, then the hitpoints are set to 0.
+	 * 		| if (this != other)
+	 * 		|	if ( ! getPossibilitySucces(possibilityDodge))
+	 * 		|		if (! getPossibilitySucces(possibilityBlock))
+	 * 		|			if (this.getHitpoints) <=0)
+	 * 		|				then this.setHitpoints(0)	
+	 * @post If the faction of the unit is not equal to the faction of the other unit,
+	 * 		and the unit is not falling, and if the unit does not 
+	 * 		dodge successfully, and if the unit does not block successfully,
+	 * 		the experience of the other unit is updated with 20 points.
+	 * 		of the other unit divided by 10.	
+	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
+	 * 		|	if ( ! getPossibilitySucces(possibilityDodge))
+	 * 		|		if (! getPossibilitySucces(possibilityBlock))
+	 * 		|			then other.updateExperience(20)
 	 */
 	public void defend(Unit other){
 		
@@ -2345,6 +2732,20 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * Attack a potential enemy in default behaviour.
+	 * 
+	 * @effect for each unit in the world, for each neighbouring cube of this unit, if an other unit is on the same cube
+	 * 		as a neighbouring cube of this unit, and if the faction of this unit is not equal to the faction of the
+	 * 		other unit, and the other unit is not terminated, the unit attacks the other unit, and the other unit defends 
+	 * 		against this unit.
+	 * 		| for unit in world.getAllUnits()
+	 * 		| 	for cube in positionobj.getneighbouringcube()
+	 * 		|		if ((unit.getOccupiedCube() == cube.getCubePosition() && this.getFaction() !=
+	 * 		|			other.getFaction && !other.isTerminated())
+	 * 		|			then this.attack(other)
+	 * 		|				 other.defend(this)
+	 */
 	private void attackPotentialEnemy(){
 
 		for (Unit other : world.getAllUnits()){
@@ -2361,45 +2762,11 @@ public class Unit {
 		}
 	}
 	
-//	/**
-//	 * Set the unit to a random position near the current location.
-//	 * 
-//	 * @effect The location is a random location.
-//	 * 			| setLocation(randomPosition(getLocation()))
-//	 */
-//	@Model 
-//	private void setRandomLocation(){
-//		try {
-//			positionObj.setLocation(randomPosition(positionObj.getLocation()));
-//		} catch (IllegalPositionException e) {
-//			setRandomLocation();
-//		}
-//	}
-	
-//	/**
-//	 * Return a random position in the near area of the current location.
-//	 * 
-//	 * @param currLoc
-//	 * 			The current location of the unit.
-//	 * @return The current location plus a random number between -1 and 1, excluding 0,
-//	 * 			in the x and y direction.
-//	 * 			| result == [currLoc[x]+randomNumber(-1,1), currLoc[y] + randomNumber(-1,1), currLoc[z] ]
-//	 * 			
-//	 */
-//	@Model
-//	private double[] randomPosition(double[] currLoc){
-//		double[] newLoc = {currLoc[0]+ (random.nextDouble()*2-1), currLoc[1]+ (random.nextDouble()*2-1), currLoc[2]};
-//		if (currLoc == newLoc) {
-//			return randomPosition(currLoc);
-//		}
-//		return newLoc;
-//	}
-	
 	/**
 	 * Checks whether the unit is attacking.
 	 * 
 	 * @return True if and only if the attack time is greater than 0.
-	 * 			| result == (getAttacktime() > 0)
+	 * 		| result == (getAttacktime() > 0)
 	 */
 	public boolean isAttacking(){
 		return (getAttackTime() > 0);
@@ -2409,9 +2776,9 @@ public class Unit {
 	 * Set the attack time to the given time.
 	 * 
 	 * @param time
-	 * 			The time to set as the unit's attack time.
+	 * 		The time to set as the unit's attack time.
 	 * @post The new attack time of this unit is equal to the given time.
-	 * 			| new.getAttackTime() == time			
+	 * 		| new.getAttackTime() == time			
 	 */
 	@Model
 	private void setAttackTime(float time){
@@ -2439,7 +2806,7 @@ public class Unit {
 	 * The unit starts resting.
 	 * 
 	 * @effect The unit starts resting.
-	 * 			| startResting()
+	 * 		| startResting()
 	 */
 	public void rest(){
 		startResting();
@@ -2449,7 +2816,7 @@ public class Unit {
 	 * Checks whether the unit is resting.
 	 * 
 	 * @return True if and only if the unit is resting.
-	 * 			| result == resting
+	 * 		| result == resting
 	 */
 	@Basic 
 	public boolean isResting(){
@@ -2460,16 +2827,16 @@ public class Unit {
 	 * The unit starts resting.
 	 * 
 	 * @effect If the hitpoints of the unit are not equal to the maximum hitpoints or the stamina is not equal
-	 * 			to the maximum stamina, the new time resting for the unit is set to 0, the unit stops working,
-	 * 			the unit is resting, the new initial hitpoints when starting to rest are set to the current hitpoints
-	 * 			and the new initial stamina when starting to rest is set to the current stamina.
-	 * 			| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
-	 * 			|	 ( (getStamina() != getMaxHitpointsStamina()) ))
-	 * 			|	then (setTimeResting(0)
-	 * 			|		&& stopWorking()
-	 * 			|		&& new.isResting() == true
-	 * 			|		&& setStartRestHitpoints(getHitpoints())
-	 * 			|		&& setStartRestStamina(getStamina()))
+	 * 		to the maximum stamina, the new time resting for the unit is set to 0, the unit stops working,
+	 * 		the unit is resting, the new initial hitpoints when starting to rest are set to the current hitpoints
+	 * 		and the new initial stamina when starting to rest is set to the current stamina.
+	 * 		| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
+	 * 		|	 ( (getStamina() != getMaxHitpointsStamina()) ))
+	 * 		|	then (setTimeResting(0)
+	 * 		|		&& stopWorking()
+	 * 		|		&& new.isResting() == true
+	 * 		|		&& setStartRestHitpoints(getHitpoints())
+	 * 		|		&& setStartRestStamina(getStamina()))
 	 * 
 	 */
 	@Model
@@ -2488,13 +2855,13 @@ public class Unit {
 	 * The unit stops resting.
 	 * 
 	 * @effect If the unit has not rest long enough to have recovered one hitpoint,
-	 * 			the new hitpoints are set to the initial hitpoints when the unit 
-	 * 			began to rest, and the new stamina is set to the initial stamina 
-	 * 			when the unit began to rest.
-	 * 			| if (! canHaveRecoverdOneHp())
-	 * 			|	then (setHitpoints(getStartRestHitpoints())
+	 * 		the new hitpoints are set to the initial hitpoints when the unit 
+	 * 		began to rest, and the new stamina is set to the initial stamina 
+	 * 		when the unit began to rest.
+	 * 		| if (! canHaveRecoverdOneHp())
+	 * 		|	then (setHitpoints(getStartRestHitpoints())
 	 * @post The unit is not resting
-	 * 			| new.isResting() == false
+	 * 		| new.isResting() == false
 	 * @effect The new time since resting is equal to 0.
 	 * 			| setTimeSinceRest(0)
 	 * @effect The new time that the unit has rested is equal to a large value.
@@ -2671,6 +3038,7 @@ public class Unit {
 	 */
 	private int startRestStamina = 0;
 
+	
 	// DEFAULT BEHAVIOUR
 	
 	/**
@@ -2701,8 +3069,8 @@ public class Unit {
 	 * 			| new.defaultBehaviour == false
 	 * @effect The unit stops working.
 	 * 			| stopWorking()
-	 * @effect The unit stops moving.
-	 * 			| stopMoving()
+	 * @effect If the unit is moving, the unit moves to the target.
+	 * 			| moveTo(target)
 	 * @effect The unit stops resting.
 	 * 			| stopResting()
 	 */
@@ -2716,16 +3084,12 @@ public class Unit {
 		stopResting();
 	}
 	
-	/**
-	 * Variable registering if the default behaviour is enabled.
-	 */
-	private boolean defaultBehaviour = false;
 	
 	/**
 	 * Set a new default behaviour task for the unit to do.
 	 * 
-	 * Chance 1/3: possibleTask[0] = moveTo(randomPosition),
-	 * possibleTask[1] = work, possibleTask[2] = rest
+	 * Chance 1/4: possibleTask[0] = moveTo(randomPosition),
+	 * possibleTask[1] = work, possibleTask[2] = rest, possibleTask[3] = attack potential enemy
 	 * @effect If the possible task is move to random position, unit moves to random position.
 	 * 			| if (possibleTask[0])
 	 * 			|	then moveTo(getRandomPosition)
@@ -2735,6 +3099,10 @@ public class Unit {
 	 * @effect	if the possible task is rest, the unit rests.
 	 * 			| if (possibleTask[2])
 	 * 			|	then rest()
+	 * @effect	if the possible task is attack potential enemy, the unit attacks a potential
+	 * 			if possible.
+	 * 			| if (possibleTask[3])
+	 * 			|	then attackPotentialEnemy()
 	 */
 	@Model
 	private void newDefaultBehaviour(){
@@ -2746,18 +3114,8 @@ public class Unit {
 		}
 	}
 	
-//	/**
-//	 * Return a random cube position in the boundaries of the world.
-//	 * 
-//	 * @return	Return random cube position smaller than WORLD_X-1 in the x direction, WORLD_Y-1 in the y direction,
-//	 * 			WORLD_Z-1 in the z direction, and greater than 0.
-//	 * 			| randLoc_x == randomInt(0,WORLD_X-1)
-//	 * 			| randLoc_y == randomInt(0,WORLD_Y-1)
-//	 * 			| randLoc_z == randomInt(0,WORLD_Z-1)
-//	 */
-//	@Model
-//	private int[] getRandomPosition(){
-//		int[] randLoc = {random.nextInt(WORLD_X-1), random.nextInt(WORLD_Y-1), random.nextInt(WORLD_Z-1)};
-//		return randLoc;
-//	}
+	/**
+	 * Variable registering if the default behaviour is enabled.
+	 */
+	private boolean defaultBehaviour = false;
 }
