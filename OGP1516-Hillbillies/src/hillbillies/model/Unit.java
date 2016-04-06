@@ -1133,7 +1133,7 @@ public class Unit {
 	// ADVANCE TIME
 	
 	/**
-	 * Advance the game time with the given time step dt.
+	 * Advance the units game time with the given time step dt.
 	 * 
 	 * @param dt
 	 *		The time step which the game time is advanced.
