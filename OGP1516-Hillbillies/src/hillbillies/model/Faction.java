@@ -13,7 +13,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * A class of factions involving a relation with units who can belong to a faction in a world.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0
+ * @version 1.0
  */
 public class Faction {
 	

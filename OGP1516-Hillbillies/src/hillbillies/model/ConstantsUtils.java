@@ -8,7 +8,7 @@ import be.kuleuven.cs.som.annotate.Model;
  * A class with constants used in this project.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0
+ * @version 1.0
  */
 final class ConstantsUtils {
 	

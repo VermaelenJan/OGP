@@ -4,7 +4,7 @@ package hillbillies.model;
  * A class of boulders, a specific kind of objects.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0
+ * @version 1.0
  */
 public class Boulder extends Object{
 	

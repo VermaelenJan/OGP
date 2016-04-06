@@ -15,7 +15,7 @@ import hillbillies.util.ConnectedToBorder;
  * A class of worlds in which units can conduct activities.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 0
+ * @version 1.0
  */
 public class World {
 	
@@ -86,13 +86,13 @@ public class World {
 	 * @param cubeType
 	 * 		The new cubetype for this cube.
 	 * 
-	 * @effect if the cubetype to set is passable terrain, and the cubetype of the
+	 * @effect If the cubetype to set is passable terrain, and the cubetype of the
 	 * 		cube on x,y and z position is not passable terrain, the connected to border tool is notified
 	 * 		to change solid to passable.
-	 * @effect if the cubetype to set is not passable terrain and the cubetype of the 
+	 * @effect If the cubetype to set is not passable terrain and the cubetype of the 
 	 * 		cube on x,y and z position is passable terrain, the connected to border tool is notified
 	 * 		to change passable to solid.
-	 * @effect the cube at x,y and z position is set in worldcubes to the given cubetype.
+	 * @effect The cube at x,y and z position is set in worldcubes to the given cubetype.
 	 * @effect The terrain is updated.
 	 */
 	public void setCubeType(int x,int y, int z, CubeType cubeType){
@@ -169,10 +169,10 @@ public class World {
 	 * 		The z position of the cube to cave in.
 	 * 
 	 * @effect The cubetype of the cube at x,y and z position is air.
-	 * @effect the connected to border tool is notified of the changed terrain.
-	 * @effect with a chance of 25% , if the cubetype was rock, there is a new bolder
+	 * @effect The connected to border tool is notified of the changed terrain.
+	 * @effect With a chance of 25% , if the cubetype was rock, there is a new bolder
 	 * 		on the x,y and z position.
-	 * @effect with a chance of 25% , if the cubetype was wood, there is a new log
+	 * @effect With a chance of 25% , if the cubetype was wood, there is a new log
 	 * 		on the x,y and z position.
 	 */
 	protected void caveIn(int x,int y,int z){
@@ -291,8 +291,8 @@ public class World {
 	 * Return the boulder at the given location.
 	 * 
 	 * @param location
-	 * 		The location to
-	 * @return
+	 * 		The location to check for a boulder.
+	 * @return a boulder if one is present on the given location, null otherwise.
 	 */
 	protected Boulder getBoulderAtCube(int[] location){
 		for (Boulder boulder : getBouldersWorld()){
@@ -338,7 +338,7 @@ public class World {
 	 * 
 	 * @param location
 	 * 		The location to check for a log.
-	 * @return a log if a log is present on the givene location.	 * 
+	 * @return a log if one is present on the given location, null otherwise.
 	 */
 	protected Log getLogAtCube(int[] location){
 		for (Log log : getLogsWorld()){
@@ -453,17 +453,15 @@ public class World {
 		
 		return newUnit;
 	}
-	 // TODO doc
+
 	/**
 	 * 
 	 * @param unit
-	 * 		The unit to check.
-	 * @return true if and only if the the total number of units is smaller 
-	 * 		   than the maximum units allowed in a world and if the number of 
-	 * 		   active factions is smaller than the maximum factions allowed
-	 * 		   or if number of active factions is not smaller than maximum factions
-	 * 		   allowed.
-	 * 		   Otherwise false.
+	 * 		The unit to add.
+	 * @post This world (its smallest faction) contains the unit if the
+	 * 		total amount of units of this world is smaller than the maximum
+	 * 		amount of units allowed in this world. A new faction was created
+	 * 		if the amount of factions was smaller than the maximum allowed amount.
 	 * 		
 	 */
 	protected void addUnit(Unit unit) {
@@ -485,7 +483,7 @@ public class World {
 	/**
 	 * Create a random unit.
 	 * 
-	 * @return A unit with a random position in this world, with "name" as default name, and with random attributes
+	 * @return A unit with a random position in this world, with "Name" as default name, and with random attributes
 	 * 		   for strength, agility, toughness and weight.
 	 */
 	private Unit createRandomUnit() {

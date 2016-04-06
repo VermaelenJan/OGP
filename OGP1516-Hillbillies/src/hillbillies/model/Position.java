@@ -16,7 +16,7 @@ import hillbillies.model.exceptions.IllegalPositionException;
  * A class of positions related to units and objects in a world.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.0
+ * @version 1.5
  */
 @Value
 class Position {
@@ -61,14 +61,13 @@ class Position {
 	}
 	
 	/**
-	 * Set the location of this positionobject to the given location on solid terrain
-	 * below the given location in its world.
+	 * Set the location of this positionobject to the given location near solid terrain.
 	 * 
 	 * @param location
 	 * 		The location for this positionobject.
 	 * @post The new location of this positionobject is equal to the given location.
 	 * @throws IllegalPositionException
-	 * 		The given location is not a valid location for this positionobject.
+	 * 		The given location is not a valid unit location for this positionobject.
 	 */
 	@Raw @Model 
 	protected void setLocation(double[] location) throws IllegalPositionException {
@@ -83,9 +82,10 @@ class Position {
 	 * Set the location of this positionobject to the given location in its world.
 	 * 
 	 * @param location
-	 * 		the location for this positionobject.
+	 * 		The location for this positionobject.
 	 * @throws IllegalPositionException
-	 * 		The given location is not a valid location for this positionobject.
+	 * 		The given location is not a valid location for this positionobject 
+	 * 			(i.e. solid terrain or located outside of the world).
 	 */
 	@Raw @Model 
 	protected void setFreeLocation(double[] location) throws IllegalPositionException {
@@ -114,9 +114,9 @@ class Position {
 	/**
 	 * Check whether the given location is a valid location for a positionobject in its world.
 	 * @param location
-	 * 		the location to check.
+	 * 		The location to check.
 	 * @return True if and only if the given location is in the boundaries of the world and there is 
-	 * 		a solid terrain cube below the given location.
+	 * 		a solid terrain cube (or the bottom of the world) below the given location.
 	 */
 	@Raw @Model
 	protected boolean isValidLocationInWorld(double[] location) {
@@ -192,7 +192,7 @@ class Position {
 	
 	/**
 	 * Check whether the location of this positionobject is at the centre of the cube it 
-	 * is occupying in its world.
+	 * 	is occupying in its world.
 	 * 
 	 * @return True if and only of the location of this positionobject is equal to the centre
 	 * 		of the cube the positionobject is occupying.
@@ -352,12 +352,12 @@ class Position {
 	}
 	
 	/**
-	 * Fall.
+	 * The positionobject falls for a given time.
 	 *  
 	 * @param dt
 	 * 		The time step dt for this action fall.
 	 * @param location.
-	 * 		The location for this action fall.
+	 * 		The location for this position to fall to.
 	 * The x and y coordinates of the next location are equal to the x and y coordinates
 	 * 	of the location of this positionobject, the z location of the next location is equal to the z coordinate
 	 * 	of the location of this positionobject minus the time step dt times the falling speed.
