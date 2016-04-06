@@ -17,17 +17,14 @@ import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.model.exceptions.IllegalWorkPositionException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
-//TODO: fix doc van ALLES en @'s
-//TODO: remove //code if doc in orde is
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
  *       | isValidLocation(getLocation())
- * @invar  The name of each unit must be a valid name for any
- *         unit.
+ * @invar  The name of each unit must be a valid name for any unit.
  *       | isValidName(getName())
- * @invar  The weight of each unit must be greater than or equal to the units strength plus agility, divided by two,
- * 		   and smaller than MAX_VAL.
+ * @invar  The weight of each unit must be greater than or equal to the units strength plus agility,
+ * 		   divided by two, and smaller than MAX_VAL.
  *       | getWeight() >= (getAgility()+getStrength)/2 && (getWeight() <= MAX_VAL)
  * @invar  The strength of each unit must be between MIN_VAL and MAX_VAL,inclusively.
  * 		 | (getStrength() >= MIN_VAL) && (getStrength() <= MAX_VAL)
@@ -1083,8 +1080,12 @@ public class Unit {
 	 * 		is effective.
 	 * 		| if (faction != null)
 	 * 		|	then faction.checkTerminate()
+	 * @effect If the unit carries an object, the unit drops the object.
 	 */
-	protected void terminate(){
+	protected void terminate() {
+		if (this.carriedObject != null) {
+			dropObject();
+		}
 		this.isTerminated = true;
 		if (this.faction != null) { // ( == if (!(unit didnt get in world yet)))
 			this.faction.checkTerminate();
@@ -1138,8 +1139,6 @@ public class Unit {
 	 *		The time step which the game time is advanced.
 	 * @effect If the unit is not terminated and if the hitpoints are equal to or below 0, the hitpoints
 	 * 		are set 0 and the unit terminates.
-	 * @effect If the unit is not terminated and if the hitpoints are equal or below 0 and the unit carries
-	 * 		an object, the unit drops the object.
 	 * @effect If the unit is not terminated and not resting, advance time not resting.
 	 * @effect If the unit is not terminated is falling or the location of the positionobject of this unit is not a valid unit
 	 * 		location, the unit falls and is not sprinting and advance time falling.
@@ -1159,12 +1158,7 @@ public class Unit {
 		if (!this.isTerminated()) {
 			if (this.hitpoints <= 0) {
 				setHitpoints(0);
-				terminate(); // TODO
-				// Hier zeggen we we al terminate, en daarna in dropobject gaan we de weight van de unit nog aanpassen enzo, droppen
-				// van object mee in terminate zetten dan of niet?
-				if (this.carriedObject != null) {
-					dropObject();
-				}
+				terminate();
 			}
 			
 			if (! isValidAdvanceTime(dt)){
@@ -1996,9 +1990,9 @@ public class Unit {
 			}
 		}
 	}
-	// TODO empty returns
+
 	/**
-	 * move To the given end target.
+	 * Move to the given end target.
 	 * 
 	 * @param endTarget
 	 * 		The end target to move to.
@@ -2006,9 +2000,13 @@ public class Unit {
 	 * @throws IllegalPositionException
 	 * 		The cubetype of the target is not passible terrain.
 	 * 		| !world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()
+	 * 
+	 * @note: The unit will not start moving if the unit is currently falling, neither if
+	 * 			endTarget equals the current cube.
+	 * 
 	 * @effect The global target is set to the endtarget.
 	 * 		| globalTarget == endTarget
-	 * @post the cube of the position of the endTarget is put in the map queue, with as value
+	 * @post The cube of the position of the endTarget is put in the map queue, with as value
 	 * 		the level of the pathing which is 0.
 	 * 		| queue.put(world.getCube(endTarget[0], endTarget[1], endTarget[2]),0 )
 	 * @effect As long as the queue does not contains the current cube of the positionobject
@@ -2023,7 +2021,7 @@ public class Unit {
 	 * 		for the path is equal to a neighbouring cube of the current location, with the smallest
 	 * 		level of pathing.
 	 * 		| for each cube in positionobj.getneighbouring(currentcube) : 
-	 * 		|	if (queue.containsKey(cube) && queue.get(cube) =< currentLvl)
+	 * 		|	if (queue.containsKey(cube) && queue.get(cube) <= currentLvl)
 	 * 		|		then nextcube == cube
 	 * @effect If the queue contains the cube of the current location of this unit, 
 	 * 		and if the nextcube is effective, the unit will move to this next cube.
@@ -2031,7 +2029,7 @@ public class Unit {
 	 * 		|	then moveToAdjacent(nextcube_x-currentCube_x,nextcube_y-currentCube_y,nextcube_z-currentCube_z, true)
 	 * @effect If the queue containts the cube of this current location of this unit,
 	 * 		and if the nextcube is not effective, clear the queue, set the current level of the path finding
-	 * 		on 0 and move to the endtarget.
+	 * 		on 0 and move again to the endtarget.
 	 * 		| if ((queue.containsKey(cube) && (nextCube == null))
 	 * 		| 		then queue.isEmpty()
 	 * 		|			 currentLvl == 0
@@ -2173,10 +2171,11 @@ public class Unit {
 	 * @effect The unit starts working at one of the neighbouring cubes if possible.
 	 * 		| workAt(random Neighbouringcube.getCubePosition())
 	 * @note this function is used in default behaviour.
+	 * @note: The unit will not start working if the unit is currently falling.
 	 */
 	public void work(){
 		if (isFalling()) {
-			return; // TODO doc return
+			return;
 		}
 		List<Cube> neighbs = (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()));
 		try {
@@ -2189,8 +2188,12 @@ public class Unit {
 	 * 
 	 * @param workTarget
 	 * 		The cube at which the unit starts working.
+	 * 
+	 * @note: The unit will not start working if the unit is currently falling.
+	 * 
 	 * @post The new workTarget of this unit is equal to the given workTarget.
 	 * 		| new.workTarget == workTarget
+	 *
 	 * @effect If the unit is carrying an object, the unit moves to the workTarget,
 	 * 		the worktype is set to 1 and the unit starts working.
 	 * 		| if (this.carriedObject != null)
@@ -2247,6 +2250,10 @@ public class Unit {
 	 */			
 	public void workAt(int[] workTarget) throws IllegalWorkPositionException{
 
+		if (isFalling()) {
+			return;
+		}
+		
 		if (!isValidWorkLocation(workTarget)){
 			throw new IllegalWorkPositionException(workTarget);
 		}
@@ -2354,11 +2361,10 @@ public class Unit {
 		return working;
 	}
 	
-	// TODO documentation is ctually working, legit??
 	/**
-	 * Check whether the unit is actually working.
+	 * Check whether the unit is actually working (i.e. chopping wood or mining rock).
 	 * 
-	 * @return True if and only if the unit is working en the unit is not 
+	 * @return True if and only if the unit is working and the unit is not 
 	 * 		actually moving and the worktype is equal to 5.
 	 * 		| result == (isWorking() && !isActualMoving() && workType == 5 ) 		
 	 */
@@ -2516,10 +2522,11 @@ public class Unit {
 	// FIGHTING
 	
 	/**
-	 * Attack an other unit. // TODO isfalling
+	 * Attack an other unit.
 	 * 
 	 * @param other
 	 * 		 	Unit to attack.
+	 * @note The unit will never attack whilst falling.
 	 * @effect If the unit is not equal to the unit to attack and if the unit to attack
 	 * 		is not terminated and if the unit is resting, the unit stops resting.
 	 * 		| if ((this != other) &&  (!other.isTerminated()))
@@ -2611,10 +2618,10 @@ public class Unit {
 	 * @param target
 	 * 		The target location to set the units orientation to.
 	 * @effect The orientation of this unit is set in the direction of the target, 
-	 * 			using the arc tangens of the distance difference in y direction of the target location and
+	 * 			using the arc tangents of the distance difference in y direction of the target location and
 	 * 			and the location of this unit, and the distance difference in x direction of the target location and 
 	 * 			the location of this unit.
-	 * 			| this.setOrientation(arctangens(target[y]-this.getLocation()[y],
+	 * 			| this.setOrientation(arctangents(target[y]-this.getLocation()[y],
 	 * 			|	target[x]-this.getLocation()[x])
 	 */
 	@Model
@@ -2692,8 +2699,7 @@ public class Unit {
 	public void defend(Unit other){
 		
 		if (this.getFaction() != other.getFaction() && !this.isFalling()) {
-
-						
+	
 			if (this.isResting()) {
 			this.stopResting();
 			}
