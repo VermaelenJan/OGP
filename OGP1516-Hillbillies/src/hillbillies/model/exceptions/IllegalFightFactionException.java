@@ -4,6 +4,11 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import hillbillies.model.Faction;
 
+/**
+ * 
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
+ */
 public class IllegalFightFactionException extends RuntimeException {
 	
 	/**
@@ -33,7 +38,6 @@ public class IllegalFightFactionException extends RuntimeException {
 	 * Variable registering the faction involved in this illegal fight faction exception.
 	 */
 	private Faction faction;
-	
 	
 	
 	private static final long serialVersionUID = -4361966793833551668L;
