@@ -417,7 +417,7 @@ public class World {
 	/**
 	 * Return the number of units associated with this world.
 	 * 
-	 * @return The total number of non terminated units collected in this world.
+	 * @return The total number of non terminated units collected in this world. //TODO: niet alleen de nonTerminated worden teruggegeven!
 	 */
 	private int getTotalNbUnits(){
 		int nbUnitsSoFar = 0;
