@@ -27,7 +27,7 @@ public class IllegalValueException extends RuntimeException {
 	
 	
 	/**
-	 * Return the value registered for this illegal denominator exception.
+	 * Return the value registered for this illegal value exception.
 	 */
 	@Basic @Immutable
 	public double getValue(){
@@ -35,7 +35,7 @@ public class IllegalValueException extends RuntimeException {
 	}
 	
 	/**
-	 * Variable registering the value involved in this illegal denominator
+	 * Variable registering the value involved in this illegal value
 	 * exception.
 	 */
 	private final double value;
