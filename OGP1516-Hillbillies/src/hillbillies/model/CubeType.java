@@ -1,12 +1,8 @@
-/**
- * 
- */
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
- * 
  * An enumeration introducing different cube types used for cubes
  * in a world.
  * 

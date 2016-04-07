@@ -18,6 +18,8 @@ import hillbillies.model.exceptions.IllegalWorkPositionException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 /**
+ * A class of units which conduct several activities in a world.
+ * 
  * @invar  The location of each unit must be a valid location for any
  *         unit.
  *       | positionObj.isValidUnitPositionDouble(getLocation())

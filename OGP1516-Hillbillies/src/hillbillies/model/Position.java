@@ -15,6 +15,8 @@ import hillbillies.model.exceptions.IllegalPositionException;
 /**
  * A class of positions related to units and objects in a world.
  * 
+ * @invar Each position must have an effective world.
+ * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.5
  */

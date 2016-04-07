@@ -14,6 +14,8 @@ import hillbillies.util.ConnectedToBorder;
 /**
  * A class of worlds in which units can conduct activities.
  * 
+ * @invar Each cube of a world must be either wood, rock, air or workshop.
+ * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */

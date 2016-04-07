@@ -8,9 +8,10 @@ import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
- * @invar Each faction must have proper units.
- * 
  * A class of factions involving a relation with units who can belong to a faction in a world.
+ * 
+ * @invar Each faction must have proper units.
+ * @invar Each faction must have an effective world.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0

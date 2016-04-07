@@ -1,4 +1,3 @@
-
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -6,6 +5,10 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * A class of cubes which occur in a world.
+ * 
+ * @invar The cubetype of a cube is either rock,wood, air of workshop for 
+ * 		any cube.
+ * @invar The position of a cube must be a valid position for any cube. 
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.1
