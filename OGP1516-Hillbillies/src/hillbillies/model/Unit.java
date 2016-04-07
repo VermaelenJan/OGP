@@ -24,7 +24,7 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
  * @invar  The name of each unit must be a valid name for any unit.
  *       | isValidName(getName())
  * @invar  The weight of each unit must be greater than or equal to the units strength plus agility,
- * 		   divided by two, and smaller than MAX_VAL for any unit..
+ * 		   divided by two, and smaller than MAX_VAL for any unit.
  *       | getWeight() >= (getAgility()+getStrength)/2 && (getWeight() <= MAX_VAL)
  * @invar  The strength of each unit must be between MIN_VAL and MAX_VAL,inclusively, for any unit.
  * 		 | (getStrength() >= MIN_VAL) && (getStrength() <= MAX_VAL)

@@ -7,6 +7,8 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @invar  Each object can have its weight as weight.
  *       | canHaveAsWeight(this.getWeight())
+ * @invar  The world of each unit must be effective for every unit.
+ * 		 | world != null
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
