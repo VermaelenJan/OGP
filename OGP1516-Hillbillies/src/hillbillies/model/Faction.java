@@ -3,6 +3,8 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.lang.model.type.UnionType;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -109,6 +111,14 @@ public class Faction {
 	 * @Return The total number of units collected in this faction.
 	 */
 	protected int getNbUnits(){
+		// If we only want non terminated units
+/*		int nbUnits = 0;
+		for (Unit unit : unitsofFaction){
+			if (!unit.isTerminated()){
+				nbUnits++;
+			}
+		return nbUnits;
+		}*/
 		return getUnits().size();
 	}
 	
