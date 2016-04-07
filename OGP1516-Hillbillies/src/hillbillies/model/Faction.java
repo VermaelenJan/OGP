@@ -3,8 +3,6 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.lang.model.type.UnionType;
-
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
