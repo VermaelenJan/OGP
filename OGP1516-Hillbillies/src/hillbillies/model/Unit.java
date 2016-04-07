@@ -20,24 +20,30 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
 /**
  * @invar  The location of each unit must be a valid location for any
  *         unit.
- *       | isValidLocation(getLocation())
+ *       | positionObj.isValidUnitPositionDouble(getLocation())
  * @invar  The name of each unit must be a valid name for any unit.
  *       | isValidName(getName())
  * @invar  The weight of each unit must be greater than or equal to the units strength plus agility,
- * 		   divided by two, and smaller than MAX_VAL.
+ * 		   divided by two, and smaller than MAX_VAL for any unit..
  *       | getWeight() >= (getAgility()+getStrength)/2 && (getWeight() <= MAX_VAL)
- * @invar  The strength of each unit must be between MIN_VAL and MAX_VAL,inclusively.
+ * @invar  The strength of each unit must be between MIN_VAL and MAX_VAL,inclusively, for any unit.
  * 		 | (getStrength() >= MIN_VAL) && (getStrength() <= MAX_VAL)
- * @invar  The agility of each unit must be between MIN_VAL and MAX_VAL,inclusively.
+ * @invar  The agility of each unit must be between MIN_VAL and MAX_VAL,inclusively, for any unit.
  * 		 | (getAgility() >= MIN_VAL) && (getAgility() <= MAX_VAL) 
- * @invar  The toughness of each unit must be between MIN_VAL and MAX_VAL,inclusively.
+ * @invar  The toughness of each unit must be between MIN_VAL and MAX_VAL,inclusively, for any unit.
  * 		 | (getTougness() >= MIN_VAL) && (getToughness() <= MAX_VAL)
- * @invar  The hitpoints of each unit must be a valid hitpoints for the unit.
+ * @invar  The hitpoints of each unit must be a valid hitpoints for any unit.
  *       | isValidHitpoints(getHitpoints())
- * @invar  The stamina of each unit must be a valid stamina for the unit.
+ * @invar  The stamina of each unit must be a valid stamina for any unit.
  *       | isValidStamina(getStamina())
- * @invar  The orientation of each unit must be between 0 and 2*PI. 
+ * @invar  The orientation of each unit must be between 0 and 2*PI, for any unit. 
  *       | (getOrientation() >= 0) && (getOrientation < 2*PI)
+ * @invar  The world of each unit must be effective for any unit.
+ * 		 | world != null
+ * @invar  The experience of each unit must be greater or equal to 0 for any unit.
+ * 		 | experience >= 0
+ * @invar  The faction of each unit must be effective for any unit.
+ * 		 | faction != null
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.1
@@ -95,7 +101,7 @@ public class Unit {
 	 * 			| setExperience(0)
 	 * @throws IllegalPositionException
 	 * 			The given position is not a valid position for a unit.
-	 * 			| ! canHaveAsPosition(position)
+	 * 			| ! positionObj.IsValidUnitPositionDouble(position)
 	 * @throws IllegalNameException 
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
@@ -826,9 +832,20 @@ public class Unit {
 	
 	/**
 	 * Set the experience of the of this unit to the given experience.
+	 * 
+	 * @post If the given experience is smaller than 0, the new experience is equal to 0.
+	 * 		| new.getExperience() == 0
+	 * @post If the given experience is greater than 0, the new experience is equal to 
+	 * 		the given experience.
+	 * 		| new.getExperience() == experience
 	 */
 	private void setExperience(int experience){
-		this.experience = experience;
+		if (experience < 0){
+			this.experience = 0;
+		}
+		else{
+			this.experience = experience;
+		}
 	}
 	
 	/**
