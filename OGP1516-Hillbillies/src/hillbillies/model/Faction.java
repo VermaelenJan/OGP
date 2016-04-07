@@ -113,7 +113,7 @@ public class Faction {
 	protected int getNbUnits(){
 		// If we only want non terminated units
 /*		int nbUnits = 0;
-		for (Unit unit : unitsofFaction){
+		for (Unit unit : getUnits()){
 			if (!unit.isTerminated()){
 				nbUnits++;
 			}
