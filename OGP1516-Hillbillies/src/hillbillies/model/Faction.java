@@ -110,15 +110,16 @@ public class Faction {
 	 * @Return The total number of units collected in this faction.
 	 */
 	protected int getNbUnits(){
-		// If we only want non terminated units
-/*		int nbUnits = 0;
+
+		int nbUnits = 0;
 		for (Unit unit : getUnits()){
 			if (!unit.isTerminated()){
 				nbUnits++;
 			}
+		}
 		return nbUnits;
-		}*/
-		return getUnits().size();
+		// If we only want  terminated and non terminated units
+		//return getUnits().size();
 	}
 	
 
