@@ -148,7 +148,7 @@ public class World {
 	 * @effect time is advanced forr all logs.
 	 */
 	public void advanceTime(double dt){
-		
+		System.out.println(getTotalNbUnits());
 		for (Unit unit : getAllUnits()) {
 			unit.advanceTime(dt);
 		}

@@ -163,15 +163,23 @@ public class Faction {
 	 * @post If this faction does not consist of a unit anymore, the faction is terminated.
 	 */
 	protected void checkTerminate() {
-		boolean keepFaction = false;
-		for (Unit unit : getUnits()){
-			if (!unit.isTerminated()){
-				keepFaction = true;
-			}
+//		boolean keepFaction = false;
+//		for (Unit unit : getUnits()){
+//			if (!unit.isTerminated()){
+//				keepFaction = true;
+//			}
+//		}
+//		if (!keepFaction){
+//			this.terminate();
+//		}
+		if (unitsOfFaction.size() == 0){
+			terminate();
 		}
-		if (!keepFaction){
-			this.terminate();
-		}
+	}
+	
+	// TODO doc
+	protected void removeUnit(Unit unit){
+		unitsOfFaction.remove(unit);
 	}
 	
 	/**

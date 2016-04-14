@@ -269,7 +269,11 @@ public class Facade implements IFacade {
 
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-		world.advanceTime(dt);
+		try{
+			world.advanceTime(dt);
+		} catch (IllegalWorkPositionException e){
+			throw new ModelException("Illegal WorkPosition", e);
+		}
 	}
 
 	@Override

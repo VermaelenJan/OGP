@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.awt.print.Printable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -1107,6 +1108,7 @@ public class Unit {
 		}
 		this.isTerminated = true;
 		if (this.faction != null) { // ( == if (!(unit didnt get in world yet)))
+			this.faction.removeUnit(this);
 			this.faction.checkTerminate();
 		}
 	}
@@ -1172,8 +1174,8 @@ public class Unit {
 	 * @throws IllegalAdvanceTimeException(dt)
 	 * 			The given dt is not a valid advanceTime duration.
 	 */
-	public void advanceTime(double dt) throws IllegalAdvanceTimeException {
-		
+	public void advanceTime(double dt) throws IllegalAdvanceTimeException, IllegalWorkPositionException {
+				
 		if (!this.isTerminated()) {
 			if (this.hitpoints <= 0) {
 				setHitpoints(0);
@@ -1202,7 +1204,7 @@ public class Unit {
 			}		
 			//else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleZOfCube()){ //TODO 
 			else if (isWorking() && canHaveRecoverdOneHp()){
-				advanceTimeWorking(dt);
+					advanceTimeWorking(dt);	
 			}
 			else if (isMoving()){
 				advanceTimeMoving(dt);		
@@ -1391,54 +1393,48 @@ public class Unit {
 	 * @note The meaning of the different worktypes are explained in the documentation of the function 
 	 * 		workAt below.
 	 */
-	private void advanceTimeWorking(double dt) {
+	private void advanceTimeWorking(double dt) throws IllegalWorkPositionException {
 		setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);
 		
 		if (getTimeRemainderToWork() > 0) {
 			return;
 		}
 		
-		else if (this.carriedObject != null) {
-			setTimeRemainderToWork(0);
-			dropObject();
+		else if (this.carriedObject != null && workCube.getCubeType().isPassableTerrain()) { //TODO 
+			double [] currentWorkTarget = {workTarget[0]+0.5,workTarget[1]+0.5,workTarget[2]+0.5};
+			dropObject(currentWorkTarget);
 			updateExperience(10);
-			stopWorking();
+
 		}
 		
 		else if ( (workCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(workTarget) != null)
 				&& (world.getLogAtCube(workTarget) != null) ) {
 
-			setTimeRemainderToWork(0);
 			Boulder currBoulder = world.getBoulderAtCube(workTarget);
 			Log currLog = world.getLogAtCube(workTarget); // could be other boulder/log but doesnt matter?
 			if (currBoulder != null && currLog != null) {
 				improveEquipment(currBoulder,currLog);
 				updateExperience(10);
-				stopWorking();
 			}
 
 		}
 		
 		else if (world.getBoulderAtCube(workTarget) != null) {
 
-			setTimeRemainderToWork(0);
 			Boulder currBoulder = world.getBoulderAtCube(workTarget);
 			if (currBoulder != null) {
 				pickUpObject(currBoulder);
 				updateExperience(10);
-				stopWorking();
 			}
 
 		}
 		
 		else if (world.getLogAtCube(workTarget) != null) {
 
-			setTimeRemainderToWork(0);
 			Log currLog = world.getLogAtCube(workTarget);
 			if (currLog != null) {
 				pickUpObject(currLog);
 				updateExperience(10);
-				stopWorking();
 			}
 
 		}
@@ -1448,8 +1444,11 @@ public class Unit {
 					&& this.carriedObject == null) {
 			world.caveIn(workTarget[0], workTarget[1], workTarget[2]);	
 			updateExperience(10);
-			stopWorking();
 		}
+		
+		setTimeRemainderToWork(0);
+		stopWorking();
+		
 	}
 	
 	/**
@@ -2271,46 +2270,6 @@ public class Unit {
 		double[] targetCenter = {workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5};
 		setOrientationTo(targetCenter);
 		
-		if (true) {
-			return;
-		}
-		
-		
-		
-		
-//		if (this.carriedObject != null){
-//			//moveTo(workTarget);
-//			this.workType = 1;
-//			startWorking();
-//		}
-//		
-//		else if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(workTarget) != null)
-//				&& (world.getLogAtCube(workTarget) != null) ){
-//			this.workType = 2;
-//			//moveTo(workTarget);
-//			startWorking();
-//		}
-//		
-//		else if (world.getBoulderAtCube(workTarget) != null){
-//			this.workType = 3;
-//			//moveTo(workTarget);
-//			startWorking();
-//		}
-//		
-//		else if (world.getLogAtCube(workTarget) != null){
-//			this.workType = 4;
-//			//moveTo(workTarget);
-//			startWorking();
-//		}
-//		
-//		else if (((world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.WOOD)
-//				  || (world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.ROCK))
-//					&& this.carriedObject == null){
-//				this.workType = 5;
-//				startWorking();
-//				double[] targetCenter = {workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5};
-//				setOrientationTo(targetCenter);
-//		}
 	}
 	
 	/**
@@ -2508,7 +2467,7 @@ public class Unit {
 		object.terminate();
 		setFreeWeight(getWeight()+object.getWeight());
 	}
-	
+	// TODO
 	/**
 	 * The unit drops its object. 
 	 * 
@@ -2523,11 +2482,15 @@ public class Unit {
 	 * @effect The carried object of this unit is removed.
 	 * 		| this.carriedObject == null
 	 */
-	protected void dropObject(){
+	protected void dropObject(double[] target){
 		setFreeWeight(getWeight()-this.carriedObject.getWeight());
 		this.carriedObject.revive();
-		this.carriedObject.positionObj.setFreeLocation(this.getLocation());
+		this.carriedObject.positionObj.setFreeLocation(target);
 		this.carriedObject = null;
+	}
+	
+	protected void dropObject(){
+		dropObject(this.getLocation());
 	}
 	
 	/**
