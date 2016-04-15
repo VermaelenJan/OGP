@@ -1,11 +1,14 @@
 package hillbillies.part2.internal.ui.viewparts;
 
 import hillbillies.common.internal.ui.viewparts.ControlArea;
+import hillbillies.model.Faction;
 import hillbillies.part1.internal.ui.viewparts.UnitInfoAreaPart;
 import hillbillies.part2.internal.controller.ActionExecutorPart2;
 import hillbillies.part2.internal.providers.IGameObjectInfoProvider;
+import hillbillies.part2.internal.ui.sprites.FactionColors;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 public class UnitInfoAreaPart2 extends UnitInfoAreaPart {
 
@@ -40,7 +43,11 @@ public class UnitInfoAreaPart2 extends UnitInfoAreaPart {
 	@Override
 	public void updateInfo() {
 		super.updateInfo();
-		factionLabel.setText(getUnitInfoProvider().getFactionName(getUnitInfoProvider().getFaction(getObject())));
+		Faction faction = getUnitInfoProvider().getFaction(getObject());
+		factionLabel.setText(getUnitInfoProvider().getFactionName(faction));
+		Rectangle rect = new Rectangle(10, 10);
+		rect.setFill(FactionColors.factionColors[getUnitInfoProvider().getFactionIndex(faction)][0]);
+		factionLabel.setGraphic(rect);
 		experienceLabel.setText("Exp: " + getUnitInfoProvider().getExperiencePoints(getObject()));
 	}
 

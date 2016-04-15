@@ -11,7 +11,7 @@ import ogp.framework.ui.SpriteSheet;
 
 public class FactionColors {
 
-	private static final Color[][] factionColors = { //
+	public static final Color[][] factionColors = { //
 			/* faction 0 */ { Color.rgb(164, 0, 0), Color.rgb(124, 0, 0), Color.rgb(92, 4, 0), Color.rgb(68, 4, 0) }, //
 			/* faction 1 */ { Color.rgb(12, 72, 204), Color.rgb(4, 40, 160), Color.rgb(0, 0, 116),
 					Color.rgb(0, 4, 76) }, //

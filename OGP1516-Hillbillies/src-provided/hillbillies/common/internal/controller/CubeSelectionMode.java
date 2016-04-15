@@ -12,6 +12,36 @@ public class CubeSelectionMode extends AbstractSelectionMode<CubeSelectionMode.C
 			this.cubeY = y;
 			this.cubeZ = z;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + cubeX;
+			result = prime * result + cubeY;
+			result = prime * result + cubeZ;
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Cube other = (Cube) obj;
+			if (cubeX != other.cubeX)
+				return false;
+			if (cubeY != other.cubeY)
+				return false;
+			if (cubeZ != other.cubeZ)
+				return false;
+			return true;
+		}
+		
+		
 	}
 
 	private boolean oldConsumeSpriteClicks;

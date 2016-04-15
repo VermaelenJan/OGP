@@ -52,7 +52,7 @@ public abstract class AbstractSelectionMode<T> extends DefaultInputMode {
 	}
 
 	protected void cancel() {
-		select(null);
+		onCanceled.run();
 	}
 
 	protected void select(T object) {
@@ -62,8 +62,23 @@ public abstract class AbstractSelectionMode<T> extends DefaultInputMode {
 	}
 
 	private Consumer<T> onSelected;
+	private Runnable onCanceled;
 
 	public void setOnSelected(Consumer<T> onSelected) {
 		this.onSelected = onSelected;
 	}
+	
+	protected Consumer<T> getOnSelected() {
+		return onSelected;
+	}
+
+	public void setOnCanceled(Runnable onCanceled) {
+		this.onCanceled = onCanceled;
+	}
+	
+	protected Runnable getOnCanceled() {
+		return onCanceled;
+	}
+	
+
 }

@@ -241,7 +241,7 @@ public interface IFacade extends hillbillies.part1.facade.IFacade {
 	 *            Whether the unit should act according to the default behaviour
 	 *            or not.
 	 * 
-	 * @return The newly spawned unit.
+	 * @return The newly spawned unit, or null if no unit could be spawned.
 	 * 
 	 * @throws ModelException
 	 *             A precondition was violated or an exception was thrown.

@@ -102,13 +102,21 @@ public abstract class HillbilliesView implements IHillbilliesView {
 	public SelectionProvider getSelectionProvider() {
 		return providers.getSp();
 	}
+	
+	protected InfoArea getInfoArea() {
+		return infoArea;
+	}
+	
+	protected WorldView getWorldView() {
+		return worldView;
+	}
 
 	private UserInputHandler input;
 
 	@Override
 	public void setUserInputHandler(UserInputHandler input) {
 		this.input = input;
-		root.addEventHandler(KeyEvent.KEY_PRESSED, e -> input.onKeyPressed(e));
+		root.addEventFilter(KeyEvent.KEY_PRESSED, e -> input.onKeyPressed(e));
 		this.worldView.setUserInputHandler(input);
 	}
 

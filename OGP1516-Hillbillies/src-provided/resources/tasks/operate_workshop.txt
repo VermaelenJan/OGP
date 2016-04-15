@@ -1,0 +1,12 @@
+name: "operate workshop"
+priority : -100
+activities : w := workshop;
+	moveTo boulder ;
+	work here ;
+	moveTo w;
+	work here ;
+	moveTo log ;
+	work here ;
+	moveTo w;
+	work here ;
+	work here ;

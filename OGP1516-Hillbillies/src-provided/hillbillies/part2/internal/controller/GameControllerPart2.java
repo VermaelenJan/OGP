@@ -206,9 +206,17 @@ public class GameControllerPart2 extends GameController<IHillbilliesView2> imple
 		return new Part2InputMode(this);
 	};
 
-	private final GameObjectInfoProvider uip = new GameObjectInfoProvider(this, this::handleError);
+	private final GameObjectInfoProvider uip = createGameObjectInfoProvider();
 
-	private final ActionExecutorPart2 wae = new ActionExecutorPart2(this, this::handleError);
+	protected GameObjectInfoProvider createGameObjectInfoProvider() {
+		return new GameObjectInfoProvider(this, this::handleError);
+	}
+
+	private final ActionExecutorPart2 wae = createActionExecutor();
+
+	protected ActionExecutorPart2 createActionExecutor() {
+		return new ActionExecutorPart2(this, this::handleError);
+	}
 
 	private Object myFaction;
 
@@ -216,9 +224,22 @@ public class GameControllerPart2 extends GameController<IHillbilliesView2> imple
 	public void updateGame(double dt) {
 		try {
 			getFacade().advanceTime(world, dt);
+			deselectDeadUnit();
 		} catch (ModelException e) {
 			handleError(e);
 		}
+	}
+
+	protected void deselectDeadUnit() {
+		getSelectedUnit().ifPresent(unit -> {
+			try {
+				if (!getFacade().isAlive(unit)) {
+					getSelectionProvider().getSelection().clear();
+				}
+			} catch (ModelException e) {
+				handleError(e);
+			}
+		});
 	}
 
 	@Override
@@ -246,16 +267,18 @@ public class GameControllerPart2 extends GameController<IHillbilliesView2> imple
 		try {
 			for (int i = 0; i < n; i++) {
 				Unit unit = getFacade().spawnUnit(getWorld(), false);
-				Faction faction = getFacade().getFaction(unit);
-				if (myFaction == null) {
-					myFaction = faction;
+				if (unit != null) {
+					Faction faction = getFacade().getFaction(unit);
+					if (myFaction == null) {
+						myFaction = faction;
+					}
+					updateFactions();
+					if (faction != myFaction) {
+						getFacade().setDefaultBehaviorEnabled(unit, true);
+					}
+					if (n == 1)
+						getSelectionProvider().getSelection().select(unit, true);
 				}
-				updateFactions();
-				if (faction != myFaction) {
-					getFacade().setDefaultBehaviorEnabled(unit, true);
-				}
-				if (n == 1)
-					getSelectionProvider().getSelection().select(unit, true);
 			}
 		} catch (ModelException e) {
 			handleError(e);
@@ -289,7 +312,7 @@ public class GameControllerPart2 extends GameController<IHillbilliesView2> imple
 
 	private final Set<Unit> unitSelectionPool = new HashSet<>();
 
-	private Iterator<Unit> unitIterator;
+	private Iterator<Unit> unitIterator = unitSelectionPool.iterator();
 
 	private void updateUnits() {
 		updateFactions();

@@ -1,0 +1,10 @@
+name: "dig"
+priority : 8
+activities:
+	if carries_item(this) then
+		work here;
+	fi
+	if is_solid(selected) then
+		moveTo (next_to selected);
+		work selected;
+	fi

@@ -30,7 +30,7 @@ public class WorldViewPart2 extends WorldView {
 	private final ImageView[] visibleImageViews;
 	private final SpriteSheet spritesheet;
 
-	private WorldViewPart2(ViewModelPart2 viewModel, Part2Options options) {
+	protected WorldViewPart2(ViewModelPart2 viewModel, Part2Options options) {
 		super(viewModel, options);
 
 		this.spritesheet = new SpriteSheet(ResourceUtils.loadImage("resources/forest.png"), 32, 32, 1, 1);
@@ -85,9 +85,13 @@ public class WorldViewPart2 extends WorldView {
 	protected int getIndexForView(int visibleX, int visibleY) {
 		return visibleX + visibleY * getViewModel().getNbVisibleTilesX();
 	}
+	
+	protected ImageView getImageView(int visibleX, int visibleY) {
+		return visibleImageViews[getIndexForView(visibleX, visibleY)];
+	}
 
 	protected void setImageViewTile(int visibleX, int visibleY, int tileIndex) {
-		ImageView view = visibleImageViews[getIndexForView(visibleX, visibleY)];
+		ImageView view = getImageView(visibleX, visibleY);
 		if (tileIndex >= 0) {
 			view.setViewport(spritesheet.getViewport(tileIndex));
 			view.setVisible(true);
@@ -115,11 +119,12 @@ public class WorldViewPart2 extends WorldView {
 	private void createImageViews() {
 		for (int visibleX = 0; visibleX < getViewModel().getNbVisibleTilesX(); visibleX++) {
 			for (int visibleY = 0; visibleY < getViewModel().getNbVisibleTilesY(); visibleY++) {
-				final int vX = visibleX;
-				final int vY = visibleY;
 				ImageView node = spritesheet.createImageView(0);
 				node.setLayoutX(getViewModel().visibleTileToScreenX(visibleX));
 				node.setLayoutY(getViewModel().visibleTileToScreenY(visibleY));
+				/*
+				final int vX = visibleX;
+				final int vY = visibleY;
 				node.setOnMouseClicked(e -> {
 					double screenX = getViewModel().visibleTileToScreenX(vX) + e.getX();
 					double screenY = getViewModel().visibleTileToScreenY(vY) + e.getY();
@@ -127,8 +132,10 @@ public class WorldViewPart2 extends WorldView {
 					double worldY = getViewModel().screenToWorldY(screenY);
 					double worldZ = getViewModel().getCurrentZLevel();
 					//double worldZ = getViewModel().getLowestVisibleZ(vX, vY);
-					getUserInputHandler().worldPointClicked(worldX, worldY, worldZ, e);
+					//getUserInputHandler().worldPointClicked(worldX, worldY, worldZ, e);
+					//e.consume();
 				});
+				*/
 				visibleImageViews[getIndexForView(visibleX, visibleY)] = node;
 				tilePanels[0].getChildren().add(node);
 

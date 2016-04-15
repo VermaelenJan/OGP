@@ -29,6 +29,8 @@ public class Part2InputMode extends Part1InputMode {
 			e.consume();
 		} else if (e.getCode() == KeyCode.S) {
 			getActionExecutor().spawnUnits(Constants.UNITS_TO_SPAWN);
+		} else if (e.getCode() == KeyCode.ESCAPE && !getSelection().isEmpty()) {
+			getSelection().clear();
 		} else {
 			super.onKeyPressed(e);
 		}

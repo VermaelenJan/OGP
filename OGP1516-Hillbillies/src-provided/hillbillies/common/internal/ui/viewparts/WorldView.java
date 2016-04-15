@@ -219,10 +219,10 @@ public class WorldView {
 					} else if (e.getButton() == MouseButton.MIDDLE) {
 						this.panStart = null;
 						e.consume();
+					} else if (e.getButton() == MouseButton.PRIMARY) {
+						handleClick(e);
+						e.consume();
 					}
-				} else if (e.getEventType() == MouseEvent.MOUSE_CLICKED && e.getButton() == MouseButton.PRIMARY) {
-					handleClick(e);
-					e.consume();
 				}
 			};
 		};
@@ -232,7 +232,7 @@ public class WorldView {
 	protected void setupHighlighting() {
 		this.highlightRect = new Rectangle(viewModel.getPixelsPerTile(), viewModel.getPixelsPerTile());
 		highlightRect.setFill(Color.rgb(0, 255, 255, 0.3));
-		
+
 		highlightRect.setVisible(false);
 		root.getChildren().add(highlightRect);
 		root.setOnMouseMoved(e -> highlightTileAt(e.getX(), e.getY()));

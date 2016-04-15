@@ -20,5 +20,5 @@ public interface IHillbilliesView extends IGameView {
 	void setHighlightCurrentTile(boolean b);
 
 	Parent getRoot();
-
+	
 }

@@ -21,7 +21,9 @@ public class Selection {
 	public void select(Object object, boolean clearPrevious) {
 		if (clearPrevious)
 			clear();
-		selection.add(object);
+		if (object != null) {
+			selection.add(object);
+		}
 	}
 
 	public void selectAll(Collection<?> objects, boolean clearOld) {
@@ -68,5 +70,13 @@ public class Selection {
 
 	public <T> Optional<T> getAnySelected(Class<T> type) {
 		return getObjects(type).stream().findAny();
+	}
+
+	public void toggle(Object object) {
+		if (selection.contains(object)) {
+			selection.remove(object);
+		} else {
+			selection.add(object);
+		}
 	}
 }

@@ -21,6 +21,6 @@ public interface WorldInfoProvider {
 	 * @param maxZ (exclusive)
 	 * @return
 	 */
-	public Set<?> getObjectsInBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
+	public Set<? extends Object> getObjectsInBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
 
 }

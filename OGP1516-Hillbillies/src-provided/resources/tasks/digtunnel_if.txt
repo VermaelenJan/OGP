@@ -1,0 +1,21 @@
+name: "dig tunnel from (11, 10, 10) to (14, 10, 10)" priority : 1000
+activities:
+	if (carries_item(this)) then
+		work here;
+	fi
+	if (is_solid(11, 10, 10)) then
+		moveTo (10, 10, 10);
+		work (11, 10, 10);
+	fi
+	if (is_solid(12, 10, 10)) then
+		moveTo (11, 10, 10);
+		work (12, 10, 10);
+	fi
+	if (is_solid(13, 10, 10)) then
+		moveTo (12, 10, 10);
+		work (13, 10, 10);
+	fi
+	if (is_solid(14, 10, 10)) then
+		moveTo (13, 10, 10);
+		work (14, 10, 10);
+	fi
