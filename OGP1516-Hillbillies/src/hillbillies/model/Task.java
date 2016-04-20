@@ -1,11 +1,13 @@
 package hillbillies.model;
 
-public class Task {
+import java.util.Set;
 
-	protected Task(String name, int priority, Statement activity, int[] selectedCube ){
+public class Task { //TODO: activities
+
+	protected Task(String name, int priority, Statement activities, int[] selectedCube ){
 		setName(name);
 		setPriority(priority);
-		setActivity(activity);
+		setActivities(activities);
 		setSelectedCube(selectedCube);
 	}
 	
@@ -35,15 +37,15 @@ public class Task {
 	
 	// ACTIVITY
 	
-	public Statement getActivity(){
-		return this.activity;
+	public Statement getActivities(){
+		return this.activities;
 	}
 	
-	private void setActivity(Statement activity){
-		this.activity = activity;
+	private void setActivities(Statement activities){
+		this.activities = activities;
 	}
 	
-	private Statement activity;
+	private Statement activities;
 
 	// SELECTED CUBE
 	
@@ -57,7 +59,34 @@ public class Task {
 	
 	private int[] selectedCube;	
 	
-
+	private Unit assignedUnit;
+	
+	protected void assignTo(Unit unit) throws RuntimeException {
+		unit.assignTask(this);
+		this.assignedUnit = unit;
+	}
+	
+	public Unit getAssignedUnit() {
+		return this.assignedUnit;
+	}
+	
+	public boolean isAssigned() {
+		return this.assignedUnit != null;
+	}
+	
+	private Set<Scheduler> schedulersForTask;
+	
+	public Set<Scheduler> getSchedulersForTask() {
+		return schedulersForTask;
+	}
+	
+	protected void addSchedulerForTask(Scheduler scheduler) {
+		schedulersForTask.add(scheduler);
+	}
+	
+	protected void removeSchedulerForTask(Scheduler scheduler) {
+		schedulersForTask.remove(scheduler);
+	}
 }
 
 

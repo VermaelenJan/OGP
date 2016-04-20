@@ -416,50 +416,42 @@ public class Facade implements IFacade {
 
 	@Override
 	public Scheduler getScheduler(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return faction.getScheduler();
 	}
 
 	@Override
 	public void schedule(Scheduler scheduler, Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		scheduler.addTask(task);
 	}
 
 	@Override
 	public void replace(Scheduler scheduler, Task original, Task replacement) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		scheduler.replace(original, replacement);
 	}
 
 	@Override
 	public boolean areTasksPartOf(Scheduler scheduler, Collection<Task> tasks) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return scheduler.areTasksPartOf(tasks);
 	}
 
 	@Override
 	public Iterator<Task> getAllTasksIterator(Scheduler scheduler) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return scheduler.getIterator();
 	}
 
 	@Override
 	public Set<Scheduler> getSchedulersForTask(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return task.getSchedulersForTask();
 	}
 
 	@Override
 	public Unit getAssignedUnit(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return task.getAssignedUnit();
 	}
 
 	@Override
 	public Task getAssignedTask(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getAssignedTask();
 	}
 
 	@Override

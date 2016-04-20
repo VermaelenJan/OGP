@@ -3091,11 +3091,22 @@ public class Unit {
 	 */
 	@Model
 	private void newDefaultBehaviour(){
-		switch (ConstantsUtils.random.nextInt(4)) {
-			case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
-			case 1: work(); break;						//Exception will never be thrown.
-			case 2: rest(); break;
-			case 3: attackPotentialEnemy(); break;
+		if (this.assignedTask == null) {
+			Task newTask = faction.getScheduler().getHightestUnassignedPriorityTask();
+			if (newTask != null) {
+				newTask.assignTo(this);
+			}
+			else {
+				switch (ConstantsUtils.random.nextInt(4)) {
+				case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
+				case 1: work(); break;						//Exception will never be thrown.
+				case 2: rest(); break;
+				case 3: attackPotentialEnemy(); break;
+				}
+			}
+		}
+		else {
+			//TODO
 		}
 	}
 	
@@ -3103,4 +3114,29 @@ public class Unit {
 	 * Variable registering if the default behaviour is enabled.
 	 */
 	private boolean defaultBehaviour = false;
+	
+	protected void stopTask() {
+		stopWorking();
+		stopMoving();
+		//TODO: stop fighting?
+	}
+
+	private Task assignedTask;
+	
+	protected void assignTask(Task task) {
+		if (this.assignedTask != null) {
+			this.assignedTask = task;
+		}
+		else {
+			throw new RuntimeException(); // TODO: new exception? or value
+		}
+	}
+
+	protected void removeTask() {
+		this.assignedTask = null;
+	}
+	
+	public Task getAssignedTask() {
+		return assignedTask;
+	}
 }

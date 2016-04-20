@@ -30,6 +30,7 @@ public class Faction {
 	protected Faction(World world){
 		this.world = world;
 		world.addFaction(this);
+		this.scheduler = new Scheduler();
 	}
 	
 	/**
@@ -186,4 +187,10 @@ public class Faction {
 	 * Variable reflecting whether or not this faction is terminated.
 	 */
 	private boolean isTerminated;
+	
+	private Scheduler scheduler;
+	
+	public Scheduler getScheduler() {
+		return this.scheduler;
+	}
 }
