@@ -21,6 +21,7 @@ import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.part3.facade.IFacade;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
+import hillbillies.model.TaskFactory;
 import hillbillies.part3.programs.ITaskFactory;
 import ogp.framework.util.ModelException;
 
@@ -404,8 +405,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public ITaskFactory<?, ?, Task> createTaskFactory() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TaskFactory();
 	}
 
 	@Override
