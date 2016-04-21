@@ -3107,8 +3107,7 @@ public class Unit {
 			}
 		}
 		else {
-			//TODO
-			System.out.println("now won maybe?");
+			assignedTask.getActivities(); //TODO
 		}
 	}
 	
@@ -3126,7 +3125,7 @@ public class Unit {
 	private Task assignedTask;
 	
 	protected void assignTask(Task task) {
-		if (this.assignedTask != null) {
+		if (this.assignedTask == null) {
 			this.assignedTask = task;
 		}
 		else {
