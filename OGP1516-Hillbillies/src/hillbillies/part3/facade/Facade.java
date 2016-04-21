@@ -205,6 +205,11 @@ public class Facade implements IFacade {
 		} catch (IllegalNameException e) {
 			throw new ModelException("Illegal Name:", e);
 		}
+		
+		if (unit != null && enableDefaultBehavior) {
+			unit.startDefaultBehaviour();
+		}
+		
 		return unit;
 	}
 

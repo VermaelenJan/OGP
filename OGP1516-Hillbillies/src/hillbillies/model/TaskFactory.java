@@ -1,16 +1,28 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
-
+	
+	Expression expression = new Expression();
+	Statement statement = new Statement();
+	
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Task> temp = new ArrayList<>();
+		if (selectedCubes.size() == 0) {
+			temp.add(new Task(name, priority, activity, null));
+		}
+		else {
+			for (int[] i : selectedCubes) {
+				temp.add(new Task(name, priority, activity, i));
+			}
+		}
+		return temp;
 	}
 
 	@Override
@@ -58,8 +70,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return statement.new Work(position, sourceLocation);
 	}
 
 	@Override
@@ -76,7 +87,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
-		return null;
+		return expression.new ReadVariable(variableName, sourceLocation);
 	}
 
 	@Override

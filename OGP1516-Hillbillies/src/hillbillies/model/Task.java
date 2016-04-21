@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Task { //TODO: activities
@@ -9,6 +10,7 @@ public class Task { //TODO: activities
 		setPriority(priority);
 		setActivities(activities);
 		setSelectedCube(selectedCube);
+		schedulersForTask = new HashSet<Scheduler>();
 	}
 	
 	// NAME  

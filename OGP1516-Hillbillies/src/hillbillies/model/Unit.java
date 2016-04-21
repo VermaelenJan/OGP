@@ -1174,7 +1174,7 @@ public class Unit {
 	 * 			The given dt is not a valid advanceTime duration.
 	 */
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException, IllegalWorkPositionException {
-				
+
 		if (!this.isTerminated()) {
 			if (this.hitpoints <= 0) {
 				setHitpoints(0);
@@ -3091,7 +3091,8 @@ public class Unit {
 	 */
 	@Model
 	private void newDefaultBehaviour(){
-		if (this.assignedTask == null) {
+
+		if (assignedTask == null) {
 			Task newTask = faction.getScheduler().getHightestUnassignedPriorityTask();
 			if (newTask != null) {
 				newTask.assignTo(this);
@@ -3107,6 +3108,7 @@ public class Unit {
 		}
 		else {
 			//TODO
+			System.out.println("now won maybe?");
 		}
 	}
 	
