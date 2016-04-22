@@ -5,11 +5,12 @@ import java.util.List;
 import hillbillies.part3.programs.SourceLocation;
 
 public class Statement {
+	
 	public class Work extends Statement {
-		public Expression.LiteralPosition position;
+		public Expression position;
 		public SourceLocation sourceLocation;
 
-		Work(Expression.LiteralPosition position, SourceLocation sourceLocation) {
+		Work(Expression position, SourceLocation sourceLocation) {
 			this.position = position;
 			this.sourceLocation = sourceLocation;
 		}
