@@ -6,8 +6,11 @@ import java.util.Set;
 
 import org.hamcrest.core.IsInstanceOf;
 
+import hillbillies.model.Expression.LiteralPosition;
 import hillbillies.model.Statement.Sequence;
+import hillbillies.model.Statement.Work;
 import hillbillies.part3.programs.SourceLocation;
+import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.WorkshopPositionContext;
 
 public class Task { //TODO: activities
 
@@ -83,15 +86,17 @@ public class Task { //TODO: activities
 	}
 	
 	public void executeTask(Unit unit){
-		// ni op letten haha kzat denk ik ergens ander met mijn gedachten:p)
-		sequence = new Sequence(getActivities()// weet ik veel gast);
+		Sequence sequence = (Statement.Sequence) activities;
 		int i = 0;
 		while (i < sequence.statements.size()){
-			if (sequence.statements[i] instanceof Statement.Work){
-				if (sequence.statements[i+1] instanceof Expression.LiteralPosition) // ja expression
-					int[] workTarget = {}
-					
-					unit.workAt(workTarget);;
+			if (sequence.statements.get(i) instanceof Statement.Work){
+				Statement.Work workStatement = (Work) sequence.statements.get(i);
+				if (workStatement.position instanceof Expression.LiteralPosition){
+					Expression.LiteralPosition positionExpression =  workStatement.position;
+					int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
+					unit.workAt(workTarget);
+					i++;
+				}
 			}
 		}
 	}

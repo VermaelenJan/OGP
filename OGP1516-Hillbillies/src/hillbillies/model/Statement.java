@@ -6,10 +6,10 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class Statement {
 	public class Work extends Statement {
-		public Expression position;
+		public Expression.LiteralPosition position;
 		public SourceLocation sourceLocation;
 
-		Work(Expression position, SourceLocation sourceLocation) {
+		Work(Expression.LiteralPosition position, SourceLocation sourceLocation) {
 			this.position = position;
 			this.sourceLocation = sourceLocation;
 		}

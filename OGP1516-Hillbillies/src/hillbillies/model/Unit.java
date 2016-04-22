@@ -3107,7 +3107,7 @@ public class Unit {
 			}
 		}
 		else {
-			assignedTask.getActivities(); //TODO
+			getAssignedTask().executeTask(this);
 		}
 	}
 	
