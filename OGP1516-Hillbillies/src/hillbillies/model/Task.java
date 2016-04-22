@@ -1,7 +1,13 @@
 package hillbillies.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.hamcrest.core.IsInstanceOf;
+
+import hillbillies.model.Statement.Sequence;
+import hillbillies.part3.programs.SourceLocation;
 
 public class Task { //TODO: activities
 
@@ -76,11 +82,26 @@ public class Task { //TODO: activities
 		return this.assignedUnit != null;
 	}
 	
+	public void executeTask(Unit unit){
+		// ni op letten haha kzat denk ik ergens ander met mijn gedachten:p)
+		sequence = new Sequence(getActivities()// weet ik veel gast);
+		int i = 0;
+		while (i < sequence.statements.size()){
+			if (sequence.statements[i] instanceof Statement.Work){
+				if (sequence.statements[i+1] instanceof Expression.LiteralPosition) // ja expression
+					int[] workTarget = {}
+					
+					unit.workAt(workTarget);;
+			}
+		}
+	}
+	
 	private Set<Scheduler> schedulersForTask;
 	
 	public Set<Scheduler> getSchedulersForTask() {
 		return schedulersForTask;
 	}
+	
 	
 	protected void addSchedulerForTask(Scheduler scheduler) {
 		schedulersForTask.add(scheduler);
