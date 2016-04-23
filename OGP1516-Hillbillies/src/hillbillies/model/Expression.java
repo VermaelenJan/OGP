@@ -15,7 +15,7 @@ public class Expression {
 		public SourceLocation sourceLocation;
 	}
 	
-	public class LiteralPosition {
+	public class LiteralPosition extends Expression {
 		
 		public int x;
 		public int y;

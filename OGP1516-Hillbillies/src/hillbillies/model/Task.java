@@ -1,16 +1,10 @@
 package hillbillies.model;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import org.hamcrest.core.IsInstanceOf;
-
 import hillbillies.model.Expression.LiteralPosition;
 import hillbillies.model.Statement.Sequence;
 import hillbillies.model.Statement.Work;
-import hillbillies.part3.programs.SourceLocation;
-import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.WorkshopPositionContext;
 
 public class Task { //TODO: activities
 
@@ -92,7 +86,7 @@ public class Task { //TODO: activities
 			if (sequence.statements.get(i) instanceof Statement.Work){
 				Statement.Work workStatement = (Work) sequence.statements.get(i);
 				if (workStatement.position instanceof Expression.LiteralPosition){
-					Expression.LiteralPosition positionExpression =  workStatement.position;
+					Expression.LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
 					int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
 					unit.workAt(workTarget);
 					i++;
