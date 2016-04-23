@@ -80,18 +80,31 @@ public class Task { //TODO: activities
 	}
 	
 	public void executeTask(Unit unit){
-		Sequence sequence = (Statement.Sequence) activities;
-		int i = 0;
-		while (i < sequence.statements.size()){
-			if (sequence.statements.get(i) instanceof Statement.Work){
-				Statement.Work workStatement = (Work) sequence.statements.get(i);
-				if (workStatement.position instanceof Expression.LiteralPosition){
-					Expression.LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
-					int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
-					unit.workAt(workTarget);
-					i++;
-				}
-			}
+		if (! (activities instanceof Sequence)) {
+			
+		}// TODO: sequence van 1 statement maken
+		
+		//TODO: uncommente:
+//		Sequence sequence = (Statement.Sequence) activities;
+//		int i = 0;
+//		while (i < sequence.statements.size()){
+//			if (sequence.statements.get(i) instanceof Statement.Work){
+//				Statement.Work workStatement = (Work) sequence.statements.get(i);
+//				if (workStatement.position instanceof Expression.LiteralPosition){
+//					Expression.LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
+//					int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
+//					unit.workAt(workTarget);
+//					i++;
+//				}
+//			}
+//		}
+		
+		//TODO: verwijderen (enkel geschreven om te testen):
+		Statement.Work workStatement = (Work) activities;
+		if (workStatement.position instanceof Expression.LiteralPosition){ // hier zit een fout in de test
+			Expression.LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
+			int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
+			unit.workAt(workTarget);
 		}
 	}
 	
