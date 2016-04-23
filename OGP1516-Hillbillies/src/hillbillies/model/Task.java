@@ -2,9 +2,10 @@ package hillbillies.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import hillbillies.model.Expression.LiteralPosition;
-import hillbillies.model.Statement.Sequence;
-import hillbillies.model.Statement.Work;
+import hillbillies.model.expression.LiteralPosition;
+import hillbillies.model.statement.Sequence;
+import hillbillies.model.statement.Work;
+import hillbillies.model.statement.Statement;
 
 public class Task { //TODO: activities
 
@@ -100,10 +101,11 @@ public class Task { //TODO: activities
 //		}
 		
 		//TODO: verwijderen (enkel geschreven om te testen):
-		Statement.Work workStatement = (Work) activities;
-		if (workStatement.position instanceof Expression.LiteralPosition){ // hier zit een fout in de test
-			Expression.LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
+		Work workStatement = (Work) activities;
+		if (workStatement.position instanceof LiteralPosition){ // hier zit een fout in de test
+			LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
 			int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
+			System.out.println(positionExpression.x);
 			unit.workAt(workTarget);
 		}
 	}

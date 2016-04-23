@@ -3,13 +3,17 @@ package hillbillies.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import hillbillies.model.expression.Expression;
+import hillbillies.model.expression.ReadVariable;
+import hillbillies.model.statement.Statement;
+import hillbillies.model.statement.Work;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	
-	Expression expression = new Expression();
-	Statement statement = new Statement();
+	//Expression expression = new Expression();
+	//Statement statement = new Statement();
 	
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
@@ -70,7 +74,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		return statement.new Work(position, sourceLocation);
+		return new Work(position, sourceLocation);
 	}
 
 	@Override
@@ -87,7 +91,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
-		return expression.new ReadVariable(variableName, sourceLocation);
+		return new ReadVariable(variableName, sourceLocation);
 	}
 
 	@Override

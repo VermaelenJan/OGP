@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Model;
+import hillbillies.model.expression.Expression;
 
 public class Scheduler {
 	public Scheduler() {
