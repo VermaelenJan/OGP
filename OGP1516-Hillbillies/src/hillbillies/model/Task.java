@@ -1,11 +1,11 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import hillbillies.model.expression.LiteralPosition;
-import hillbillies.model.statement.Sequence;
-import hillbillies.model.statement.Work;
-import hillbillies.model.statement.Statement;
+import hillbillies.model.expression.*;
+import hillbillies.model.statement.*;
 
 public class Task { //TODO: activities
 
@@ -15,7 +15,17 @@ public class Task { //TODO: activities
 		setActivities(activities);
 		setSelectedCube(selectedCube);
 		schedulersForTask = new HashSet<Scheduler>();
+		
+		if (! (activities instanceof Sequence)) {
+			List<Statement> list = new ArrayList<>();
+			list.add(activities);
+			activities = new Sequence(list, activities.sourceLocation);
+		}
+
+		doneCheck = new boolean[((Sequence) activities).statements.size()]; 
 	}
+	
+	boolean[] doneCheck; 
 	
 	// NAME  
 	public String getName(){
@@ -81,11 +91,7 @@ public class Task { //TODO: activities
 	}
 	
 	public void executeTask(Unit unit){
-		if (! (activities instanceof Sequence)) {
-			
-		}// TODO: sequence van 1 statement maken
-		
-		//TODO: uncommente:
+//	TODO: uncommente:
 //		Sequence sequence = (Statement.Sequence) activities;
 //		int i = 0;
 //		while (i < sequence.statements.size()){
@@ -100,12 +106,15 @@ public class Task { //TODO: activities
 //			}
 //		}
 		
-		//TODO: verwijderen (enkel geschreven om te testen):
+		//TODO: verwijderen:
 		Work workStatement = (Work) activities;
 		if (workStatement.position instanceof LiteralPosition){ // hier zit een fout in de test
 			LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
 			int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
-			System.out.println(positionExpression.x);
+			unit.workAt(workTarget);
+		}
+		else if (workStatement.position instanceof SelectedPosition) {
+			int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
 			unit.workAt(workTarget);
 		}
 	}
@@ -116,7 +125,6 @@ public class Task { //TODO: activities
 		return schedulersForTask;
 	}
 	
-	
 	protected void addSchedulerForTask(Scheduler scheduler) {
 		schedulersForTask.add(scheduler);
 	}
@@ -124,6 +132,7 @@ public class Task { //TODO: activities
 	protected void removeSchedulerForTask(Scheduler scheduler) {
 		schedulersForTask.remove(scheduler);
 	}
+
 }
 
 

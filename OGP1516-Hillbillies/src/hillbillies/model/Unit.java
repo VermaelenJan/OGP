@@ -2249,9 +2249,6 @@ public class Unit {
 	 * 		| !(isValidWorkPosition)
 	 */			
 	public void workAt(int[] workTarget) throws IllegalWorkPositionException{
-		System.out.println(workTarget[0]);
-		System.out.println(workTarget[1]);
-		System.out.println(workTarget[2]);
 		if (isFalling()) {
 			return;
 		}

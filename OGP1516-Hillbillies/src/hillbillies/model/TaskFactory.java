@@ -3,10 +3,8 @@ package hillbillies.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import hillbillies.model.expression.Expression;
-import hillbillies.model.expression.ReadVariable;
-import hillbillies.model.statement.Statement;
-import hillbillies.model.statement.Work;
+import hillbillies.model.expression.*;
+import hillbillies.model.statement.*;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -174,8 +172,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createSelectedPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SelectedPosition(sourceLocation);
 	}
 
 	@Override
@@ -186,8 +183,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LiteralPosition(x, y, z, sourceLocation);
 	}
 
 	@Override
