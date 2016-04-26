@@ -12,7 +12,7 @@ public class Sequence extends Statement {
 
 		public Sequence(List<Statement> statements, SourceLocation sourceLocation) {
 			super(sourceLocation);
-			this.sourceLocation = sourceLocation;
+			this.statements = statements;
 		}
 }
 
