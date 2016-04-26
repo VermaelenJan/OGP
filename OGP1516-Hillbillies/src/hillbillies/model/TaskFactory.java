@@ -10,9 +10,6 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	
-	//Expression expression = new Expression();
-	//Statement statement = new Statement();
-	
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		List<Task> temp = new ArrayList<>();
@@ -66,8 +63,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new MoveTo(position, sourceLocation);
 	}
 
 	@Override

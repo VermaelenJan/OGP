@@ -1,0 +1,3 @@
+name: "ownTasks"
+priority : 5
+activities : moveTo selected; work (9, 10, 9); moveTo (10, 8, 10);

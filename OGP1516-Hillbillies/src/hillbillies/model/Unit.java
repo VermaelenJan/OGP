@@ -1191,6 +1191,9 @@ public class Unit {
 	
 			if (isFalling() || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
 				setFalling(true); 
+				if (assignedTask != null) {
+					assignedTask.interruptTask();
+				}
 				stopSprinting();
 				advanceTimeFalling(dt);
 			}
@@ -1403,7 +1406,9 @@ public class Unit {
 			double [] currentWorkTarget = {workTarget[0]+0.5,workTarget[1]+0.5,workTarget[2]+0.5};
 			dropObject(currentWorkTarget);
 			updateExperience(10);
-
+			if (this.assignedTask != null) {
+				this.assignedTask.finishedLastActivity();
+			}
 		}
 		
 		else if ( (workCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(workTarget) != null)
@@ -1414,6 +1419,9 @@ public class Unit {
 			if (currBoulder != null && currLog != null) {
 				improveEquipment(currBoulder,currLog);
 				updateExperience(10);
+				if (this.assignedTask != null) {
+					this.assignedTask.finishedLastActivity();
+				}
 			}
 
 		}
@@ -1424,6 +1432,9 @@ public class Unit {
 			if (currBoulder != null) {
 				pickUpObject(currBoulder);
 				updateExperience(10);
+				if (this.assignedTask != null) {
+					this.assignedTask.finishedLastActivity();
+				}
 			}
 
 		}
@@ -1434,6 +1445,9 @@ public class Unit {
 			if (currLog != null) {
 				pickUpObject(currLog);
 				updateExperience(10);
+				if (this.assignedTask != null) {
+					this.assignedTask.finishedLastActivity();
+				}
 			}
 
 		}
@@ -1443,6 +1457,10 @@ public class Unit {
 					&& this.carriedObject == null) {
 			world.caveIn(workTarget[0], workTarget[1], workTarget[2]);	
 			updateExperience(10);
+			if (this.assignedTask != null) {
+				this.assignedTask.finishedLastActivity();
+			}
+
 		}
 		
 		setTimeRemainderToWork(0);
@@ -1483,7 +1501,6 @@ public class Unit {
 		} catch (IllegalPositionException e) {} //Exception will never be thrown.
 		
 		updateExperience(1);
-
 		
 		if (!(globalTarget == null) &&
 				!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
@@ -1495,6 +1512,10 @@ public class Unit {
 				interruptRWPermission = false;
 				
 			} catch (IllegalPositionException e) {} //Exception will never be thrown.
+		}
+		
+		if (Arrays.equals(globalTarget, getOccupiedCube()) && this.assignedTask != null) {
+			this.assignedTask.finishedLastActivity();
 		}
 	}
 	
@@ -2684,6 +2705,10 @@ public class Unit {
 			
 			stopWorking();
 			
+			if (assignedTask != null) {
+				assignedTask.interruptTask();
+			}
+			
 			double possibilityDodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
 			if (ConstantsUtils.getPossibilitySucces(possibilityDodge)){
 				this.positionObj.setRandomDodgedLocation();
@@ -2828,6 +2853,10 @@ public class Unit {
 		if ( (getHitpoints() != getMaxHitpointsStamina()) || ( (getStamina() != getMaxHitpointsStamina()) )){
 			setTimeResting(0);
 			stopWorking();
+			
+			if (assignedTask != null) {
+				assignedTask.interruptTask();
+			}
 
 			this.resting = true;
 			setStartRestHitpoints((int) getHitpoints());
@@ -3106,7 +3135,7 @@ public class Unit {
 			}
 		}
 		else {
-			getAssignedTask().executeTask(this);
+			getAssignedTask().executeTask();
 		}
 	}
 	

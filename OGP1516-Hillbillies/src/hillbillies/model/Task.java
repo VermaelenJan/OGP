@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,20 +13,12 @@ public class Task { //TODO: activities
 	protected Task(String name, int priority, Statement activities, int[] selectedCube ){
 		setName(name);
 		setPriority(priority);
-		setActivities(activities);
 		setSelectedCube(selectedCube);
+		setActivities(activities);
 		schedulersForTask = new HashSet<Scheduler>();
-		
-		if (! (activities instanceof Sequence)) {
-			List<Statement> list = new ArrayList<>();
-			list.add(activities);
-			activities = new Sequence(list, activities.sourceLocation);
-		}
-
-		doneCheck = new boolean[((Sequence) activities).statements.size()]; 
 	}
 	
-	boolean[] doneCheck; 
+	HashMap<Statement, Boolean> activitiesMap;
 	
 	// NAME  
 	public String getName(){
@@ -54,14 +47,29 @@ public class Task { //TODO: activities
 	// ACTIVITY
 	
 	public Statement getActivities(){
-		return this.activities;
+		return this.activitiesReq;
 	}
 	
 	private void setActivities(Statement activities){
-		this.activities = activities;
+
+		if (! (activities instanceof Sequence)) {
+			List<Statement> list = new ArrayList<>();
+			list.add(activities);
+
+			this.activitiesReq = (new Sequence(list, activities.sourceLocation));
+		}
+		else {
+			this.activitiesReq = activities;
+		}
+		
+		activitiesMap = new HashMap<Statement, Boolean>();
+
+		for (Statement activity : ((Sequence) activitiesReq).statements) {
+			activitiesMap.put(activity, false);
+		}
 	}
 	
-	private Statement activities;
+	private Statement activitiesReq;
 
 	// SELECTED CUBE
 	
@@ -80,6 +88,12 @@ public class Task { //TODO: activities
 	protected void assignTo(Unit unit) throws RuntimeException {
 		unit.assignTask(this);
 		this.assignedUnit = unit;
+		
+		for (Scheduler scheduler : getSchedulersForTask()) {
+			if (scheduler != assignedUnit.getFaction().getScheduler()) {
+				scheduler.removeTask(this);
+			}
+		}//TODO: put back in all schedulers if not successfully executed
 	}
 	
 	public Unit getAssignedUnit() {
@@ -90,32 +104,58 @@ public class Task { //TODO: activities
 		return this.assignedUnit != null;
 	}
 	
-	public void executeTask(Unit unit){
-//	TODO: uncommente:
-//		Sequence sequence = (Statement.Sequence) activities;
-//		int i = 0;
-//		while (i < sequence.statements.size()){
-//			if (sequence.statements.get(i) instanceof Statement.Work){
-//				Statement.Work workStatement = (Work) sequence.statements.get(i);
-//				if (workStatement.position instanceof Expression.LiteralPosition){
-//					Expression.LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
-//					int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
-//					unit.workAt(workTarget);
-//					i++;
-//				}
-//			}
-//		}
-		
-		//TODO: verwijderen:
-		Work workStatement = (Work) activities;
-		if (workStatement.position instanceof LiteralPosition){ // hier zit een fout in de test
-			LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
-			int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
-			unit.workAt(workTarget);
-		}
-		else if (workStatement.position instanceof SelectedPosition) {
-			int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
-			unit.workAt(workTarget);
+	public void executeTask(){
+
+		Sequence sequence = (Sequence) activitiesReq;
+		int i = 0;
+		while (i < sequence.statements.size()){
+			if (! (activitiesMap.get(sequence.statements.get(i)))) {
+				if (sequence.statements.get(i) instanceof Work){
+					Work workStatement = (Work) sequence.statements.get(i);
+					if (workStatement.position instanceof LiteralPosition){
+						LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
+						int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
+						assignedUnit.workAt(workTarget);
+						i++;
+					}
+					
+					else if (workStatement.position instanceof SelectedPosition){
+						int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
+						assignedUnit.workAt(workTarget);
+						i++;
+					}
+					
+					else{
+						throw new RuntimeException(); //TODO
+					}
+				}
+				
+				else if (sequence.statements.get(i) instanceof MoveTo) {
+					MoveTo moveToStatement = (MoveTo) sequence.statements.get(i);
+					if (moveToStatement.position instanceof LiteralPosition) {
+						LiteralPosition positionExpression = (LiteralPosition) moveToStatement.position;
+						int[] moveToTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
+						assignedUnit.moveTo(moveToTarget);
+						i++;
+					}
+					
+					else if (moveToStatement.position instanceof SelectedPosition) {
+						int[] moveToTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
+						assignedUnit.moveTo(moveToTarget);
+						i++;
+					}
+					
+					else{
+						throw new RuntimeException(); //TODO
+					}
+				}
+				
+				else {
+					//TODO: fix
+					throw new RuntimeException();
+				}
+				return;
+			}
 		}
 	}
 	
@@ -133,6 +173,34 @@ public class Task { //TODO: activities
 		schedulersForTask.remove(scheduler);
 	}
 
+	protected void finishedLastActivity() {
+		for (Statement activity : ((Sequence) activitiesReq).statements) {
+			if (activitiesMap.get(activity) == false) {
+				activitiesMap.put(activity, true);
+				break;
+			}
+		}
+		if (activitiesMap.get(((Sequence) activitiesReq).statements.get(activitiesMap.size()-1))==true) {
+			finishTask();
+		}
+	}
+	
+	private void finishTask() {
+		assignedUnit.getFaction().getScheduler().removeTask(this);
+		this.assignedUnit.removeTask();
+	}
+	
+	protected void reAssignTaskInSchedulers() {
+		for (Scheduler scheduler : getSchedulersForTask()) {
+			scheduler.addTask(this);
+		}
+	}
+	
+	protected void interruptTask() {
+		this.assignedUnit.removeTask();
+		this.assignedUnit = null;
+		reAssignTaskInSchedulers();
+	}
 }
 
 
