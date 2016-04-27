@@ -29,6 +29,7 @@ import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.N
 import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.NotExprContext;
 import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.OrExprContext;
 import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.ParenExprContext;
+import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.PositionOfPositionContext;
 import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.PositionTestExprContext;
 import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.PrintStatementContext;
 import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.ReadVariableExprContext;
@@ -218,6 +219,11 @@ public class ParserVisitor<E, S, T> extends HillbilliesTaskLangBaseVisitor<Void>
 		@Override
 		public E visitNextToPosition(NextToPositionContext ctx) {
 			return getFactory().createNextToPosition(visit(ctx.expr), toSourceLocation(ctx));
+		}
+		
+		@Override
+		public E visitPositionOfPosition(PositionOfPositionContext ctx) {
+			return getFactory().createPositionOf(visit(ctx.expr), toSourceLocation(ctx));
 		}
 		
 		@Override

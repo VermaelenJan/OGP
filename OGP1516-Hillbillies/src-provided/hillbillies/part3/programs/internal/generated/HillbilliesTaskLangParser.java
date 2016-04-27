@@ -21,9 +21,9 @@ public class HillbilliesTaskLangParser extends Parser {
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
-		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, ISSOLID=38, 
-		ISPASSABLE=39, ISFRIEND=40, ISENEMY=41, ISALIVE=42, CARRIESITEM=43, INT=44, 
-		STRING=45, IDENTIFIER=46, WS=47;
+		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, T__37=38, 
+		ISSOLID=39, ISPASSABLE=40, ISFRIEND=41, ISENEMY=42, ISALIVE=43, CARRIESITEM=44, 
+		INT=45, STRING=46, IDENTIFIER=47, WS=48;
 	public static final int
 		RULE_task = 0, RULE_statements = 1, RULE_statement = 2, RULE_assignmentStatement = 3, 
 		RULE_whileStatement = 4, RULE_breakStatement = 5, RULE_ifStatement = 6, 
@@ -40,15 +40,15 @@ public class HillbilliesTaskLangParser extends Parser {
 		"'do'", "'done'", "'break'", "'if'", "'then'", "'else'", "'fi'", "'print'", 
 		"'moveTo'", "'work'", "'follow'", "'attack'", "'true'", "'false'", "'('", 
 		"')'", "'!'", "'&&'", "'||'", "'this'", "'friend'", "'enemy'", "'any'", 
-		"'here'", "'log'", "'boulder'", "'workshop'", "','", "'next_to'", "'selected'", 
-		"'is_solid'", "'is_passable'", "'is_friend'", "'is_enemy'", "'is_alive'", 
-		"'carries_item'"
+		"'here'", "'log'", "'boulder'", "'workshop'", "','", "'next_to'", "'position_of'", 
+		"'selected'", "'is_solid'", "'is_passable'", "'is_friend'", "'is_enemy'", 
+		"'is_alive'", "'carries_item'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, null, "ISSOLID", "ISPASSABLE", "ISFRIEND", "ISENEMY", "ISALIVE", 
+		null, null, null, "ISSOLID", "ISPASSABLE", "ISFRIEND", "ISENEMY", "ISALIVE", 
 		"CARRIESITEM", "INT", "STRING", "IDENTIFIER", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
@@ -1412,6 +1412,26 @@ public class HillbilliesTaskLangParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class PositionOfPositionContext extends PositionContext {
+		public ExpressionContext expr;
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public PositionOfPositionContext(PositionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HillbilliesTaskLangListener ) ((HillbilliesTaskLangListener)listener).enterPositionOfPosition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HillbilliesTaskLangListener ) ((HillbilliesTaskLangListener)listener).exitPositionOfPosition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HillbilliesTaskLangVisitor ) return ((HillbilliesTaskLangVisitor<? extends T>)visitor).visitPositionOfPosition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class LiteralPositionContext extends PositionContext {
 		public Token x;
 		public Token y;
@@ -1456,7 +1476,7 @@ public class HillbilliesTaskLangParser extends Parser {
 		PositionContext _localctx = new PositionContext(_ctx, getState());
 		enterRule(_localctx, 22, RULE_position);
 		try {
-			setState(144);
+			setState(146);
 			switch (_input.LA(1)) {
 			case T__30:
 				_localctx = new HerePositionContext(_localctx);
@@ -1521,11 +1541,21 @@ public class HillbilliesTaskLangParser extends Parser {
 				}
 				break;
 			case T__36:
-				_localctx = new SelectedPositionContext(_localctx);
+				_localctx = new PositionOfPositionContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(143);
 				match(T__36);
+				setState(144);
+				((PositionOfPositionContext)_localctx).expr = expression(0);
+				}
+				break;
+			case T__37:
+				_localctx = new SelectedPositionContext(_localctx);
+				enterOuterAlt(_localctx, 8);
+				{
+				setState(145);
+				match(T__37);
 				}
 				break;
 			default:
@@ -1562,7 +1592,7 @@ public class HillbilliesTaskLangParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\61\u0095\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\62\u0097\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\3\3\3"+
 		"\7\3\'\n\3\f\3\16\3*\13\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4\62\n\4\3\5\3\5\3"+
@@ -1571,39 +1601,40 @@ public class HillbilliesTaskLangParser extends Parser {
 		"\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\n`\n\n\3\13\3\13\3\13\3\13\3\13\3\13\3"+
 		"\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13r\n\13\3\13\3\13"+
 		"\3\13\3\13\3\13\3\13\7\13z\n\13\f\13\16\13}\13\13\3\f\3\f\3\f\3\f\5\f"+
-		"\u0083\n\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r"+
-		"\u0093\n\r\3\r\2\3\24\16\2\4\6\b\n\f\16\20\22\24\26\30\2\4\3\2()\3\2*"+
-		"-\u00a5\2\32\3\2\2\2\4$\3\2\2\2\6\61\3\2\2\2\b\63\3\2\2\2\n8\3\2\2\2\f"+
-		">\3\2\2\2\16A\3\2\2\2\20K\3\2\2\2\22_\3\2\2\2\24q\3\2\2\2\26\u0082\3\2"+
-		"\2\2\30\u0092\3\2\2\2\32\33\7\3\2\2\33\34\7\4\2\2\34\35\7/\2\2\35\36\7"+
-		"\5\2\2\36\37\7\4\2\2\37 \7.\2\2 !\7\6\2\2!\"\7\4\2\2\"#\5\4\3\2#\3\3\2"+
-		"\2\2$(\5\6\4\2%\'\5\6\4\2&%\3\2\2\2\'*\3\2\2\2(&\3\2\2\2()\3\2\2\2)\5"+
-		"\3\2\2\2*(\3\2\2\2+\62\5\b\5\2,\62\5\n\6\2-\62\5\16\b\2.\62\5\f\7\2/\62"+
-		"\5\20\t\2\60\62\5\22\n\2\61+\3\2\2\2\61,\3\2\2\2\61-\3\2\2\2\61.\3\2\2"+
-		"\2\61/\3\2\2\2\61\60\3\2\2\2\62\7\3\2\2\2\63\64\7\60\2\2\64\65\7\7\2\2"+
-		"\65\66\5\24\13\2\66\67\7\b\2\2\67\t\3\2\2\289\7\t\2\29:\5\24\13\2:;\7"+
-		"\n\2\2;<\5\4\3\2<=\7\13\2\2=\13\3\2\2\2>?\7\f\2\2?@\7\b\2\2@\r\3\2\2\2"+
-		"AB\7\r\2\2BC\5\24\13\2CD\7\16\2\2DG\5\4\3\2EF\7\17\2\2FH\5\4\3\2GE\3\2"+
-		"\2\2GH\3\2\2\2HI\3\2\2\2IJ\7\20\2\2J\17\3\2\2\2KL\7\21\2\2LM\5\24\13\2"+
-		"MN\7\b\2\2N\21\3\2\2\2OP\7\22\2\2PQ\5\24\13\2QR\7\b\2\2R`\3\2\2\2ST\7"+
-		"\23\2\2TU\5\24\13\2UV\7\b\2\2V`\3\2\2\2WX\7\24\2\2XY\5\24\13\2YZ\7\b\2"+
-		"\2Z`\3\2\2\2[\\\7\25\2\2\\]\5\24\13\2]^\7\b\2\2^`\3\2\2\2_O\3\2\2\2_S"+
-		"\3\2\2\2_W\3\2\2\2_[\3\2\2\2`\23\3\2\2\2ab\b\13\1\2br\7\60\2\2cr\5\30"+
-		"\r\2dr\5\26\f\2er\7\26\2\2fr\7\27\2\2gh\7\30\2\2hi\5\24\13\2ij\7\31\2"+
-		"\2jr\3\2\2\2kl\t\2\2\2lr\5\24\13\7mn\t\3\2\2nr\5\24\13\6op\7\32\2\2pr"+
-		"\5\24\13\5qa\3\2\2\2qc\3\2\2\2qd\3\2\2\2qe\3\2\2\2qf\3\2\2\2qg\3\2\2\2"+
-		"qk\3\2\2\2qm\3\2\2\2qo\3\2\2\2r{\3\2\2\2st\f\4\2\2tu\7\33\2\2uz\5\24\13"+
-		"\5vw\f\3\2\2wx\7\34\2\2xz\5\24\13\4ys\3\2\2\2yv\3\2\2\2z}\3\2\2\2{y\3"+
-		"\2\2\2{|\3\2\2\2|\25\3\2\2\2}{\3\2\2\2~\u0083\7\35\2\2\177\u0083\7\36"+
-		"\2\2\u0080\u0083\7\37\2\2\u0081\u0083\7 \2\2\u0082~\3\2\2\2\u0082\177"+
+		"\u0083\n\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r"+
+		"\3\r\5\r\u0095\n\r\3\r\2\3\24\16\2\4\6\b\n\f\16\20\22\24\26\30\2\4\3\2"+
+		")*\3\2+.\u00a8\2\32\3\2\2\2\4$\3\2\2\2\6\61\3\2\2\2\b\63\3\2\2\2\n8\3"+
+		"\2\2\2\f>\3\2\2\2\16A\3\2\2\2\20K\3\2\2\2\22_\3\2\2\2\24q\3\2\2\2\26\u0082"+
+		"\3\2\2\2\30\u0094\3\2\2\2\32\33\7\3\2\2\33\34\7\4\2\2\34\35\7\60\2\2\35"+
+		"\36\7\5\2\2\36\37\7\4\2\2\37 \7/\2\2 !\7\6\2\2!\"\7\4\2\2\"#\5\4\3\2#"+
+		"\3\3\2\2\2$(\5\6\4\2%\'\5\6\4\2&%\3\2\2\2\'*\3\2\2\2(&\3\2\2\2()\3\2\2"+
+		"\2)\5\3\2\2\2*(\3\2\2\2+\62\5\b\5\2,\62\5\n\6\2-\62\5\16\b\2.\62\5\f\7"+
+		"\2/\62\5\20\t\2\60\62\5\22\n\2\61+\3\2\2\2\61,\3\2\2\2\61-\3\2\2\2\61"+
+		".\3\2\2\2\61/\3\2\2\2\61\60\3\2\2\2\62\7\3\2\2\2\63\64\7\61\2\2\64\65"+
+		"\7\7\2\2\65\66\5\24\13\2\66\67\7\b\2\2\67\t\3\2\2\289\7\t\2\29:\5\24\13"+
+		"\2:;\7\n\2\2;<\5\4\3\2<=\7\13\2\2=\13\3\2\2\2>?\7\f\2\2?@\7\b\2\2@\r\3"+
+		"\2\2\2AB\7\r\2\2BC\5\24\13\2CD\7\16\2\2DG\5\4\3\2EF\7\17\2\2FH\5\4\3\2"+
+		"GE\3\2\2\2GH\3\2\2\2HI\3\2\2\2IJ\7\20\2\2J\17\3\2\2\2KL\7\21\2\2LM\5\24"+
+		"\13\2MN\7\b\2\2N\21\3\2\2\2OP\7\22\2\2PQ\5\24\13\2QR\7\b\2\2R`\3\2\2\2"+
+		"ST\7\23\2\2TU\5\24\13\2UV\7\b\2\2V`\3\2\2\2WX\7\24\2\2XY\5\24\13\2YZ\7"+
+		"\b\2\2Z`\3\2\2\2[\\\7\25\2\2\\]\5\24\13\2]^\7\b\2\2^`\3\2\2\2_O\3\2\2"+
+		"\2_S\3\2\2\2_W\3\2\2\2_[\3\2\2\2`\23\3\2\2\2ab\b\13\1\2br\7\61\2\2cr\5"+
+		"\30\r\2dr\5\26\f\2er\7\26\2\2fr\7\27\2\2gh\7\30\2\2hi\5\24\13\2ij\7\31"+
+		"\2\2jr\3\2\2\2kl\t\2\2\2lr\5\24\13\7mn\t\3\2\2nr\5\24\13\6op\7\32\2\2"+
+		"pr\5\24\13\5qa\3\2\2\2qc\3\2\2\2qd\3\2\2\2qe\3\2\2\2qf\3\2\2\2qg\3\2\2"+
+		"\2qk\3\2\2\2qm\3\2\2\2qo\3\2\2\2r{\3\2\2\2st\f\4\2\2tu\7\33\2\2uz\5\24"+
+		"\13\5vw\f\3\2\2wx\7\34\2\2xz\5\24\13\4ys\3\2\2\2yv\3\2\2\2z}\3\2\2\2{"+
+		"y\3\2\2\2{|\3\2\2\2|\25\3\2\2\2}{\3\2\2\2~\u0083\7\35\2\2\177\u0083\7"+
+		"\36\2\2\u0080\u0083\7\37\2\2\u0081\u0083\7 \2\2\u0082~\3\2\2\2\u0082\177"+
 		"\3\2\2\2\u0082\u0080\3\2\2\2\u0082\u0081\3\2\2\2\u0083\27\3\2\2\2\u0084"+
-		"\u0093\7!\2\2\u0085\u0093\7\"\2\2\u0086\u0093\7#\2\2\u0087\u0093\7$\2"+
-		"\2\u0088\u0089\7\30\2\2\u0089\u008a\7.\2\2\u008a\u008b\7%\2\2\u008b\u008c"+
-		"\7.\2\2\u008c\u008d\7%\2\2\u008d\u008e\7.\2\2\u008e\u0093\7\31\2\2\u008f"+
-		"\u0090\7&\2\2\u0090\u0093\5\24\13\2\u0091\u0093\7\'\2\2\u0092\u0084\3"+
-		"\2\2\2\u0092\u0085\3\2\2\2\u0092\u0086\3\2\2\2\u0092\u0087\3\2\2\2\u0092"+
-		"\u0088\3\2\2\2\u0092\u008f\3\2\2\2\u0092\u0091\3\2\2\2\u0093\31\3\2\2"+
-		"\2\13(\61G_qy{\u0082\u0092";
+		"\u0095\7!\2\2\u0085\u0095\7\"\2\2\u0086\u0095\7#\2\2\u0087\u0095\7$\2"+
+		"\2\u0088\u0089\7\30\2\2\u0089\u008a\7/\2\2\u008a\u008b\7%\2\2\u008b\u008c"+
+		"\7/\2\2\u008c\u008d\7%\2\2\u008d\u008e\7/\2\2\u008e\u0095\7\31\2\2\u008f"+
+		"\u0090\7&\2\2\u0090\u0095\5\24\13\2\u0091\u0092\7\'\2\2\u0092\u0095\5"+
+		"\24\13\2\u0093\u0095\7(\2\2\u0094\u0084\3\2\2\2\u0094\u0085\3\2\2\2\u0094"+
+		"\u0086\3\2\2\2\u0094\u0087\3\2\2\2\u0094\u0088\3\2\2\2\u0094\u008f\3\2"+
+		"\2\2\u0094\u0091\3\2\2\2\u0094\u0093\3\2\2\2\u0095\31\3\2\2\2\13(\61G"+
+		"_qy{\u0082\u0094";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

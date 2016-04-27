@@ -17,13 +17,12 @@ public class ExamplePrinter {
 		//Optional<List<PrintingTask>> task = parser.parseFile("resources/tasks/digtunnel.txt", Collections.emptyList());
 		//Optional<List<PrintingTask>> task = parser.parseFile("resources/tasks/digtunnel_if.txt", Collections.emptyList());
 		//Optional<List<PrintingTask>> task = parser.parseFile("resources/tasks/goto_10_10_10.txt", Collections.emptyList());
-		Optional<List<PrintingTask>> task = parser.parseFile("resources/tasks/operate_workshop.txt", Collections.emptyList());
+		//Optional<List<PrintingTask>> task = parser.parseFile("resources/tasks/operate_workshop.txt", Collections.emptyList());
 		
-		/*
+
 		Optional<List<PrintingTask>> task = parser.parseString(
-				"name: \"operate workshop\"\npriority: -100\nactivities: if (is_solid boulder || carries_item this) then moveTo (1, 1, 1); moveTo boulder; fi",
+				"name: \"operate workshop\"\npriority: -100\nactivities: if (is_solid boulder || carries_item this) then moveTo position_of this; moveTo boulder; fi",
 				Collections.emptyList());
-				*/
 
 		if (task.isPresent()) {
 			System.out.println("Parsing successful");

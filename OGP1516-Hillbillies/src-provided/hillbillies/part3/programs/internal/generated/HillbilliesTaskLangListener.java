@@ -388,6 +388,18 @@ public interface HillbilliesTaskLangListener extends ParseTreeListener {
 	 */
 	void exitNextToPosition(HillbilliesTaskLangParser.NextToPositionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code positionOfPosition}
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
+	 * @param ctx the parse tree
+	 */
+	void enterPositionOfPosition(HillbilliesTaskLangParser.PositionOfPositionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code positionOfPosition}
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
+	 * @param ctx the parse tree
+	 */
+	void exitPositionOfPosition(HillbilliesTaskLangParser.PositionOfPositionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code selectedPosition}
 	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree

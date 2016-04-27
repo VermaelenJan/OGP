@@ -62,6 +62,7 @@ position:
 	 | 'workshop' #workshopPosition
 	 | '(' x=INT ',' y=INT ',' z=INT ')' #literalPosition
 	 | 'next_to' expr=expression #nextToPosition
+	 | 'position_of' expr=expression #positionOfPosition
 	 | 'selected' #selectedPosition
 	 ;
 

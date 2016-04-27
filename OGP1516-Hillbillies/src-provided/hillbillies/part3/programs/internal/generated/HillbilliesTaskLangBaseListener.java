@@ -412,6 +412,18 @@ public class HillbilliesTaskLangBaseListener implements HillbilliesTaskLangListe
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterPositionOfPosition(HillbilliesTaskLangParser.PositionOfPositionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPositionOfPosition(HillbilliesTaskLangParser.PositionOfPositionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSelectedPosition(HillbilliesTaskLangParser.SelectedPositionContext ctx) { }
 	/**
 	 * {@inheritDoc}

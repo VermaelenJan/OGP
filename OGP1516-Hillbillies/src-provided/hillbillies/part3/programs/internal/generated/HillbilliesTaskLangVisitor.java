@@ -234,6 +234,13 @@ public interface HillbilliesTaskLangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNextToPosition(HillbilliesTaskLangParser.NextToPositionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code positionOfPosition}
+	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPositionOfPosition(HillbilliesTaskLangParser.PositionOfPositionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code selectedPosition}
 	 * labeled alternative in {@link HillbilliesTaskLangParser#position}.
 	 * @param ctx the parse tree
