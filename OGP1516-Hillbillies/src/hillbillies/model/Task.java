@@ -112,6 +112,7 @@ public class Task { //TODO: activities
 			if (! (activitiesMap.get(sequence.statements.get(i)))) { //TODO: sequence.statements.get(i).execute;
 				if (sequence.statements.get(i) instanceof Work){
 					Work workStatement = (Work) sequence.statements.get(i);
+					//workStatement.execute(assignedUnit,selectedCube);
 					if (workStatement.position instanceof LiteralPosition){
 						LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
 						int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
@@ -130,6 +131,7 @@ public class Task { //TODO: activities
 				
 				else if (sequence.statements.get(i) instanceof MoveTo) {
 					MoveTo moveToStatement = (MoveTo) sequence.statements.get(i);
+					//moveToStatement.execute(assignedUnit,selectedCube);
 					if (moveToStatement.position instanceof LiteralPosition) {
 						LiteralPosition positionExpression = (LiteralPosition) moveToStatement.position;
 						int[] moveToTarget = {positionExpression.x,positionExpression.y,positionExpression.z};

@@ -7,4 +7,8 @@ public class Statement {
 	public Statement(SourceLocation sourceLocation){
 		this.sourceLocation = sourceLocation;
 	}
+	
+	public void execute(){
+		
+	}
 }
