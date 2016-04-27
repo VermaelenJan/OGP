@@ -109,7 +109,7 @@ public class Task { //TODO: activities
 		Sequence sequence = (Sequence) activitiesReq;
 		int i = 0;
 		while (i < sequence.statements.size()){
-			if (! (activitiesMap.get(sequence.statements.get(i)))) {
+			if (! (activitiesMap.get(sequence.statements.get(i)))) { //TODO: sequence.statements.get(i).execute;
 				if (sequence.statements.get(i) instanceof Work){
 					Work workStatement = (Work) sequence.statements.get(i);
 					if (workStatement.position instanceof LiteralPosition){
@@ -126,7 +126,7 @@ public class Task { //TODO: activities
 					else{
 						throw new RuntimeException(); //TODO
 					}
-				}
+				} //TODO: deze blok naar Work
 				
 				else if (sequence.statements.get(i) instanceof MoveTo) {
 					MoveTo moveToStatement = (MoveTo) sequence.statements.get(i);
@@ -144,7 +144,7 @@ public class Task { //TODO: activities
 					else{
 						throw new RuntimeException(); //TODO
 					}
-				}
+				} //TODO: deze blok naar moveTo
 				
 				else {
 					//TODO: fix
