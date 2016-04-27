@@ -1463,6 +1463,12 @@ public class Unit {
 
 		}
 		
+		else {
+			if (this.assignedTask != null) {
+				this.assignedTask.finishedLastActivity();
+			}
+		}
+		
 		setTimeRemainderToWork(0);
 		stopWorking();
 		
