@@ -116,13 +116,11 @@ public class Task { //TODO: activities
 						LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
 						int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
 						assignedUnit.workAt(workTarget);
-						i++;
 					}
 					
 					else if (workStatement.position instanceof SelectedPosition){
 						int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
 						assignedUnit.workAt(workTarget);
-						i++;
 					}
 					
 					else{
@@ -136,13 +134,11 @@ public class Task { //TODO: activities
 						LiteralPosition positionExpression = (LiteralPosition) moveToStatement.position;
 						int[] moveToTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
 						assignedUnit.moveTo(moveToTarget);
-						i++;
 					}
 					
 					else if (moveToStatement.position instanceof SelectedPosition) {
 						int[] moveToTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
 						assignedUnit.moveTo(moveToTarget);
-						i++;
 					}
 					
 					else{
@@ -156,6 +152,7 @@ public class Task { //TODO: activities
 				}
 				return;
 			}
+			i++;
 		}
 	}
 	
