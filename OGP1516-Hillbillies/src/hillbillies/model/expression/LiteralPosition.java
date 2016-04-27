@@ -1,18 +1,57 @@
 package hillbillies.model.expression;
 
+
 import hillbillies.part3.programs.SourceLocation;
 
-public class LiteralPosition extends Expression {
+public class LiteralPosition extends Expression implements IPosition{
 	
-	public int x;
-	public int y;
-	public int z;
-	public SourceLocation sourceLocation;
+	private int x;
+	private int y;
+	private int z;
+	private SourceLocation sourceLocation;
 
 	public LiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		setX(x);
+		setY(y);
+		setZ(z);
 	}
+
+	@Override
+	public void setX(int x) {
+		this.x = x;
+		
+	}
+
+	@Override
+	public void setY(int y) {
+		this.y = y;
+		
+	}
+
+	@Override
+	public void setZ(int z) {
+		this.z = z;
+		
+	}
+
+	@Override
+	public int getX() {
+		return this.x;
+	}
+
+	@Override
+	public int getY() {
+		return this.y;
+	}
+
+	@Override
+	public int getZ() {
+		return this.z;
+	}
+	
+	protected SourceLocation getSourceLocation(){
+		return this.sourceLocation;
+	}
+	
 }

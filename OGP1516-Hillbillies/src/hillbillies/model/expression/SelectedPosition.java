@@ -6,7 +6,6 @@ public class SelectedPosition extends Expression {
 
 	public SelectedPosition(SourceLocation sourceLocation) {
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 }

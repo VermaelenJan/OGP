@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 
 public class Task { //TODO: activities
@@ -93,7 +92,7 @@ public class Task { //TODO: activities
 			if (scheduler != assignedUnit.getFaction().getScheduler()) {
 				scheduler.removeTask(this);
 			}
-		}//TODO: put back in all schedulers if not successfully executed
+		}
 	}
 	
 	public Unit getAssignedUnit() {
@@ -107,56 +106,15 @@ public class Task { //TODO: activities
 	public void executeTask(){
 
 		Sequence sequence = (Sequence) activitiesReq;
-		int i = 0;
-		while (i < sequence.statements.size()){
-			if (! (activitiesMap.get(sequence.statements.get(i)))) { //TODO: sequence.statements.get(i).execute;
-				if (sequence.statements.get(i) instanceof Work){
-					Work workStatement = (Work) sequence.statements.get(i);
-					//workStatement.execute(assignedUnit,selectedCube);
-					if (workStatement.position instanceof LiteralPosition){
-						LiteralPosition positionExpression =  (LiteralPosition) workStatement.position;
-						int[] workTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
-						assignedUnit.workAt(workTarget);
-					}
-					
-					else if (workStatement.position instanceof SelectedPosition){
-						int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
-						assignedUnit.workAt(workTarget);
-					}
-					
-					else{
-						throw new RuntimeException(); //TODO
-					}
-				} //TODO: deze blok naar Work
-				
-				else if (sequence.statements.get(i) instanceof MoveTo) {
-					MoveTo moveToStatement = (MoveTo) sequence.statements.get(i);
-					//moveToStatement.execute(assignedUnit,selectedCube);
-					if (moveToStatement.position instanceof LiteralPosition) {
-						LiteralPosition positionExpression = (LiteralPosition) moveToStatement.position;
-						int[] moveToTarget = {positionExpression.x,positionExpression.y,positionExpression.z};
-						assignedUnit.moveTo(moveToTarget);
-					}
-					
-					else if (moveToStatement.position instanceof SelectedPosition) {
-						int[] moveToTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
-						assignedUnit.moveTo(moveToTarget);
-					}
-					
-					else{
-						throw new RuntimeException(); //TODO
-					}
-				} //TODO: deze blok naar moveTo
-				
-				else {
-					//TODO: fix
-					throw new RuntimeException();
-				}
+		
+		for (Statement activity : sequence.statements){
+			if (! (activitiesMap.get(activity))) { 
+				activity.execute(assignedUnit,selectedCube);
 				return;
 			}
-			i++;
 		}
 	}
+	
 	
 	private Set<Scheduler> schedulersForTask;
 	
@@ -199,6 +157,10 @@ public class Task { //TODO: activities
 		this.assignedUnit.removeTask();
 		this.assignedUnit = null;
 		reAssignTaskInSchedulers();
+		for (Statement activity : activitiesMap.keySet()) {
+			activitiesMap.put(activity, false);
+		}
+		setPriority(getPriority()-Math.abs(getPriority()/2));
 	}
 }
 

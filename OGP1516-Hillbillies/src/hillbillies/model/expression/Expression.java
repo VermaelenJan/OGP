@@ -2,7 +2,7 @@ package hillbillies.model.expression;
 
 import hillbillies.part3.programs.SourceLocation;
 
-public class Expression {
+public abstract class Expression {
 	
 	public SourceLocation sourceLocation;
 	

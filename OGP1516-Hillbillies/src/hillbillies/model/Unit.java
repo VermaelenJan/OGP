@@ -1204,7 +1204,7 @@ public class Unit {
 			else if (isResting() && positionObj.isAtMiddleZOfCube()){ 
 				advanceTimeResting(dt);
 			}		
-			//else if (isWorking() && canHaveRecoverdOneHp() && positionObj.isAtMiddleZOfCube()){ //TODO 
+
 			else if (isWorking() && canHaveRecoverdOneHp()){
 					advanceTimeWorking(dt);	
 			}
@@ -2064,6 +2064,11 @@ public class Unit {
 	 * 		| currentLvl == 0
 	 */
 	public void moveTo(int[] endTarget) throws IllegalPositionException {
+		if (Arrays.equals(endTarget, getOccupiedCube()) && this.assignedTask != null) {
+			this.assignedTask.finishedLastActivity();
+		}
+		
+		
 		if (isFalling()) {
 			return;
 		}

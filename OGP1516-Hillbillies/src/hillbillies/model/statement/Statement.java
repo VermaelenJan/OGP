@@ -1,14 +1,14 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
-public class Statement {
+public abstract class Statement {
 	public SourceLocation sourceLocation;
 	public Statement(SourceLocation sourceLocation){
 		this.sourceLocation = sourceLocation;
 	}
 	
-	public void execute(){
-		
-	}
+	public abstract void execute(Unit unit,int[] selectedCube );
+
 }

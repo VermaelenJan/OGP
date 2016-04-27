@@ -65,8 +65,8 @@ public class Scheduler {
 		Collections.sort(tasks, new Comparator<Task> () {
 			@Override
 			public int compare(Task task1, Task task2) {
-				return Integer.compare(task1.getPriority(), task2.getPriority());
-			} //TODO: zien of het werkt
+				return Integer.compare(task2.getPriority(), task1.getPriority());
+			}
 		});
 	}
 	
