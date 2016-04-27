@@ -18,7 +18,9 @@ public class Scheduler {
 	List<Task> tasks;
 	
 	public void addTask(Task task) {
-		tasks.add(task);
+		if (!tasks.contains(task)) {
+			tasks.add(task);
+		}
 		task.addSchedulerForTask(this);
 		sortTasksOnPriority();
 	}
