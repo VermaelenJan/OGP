@@ -9,5 +9,9 @@ activities : if true
 			 fi
 			 if true 
 			 	then moveTo (10, 10, 10);
-			 		 work (10, 10, 10);
+			 	if true
+			 		then work (10, 10, 10);
+			 	fi
+			 	else
+			 		moveTo (0, 0, 0);
 			 fi
