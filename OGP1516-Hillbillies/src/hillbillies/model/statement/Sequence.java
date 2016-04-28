@@ -24,9 +24,12 @@ public class Sequence extends Statement {
 			this.statements = statements;
 		}
 		
+		protected SourceLocation getSourcelocation() {
+			return this.sourceLocation;
+		}		
 
 		@Override
-		public void execute(Unit unit, int[] selectedCube) {
+		public Sequence execute(Unit unit, int[] selectedCube) {
 			throw new RuntimeException();
 			// TODO
 		}

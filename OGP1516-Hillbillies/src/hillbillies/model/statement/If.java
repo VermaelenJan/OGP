@@ -1,5 +1,8 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hillbillies.model.Unit;
 import hillbillies.model.expression.*;
 import hillbillies.part3.programs.SourceLocation;
@@ -46,7 +49,7 @@ public class If extends Statement {
 	private Statement elseBody;
 
 	@Override
-	public void execute(Unit unit, int[] selectedCube) {
+	public Sequence execute(Unit unit, int[] selectedCube) {
 		Bool cond = null;
 		if (getCondition() instanceof Bool) {
 			cond = (Bool) getCondition();
@@ -56,10 +59,30 @@ public class If extends Statement {
 		}
 		
 		if (cond.getValue()) {
-			getIfBody().execute(unit, selectedCube);
+			if (getIfBody() instanceof Sequence) {
+				return (Sequence) getIfBody();
+			}
+			else {
+				List<Statement> list = new ArrayList<>();
+				list.add(getIfBody());
+				return new Sequence(list, sourceLocation);
+			}
 		}
 		else {
-			getElseBody().execute(unit, selectedCube);
+			if (getElseBody() != null) {
+				if (getElseBody() instanceof Sequence) {
+					return (Sequence) getElseBody();
+				}
+				else {
+					List<Statement> list = new ArrayList<>();
+					list.add(getElseBody());
+					return new Sequence(list, sourceLocation);
+				}
+			}
+			else {
+				unit.getAssignedTask().finishedLastActivity();
+			}
+			return null;
 		}
 	}
 

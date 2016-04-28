@@ -2072,6 +2072,7 @@ public class Unit {
 		if (isFalling()) {
 			return;
 		}
+
 		if (!world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()) {
 			throw new IllegalPositionException(new double[] {(double) endTarget[0]+0.5, (double) endTarget[1]+0.5, (double) endTarget[2]+0.5});
 		}

@@ -22,7 +22,7 @@ public class Work extends Statement {
 	}
 	
 	@Override
-	public void execute(Unit unit,int[] selectedCube ){
+	public Sequence execute(Unit unit,int[] selectedCube ){
 		
 		if (getPosition() instanceof SelectedPosition){
 			int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
@@ -38,6 +38,6 @@ public class Work extends Statement {
 		else{
 			throw new RuntimeException(); //TODO
 		}
-
+		return null;
 	}
 }

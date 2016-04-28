@@ -6,9 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import hillbillies.model.statement.*;
-import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.StatementsContext;
 
-public class Task { //TODO: activities
+public class Task {
 
 	protected Task(String name, int priority, Statement activities, int[] selectedCube ){
 		setName(name);
@@ -59,8 +58,10 @@ public class Task { //TODO: activities
 			setActivitiesReq((new Sequence(list, activities.sourceLocation)));
 		}
 		else {
-			setActivitiesReq(activities);
+			setActivitiesReq((Sequence) activities);
 		}
+		
+		setActivitiesReq(removeNestedSeq(getActivitiesReq()));
 		
 		activitiesMap = new HashMap<Statement, Boolean>();
 
@@ -69,13 +70,31 @@ public class Task { //TODO: activities
 		}
 	}
 	
-	private Statement activitiesReq;
+	private Sequence removeNestedSeq(Sequence activitiesSequence) { //TODO: verwijderen indien niet nodig
+		if (activitiesSequence instanceof Sequence) {
+			int i = 0;
+			List<Statement> result = ((Sequence) activitiesSequence).getStatements();
+			while (i < result.size()) {
+				if (result.get(i) instanceof Sequence) {
+					Sequence toAdd = (Sequence) result.remove(i);
+					result.addAll(i, (removeNestedSeq(toAdd)).getStatements());
+				} //TODO: nakijken
+			i++;
+			}
+			return new Sequence(result, activitiesSequence.getSourceLocation());
+		}
+		else {
+			return activitiesSequence;
+		}
+	}
 	
-	private void setActivitiesReq(Statement activitiesReq){
+	private Sequence activitiesReq;
+	
+	private void setActivitiesReq(Sequence activitiesReq){
 		this.activitiesReq = activitiesReq;
 	}
 	
-	private Statement getActivitiesReq(){
+	private Sequence getActivitiesReq(){
 		return this.activitiesReq;
 	}
 
@@ -120,9 +139,19 @@ public class Task { //TODO: activities
 
 		Sequence sequence = (Sequence) getActivitiesReq();
 		
-		for (Statement activity : sequence.getStatements()){
-			if (! (activitiesMap.get(activity))) { 
-				activity.execute(assignedUnit,selectedCube);
+		for (Statement activity : sequence.getStatements()){ //TODO: goed nakijken
+			if (! (activitiesMap.get(activity))) {
+				Sequence result = activity.execute(assignedUnit,selectedCube);
+				if (result != null) {
+					int i = getActivitiesReq().getStatements().indexOf(activity);
+					getActivitiesReq().getStatements().remove(i);
+					getActivitiesReq().getStatements().addAll(i, result.getStatements());
+					
+					activitiesMap.remove(activity);
+					for (Statement el : result.getStatements()) {
+						activitiesMap.put(el, false);
+					}
+				}
 				return;
 			}
 		}
@@ -143,7 +172,7 @@ public class Task { //TODO: activities
 		schedulersForTask.remove(scheduler);
 	}
 
-	protected void finishedLastActivity() {
+	public void finishedLastActivity() { //TODO: MAG NIET PUBLIC, MAAR MOET REACHABLE ZIJN IN IF.JAVA
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
 				activitiesMap.put(activity, true);

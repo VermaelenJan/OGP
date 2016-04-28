@@ -33,8 +33,9 @@ public class Assignment extends Statement {
 
 
 	@Override
-	public void execute(Unit unit, int[] selectedCube) {
+	public Sequence execute(Unit unit, int[] selectedCube) {
 		//TODO or empty
+		return null;
 	}
 
 }

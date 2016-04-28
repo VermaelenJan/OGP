@@ -3,7 +3,6 @@ package hillbillies.model.statement;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
 import hillbillies.model.expression.IPosition;
-import hillbillies.model.expression.LiteralPosition;
 import hillbillies.model.expression.SelectedPosition;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -27,7 +26,7 @@ public class MoveTo extends Statement {
 	private Expression position;
 	
 	@Override
-	public void execute(Unit unit,int[] selectedCube){
+	public Sequence execute(Unit unit,int[] selectedCube){
 		
 		if (position instanceof SelectedPosition){
 			int[] endTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
@@ -43,5 +42,6 @@ public class MoveTo extends Statement {
 		else{
 			throw new RuntimeException(); //TODO
 		}
+		return null;
 	}
 }

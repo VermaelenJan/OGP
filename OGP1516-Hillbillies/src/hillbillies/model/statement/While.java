@@ -12,9 +12,9 @@ public class While extends Statement {
 	}
 
 	@Override
-	public void execute(Unit unit, int[] selectedCube) {
+	public Sequence execute(Unit unit, int[] selectedCube) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 }

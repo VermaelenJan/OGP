@@ -17,6 +17,6 @@ public abstract class Statement {
 		this.sourceLocation = sourceLocation;
 	}
 	
-	public abstract void execute(Unit unit,int[] selectedCube );
+	public abstract Sequence execute(Unit unit,int[] selectedCube );
 
 }
