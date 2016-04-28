@@ -2282,6 +2282,7 @@ public class Unit {
 	 * 		| !(isValidWorkPosition)
 	 */			
 	public void workAt(int[] workTarget) throws IllegalWorkPositionException{
+
 		if (isFalling()) {
 			return;
 		}
