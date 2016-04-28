@@ -140,11 +140,16 @@ public class Task {
 		//System.out.println(activitiesMap.get(activitiesReq.getStatements().get(activitiesReq.getStatements().size()-1)));
 		//System.out.println(activitiesReq.getStatements().get(activitiesReq.getStatements().size()-1));
 		
-		System.out.println("-----");
-		System.out.println(activitiesMap.size() == activitiesReq.getStatements().size());
-		for (Statement el : getActivitiesReq().getStatements())
-		System.out.println(activitiesMap.get(el));
-
+		//System.out.println("-----");
+		//System.out.println(activitiesMap.size() == activitiesReq.getStatements().size());
+		//for (Statement el : getActivitiesReq().getStatements())
+		//System.out.println(activitiesMap.get(el));
+		
+		for (Statement el : getActivitiesReq().getStatements()) {
+			System.out.print(el + ": " + activitiesMap.get(el) + "-"); 
+		}
+		System.out.println();
+		
 		Sequence sequence = (Sequence) getActivitiesReq();
 		
 		for (Statement activity : sequence.getStatements()){ //TODO: goed nakijken
@@ -153,7 +158,22 @@ public class Task {
 				if (result != null) {
 					int i = getActivitiesReq().getStatements().indexOf(activity);
 					getActivitiesReq().getStatements().remove(i);
-					getActivitiesReq().getStatements().addAll(i, result.getStatements());
+					// FOR "WHILE": TODO: verbeteren
+					int j = 0;
+					int k = 0;
+					while (j < result.getStatements().size()) {
+						   if (!getActivitiesReq().getStatements().contains(result.getStatements().get(j))) {
+							   getActivitiesReq().getStatements().add(i+k, result.getStatements().get(j));
+							   k++;
+						   }
+						   j++;
+					}
+					//for (Statement stat : result.getStatements()){
+					//	   if (!getActivitiesReq().getStatements().contains(stat))
+					//		   getActivitiesReq().getStatements().add(i, stat);
+					//	}
+					//
+					//getActivitiesReq().getStatements().addAll(i, result.getStatements());
 					
 					activitiesMap.remove(activity);
 					for (Statement el : result.getStatements()) {
@@ -189,7 +209,7 @@ public class Task {
 				break;
 			}
 		}
-		if (activitiesMap.get(((Sequence) getActivitiesReq()).getStatements().get(activitiesMap.size()-1))==true) {
+		if (activitiesMap.get(getActivitiesReq().getStatements().get(getActivitiesReq().getStatements().size()-1))) {
 			finishTask();
 		}
 	}

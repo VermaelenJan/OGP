@@ -4,6 +4,5 @@ activities : moveTo (0,12,8);
 			while true
 				do
 					work (0, 12, 8);
-					work (0,11,8);
 				done
 			 
