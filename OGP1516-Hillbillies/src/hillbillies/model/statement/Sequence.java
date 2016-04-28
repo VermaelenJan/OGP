@@ -8,8 +8,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class Sequence extends Statement {
 		
-		public List<Statement> statements;
-		public SourceLocation sourceLocation;
+		private List<Statement> statements;
+		private SourceLocation sourceLocation;
 
 		public Sequence(List<Statement> statements, SourceLocation sourceLocation) {
 			super(sourceLocation);

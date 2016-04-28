@@ -24,12 +24,12 @@ public class Work extends Statement {
 	@Override
 	public void execute(Unit unit,int[] selectedCube ){
 		
-		if (position instanceof SelectedPosition){
+		if (getPosition() instanceof SelectedPosition){
 			int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
 			unit.workAt(workTarget);
 		}
 		
-		else if (position instanceof IPosition){
+		else if (getPosition() instanceof IPosition){
 			int[] workTarget = {((IPosition) getPosition()).getX(),((IPosition) getPosition()).getY(),
 					((IPosition) getPosition()).getZ()};
 			unit.workAt(workTarget);

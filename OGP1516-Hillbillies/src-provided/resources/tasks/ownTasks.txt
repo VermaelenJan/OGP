@@ -1,3 +1,7 @@
-name: "ownTasks (enter: 8, 9, 10)"
+name: "ownTasks"
 priority : 3
-activities : moveTo selected; work (7, 9, 10); moveTo (8, 7, 10);
+activities : if true then moveTo (10, 10, 10);
+						  moveTo (8, 8, 8); fi
+			 if false then moveTo (0, 0, 0); fi
+			 if true then moveTo (10, 10, 10);
+			 			  work (10, 10, 10); fi

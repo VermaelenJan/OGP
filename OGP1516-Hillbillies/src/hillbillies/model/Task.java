@@ -64,7 +64,7 @@ public class Task { //TODO: activities
 		
 		activitiesMap = new HashMap<Statement, Boolean>();
 
-		for (Statement activity : ((Sequence) activitiesReq).statements) {
+		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			activitiesMap.put(activity, false);
 		}
 	}
@@ -118,7 +118,7 @@ public class Task { //TODO: activities
 	
 	public void executeTask(){
 
-		Sequence sequence = (Sequence) activitiesReq;
+		Sequence sequence = (Sequence) getActivitiesReq();
 		
 		for (Statement activity : sequence.getStatements()){
 			if (! (activitiesMap.get(activity))) { 
@@ -150,7 +150,7 @@ public class Task { //TODO: activities
 				break;
 			}
 		}
-		if (activitiesMap.get(((Sequence) activitiesReq).getStatements().get(activitiesMap.size()-1))==true) {
+		if (activitiesMap.get(((Sequence) getActivitiesReq()).getStatements().get(activitiesMap.size()-1))==true) {
 			finishTask();
 		}
 	}

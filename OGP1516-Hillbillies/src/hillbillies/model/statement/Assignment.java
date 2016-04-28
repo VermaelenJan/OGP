@@ -1,19 +1,40 @@
 package hillbillies.model.statement;
 
 import hillbillies.model.Unit;
+import hillbillies.model.expression.Expression;
 import hillbillies.part3.programs.SourceLocation;
 
 public class Assignment extends Statement {
 
-	public Assignment(SourceLocation sourceLocation) {
+	public Assignment(String variableName, Expression value,SourceLocation sourceLocation) { //TODO: new assignment, type,...
 		super(sourceLocation);
-		// TODO Auto-generated constructor stub
+		setVariableName(variableName);
+		setValue(value);
+		}
+	
+	public String getVariableName(){
+		return this.variableName;
 	}
+	private void setVariableName(String variableName){
+		this.variableName = variableName;
+	}
+	
+	private String variableName;
+	
+	public Expression getValue(){
+		return this.value;
+	}
+	
+	private void setValue(Expression value){
+		this.value = value;
+	}
+	
+	private Expression value;
+
 
 	@Override
 	public void execute(Unit unit, int[] selectedCube) {
-		// TODO Auto-generated method stub
-		
+		//TODO or empty
 	}
 
 }
