@@ -6,6 +6,11 @@ public class ReadVariable extends Expression{ //TODO: all vars private with get 
 	
 	public ReadVariable(String variableName, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setVariableName(variableName);
+	}
+	
+	
+	protected void setVariableName(String variableName){
 		this.variableName = variableName;
 	}
 

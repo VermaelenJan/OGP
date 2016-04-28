@@ -9,12 +9,22 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class MoveTo extends Statement {
 
-	public Expression position;
+
 
 	public MoveTo(Expression position, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setPosition(position);
+	}
+	
+	private void setPosition(Expression position){
 		this.position = position;
 	}
+	
+	private Expression getPosition(){
+		return this.position;
+	}
+	
+	private Expression position;
 	
 	@Override
 	public void execute(Unit unit,int[] selectedCube){
@@ -25,8 +35,8 @@ public class MoveTo extends Statement {
 		}
 		
 		else if (position instanceof IPosition){
-			int[] endTarget = {((IPosition) position).getX(),((IPosition) position).getY(),
-					((IPosition) position).getZ()};
+			int[] endTarget = {((IPosition) getPosition()).getX(),((IPosition) getPosition()).getY(),
+					((IPosition) getPosition()).getZ()};
 			unit.moveTo(endTarget);
 		}
 		

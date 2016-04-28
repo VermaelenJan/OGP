@@ -1191,7 +1191,7 @@ public class Unit {
 	
 			if (isFalling() || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
 				setFalling(true); 
-				if (assignedTask != null) {
+				if (getAssignedTask() != null) {
 					assignedTask.interruptTask();
 				}
 				stopSprinting();
@@ -1406,7 +1406,7 @@ public class Unit {
 			double [] currentWorkTarget = {workTarget[0]+0.5,workTarget[1]+0.5,workTarget[2]+0.5};
 			dropObject(currentWorkTarget);
 			updateExperience(10);
-			if (this.assignedTask != null) {
+			if (getAssignedTask() != null) {
 				this.assignedTask.finishedLastActivity();
 			}
 		}
@@ -1419,7 +1419,7 @@ public class Unit {
 			if (currBoulder != null && currLog != null) {
 				improveEquipment(currBoulder,currLog);
 				updateExperience(10);
-				if (this.assignedTask != null) {
+				if (getAssignedTask() != null) {
 					this.assignedTask.finishedLastActivity();
 				}
 			}
@@ -1432,7 +1432,7 @@ public class Unit {
 			if (currBoulder != null) {
 				pickUpObject(currBoulder);
 				updateExperience(10);
-				if (this.assignedTask != null) {
+				if (getAssignedTask() != null) {
 					this.assignedTask.finishedLastActivity();
 				}
 			}
@@ -1445,7 +1445,7 @@ public class Unit {
 			if (currLog != null) {
 				pickUpObject(currLog);
 				updateExperience(10);
-				if (this.assignedTask != null) {
+				if (getAssignedTask() != null) {
 					this.assignedTask.finishedLastActivity();
 				}
 			}
@@ -1457,14 +1457,14 @@ public class Unit {
 					&& this.carriedObject == null) {
 			world.caveIn(workTarget[0], workTarget[1], workTarget[2]);	
 			updateExperience(10);
-			if (this.assignedTask != null) {
+			if (getAssignedTask() != null) {
 				this.assignedTask.finishedLastActivity();
 			}
 
 		}
 		
 		else {
-			if (this.assignedTask != null) {
+			if (getAssignedTask() != null) {
 				this.assignedTask.finishedLastActivity();
 			}
 		}
@@ -1520,7 +1520,7 @@ public class Unit {
 			} catch (IllegalPositionException e) {} //Exception will never be thrown.
 		}
 		
-		if (Arrays.equals(globalTarget, getOccupiedCube()) && this.assignedTask != null) {
+		if (Arrays.equals(globalTarget, getOccupiedCube()) && getAssignedTask() != null) {
 			this.assignedTask.finishedLastActivity();
 		}
 	}
@@ -2064,7 +2064,7 @@ public class Unit {
 	 * 		| currentLvl == 0
 	 */
 	public void moveTo(int[] endTarget) throws IllegalPositionException {
-		if (Arrays.equals(endTarget, getOccupiedCube()) && this.assignedTask != null) {
+		if (Arrays.equals(endTarget, getOccupiedCube()) && getAssignedTask() != null) {
 			this.assignedTask.finishedLastActivity();
 		}
 		
@@ -2716,7 +2716,7 @@ public class Unit {
 			
 			stopWorking();
 			
-			if (assignedTask != null) {
+			if (getAssignedTask() != null) {
 				assignedTask.interruptTask();
 			}
 			
@@ -2865,7 +2865,7 @@ public class Unit {
 			setTimeResting(0);
 			stopWorking();
 			
-			if (assignedTask != null) {
+			if (getAssignedTask() != null) {
 				assignedTask.interruptTask();
 			}
 
@@ -3131,7 +3131,7 @@ public class Unit {
 	@Model
 	private void newDefaultBehaviour(){
 
-		if (assignedTask == null) {
+		if (getAssignedTask() == null) {
 			Task newTask = faction.getScheduler().getHightestUnassignedPriorityTask();
 			if (newTask != null) {
 				newTask.assignTo(this);
@@ -3165,7 +3165,7 @@ public class Unit {
 	
 	protected void assignTask(Task task) {
 		if (this.assignedTask == null) {
-			this.assignedTask = task;
+			setAssignedTask(task);
 		}
 		else {
 			throw new RuntimeException(); // TODO: new exception? or value
@@ -3173,10 +3173,14 @@ public class Unit {
 	}
 
 	protected void removeTask() {
-		this.assignedTask = null;
+		setAssignedTask(null);
 	}
 	
 	public Task getAssignedTask() {
 		return assignedTask;
+	}
+	
+	private void setAssignedTask(Task task){
+		this.assignedTask = task;
 	}
 }

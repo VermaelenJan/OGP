@@ -10,6 +10,14 @@ public class Work extends Statement {
 
 	public Work(Expression position, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setPosition(position);
+	}
+	
+	private Expression getPosition(){
+		return this.position;
+	}
+	
+	private void setPosition(Expression position){
 		this.position = position;
 	}
 	
@@ -22,8 +30,8 @@ public class Work extends Statement {
 		}
 		
 		else if (position instanceof IPosition){
-			int[] workTarget = {((IPosition) position).getX(),((IPosition) position).getY(),
-					((IPosition) position).getZ()};
+			int[] workTarget = {((IPosition) getPosition()).getX(),((IPosition) getPosition()).getY(),
+					((IPosition) getPosition()).getZ()};
 			unit.workAt(workTarget);
 		}
 		

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import hillbillies.model.statement.*;
+import hillbillies.part3.programs.internal.generated.HillbilliesTaskLangParser.StatementsContext;
 
 public class Task { //TODO: activities
 
@@ -55,10 +56,10 @@ public class Task { //TODO: activities
 			List<Statement> list = new ArrayList<>();
 			list.add(activities);
 
-			this.activitiesReq = (new Sequence(list, activities.sourceLocation));
+			setActivitiesReq((new Sequence(list, activities.sourceLocation)));
 		}
 		else {
-			this.activitiesReq = activities;
+			setActivitiesReq(activities);
 		}
 		
 		activitiesMap = new HashMap<Statement, Boolean>();
@@ -69,6 +70,14 @@ public class Task { //TODO: activities
 	}
 	
 	private Statement activitiesReq;
+	
+	private void setActivitiesReq(Statement activitiesReq){
+		this.activitiesReq = activitiesReq;
+	}
+	
+	private Statement getActivitiesReq(){
+		return this.activitiesReq;
+	}
 
 	// SELECTED CUBE
 	
@@ -86,7 +95,7 @@ public class Task { //TODO: activities
 	
 	protected void assignTo(Unit unit) throws RuntimeException {
 		unit.assignTask(this);
-		this.assignedUnit = unit;
+		setAssignedUnit(unit);
 		
 		for (Scheduler scheduler : getSchedulersForTask()) {
 			if (scheduler != assignedUnit.getFaction().getScheduler()) {
@@ -99,6 +108,10 @@ public class Task { //TODO: activities
 		return this.assignedUnit;
 	}
 	
+	protected void setAssignedUnit(Unit unit){
+		this.assignedUnit = unit;
+	}
+	
 	public boolean isAssigned() {
 		return this.assignedUnit != null;
 	}
@@ -107,7 +120,7 @@ public class Task { //TODO: activities
 
 		Sequence sequence = (Sequence) activitiesReq;
 		
-		for (Statement activity : sequence.statements){
+		for (Statement activity : sequence.getStatements()){
 			if (! (activitiesMap.get(activity))) { 
 				activity.execute(assignedUnit,selectedCube);
 				return;
@@ -131,13 +144,13 @@ public class Task { //TODO: activities
 	}
 
 	protected void finishedLastActivity() {
-		for (Statement activity : ((Sequence) activitiesReq).statements) {
+		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
 				activitiesMap.put(activity, true);
 				break;
 			}
 		}
-		if (activitiesMap.get(((Sequence) activitiesReq).statements.get(activitiesMap.size()-1))==true) {
+		if (activitiesMap.get(((Sequence) activitiesReq).getStatements().get(activitiesMap.size()-1))==true) {
 			finishTask();
 		}
 	}
@@ -155,7 +168,7 @@ public class Task { //TODO: activities
 	
 	protected void interruptTask() {
 		this.assignedUnit.removeTask();
-		this.assignedUnit = null;
+		setAssignedUnit(null);
 		reAssignTaskInSchedulers();
 		for (Statement activity : activitiesMap.keySet()) {
 			activitiesMap.put(activity, false);

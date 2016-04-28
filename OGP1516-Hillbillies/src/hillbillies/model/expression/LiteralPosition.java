@@ -8,7 +8,6 @@ public class LiteralPosition extends Expression implements IPosition{
 	private int x;
 	private int y;
 	private int z;
-	private SourceLocation sourceLocation;
 
 	public LiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
 		super(sourceLocation);
@@ -49,9 +48,4 @@ public class LiteralPosition extends Expression implements IPosition{
 	public int getZ() {
 		return this.z;
 	}
-	
-	protected SourceLocation getSourceLocation(){
-		return this.sourceLocation;
-	}
-	
 }

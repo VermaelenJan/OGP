@@ -13,8 +13,17 @@ public class Sequence extends Statement {
 
 		public Sequence(List<Statement> statements, SourceLocation sourceLocation) {
 			super(sourceLocation);
+			setStatements(statements);
+		}
+		
+		public List<Statement> getStatements(){
+			return this.statements;
+		}
+		
+		private void setStatements(List<Statement> statements){
 			this.statements = statements;
 		}
+		
 
 		@Override
 		public void execute(Unit unit, int[] selectedCube) {
