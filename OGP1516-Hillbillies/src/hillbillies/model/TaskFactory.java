@@ -47,8 +47,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new PrintStatement(value, sourceLocation);
 	}
 
 	@Override
@@ -121,26 +120,22 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return (new Bool(sourceLocation)).notExpression(expression,sourceLocation);
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return (new Bool(sourceLocation)).andExpression(left,right, sourceLocation);
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return (new Bool(sourceLocation)).orExpression(left,right, sourceLocation);
 	}
 
 	@Override
 	public Expression createHerePosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new HerePosition(sourceLocation);
 	}
 
 	@Override
@@ -168,8 +163,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new NextToPosition(position, sourceLocation);
 	}
 
 	@Override
@@ -179,26 +173,22 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createThis(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ThisUnit(sourceLocation);
 	}
 
 	@Override
 	public Expression createFriend(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new FriendUnit(sourceLocation);
 	}
 
 	@Override
 	public Expression createEnemy(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new EnemyUnit(sourceLocation);
 	}
 
 	@Override
 	public Expression createAny(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AnyUnit(sourceLocation);
 	}
 
 	@Override

@@ -48,4 +48,9 @@ public class LiteralPosition extends Expression implements IPosition{
 	public int getZ() {
 		return this.z;
 	}
+
+	@Override
+	public String toString() {
+		return "X: " + getX() + " Y: " + getY() + " Z: " + getZ();
+	}
 }

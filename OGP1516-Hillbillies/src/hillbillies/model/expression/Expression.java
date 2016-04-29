@@ -17,4 +17,7 @@ public abstract class Expression {
 	protected void setSourceLocation(SourceLocation sourceLocation){
 		this.sourceLocation = sourceLocation;
 	}
+	
+	@Override
+	public abstract String toString();
 }

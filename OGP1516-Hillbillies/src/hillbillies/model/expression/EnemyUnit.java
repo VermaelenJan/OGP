@@ -2,14 +2,15 @@ package hillbillies.model.expression;
 
 import hillbillies.part3.programs.SourceLocation;
 
-public class SelectedPosition extends Expression {
+public class EnemyUnit extends UnitExpression {
 
-	public SelectedPosition(SourceLocation sourceLocation) {
+	public EnemyUnit(SourceLocation sourceLocation) {
 		super(sourceLocation);
 	}
 
 	@Override
 	public String toString() {
-		return "Selected cube";
+		return "Enemy unit";
 	}
+
 }

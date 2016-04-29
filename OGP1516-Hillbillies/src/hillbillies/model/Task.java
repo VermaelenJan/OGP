@@ -137,18 +137,12 @@ public class Task {
 	
 	public void executeTask(){
 		
-		//System.out.println(activitiesMap.get(activitiesReq.getStatements().get(activitiesReq.getStatements().size()-1)));
-		//System.out.println(activitiesReq.getStatements().get(activitiesReq.getStatements().size()-1));
+
 		
-		//System.out.println("-----");
-		//System.out.println(activitiesMap.size() == activitiesReq.getStatements().size());
-		//for (Statement el : getActivitiesReq().getStatements())
-		//System.out.println(activitiesMap.get(el));
-		
-		for (Statement el : getActivitiesReq().getStatements()) {
+/*		for (Statement el : getActivitiesReq().getStatements()) {
 			System.out.print(el + ": " + activitiesMap.get(el) + "-"); 
 		}
-		System.out.println();
+		System.out.println();*/
 		
 		Sequence sequence = (Sequence) getActivitiesReq();
 		
@@ -202,7 +196,6 @@ public class Task {
 	}
 
 	public void finishedLastActivity() { //TODO: MAG NIET PUBLIC, MAAR MOET REACHABLE ZIJN IN IF.JAVA
-		System.out.println("finished lst act");
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
 				activitiesMap.put(activity, true);

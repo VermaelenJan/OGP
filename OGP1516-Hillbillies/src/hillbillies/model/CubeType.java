@@ -32,7 +32,7 @@ public enum CubeType {
 	 * Checks whether the terrain is passable.
 	 *  @return True if and only if the type is air or the type is workshop. 
 	 */
-	protected boolean isPassableTerrain(){
+	public boolean isPassableTerrain(){
 		return ((this.type == "air") || (this.type == "workshop"));
 	}
 	

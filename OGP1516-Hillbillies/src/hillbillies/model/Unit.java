@@ -1149,6 +1149,10 @@ public class Unit {
 	 */
 	private Position positionObj;
 	
+	public Position getPositionObj(){
+		return this.positionObj;
+	}
+	
 	
 	// ADVANCE TIME
 	

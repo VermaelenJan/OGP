@@ -35,6 +35,15 @@ public class Work extends Statement {
 			unit.workAt(workTarget);
 		}
 		
+		else if (getPosition() instanceof HerePosition){
+			unit.workAt(unit.getOccupiedCube());
+		}
+		
+		else if (getPosition() instanceof NextToPosition){
+			
+			unit.workAt(NextToPosition.getPassableNeighbouringPosition(((NextToPosition) getPosition()).getPosition(), unit));
+		}
+		
 		else{
 			throw new RuntimeException(); //TODO
 		}

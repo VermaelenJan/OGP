@@ -20,4 +20,9 @@ public class True extends Bool {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "True";
+	}
+
 }

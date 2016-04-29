@@ -21,7 +21,7 @@ import hillbillies.model.exceptions.IllegalPositionException;
  * @version 1.5
  */
 @Value
-class Position {
+public class Position {
 	
 	/**
 	 * Initialize this new position with the given world.
@@ -251,7 +251,7 @@ class Position {
 	 * @return A list of the neighbouring cubes which are in the boundaries of the world and its location 
 	 * 		is not equal to the given cube location.
 	 */
-	protected List<Cube> getNeighbouringCubes(int[] cube) {
+	public List<Cube> getNeighbouringCubes(int[] cube) {
 		List<Cube> result = new ArrayList<Cube>();
 		int [] xList = {cube[0]-1,cube[0],cube[0]+ 1};
 		int [] yList = {cube[1]-1,cube[1],cube[1]+ 1};

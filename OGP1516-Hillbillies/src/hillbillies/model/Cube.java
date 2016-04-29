@@ -48,7 +48,7 @@ public class Cube {
 	 * Return the position of this cube.
 	 */
 	@Basic @Raw
-	protected int[] getCubePosition() {
+	public int[] getCubePosition() {
 		return this.position;
 	}
 	
@@ -74,7 +74,7 @@ public class Cube {
 	 * Return the cubetype of this cube.
 	 */
 	@Basic @Raw
-	protected CubeType getCubeType(){
+	public CubeType getCubeType(){
 		return this.cubeType;
 	}
 
