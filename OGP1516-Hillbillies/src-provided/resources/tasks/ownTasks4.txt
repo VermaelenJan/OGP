@@ -1,10 +1,11 @@
-name: "ownTasksRM"
+name: "ownTasks"
 priority : 3
 activities :
 			while true
 				do
-					moveTo next_to (10, 10, 10);
 					work here;
+					break;
 				done
+			moveTo (10, 10, 10);
 			 
 			 

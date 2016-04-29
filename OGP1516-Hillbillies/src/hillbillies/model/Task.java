@@ -148,6 +148,10 @@ public class Task {
 		
 		for (Statement activity : sequence.getStatements()){ //TODO: goed nakijken
 			if (! (activitiesMap.get(activity))) {
+				if (activity instanceof BreakStatement) {
+					breakWhile();
+					return;
+				}
 				Sequence result = activity.execute(assignedUnit,selectedCube);
 				if (result != null) {
 					int i = getActivitiesReq().getStatements().indexOf(activity);
@@ -162,12 +166,6 @@ public class Task {
 						   }
 						   j++;
 					}
-					//for (Statement stat : result.getStatements()){
-					//	   if (!getActivitiesReq().getStatements().contains(stat))
-					//		   getActivitiesReq().getStatements().add(i, stat);
-					//	}
-					//
-					//getActivitiesReq().getStatements().addAll(i, result.getStatements());
 					
 					activitiesMap.remove(activity);
 					for (Statement el : result.getStatements()) {
@@ -181,6 +179,16 @@ public class Task {
 	}
 	
 	
+	private void breakWhile() {
+		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
+			if (activity instanceof While) {
+				finishedLastActivity();
+				return;
+			}
+			activitiesMap.put(activity, true);
+		}
+	}
+
 	private Set<Scheduler> schedulersForTask;
 	
 	public Set<Scheduler> getSchedulersForTask() {
