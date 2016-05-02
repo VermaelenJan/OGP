@@ -41,7 +41,7 @@ public class Work extends Statement {
 		
 		else if (getPosition() instanceof NextToPosition){
 			
-			unit.workAt(NextToPosition.getPassableNeighbouringPosition(((NextToPosition) getPosition()).getPosition(), unit));
+			unit.workAt(NextToPosition.getPassableNeighbouringPosition(((NextToPosition) getPosition()).getPosition(), unit, selectedCube));
 		}
 		
 		else{

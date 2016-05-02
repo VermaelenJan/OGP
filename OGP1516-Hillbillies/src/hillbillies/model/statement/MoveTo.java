@@ -47,7 +47,7 @@ public class MoveTo extends Statement {
 		
 		else if (getPosition() instanceof NextToPosition){
 			
-			unit.moveTo(NextToPosition.getPassableNeighbouringPosition(((NextToPosition) getPosition()).getPosition(), unit));
+			unit.moveTo(NextToPosition.getPassableNeighbouringPosition(((NextToPosition) getPosition()).getPosition(), unit, selectedCube));
 		}
 		
 		else{

@@ -3,9 +3,8 @@ priority : 3
 activities :
 			while true
 				do
-					work here;
-					break;
+					moveTo next_to here;
 				done
-			moveTo (10, 10, 10);
+
 			 
 			 
