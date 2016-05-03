@@ -3,10 +3,17 @@ package hillbillies.model.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.*;
 import hillbillies.part3.programs.SourceLocation;
 
+/**
+ * A class of ...
+ * 
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
+ */
 public class If extends Statement {
 
 	public If(Expression condition, Statement ifBody, Statement elseBody,
@@ -49,7 +56,7 @@ public class If extends Statement {
 	private Statement elseBody;
 
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube) {
+	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
 		Bool cond = null;
 		if (getCondition() instanceof Bool) {
 			cond = (Bool) getCondition();

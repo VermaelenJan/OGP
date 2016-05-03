@@ -5,8 +5,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import hillbillies.model.statement.*;
 
+import hillbillies.model.expression.Expression;
+import hillbillies.model.statement.*;
+import hillbillies.part3.programs.SourceLocation;
+
+/**
+ * A class of ...
+ * 
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
+ */
 public class Task {
 
 	protected Task(String name, int priority, Statement activities, int[] selectedCube ){
@@ -152,7 +161,7 @@ public class Task {
 					breakWhile();
 					return;
 				}
-				Sequence result = activity.execute(assignedUnit,selectedCube);
+				Sequence result = activity.execute(assignedUnit,selectedCube, this);
 				if (result != null) {
 					int i = getActivitiesReq().getStatements().indexOf(activity);
 					getActivitiesReq().getStatements().remove(i);
@@ -235,6 +244,18 @@ public class Task {
 		}
 		setPriority(getPriority()-Math.abs(getPriority()/2));
 	}
+	
+	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
+		//TODO over overwrite types!!!!!
+		variables.put(variableName, value); // boeit sourceLoc?
+	}
+	
+	public Expression readVariable(String variableName) {
+		return variables.get(variableName);
+		//TODO waar we read nodig hebben!!?!!? (overal dus?)
+	}
+	
+	HashMap<String, Expression> variables;
 }
 
 

@@ -9,7 +9,7 @@ public class ReadVariable extends Expression{ //TODO: all vars private with get 
 		setVariableName(variableName);
 	}
 	
-	private String getVariableName(){
+	protected String getVariableName(){
 		return this.variableName;
 	}
 	

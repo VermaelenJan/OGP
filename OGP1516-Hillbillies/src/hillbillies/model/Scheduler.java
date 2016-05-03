@@ -10,6 +10,12 @@ import java.util.List;
 import be.kuleuven.cs.som.annotate.Model;
 import hillbillies.model.expression.Expression;
 
+/**
+ * A class of ...
+ * 
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
+ */
 public class Scheduler {
 	public Scheduler() {
 		tasks = new ArrayList<Task>();

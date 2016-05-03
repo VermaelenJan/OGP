@@ -1,9 +1,16 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
 import hillbillies.part3.programs.SourceLocation;
 
+/**
+ * A class of ...
+ * 
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
+ */
 public class Assignment extends Statement {
 
 	public Assignment(String variableName, Expression value,SourceLocation sourceLocation) { //TODO: new assignment, type,...
@@ -31,11 +38,9 @@ public class Assignment extends Statement {
 	
 	private Expression value;
 
-
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube) {
-		//TODO or empty
+	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
+		task.addVariable(variableName, value, sourceLocation);
 		return null;
 	}
-
 }

@@ -1,14 +1,13 @@
-/**
- * 
- */
 package hillbillies.model.expression;
 
 
 import hillbillies.part3.programs.SourceLocation;
 
 /**
- * @author Maxime
- *
+ * A class of ...
+ * 
+ * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
+ * @version 1.0
  */
 public class Bool extends Expression{
 
@@ -25,7 +24,7 @@ public class Bool extends Expression{
 		return "Boolean";
 	}
 	
-	public Expression notExpression(Expression expression,SourceLocation sourceLocation) {
+	public Expression notExpression(Expression expression, SourceLocation sourceLocation) {
 		if (expression instanceof Bool) {
 			if ((Bool)expression instanceof True ) {
 				return new False(sourceLocation);
@@ -33,6 +32,11 @@ public class Bool extends Expression{
 			else {
 				return new True(sourceLocation);
 			}
+		}
+		
+		else if (expression instanceof ReadVariable) {
+			//TODO!!!!!!!!!!!!!!!
+			return null;
 		}
 		
 		else {
