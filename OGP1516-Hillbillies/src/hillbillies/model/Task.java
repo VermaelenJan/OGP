@@ -189,6 +189,7 @@ public class Task {
 	
 	
 	private void breakWhile() {
+		// TODO: prevent break outside while ( ook in isWellFormed!!)
 		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			if (activity instanceof While) {
 				finishedLastActivity();
