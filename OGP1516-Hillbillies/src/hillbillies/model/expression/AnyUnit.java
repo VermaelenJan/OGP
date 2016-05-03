@@ -1,5 +1,8 @@
 package hillbillies.model.expression;
 
+import hillbillies.model.Position;
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -17,6 +20,19 @@ public class AnyUnit extends UnitExpression {
 	@Override
 	public String toString() {
 		return "Any unit";
+	}
+
+	@Override
+	public Object evaluate(Unit unit, int[] selectedCube, Task task) {
+		Unit anyUnit = null;
+		for (Unit currUnit: unit.getWorld().getAllUnits() ){
+			if (anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <
+										Position.getDistanceBetween(anyUnit.getLocation(), unit.getLocation())) {
+				anyUnit = currUnit;
+			}
+		}
+		return anyUnit;
+		
 	}
 
 }

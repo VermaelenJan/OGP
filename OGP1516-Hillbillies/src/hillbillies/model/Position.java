@@ -387,5 +387,9 @@ public class Position {
 	 */
 	private World world;
 	
+	public static double getDistanceBetween(double[] one, double[] two){
+		double[] difference = {one[0] - two[0], one[1] - two[1], one[2]- two[2]};
+		return Math.sqrt(Math.pow(difference[0], 2) + Math.pow(difference[1], 2) + Math.pow(difference[2], 2));
+	}
 
 }

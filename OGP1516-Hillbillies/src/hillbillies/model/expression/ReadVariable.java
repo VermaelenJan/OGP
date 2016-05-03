@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class ReadVariable extends Expression{ //TODO: all vars private with get n set
@@ -22,5 +24,11 @@ public class ReadVariable extends Expression{ //TODO: all vars private with get 
 	@Override
 	public String toString() {
 		return getVariableName(); 
+	}
+
+	@Override
+	public Expression evaluate(Unit unit, int[] selectedCube, Task task) {
+		return task.readVariable(variableName);
+		
 	}
 }

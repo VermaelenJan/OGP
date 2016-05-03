@@ -946,7 +946,7 @@ public class Unit {
 	 * Return the world of this unit.
 	 */
 	@Basic @Raw
-	protected World getWorld(){
+	public World getWorld(){
 		return this.world;
 	}
 	

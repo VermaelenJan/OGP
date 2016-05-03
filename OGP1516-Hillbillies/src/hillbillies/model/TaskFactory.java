@@ -119,17 +119,17 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		return (new Bool(sourceLocation)).notExpression(expression,sourceLocation);
+		return new notExpression(expression, sourceLocation);
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		return (new Bool(sourceLocation)).andExpression(left,right, sourceLocation);
+		return new andExpression(left, right, sourceLocation);
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		return (new Bool(sourceLocation)).orExpression(left,right, sourceLocation);
+		return new orExpression(left, right, sourceLocation);
 	}
 
 	@Override
