@@ -30,30 +30,7 @@ public class Work extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task){
-		
-		if (getPosition() instanceof SelectedPosition){
-			int[] workTarget = {selectedCube[0], selectedCube[1], selectedCube[2]};
-			unit.workAt(workTarget);
-		}
-		
-		else if (getPosition() instanceof IPosition){
-			int[] workTarget = {((IPosition) getPosition()).getX(),((IPosition) getPosition()).getY(),
-					((IPosition) getPosition()).getZ()};
-			unit.workAt(workTarget);
-		}
-		
-		else if (getPosition() instanceof HerePosition){
-			unit.workAt(unit.getOccupiedCube());
-		}
-		
-		else if (getPosition() instanceof NextToPosition){
-			
-			unit.workAt(NextToPosition.getPassableNeighbouringPosition(((NextToPosition) getPosition()).getPosition(), unit, selectedCube));
-		}
-		
-		else{
-			throw new RuntimeException(); //TODO
-		}
+		unit.workAt((int[]) getPosition().evaluate(unit, selectedCube, task));
 		return null;
 	}
 }

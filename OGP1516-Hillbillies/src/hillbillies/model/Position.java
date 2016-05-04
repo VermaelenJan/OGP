@@ -187,7 +187,7 @@ public class Position {
 	 * 		given location is passable terrain, and a neighbouring cube of the cube at the given location is 
 	 * 		of solid terrain.
 	 */
-	protected boolean isValidUnitPositionInt(int[] location) {
+	public boolean isValidUnitPositionInt(int[] location) {
 		double[] pos = {(double) location[0], (double) location[1], (double) location[2]};
 		return isValidUnitPositionDouble(pos);
 	}
@@ -277,7 +277,7 @@ public class Position {
 	 * @return A list of the neighbouring cubes, including the cube of the given location,
 	 * 		which are in the boundaries of the world.
 	 */
-	protected List<Cube> getNeighbouringCubesIncludingOwn(int[] cube) {
+	public List<Cube> getNeighbouringCubesIncludingOwn(int[] cube) {
 		List<Cube> result = new ArrayList<Cube>();
 		result.addAll(getNeighbouringCubes(cube));
 		result.add(world.getCube(cube[0], cube[1], cube[2]));

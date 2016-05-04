@@ -1319,6 +1319,9 @@ public class Unit {
 		setAttackTime(getAttackTime() - (float)(dt));
 		if (getAttackTime()<= 0){
 			setAttackTime(0);
+			if (getAssignedTask() != null) {
+				this.assignedTask.finishedLastActivity();
+			}
 		}
 	}
 	

@@ -63,7 +63,7 @@ public class NextToPosition extends Expression implements IPosition{
 		List<hillbillies.model.Cube> cubes = unit.getPositionObj().getNeighbouringCubes(target);
 		List<hillbillies.model.Cube> validCubes = new ArrayList<hillbillies.model.Cube>();
 		for (hillbillies.model.Cube el : cubes) {
-			if (el.getCubeType().isPassableTerrain()) {
+			if (unit.getPositionObj().isValidUnitPositionInt(el.getCubePosition())) {
 				validCubes.add(el);
 			}
 		}

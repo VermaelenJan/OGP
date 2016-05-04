@@ -25,5 +25,4 @@ public abstract class Statement {
 	}
 	
 	public abstract Sequence execute(Unit unit,int[] selectedCube, Task task);
-
 }

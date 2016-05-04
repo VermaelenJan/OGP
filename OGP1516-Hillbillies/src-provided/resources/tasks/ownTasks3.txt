@@ -1,7 +1,7 @@
 name: "ownTasks"
 priority : 3
 activities : print (true && false) ; 
-moveTo (0,12,8); 
+			 moveTo (0,12,8); 
 			 moveTo here;
 			 if true || false
 			 	then work here;

@@ -25,7 +25,7 @@ public enum CubeType {
 	 */
 	@Raw 
 	CubeType(String type) {
-		this.type = type;
+		this.setType(type);
 	}
 	
 	/**
@@ -33,13 +33,22 @@ public enum CubeType {
 	 *  @return True if and only if the type is air or the type is workshop. 
 	 */
 	public boolean isPassableTerrain(){
-		return ((this.type == "air") || (this.type == "workshop"));
+		return ((this.getType() == "air") || (this.getType() == "workshop"));
 	}
 	
 		
+	public String getType() {
+		return type;
+	}
+
+	private void setType(String type) {
+		this.type = type;
+	}
+
+
 	/**
 	 * Variable registering the type of this cubetype.
 	 */
-	protected String type;
+	private String type;
 }
 

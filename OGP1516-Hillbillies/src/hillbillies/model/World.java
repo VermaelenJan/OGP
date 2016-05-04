@@ -134,7 +134,7 @@ public class World {
 	 * 		The z position of the cube.
 	 * @return The cube at the given x,y and z position of worldcubes.
 	 */
-	protected Cube getCube(int x, int y, int z) {
+	public Cube getCube(int x, int y, int z) {
 		return worldCubes[x][y][z];
 	}
 	

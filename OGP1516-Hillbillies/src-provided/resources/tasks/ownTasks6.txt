@@ -1,0 +1,8 @@
+name: "ownTasks"
+priority : 3
+activities :
+	while true
+			do
+				moveTo next_to position_of enemy;
+				attack enemy;
+			done

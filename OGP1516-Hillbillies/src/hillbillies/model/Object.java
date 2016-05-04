@@ -50,7 +50,7 @@ public abstract class Object {
 	 * Return the occupied cube of this object.
 	 */
 	@Raw
-	protected int[] getOccupiedCube(){
+	public int[] getOccupiedCube(){
 		return positionObj.getOccupiedCube();
 	}
 	

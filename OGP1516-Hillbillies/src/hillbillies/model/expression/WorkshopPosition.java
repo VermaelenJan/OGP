@@ -1,0 +1,45 @@
+package hillbillies.model.expression;
+
+import hillbillies.model.Cube;
+import hillbillies.model.Position;
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
+import hillbillies.part3.programs.SourceLocation;
+
+public class WorkshopPosition extends Expression implements IPosition {
+
+	public WorkshopPosition(SourceLocation sourceLocation) {
+		super(sourceLocation);
+	}
+
+	@Override
+	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
+		Cube cube = null;
+		double[] cubeMiddle = null;
+		for (int x = 0; x<unit.getWorld().getNbCubesX(); x++){
+			for (int y = 0; y<unit.getWorld().getNbCubesY(); y++){
+				for (int z = 0; z<unit.getWorld().getNbCubesZ(); z++){
+					Cube currCube = unit.getWorld().getCube(x, y, z);
+					if (currCube.getCubeType().getType() == "WORKSHOP") {
+						double[] currCubeMiddle = {x+0.5, y+0.5, z+0.5};
+						if (cube == null || Position.getDistanceBetween(currCubeMiddle , unit.getLocation()) <
+								Position.getDistanceBetween(cubeMiddle , unit.getLocation())) {
+							cube = currCube;
+							if (cube != null) {
+								double[] list = {cube.getCubePosition()[0] + 0.5, cube.getCubePosition()[1] + 0.5,
+										cube.getCubePosition()[0] + 0.5};
+								cubeMiddle = list;
+							}
+						}
+					}
+				}
+			}
+		}
+		return cube.getCubePosition(); //TODO: bugfix (nullpointer)
+	}
+
+	@Override
+	public String toString() {
+		return "WorkshopPosition";
+	}
+}

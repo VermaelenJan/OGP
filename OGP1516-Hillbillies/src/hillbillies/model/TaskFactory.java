@@ -66,14 +66,12 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Follow(unit, sourceLocation);
 	}
 
 	@Override
 	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Attack(unit, sourceLocation);
 	}
 
 	@Override
@@ -83,38 +81,32 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createIsSolid(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsSolid(position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsPassable(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsPassable(position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsFriend(unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsEnemy(unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsAlive(unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new CarriesItem(unit, sourceLocation);
 	}
 
 	@Override
@@ -139,20 +131,17 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createLogPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LogPosition(sourceLocation);
 	}
 
 	@Override
 	public Expression createBoulderPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BoulderPosition(sourceLocation);
 	}
 
 	@Override
 	public Expression createWorkshopPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkshopPosition(sourceLocation);
 	}
 
 	@Override
@@ -202,8 +191,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createPositionOf(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new PositionOfUnit(unit, sourceLocation);
 	}
 
 }

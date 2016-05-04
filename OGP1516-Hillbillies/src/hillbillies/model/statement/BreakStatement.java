@@ -20,5 +20,4 @@ public class BreakStatement extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
 		return null;
 	}
-
 }
