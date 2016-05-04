@@ -20,7 +20,7 @@ public class WorkshopPosition extends Expression implements IPosition {
 			for (int y = 0; y<unit.getWorld().getNbCubesY(); y++){
 				for (int z = 0; z<unit.getWorld().getNbCubesZ(); z++){
 					Cube currCube = unit.getWorld().getCube(x, y, z);
-					if (currCube.getCubeType().getType() == "WORKSHOP") {
+					if (currCube.getCubeType().getType().equals("workshop")) {
 						double[] currCubeMiddle = {x+0.5, y+0.5, z+0.5};
 						if (cube == null || Position.getDistanceBetween(currCubeMiddle , unit.getLocation()) <
 								Position.getDistanceBetween(cubeMiddle , unit.getLocation())) {
