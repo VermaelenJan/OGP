@@ -14,7 +14,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
-public class NextToPosition extends Expression {
+public class NextToPosition extends Expression implements IPosition{
 
 	private Expression position;
 

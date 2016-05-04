@@ -11,7 +11,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
-public class AnyUnit extends UnitExpression {
+public class AnyUnit extends Expression implements IUnitExpression {
 
 	public AnyUnit(SourceLocation sourceLocation) {
 		super(sourceLocation);
@@ -23,7 +23,7 @@ public class AnyUnit extends UnitExpression {
 	}
 
 	@Override
-	public Object evaluate(Unit unit, int[] selectedCube, Task task) {
+	public Unit evaluate(Unit unit, int[] selectedCube, Task task) {
 		Unit anyUnit = null;
 		for (Unit currUnit: unit.getWorld().getAllUnits() ){
 			if (anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <
@@ -32,7 +32,6 @@ public class AnyUnit extends UnitExpression {
 			}
 		}
 		return anyUnit;
-		
 	}
 
 }

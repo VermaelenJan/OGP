@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -8,7 +10,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
-public class HerePosition extends Expression {
+public class HerePosition extends Expression implements IPosition {
 
 	public HerePosition(SourceLocation sourceLocation) {
 		super(sourceLocation);
@@ -18,5 +20,9 @@ public class HerePosition extends Expression {
 	public String toString() {
 		return "Here";
 	}
-	
+
+	@Override
+	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
+		return unit.getOccupiedCube();
+	}
 }

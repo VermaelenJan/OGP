@@ -7,13 +7,5 @@ package hillbillies.model.expression;
  * @version 1.0
  */
 public interface IPosition {
-	
-	void setX(int x);
-	void setY(int y);
-	void setZ(int z);
-	
-	int getX();
-	int getY();
-	int getZ();
-	
+
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
-import hillbillies.model.expression.Bool;
 import hillbillies.model.expression.Expression;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -47,15 +46,8 @@ public class While extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		Bool cond = null;
-		if (getCondition() instanceof Bool) {
-			cond = (Bool) getCondition();
-		}
-		else {
-			throw new RuntimeException();
-		}
 		
-		if (cond.getValue()){
+		if ((Boolean) getCondition().evaluate(unit, selectedCube, task)){
 			if (getBody() instanceof Sequence) {
 				List<Statement> list = new ArrayList<>();
 				list.addAll(((Sequence) getBody()).getStatements());
@@ -73,7 +65,5 @@ public class While extends Statement {
 			unit.getAssignedTask().finishedLastActivity();
 			return null;
 		}
-		
 	}
-
 }

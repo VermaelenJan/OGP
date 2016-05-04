@@ -29,6 +29,5 @@ public class ReadVariable extends Expression{ //TODO: all vars private with get 
 	@Override
 	public Expression evaluate(Unit unit, int[] selectedCube, Task task) {
 		return task.readVariable(variableName);
-		
 	}
 }

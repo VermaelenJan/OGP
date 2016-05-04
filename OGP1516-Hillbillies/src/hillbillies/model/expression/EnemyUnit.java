@@ -1,5 +1,8 @@
 package hillbillies.model.expression;
 
+import hillbillies.model.Position;
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -8,7 +11,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
-public class EnemyUnit extends UnitExpression {
+public class EnemyUnit extends Expression implements IUnitExpression {
 
 	public EnemyUnit(SourceLocation sourceLocation) {
 		super(sourceLocation);
@@ -17,6 +20,19 @@ public class EnemyUnit extends UnitExpression {
 	@Override
 	public String toString() {
 		return "Enemy unit";
+	}
+
+	@Override
+	public Unit evaluate(Unit unit, int[] selectedCube, Task task) {
+		Unit enemyUnit = null;
+		for (Unit currUnit: unit.getWorld().getAllUnits()){
+			if ((enemyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <
+										Position.getDistanceBetween(enemyUnit.getLocation(), unit.getLocation()))
+					&& currUnit.getFaction() != unit.getFaction()) {
+				enemyUnit = currUnit;
+			}
+		}
+		return enemyUnit;
 	}
 
 }

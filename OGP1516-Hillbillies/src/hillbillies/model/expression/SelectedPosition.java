@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -17,5 +19,10 @@ public class SelectedPosition extends Expression {
 	@Override
 	public String toString() {
 		return "Selected cube";
+	}
+
+	@Override
+	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
+		return selectedCube;
 	}
 }

@@ -4,11 +4,11 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
-public class notExpression extends Expression {
+public class NotExpression extends Expression implements IBool {
 
 	private Expression expression;
 
-	public notExpression(Expression expression, SourceLocation sourceLocation) {
+	public NotExpression(Expression expression, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.expression = expression; //TODO
 	}
@@ -19,7 +19,7 @@ public class notExpression extends Expression {
 	}
 
 	@Override
-	public Object evaluate(Unit unit, int[] selectedCube, Task task) {
+	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
 		return !(Boolean)expression.evaluate(unit, selectedCube, task);
 	}
 

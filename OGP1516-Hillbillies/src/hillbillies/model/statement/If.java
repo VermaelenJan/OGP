@@ -55,17 +55,47 @@ public class If extends Statement {
 	
 	private Statement elseBody;
 
+//	@Override
+//	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
+//		Bool cond = null;
+//		if (getCondition() instanceof Bool) {
+//			cond = (Bool) getCondition();
+//		}
+//		else {
+//			throw new RuntimeException();
+//		}
+//		
+//		if (cond.getValue()) {
+//			if (getIfBody() instanceof Sequence) {
+//				return (Sequence) getIfBody();
+//			}
+//			else {
+//				List<Statement> list = new ArrayList<>();
+//				list.add(getIfBody());
+//				return new Sequence(list, sourceLocation);
+//			}
+//		}
+//		else {
+//			if (getElseBody() != null) {
+//				if (getElseBody() instanceof Sequence) {
+//					return (Sequence) getElseBody();
+//				}
+//				else {
+//					List<Statement> list = new ArrayList<>();
+//					list.add(getElseBody());
+//					return new Sequence(list, sourceLocation);
+//				}
+//			}
+//			else {
+//				unit.getAssignedTask().finishedLastActivity();
+//			}
+//			return null;
+//		}
+//	}
+	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		Bool cond = null;
-		if (getCondition() instanceof Bool) {
-			cond = (Bool) getCondition();
-		}
-		else {
-			throw new RuntimeException();
-		}
-		
-		if (cond.getValue()) {
+		if ((Boolean) getCondition().evaluate(unit, selectedCube, task)) { //TODO: in isWellFormed checken of het wel boolean is
 			if (getIfBody() instanceof Sequence) {
 				return (Sequence) getIfBody();
 			}
@@ -73,7 +103,7 @@ public class If extends Statement {
 				List<Statement> list = new ArrayList<>();
 				list.add(getIfBody());
 				return new Sequence(list, sourceLocation);
-			}
+				}
 		}
 		else {
 			if (getElseBody() != null) {
@@ -87,9 +117,8 @@ public class If extends Statement {
 				}
 			}
 			else {
-				unit.getAssignedTask().finishedLastActivity();
+				return null;
 			}
-			return null;
 		}
 	}
 

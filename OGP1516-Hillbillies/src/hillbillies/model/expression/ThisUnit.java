@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -8,7 +10,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
-public class ThisUnit extends UnitExpression {
+public class ThisUnit extends Expression implements IUnitExpression {
 
 	public ThisUnit(SourceLocation sourceLocation) {
 		super(sourceLocation);
@@ -17,6 +19,11 @@ public class ThisUnit extends UnitExpression {
 	@Override
 	public String toString() {
 		return "This unit"; 
+	}
+
+	@Override
+	public Unit evaluate(Unit unit, int[] selectedCube, Task task) {
+		return unit;
 	}
 
 }

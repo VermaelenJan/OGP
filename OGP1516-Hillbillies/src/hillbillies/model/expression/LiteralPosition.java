@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -21,41 +23,41 @@ public class LiteralPosition extends Expression implements IPosition{
 		setZ(z);
 	}
 
-	@Override
-	public void setX(int x) {
+	private void setX(int x) {
 		this.x = x;
 		
 	}
 
-	@Override
-	public void setY(int y) {
+	private void setY(int y) {
 		this.y = y;
 		
 	}
 
-	@Override
-	public void setZ(int z) {
+	private void setZ(int z) {
 		this.z = z;
 		
 	}
 
-	@Override
-	public int getX() {
+	private int getX() {
 		return this.x;
 	}
 
-	@Override
-	public int getY() {
+	private int getY() {
 		return this.y;
 	}
 
-	@Override
-	public int getZ() {
+	private int getZ() {
 		return this.z;
 	}
 
 	@Override
 	public String toString() {
 		return "X: " + getX() + " Y: " + getY() + " Z: " + getZ();
+	}
+
+	@Override
+	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
+		int[] position = {getX(), getY(), getZ()};
+		return position;
 	}
 }
