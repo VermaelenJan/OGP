@@ -4,5 +4,7 @@ activities :
 	while true
 			do
 				moveTo next_to position_of enemy;
-				attack enemy;
+				if true
+					then break;
+				fi
 			done

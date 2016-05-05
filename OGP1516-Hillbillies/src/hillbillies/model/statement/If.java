@@ -88,9 +88,8 @@ public class If extends Statement {
 		calledBy.add(this);
 		return (getCondition() instanceof IBool && getCondition().isWellFormed(task, calledBy) &&
 				(getIfBody() instanceof Sequence || getIfBody() instanceof Statement) &&
-				getIfBody().isWellFormed(task, calledBy) &&
-				(getElseBody() instanceof Sequence || getElseBody() instanceof Statement)) &&
-				getElseBody().isWellFormed(task, calledBy);
+				getIfBody().isWellFormed(task, calledBy) && (getElseBody() == null || 
+				((getElseBody() instanceof Sequence || getElseBody() instanceof Statement)) &&
+				getElseBody().isWellFormed(task, calledBy)));
 	}
-
 }
