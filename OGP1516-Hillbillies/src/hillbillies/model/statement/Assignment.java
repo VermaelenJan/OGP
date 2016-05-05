@@ -21,7 +21,7 @@ public class Assignment extends Statement {
 		setValue(value);
 		}
 	
-	public String getVariableName(){
+	private String getVariableName(){
 		return this.variableName;
 	}
 	private void setVariableName(String variableName){
@@ -30,7 +30,7 @@ public class Assignment extends Statement {
 	
 	private String variableName;
 	
-	public Expression getValue(){
+	private Expression getValue(){
 		return this.value;
 	}
 	
@@ -42,7 +42,7 @@ public class Assignment extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		task.addVariable(variableName, value, sourceLocation);
+		task.addVariable(getVariableName(), getValue(), sourceLocation);
 		return null;
 	}
 

@@ -14,20 +14,27 @@ public class Attack extends Statement {
 
 	public Attack(Expression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setAttackUnit(unit);
+	}
+	
+	private void setAttackUnit(Expression unit) {
 		this.attackUnit = unit;
 	}
-
+	
+	private Expression getAttackUnit() {
+		return this.attackUnit;
+	}
+	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		unit.attack((Unit)this.attackUnit.evaluate(unit, selectedCube, task));
-		((Unit) this.attackUnit.evaluate(unit, selectedCube, task)).defend(unit);
+		unit.attack((Unit)getAttackUnit().evaluate(unit, selectedCube, task));
+		((Unit)getAttackUnit().evaluate(unit, selectedCube, task)).defend(unit);
 		return null;
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return (attackUnit instanceof IUnitExpression) && (attackUnit.isWellFormed(task, calledBy));
+		return (getAttackUnit() instanceof IUnitExpression) && (getAttackUnit().isWellFormed(task, calledBy));
 	}
-
 }

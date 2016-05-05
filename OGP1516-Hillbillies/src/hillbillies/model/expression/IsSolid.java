@@ -12,25 +12,33 @@ public class IsSolid extends Expression implements IBool {
 
 	public IsSolid(Expression position, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setPosition(position);
+	}
+	
+	private void setPosition(Expression position) {
 		this.position = position;
+	}
+	
+	private Expression getPosition() {
+		return this.position;
 	}
 	
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		int x = ((int[])this.position.evaluate(unit, selectedCube, task))[0];
-		int y = ((int[])this.position.evaluate(unit, selectedCube, task))[1];
-		int z = ((int[])this.position.evaluate(unit, selectedCube, task))[2];
+		int x = ((int[])getPosition().evaluate(unit, selectedCube, task))[0];
+		int y = ((int[])getPosition().evaluate(unit, selectedCube, task))[1];
+		int z = ((int[])getPosition().evaluate(unit, selectedCube, task))[2];
 		return !unit.getWorld().getCubeType(x, y, z).isPassableTerrain();
 	}
 
 	@Override
 	public String toString() {
-		return "Is solid" + this.position.toString();
+		return "Is solid" + getPosition().toString();
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return this.position instanceof IPosition && this.position.isWellFormed(task, calledBy);
+		return getPosition() instanceof IPosition && getPosition().isWellFormed(task, calledBy);
 	}
 }

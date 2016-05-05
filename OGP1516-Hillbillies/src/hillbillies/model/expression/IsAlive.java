@@ -12,22 +12,30 @@ public class IsAlive extends Expression implements IBool {
 
 	public IsAlive(Expression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setAliveUnit(unit);;
+	}
+	
+	private void setAliveUnit(Expression unit) {
 		this.aliveUnit = unit;
+	}
+	
+	private Expression getAliveUnit() {
+		return this.aliveUnit;
 	}
 
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return !((Unit)aliveUnit.evaluate(unit, selectedCube, task)).isTerminated();
+		return !((Unit)getAliveUnit().evaluate(unit, selectedCube, task)).isTerminated();
 	}
 
 	@Override
 	public String toString() {
-		return "Is alive " + this.aliveUnit.toString();
+		return "Is alive " + getAliveUnit().toString();
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return this.aliveUnit instanceof IUnitExpression && this.aliveUnit.isWellFormed(task, calledBy);
+		return getAliveUnit() instanceof IUnitExpression && getAliveUnit().isWellFormed(task, calledBy);
 	}
 }

@@ -12,13 +12,21 @@ public class CarriesItem extends Expression implements IBool {
 
 	public CarriesItem(Expression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setCarryingUnit(unit);
+	}
+	
+	private void setCarryingUnit(Expression unit) {
 		this.carryingUnit = unit;
+	}
+	
+	private Expression getCarryingUnit() {
+		return this.carryingUnit;
 	}
 
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return ((Unit) carryingUnit.evaluate(unit, selectedCube, task)).isCarryingBoulder() ||
-				((Unit) carryingUnit.evaluate(unit, selectedCube, task)).isCarryingLog();
+		return ((Unit) getCarryingUnit().evaluate(unit, selectedCube, task)).isCarryingBoulder() ||
+				((Unit) getCarryingUnit().evaluate(unit, selectedCube, task)).isCarryingLog();
 	}
 
 	@Override
@@ -29,6 +37,6 @@ public class CarriesItem extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return this.carryingUnit instanceof IUnitExpression && this.carryingUnit.isWellFormed(task, calledBy);
+		return getCarryingUnit() instanceof IUnitExpression && this.carryingUnit.isWellFormed(task, calledBy);
 	}
 }

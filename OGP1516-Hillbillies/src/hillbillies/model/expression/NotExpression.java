@@ -12,23 +12,31 @@ public class NotExpression extends Expression implements IBool {
 
 	public NotExpression(Expression expression, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.expression = expression; //TODO
+		setExpression(expression);
+	}
+	
+	private void setExpression(Expression expression) {
+		this.expression = expression;
+	}
+	
+	private Expression getExpression() {
+		return this.expression;
 	}
 
 	@Override
 	public String toString() {
-		return "Not " + expression.toString();
+		return "Not " + getExpression().toString();
 	}
 
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return !(Boolean)expression.evaluate(unit, selectedCube, task);
+		return !(Boolean)getExpression().evaluate(unit, selectedCube, task);
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return this.expression instanceof IBool && this.isWellFormed(task, calledBy);
+		return getExpression() instanceof IBool && getExpression().isWellFormed(task, calledBy);
 	}
 
 }

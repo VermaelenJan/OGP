@@ -14,8 +14,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @version 1.0
  */
 public class Work extends Statement {
-	public Expression position;
-	public SourceLocation sourceLocation;
+	private Expression position;
 
 	public Work(Expression position, SourceLocation sourceLocation) {
 		super(sourceLocation);

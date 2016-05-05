@@ -16,12 +16,20 @@ public class Follow extends Statement {
 
 	public Follow(Expression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setFollowUnit(unit);
+	}
+	
+	private void setFollowUnit(Expression unit) {
 		this.followUnit = unit;
+	}
+	
+	private Expression getFollowUnit() {
+		return this.followUnit;
 	}
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		Unit followUnit = (Unit) this.followUnit.evaluate(unit, selectedCube, task);
+		Unit followUnit = (Unit) getFollowUnit().evaluate(unit, selectedCube, task);
 		int followUnitX = followUnit.getOccupiedCube()[0];
 		int followUnitY = followUnit.getOccupiedCube()[1];
 		int followUnitZ = followUnit.getOccupiedCube()[2];
@@ -34,14 +42,14 @@ public class Follow extends Statement {
 		List<Statement> list = new ArrayList<>();
 		list.add(new MoveTo( new LiteralPosition(followUnitX, followUnitY,followUnitZ, sourceLocation), sourceLocation));
 		
-		list.add(new Follow(this.followUnit, sourceLocation));
+		list.add(new Follow(getFollowUnit(), sourceLocation));
 		return new Sequence(list, sourceLocation); 
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return (followUnit instanceof IUnitExpression && followUnit.isWellFormed(task, calledBy));
+		return (getFollowUnit() instanceof IUnitExpression && getFollowUnit().isWellFormed(task, calledBy));
 	}
 
 }

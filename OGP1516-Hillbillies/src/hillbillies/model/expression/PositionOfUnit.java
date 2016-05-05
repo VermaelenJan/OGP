@@ -12,22 +12,30 @@ public class PositionOfUnit extends Expression implements IPosition {
 
 	public PositionOfUnit(Expression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setExpUnit(unit);
+	}
+	
+	private void setExpUnit(Expression unit) {
 		this.expUnit = unit;
+	}
+	
+	private Expression getExpUnit() {
+		return this.expUnit;
 	}
 	
 	@Override
 	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
-		return ((Unit)expUnit.evaluate(unit, selectedCube, task)).getOccupiedCube();
+		return ((Unit)getExpUnit().evaluate(unit, selectedCube, task)).getOccupiedCube();
 	}
 
 	@Override
 	public String toString() {
-		return "Position of " + expUnit.toString();
+		return "Position of " + getExpUnit().toString();
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return this.expUnit instanceof IUnitExpression && this.expUnit.isWellFormed(task, calledBy);
+		return getExpUnit() instanceof IUnitExpression && getExpUnit().isWellFormed(task, calledBy);
 	}
 }

@@ -13,26 +13,42 @@ public class OrExpression extends Expression implements IBool {
 
 	public OrExpression(Expression left, Expression right,SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setLeft(left);
+		setRight(right);
+	}
+	
+	private Expression getLeft() {
+		return this.left;
+	}
+	
+	private Expression getRight() {
+		return this.right;
+	}
+	
+	private void setLeft(Expression left) {
 		this.left = left;
+	}
+	
+	private void setRight(Expression right) {
 		this.right = right;
 	}
 
 	@Override
 	public String toString() {
-		return left.toString() + " or " + right.toString();
+		return getLeft().toString() + " or " + getRight().toString();
 
 	}
 
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return (((Boolean)left.evaluate(unit, selectedCube, task)) || ((Boolean)right.evaluate(unit, selectedCube, task)));
+		return (((Boolean)getLeft().evaluate(unit, selectedCube, task)) || ((Boolean)getRight().evaluate(unit, selectedCube, task)));
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return left instanceof IBool && left.isWellFormed(task, calledBy) &&
-				right instanceof IBool && right.isWellFormed(task, calledBy);
+		return getLeft() instanceof IBool && getLeft().isWellFormed(task, calledBy) &&
+				getRight() instanceof IBool && getRight().isWellFormed(task, calledBy);
 	}
 
 }

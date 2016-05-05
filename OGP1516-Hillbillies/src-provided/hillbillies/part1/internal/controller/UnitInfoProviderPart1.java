@@ -153,17 +153,17 @@ public class UnitInfoProviderPart1 implements UnitInfoProvider {
 
 	@Override
 	public double getSizeZ(Unit unit) {
-		return 1 - 1e-6; // TODO
+		return 1 - 1e-6;
 	}
 
 	@Override
 	public double getSizeY(Unit unit) {
-		return 1 - 1e-6; // TODO
+		return 1 - 1e-6;
 	}
 
 	@Override
 	public double getSizeX(Unit unit) {
-		return 1 - 1e-6; // TODO
+		return 1 - 1e-6;
 	}
 
 	@Override

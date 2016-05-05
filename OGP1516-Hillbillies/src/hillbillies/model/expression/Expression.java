@@ -31,9 +31,7 @@ public abstract class Expression {
 	@Override
 	public abstract String toString();
 	
-	
 	public abstract Object evaluate(Unit unit, int[] selectedCube, Task task);
 	
 	public abstract Boolean isWellFormed(Task task,  ArrayList<Object> calledBy);
-	
 }

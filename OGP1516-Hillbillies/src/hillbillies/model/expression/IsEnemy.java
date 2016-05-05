@@ -12,22 +12,30 @@ public class IsEnemy extends Expression implements IBool {
 
 	public IsEnemy(Expression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setEnemyUnit(unit);
+	}
+	
+	private void setEnemyUnit(Expression unit) {
 		this.enemyUnit = unit;
+	}
+	
+	private Expression getEnemyUnit() {
+		return this.enemyUnit;
 	}
 
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return unit.getFaction() != ((Unit) enemyUnit.evaluate(unit, selectedCube, task)).getFaction();
+		return unit.getFaction() != ((Unit) getEnemyUnit().evaluate(unit, selectedCube, task)).getFaction();
 	}
 
 	@Override
 	public String toString() {
-		return "Is enemy " + this.enemyUnit.toString();
+		return "Is enemy " + getEnemyUnit().toString();
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return this.enemyUnit instanceof IUnitExpression && this.enemyUnit.isWellFormed(task, calledBy);
+		return getEnemyUnit() instanceof IUnitExpression && getEnemyUnit().isWellFormed(task, calledBy);
 	}
 }

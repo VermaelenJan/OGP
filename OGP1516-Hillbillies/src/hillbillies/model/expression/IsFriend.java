@@ -12,22 +12,30 @@ public class IsFriend extends Expression implements IBool {
 
 	public IsFriend(Expression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		setFriendUnit(unit);
+	}
+	
+	private void setFriendUnit(Expression unit) {
 		this.friendUnit = unit;
+	}
+	
+	private Expression getFriendUnit() {
+		return this.friendUnit;
 	}
 
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return unit.getFaction() == ((Unit) friendUnit.evaluate(unit, selectedCube, task)).getFaction();
+		return unit.getFaction() == ((Unit) getFriendUnit().evaluate(unit, selectedCube, task)).getFaction();
 	}
 
 	@Override
 	public String toString() {
-		return "Is friend " + this.friendUnit.toString();
+		return "Is friend " + getFriendUnit().toString();
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return this.friendUnit instanceof IUnitExpression && this.friendUnit.isWellFormed(task, calledBy);
+		return getFriendUnit() instanceof IUnitExpression && getFriendUnit().isWellFormed(task, calledBy);
 	}
 }
