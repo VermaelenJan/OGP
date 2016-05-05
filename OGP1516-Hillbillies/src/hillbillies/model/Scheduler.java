@@ -78,7 +78,7 @@ public class Scheduler {
 	
 	protected Task getHightestUnassignedPriorityTask() {
 		for (Task task : tasks) {
-			if (!task.isAssigned()) {
+			if (!task.isAssigned() && task.isWellFormed()) { //TODO: hoe wellformed gebruiken hier?
 				return task;
 			}
 		}

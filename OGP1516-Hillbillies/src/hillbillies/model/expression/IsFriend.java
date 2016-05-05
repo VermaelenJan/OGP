@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -21,5 +23,11 @@ public class IsFriend extends Expression implements IBool {
 	@Override
 	public String toString() {
 		return "Is friend " + this.friendUnit.toString();
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return this.friendUnit instanceof IUnitExpression && this.friendUnit.isWellFormed(task, calledBy);
 	}
 }

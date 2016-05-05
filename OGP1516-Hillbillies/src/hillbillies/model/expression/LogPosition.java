@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Log;
 import hillbillies.model.Position;
 import hillbillies.model.Task;
@@ -27,5 +29,10 @@ public class LogPosition extends Expression implements IPosition {
 	@Override
 	public String toString() {
 		return "LogPosition";
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
 	}
 }

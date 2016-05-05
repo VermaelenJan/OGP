@@ -2,7 +2,6 @@ package hillbillies.model.statement;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.*;
@@ -54,44 +53,6 @@ public class If extends Statement {
 	}
 	
 	private Statement elseBody;
-
-//	@Override
-//	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-//		Bool cond = null;
-//		if (getCondition() instanceof Bool) {
-//			cond = (Bool) getCondition();
-//		}
-//		else {
-//			throw new RuntimeException();
-//		}
-//		
-//		if (cond.getValue()) {
-//			if (getIfBody() instanceof Sequence) {
-//				return (Sequence) getIfBody();
-//			}
-//			else {
-//				List<Statement> list = new ArrayList<>();
-//				list.add(getIfBody());
-//				return new Sequence(list, sourceLocation);
-//			}
-//		}
-//		else {
-//			if (getElseBody() != null) {
-//				if (getElseBody() instanceof Sequence) {
-//					return (Sequence) getElseBody();
-//				}
-//				else {
-//					List<Statement> list = new ArrayList<>();
-//					list.add(getElseBody());
-//					return new Sequence(list, sourceLocation);
-//				}
-//			}
-//			else {
-//				unit.getAssignedTask().finishedLastActivity();
-//			}
-//			return null;
-//		}
-//	}
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
@@ -120,6 +81,16 @@ public class If extends Statement {
 				return null;
 			}
 		}
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return (getCondition() instanceof IBool && getCondition().isWellFormed(task, calledBy) &&
+				(getIfBody() instanceof Sequence || getIfBody() instanceof Statement) &&
+				getIfBody().isWellFormed(task, calledBy) &&
+				(getElseBody() instanceof Sequence || getElseBody() instanceof Statement)) &&
+				getElseBody().isWellFormed(task, calledBy);
 	}
 
 }

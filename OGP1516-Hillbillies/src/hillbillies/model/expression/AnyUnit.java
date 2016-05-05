@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Position;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
@@ -32,6 +34,11 @@ public class AnyUnit extends Expression implements IUnitExpression {
 			}
 		}
 		return anyUnit;
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
 	}
 
 }

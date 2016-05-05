@@ -1,5 +1,7 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -25,4 +27,6 @@ public abstract class Statement {
 	}
 	
 	public abstract Sequence execute(Unit unit,int[] selectedCube, Task task);
+	
+	public abstract Boolean isWellFormed(Task task, ArrayList<Object> calledBy);
 }

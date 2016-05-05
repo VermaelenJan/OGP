@@ -1,5 +1,7 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -13,7 +15,7 @@ import hillbillies.part3.programs.SourceLocation;
  */
 public class Assignment extends Statement {
 
-	public Assignment(String variableName, Expression value,SourceLocation sourceLocation) { //TODO: new assignment, type,...
+	public Assignment(String variableName, Expression value,SourceLocation sourceLocation) { //TODO: TYPE!!!
 		super(sourceLocation);
 		setVariableName(variableName);
 		setValue(value);
@@ -42,5 +44,10 @@ public class Assignment extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
 		task.addVariable(variableName, value, sourceLocation);
 		return null;
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
 	}
 }

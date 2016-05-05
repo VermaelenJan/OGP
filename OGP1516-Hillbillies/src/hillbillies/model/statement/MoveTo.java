@@ -1,8 +1,11 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
+import hillbillies.model.expression.IPosition;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -33,5 +36,11 @@ public class MoveTo extends Statement {
 		
 		unit.moveTo((int[]) getPosition().evaluate(unit, selectedCube, task)); 
 		return null;
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return getPosition() instanceof IPosition && getPosition().isWellFormed(task, calledBy);
 	}
 }

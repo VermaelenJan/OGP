@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -26,4 +28,9 @@ public class IsSolid extends Expression implements IBool {
 		return "Is solid" + this.position.toString();
 	}
 
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return this.position instanceof IPosition && this.position.isWellFormed(task, calledBy);
+	}
 }

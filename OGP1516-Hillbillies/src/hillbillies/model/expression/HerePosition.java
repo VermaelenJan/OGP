@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -24,5 +26,10 @@ public class HerePosition extends Expression implements IPosition {
 	@Override
 	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
 		return unit.getOccupiedCube();
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
 	}
 }

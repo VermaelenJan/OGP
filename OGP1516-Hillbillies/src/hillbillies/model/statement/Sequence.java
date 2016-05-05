@@ -1,5 +1,6 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.model.Task;
@@ -39,6 +40,17 @@ public class Sequence extends Statement {
 		public Sequence execute(Unit unit, int[] selectedCube, Task task) {
 			throw new RuntimeException();
 			// TODO
+		}
+
+		@Override
+		public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+			calledBy.add(this);
+			for (Statement statement : getStatements()) {
+				if (! statement.isWellFormed(task, calledBy)) {
+					return false;
+				}
+			}
+			return true;
 		}
 }
 

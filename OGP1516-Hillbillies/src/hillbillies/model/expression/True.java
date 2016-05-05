@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -23,6 +25,11 @@ public class True extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
+		return true;
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
 	}
 

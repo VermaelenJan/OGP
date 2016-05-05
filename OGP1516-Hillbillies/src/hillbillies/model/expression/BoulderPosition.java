@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Boulder;
 import hillbillies.model.Position;
 import hillbillies.model.Task;
@@ -27,5 +29,10 @@ public class BoulderPosition extends Expression implements IPosition {
 	@Override
 	public String toString() {
 		return "BoulderPosition";
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
+import hillbillies.model.expression.IUnitExpression;
 import hillbillies.model.expression.LiteralPosition;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -35,6 +36,12 @@ public class Follow extends Statement {
 		
 		list.add(new Follow(this.followUnit, sourceLocation));
 		return new Sequence(list, sourceLocation); 
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return (followUnit instanceof IUnitExpression && followUnit.isWellFormed(task, calledBy));
 	}
 
 }

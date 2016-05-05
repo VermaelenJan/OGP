@@ -1,5 +1,7 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.*;
@@ -32,5 +34,11 @@ public class Work extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube, Task task){
 		unit.workAt((int[]) getPosition().evaluate(unit, selectedCube, task));
 		return null;
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return getPosition() instanceof IPosition && getPosition().isWellFormed(task, calledBy);
 	}
 }

@@ -3,6 +3,8 @@
  */
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -30,4 +32,8 @@ public class False extends Expression implements IBool {
 		return false;
 	}
 
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
+	}
 }

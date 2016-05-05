@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import hillbillies.model.expression.Expression;
+import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -248,15 +248,25 @@ public class Task {
 	
 	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
 		//TODO over overwrite types!!!!!
-		variables.put(variableName, value); // boeit sourceLoc?
+		variables.put(variableName, value);
 	}
 	
 	public Expression readVariable(String variableName) {
 		return variables.get(variableName);
-		//TODO waar we read nodig hebben!!?!!? (overal dus?)
 	}
 	
 	HashMap<String, Expression> variables;
+	
+	public Boolean isWellFormed() {
+		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
+			ArrayList<java.lang.Object> calledBy = new ArrayList<java.lang.Object>();
+			calledBy.add(this);
+			if (!activity.isWellFormed(this, calledBy)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
 

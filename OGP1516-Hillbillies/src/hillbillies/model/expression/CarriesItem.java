@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -22,5 +24,11 @@ public class CarriesItem extends Expression implements IBool {
 	@Override
 	public String toString() {
 		return "Is carrying " + this.carryingUnit.toString();
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return this.carryingUnit instanceof IUnitExpression && this.carryingUnit.isWellFormed(task, calledBy);
 	}
 }

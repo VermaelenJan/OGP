@@ -1,5 +1,7 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -33,6 +35,12 @@ public class PrintStatement extends Statement {
 		System.out.println(getValue().toString());
 		unit.getAssignedTask().finishedLastActivity();
 		return null;
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return getValue().isWellFormed(task, calledBy);
 	}
 
 }

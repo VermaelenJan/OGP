@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -29,5 +31,10 @@ public class ReadVariable extends Expression{ //TODO: all vars private with get 
 	@Override
 	public Expression evaluate(Unit unit, int[] selectedCube, Task task) {
 		return task.readVariable(variableName);
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
 	}
 }

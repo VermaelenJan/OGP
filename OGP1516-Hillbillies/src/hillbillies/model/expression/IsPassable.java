@@ -1,5 +1,7 @@
 package hillbillies.model.expression;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -24,6 +26,12 @@ public class IsPassable extends Expression implements IBool {
 	@Override
 	public String toString() {
 		return "Is passable" + this.position.toString();
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		calledBy.add(this);
+		return this.position instanceof IPosition && this.position.isWellFormed(task, calledBy);
 	}
 
 }

@@ -1,5 +1,7 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -19,5 +21,15 @@ public class BreakStatement extends Statement {
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
 		return null;
+	}
+
+	@Override
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		for (Object el : calledBy) {
+			if (el instanceof While) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
