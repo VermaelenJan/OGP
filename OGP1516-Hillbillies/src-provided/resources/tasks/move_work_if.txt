@@ -1,13 +1,13 @@
 name: "ownTasks"
 priority : 3
-activities : if true
+activities : if ! false
 				then moveTo (0, 12, 8);
 			 fi
-			 if false 
+			 if false && true
 			 	then moveTo (0, 0, 0);
 			 		 work (0, 0, 0);
-			 fi
-			 if true 
+			 fi			
+			 if true
 			 	then moveTo (10, 10, 10);
 			 	if true
 			 		then work (10, 10, 10);

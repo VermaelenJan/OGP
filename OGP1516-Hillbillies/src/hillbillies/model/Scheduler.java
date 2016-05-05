@@ -25,7 +25,7 @@ public class Scheduler {
 	
 	public void addTask(Task task) {
 		if (!tasks.contains(task)) {
-			tasks.add(task);
+			getAllTasks().add(task);
 		}
 		task.addSchedulerForTask(this);
 		sortTasksOnPriority();
@@ -43,7 +43,7 @@ public class Scheduler {
 			task.getAssignedUnit().stopTask();
 			task.getAssignedUnit().removeTask();
 		}
-		tasks.remove(task);
+		getAllTasks().remove(task);
 		task.removeSchedulerForTask(this);
 	}
 	
@@ -60,15 +60,15 @@ public class Scheduler {
 	}
 	
 	public Iterator<Task> getIterator() {
-		return tasks.iterator();
+		return getAllTasks().iterator();
 	}
 	
 	public boolean areTasksPartOf(Collection<Task> checkTasks) {
-		return tasks.containsAll(checkTasks);
+		return getAllTasks().containsAll(checkTasks);
 	}
 	
 	private void sortTasksOnPriority() {
-		Collections.sort(tasks, new Comparator<Task> () {
+		Collections.sort(getAllTasks(), new Comparator<Task> () {
 			@Override
 			public int compare(Task task1, Task task2) {
 				return Integer.compare(task2.getPriority(), task1.getPriority());
@@ -77,16 +77,14 @@ public class Scheduler {
 	}
 	
 	protected Task getHightestUnassignedPriorityTask() {
-		for (Task task : tasks) {
-			if (!task.isAssigned() && task.isWellFormed()) { //TODO: hoe wellformed gebruiken hier?
+		for (Task task : getAllTasks()) {
+			if (!task.isAssigned() && task.isWellFormed()) { //TODO: hoe wellformed gebruiken hier? goed zo peins ik?
 				return task;
 			}
 		}
 		return null;
 	}
 	
-	
-	@SuppressWarnings("unused")
 	private List<Task> getAllTasks() {
 		return this.tasks;
 	}

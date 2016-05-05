@@ -56,7 +56,7 @@ public class If extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		if ((Boolean) getCondition().evaluate(unit, selectedCube, task)) { //TODO: in isWellFormed checken of het wel boolean is
+		if ((Boolean) getCondition().evaluate(unit, selectedCube, task)) { //TODO: in isWellFormed checken of het wel boolean is, word al gecheckt?
 			if (getIfBody() instanceof Sequence) {
 				return (Sequence) getIfBody();
 			}

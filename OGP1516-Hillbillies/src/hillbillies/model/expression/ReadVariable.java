@@ -6,7 +6,7 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
-public class ReadVariable extends Expression{ //TODO: all vars private with get n set
+public class ReadVariable extends Expression{
 	
 	public ReadVariable(String variableName, SourceLocation sourceLocation) {
 		super(sourceLocation);

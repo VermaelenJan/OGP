@@ -1,4 +1,6 @@
 name: "ownTasks"
 priority : 3
 activities :
+	moveTo next_to workshop;
 	moveTo workshop;
+	work here;

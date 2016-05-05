@@ -2,11 +2,13 @@ package hillbillies.model.expression;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+
+import hillbillies.model.ConstantsUtils;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
+
 
 /**
  * A class of ...
@@ -45,8 +47,7 @@ public class NextToPosition extends Expression implements IPosition {
 			}
 		}
 		if (validCubes.size() > 0) {
-			Random random = new Random(); //TODO: random van utils
-			return validCubes.get(random.nextInt(validCubes.size())).getCubePosition();
+			return validCubes.get(ConstantsUtils.random.nextInt(validCubes.size())).getCubePosition();
 		}
 		else throw new RuntimeException();
 	}

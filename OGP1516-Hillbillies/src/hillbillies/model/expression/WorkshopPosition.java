@@ -37,7 +37,7 @@ public class WorkshopPosition extends Expression implements IPosition {
 				}
 			}
 		}
-		return cube.getCubePosition(); //TODO: bugfix (nullpointer)
+		return cube.getCubePosition(); 
 	}
 
 	@Override

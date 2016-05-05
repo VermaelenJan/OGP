@@ -213,7 +213,7 @@ public class Task {
 		schedulersForTask.remove(scheduler);
 	}
 
-	public void finishedLastActivity() { //TODO: MAG NIET PUBLIC, MAAR MOET REACHABLE ZIJN IN IF.JAVA
+	public void finishedLastActivity() { //TODO: MAG NIET PUBLIC, MAAR MOET REACHABLE ZIJN IN IF.JAVA, gaat wrs ni 
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
 				activitiesMap.put(activity, true);

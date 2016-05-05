@@ -10,7 +10,7 @@ import be.kuleuven.cs.som.annotate.Model;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
-final class ConstantsUtils {
+public final class ConstantsUtils {
 	
 
 	/**
@@ -30,7 +30,7 @@ final class ConstantsUtils {
 	/**
 	 * Variable registering a randomizer.
 	 */
-	static final Random random = new Random();
+	public static final Random random = new Random();
 	
 	/**
 	 * Checks whether the a possibility is greater than a random number between 0 and 1.
