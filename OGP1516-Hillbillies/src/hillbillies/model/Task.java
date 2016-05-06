@@ -13,7 +13,7 @@ import hillbillies.part3.programs.SourceLocation;
 //TODO: interrupt task when not possible to execute (vanuit unit)
 //TODO: rekening houden met dt = 0.001
 //TODO: lambda expressions?
-//TODO: friendUnit en anyUnit kan nog eigen unit zijn
+//TODO: friendUnit en anyUnit kan nog eigen unit zijn, FINISHED
 //TODO: printen fixen/bekijken
 //TODO: oude todo's snappen
 
@@ -253,24 +253,37 @@ public class Task {
 	}
 	
 	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
-		//TODO over overwrite types!!!!!
-		variables.put(variableName, value);
+		if (variables.containsKey(variableName)){
+			if (getVariables().get(variableName).getClass().equals(value.getClass())){
+				return;
+			}
+		}
+		else{
+			variables.put(variableName, value);
+		}
+		
 	}
 	
 	public Expression readVariable(String variableName) {
-		return variables.get(variableName);
+		return getVariables().get(variableName);
 	}
 	
 	HashMap<String, Expression> variables;
+	
+	public HashMap<String, Expression> getVariables(){
+		return this.variables;
+	}
 	
 	public Boolean isWellFormed() {
 		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			ArrayList<java.lang.Object> calledBy = new ArrayList<java.lang.Object>();
 			calledBy.add(this);
 			if (!activity.isWellFormed(this, calledBy)) {
+				System.out.println("iswellformed fout");
 				return false;
 			}
 		}
+		System.out.println("iswellformed juist");
 		return true;
 	}
 }

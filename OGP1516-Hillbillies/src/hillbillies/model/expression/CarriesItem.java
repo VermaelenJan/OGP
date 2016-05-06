@@ -31,7 +31,7 @@ public class CarriesItem extends Expression implements IBool {
 
 	@Override
 	public String toString() {
-		return "Is carrying " + this.carryingUnit.toString();
+		return "Is carrying " + this.carryingUnit.toString() ;
 	}
 
 	@Override

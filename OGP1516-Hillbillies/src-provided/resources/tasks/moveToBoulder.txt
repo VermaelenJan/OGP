@@ -1,0 +1,5 @@
+name: "ownTasks"
+priority : 3
+activities : moveTo boulder;
+		     work here;
+		     carries_item this;

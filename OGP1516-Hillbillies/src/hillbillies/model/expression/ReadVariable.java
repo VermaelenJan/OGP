@@ -35,6 +35,6 @@ public class ReadVariable extends Expression{
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-		return true;
+		return task.getVariables().containsKey(variableName);
 	}
 }

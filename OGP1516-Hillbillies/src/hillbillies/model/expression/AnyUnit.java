@@ -29,7 +29,8 @@ public class AnyUnit extends Expression implements IUnitExpression {
 		Unit anyUnit = null;
 		for (Unit currUnit: unit.getWorld().getAllUnits() ){
 			if (anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <
-										Position.getDistanceBetween(anyUnit.getLocation(), unit.getLocation())) {
+										Position.getDistanceBetween(anyUnit.getLocation(), unit.getLocation())
+				&& currUnit != unit) {
 				anyUnit = currUnit;
 			}
 		}

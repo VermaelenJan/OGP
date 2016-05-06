@@ -2,6 +2,7 @@ name: "ownTasks"
 priority : 3
 activities :
 			moveTo next_to position_of enemy;
+			moveTo next_to position_of friend;
 
 			 
 			 

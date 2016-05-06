@@ -1,6 +1,7 @@
 name: "ownTasks"
 priority : 3
 activities :
-	moveTo next_to workshop;
-	moveTo workshop;
+	
+	w := (10, 10, 10);
+	moveTo w;
 	work here;

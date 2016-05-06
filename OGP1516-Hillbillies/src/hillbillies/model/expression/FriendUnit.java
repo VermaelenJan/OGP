@@ -30,7 +30,7 @@ public class FriendUnit extends Expression implements IUnitExpression {
 		for (Unit currUnit: unit.getWorld().getAllUnits()){
 			if ((friendUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <
 										Position.getDistanceBetween(friendUnit.getLocation(), unit.getLocation()))
-					&& currUnit.getFaction() == unit.getFaction()) {
+					&& currUnit.getFaction() == unit.getFaction() && currUnit != unit) {
 				friendUnit = currUnit;
 			}
 		}

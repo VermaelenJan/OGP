@@ -6,7 +6,7 @@ activities : print (true && false) ;
 			 if true || false
 			 	then work here;
 			 fi
-			 if ! false
+			 if ! ((false && true) && true)
 			 	then moveTo (10,10,10);
 			 fi
 			 

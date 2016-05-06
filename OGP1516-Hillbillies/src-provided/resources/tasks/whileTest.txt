@@ -1,0 +1,8 @@
+name: "ownTasks"
+priority : 3
+activities : moveTo (0,12,8); 
+			while true
+				do
+					work (0, 12, 8);
+				done
+			 
