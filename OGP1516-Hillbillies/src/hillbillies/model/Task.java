@@ -10,6 +10,13 @@ import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
 
+//TODO: interrupt task when not possible to execute (vanuit unit)
+//TODO: rekening houden met dt = 0.001
+//TODO: lambda expressions?
+//TODO: friendUnit en anyUnit kan nog eigen unit zijn
+//TODO: printen fixen/bekijken
+//TODO: oude todo's snappen
+
 /**
  * A class of ...
  * 
@@ -79,7 +86,7 @@ public class Task {
 		}
 	}
 	
-	private Sequence removeNestedSeq(Sequence activitiesSequence) { //TODO: verwijderen indien niet nodig
+	private Sequence removeNestedSeq(Sequence activitiesSequence) {
 		if (activitiesSequence instanceof Sequence) {
 			int i = 0;
 			List<Statement> result = ((Sequence) activitiesSequence).getStatements();
@@ -189,7 +196,6 @@ public class Task {
 	
 	
 	private void breakWhile() {
-		// TODO: prevent break outside while ( ook in isWellFormed!!)
 		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			if (activity instanceof While) {
 				finishedLastActivity();
@@ -213,7 +219,7 @@ public class Task {
 		schedulersForTask.remove(scheduler);
 	}
 
-	public void finishedLastActivity() { //TODO: MAG NIET PUBLIC, MAAR MOET REACHABLE ZIJN IN IF.JAVA, gaat wrs ni 
+	public void finishedLastActivity() {
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
 				activitiesMap.put(activity, true);

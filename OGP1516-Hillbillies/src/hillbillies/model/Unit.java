@@ -3167,7 +3167,6 @@ public class Unit {
 	protected void stopTask() {
 		stopWorking();
 		stopMoving();
-		//TODO: stop fighting?
 	}
 
 	private Task assignedTask;
@@ -3177,7 +3176,7 @@ public class Unit {
 			setAssignedTask(task);
 		}
 		else {
-			throw new RuntimeException(); // TODO: new exception? or value
+			throw new RuntimeException();
 		}
 	}
 

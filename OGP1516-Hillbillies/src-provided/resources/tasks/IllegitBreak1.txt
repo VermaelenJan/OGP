@@ -1,0 +1,8 @@
+name: "ownTasks"
+priority : 3
+activities :
+	break;
+	while true
+			do
+				work here;
+			done
