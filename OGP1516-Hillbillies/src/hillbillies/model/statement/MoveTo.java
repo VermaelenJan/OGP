@@ -43,7 +43,8 @@ public class MoveTo extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return (getPosition() instanceof IPosition || getPosition() instanceof ReadVariable) &&
-				getPosition().isWellFormed(task, calledBy) ;
+		return (getPosition() instanceof IPosition || (getPosition() instanceof ReadVariable 
+//				&& (getPosition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IPosition)
+				)&& getPosition().isWellFormed(task, calledBy)) ;
 	}
 }

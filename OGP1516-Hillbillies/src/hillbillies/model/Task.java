@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
@@ -253,8 +255,12 @@ public class Task {
 	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
 		if (getVariables() != null){
 			if (getVariables().containsKey(variableName)){
-				if (getVariables().get(variableName).getClass().equals(value.getClass())){ //TODO: kunt ge dan nen here ni vervangen door literal? kvrees ervoor ja
+				if (! equalTypes(getVariables().get(variableName),value)){ 
 					return;
+				}
+				else{
+					getVariables().put(variableName, value);
+
 				}
 			}
 			else{
@@ -265,6 +271,22 @@ public class Task {
 		else{
 			variables = new HashMap<String, Expression>();
 			getVariables().put(variableName, value);
+		}
+		
+	}
+	
+	private Boolean equalTypes( Expression expr1, Expression expr2){
+		if (expr1 instanceof IBool && expr2 instanceof IBool){
+			return true;
+		}
+		else if(expr1 instanceof IPosition && expr2 instanceof IPosition) {
+			return true;
+		}
+		else if(expr1 instanceof IUnitExpression && expr2 instanceof IUnitExpression){
+			return true;
+		}
+		else{
+			return false;
 		}
 		
 	}
