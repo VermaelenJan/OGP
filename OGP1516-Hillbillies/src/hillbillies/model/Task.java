@@ -13,7 +13,6 @@ import hillbillies.part3.programs.SourceLocation;
 //TODO: interrupt task when not possible to execute (vanuit unit)
 //TODO: rekening houden met dt = 0.001
 //TODO: lambda expressions?
-//TODO: friendUnit en anyUnit kan nog eigen unit zijn, FINISHED
 //TODO: printen fixen/bekijken
 //TODO: oude todo's snappen
 
@@ -94,7 +93,7 @@ public class Task {
 				if (result.get(i) instanceof Sequence) {
 					Sequence toAdd = (Sequence) result.remove(i);
 					result.addAll(i, (removeNestedSeq(toAdd)).getStatements());
-				} //TODO: nakijken
+				}
 			i++;
 			}
 			return new Sequence(result, activitiesSequence.getSourceLocation());
@@ -254,7 +253,7 @@ public class Task {
 	
 	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
 		if (variables.containsKey(variableName)){
-			if (getVariables().get(variableName).getClass().equals(value.getClass())){
+			if (getVariables().get(variableName).getClass().equals(value.getClass())){ //TODO: kunt ge dan nen here ni vervangen door literal?
 				return;
 			}
 		}

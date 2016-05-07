@@ -78,7 +78,7 @@ public class Scheduler {
 	
 	protected Task getHightestUnassignedPriorityTask() {
 		for (Task task : getAllTasks()) {
-			if (!task.isAssigned() && task.isWellFormed()) { //TODO: hoe wellformed gebruiken hier? goed zo peins ik?
+			if (!task.isAssigned() && task.isWellFormed()) {
 				return task;
 			}
 		}
@@ -90,7 +90,7 @@ public class Scheduler {
 	}
 	
 	@SuppressWarnings("unused")
-	private List<Task> getAllTasksWithCond(Expression cond) { // gaan die da in een expression meegeven? (ni da het boeit eig mabon:p)
+	private List<Task> getAllTasksWithCond(Expression cond) {
 		List<Task> result = new ArrayList<>();
 		for (Task task: tasks) {
 			if (true) {
