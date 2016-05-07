@@ -36,7 +36,7 @@ public class Follow extends Statement {
 
 		if (unit.getPositionObj().getNeighbouringCubesIncludingOwn(unit.getOccupiedCube()).contains
 				(unit.getWorld().getCube(followUnitX, followUnitY, followUnitZ))) {
-			unit.getAssignedTask().finishedLastActivity();
+			unit.startNewPending();
 		}
 				
 		List<Statement> list = new ArrayList<>();

@@ -293,7 +293,6 @@ public class Position {
 	 * 		this positionobject.
 	 */
 	protected boolean isNeighBouringCube(int[] cubePos){
-		
 		return (getNeighbouringCubesIncludingOwn(getOccupiedCube()).contains(world.getCube(cubePos[0], cubePos[1], cubePos[2])));
 	}
 	

@@ -33,7 +33,7 @@ public class PrintStatement extends Statement {
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
 		System.out.println(getValue().toString());
-		unit.getAssignedTask().finishedLastActivity();
+		unit.startNewPending();
 		return null;
 	}
 

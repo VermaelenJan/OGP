@@ -39,7 +39,6 @@ public class Sequence extends Statement {
 		@Override
 		public Sequence execute(Unit unit, int[] selectedCube) {
 			throw new RuntimeException();
-			// TODO
 		}
 
 		@Override

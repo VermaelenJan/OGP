@@ -62,7 +62,7 @@ public class While extends Statement {
 			} 
 		}
 		else {
-			unit.getAssignedTask().finishedLastActivity();
+			unit.startNewPending();
 			return null;
 		}
 	}

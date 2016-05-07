@@ -1189,6 +1189,10 @@ public class Unit {
 				throw new IllegalAdvanceTimeException(dt);
 			}
 			
+			if (isActPending()) {
+				setTimeActPending(getTimeActPending() - dt);
+			}
+			
 			if (! isResting()) {
 				advanceTimeNotResting(dt);
 			}
@@ -1231,6 +1235,31 @@ public class Unit {
 		}
 	}
 	
+	private void setTimeActPending(double time) {
+		this.timeToPend = time;
+		if (this.timeToPend <= 0) {
+			getAssignedTask().finishedLastActivity();
+			System.out.println("pending done");
+		}
+	}
+
+
+	private double getTimeActPending() {
+		return this.timeToPend;
+	}
+
+
+	private boolean isActPending() {
+		return this.timeToPend > 0;
+	}
+	
+	private double timeToPend;
+	
+	public void startNewPending() {
+		System.out.println("time to pend " + this.timeToPend);
+		this.timeToPend = 0.001; //TODO: in consts?
+	}
+
 	/**
 	 * Advance the time not resting with the given time step dt.
 	 * 
@@ -2071,16 +2100,14 @@ public class Unit {
 	 * 		| currentLvl == 0
 	 */
 	public void moveTo(int[] endTarget) throws IllegalPositionException {
-		if (Arrays.equals(endTarget, getOccupiedCube()) && getAssignedTask() != null) {
-			this.assignedTask.finishedLastActivity();
-		}
-		
-		
+	
 		if (isFalling()) {
+			getAssignedTask().interruptTask();
 			return;
 		}
 
 		if (!world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()) {
+			getAssignedTask().interruptTask();
 			throw new IllegalPositionException(new double[] {(double) endTarget[0]+0.5, (double) endTarget[1]+0.5, (double) endTarget[2]+0.5});
 		}
 				
@@ -2088,6 +2115,9 @@ public class Unit {
 		Cube currentCube = world.getCube(currentCubeLoc[0], currentCubeLoc[1], currentCubeLoc[2]);
 		
 		if (Arrays.equals(endTarget, currentCubeLoc)){
+			if (getAssignedTask() != null) {
+				startNewPending();
+			}
 			return;
 		}
 		
@@ -2215,6 +2245,7 @@ public class Unit {
 	 */
 	public void work(){
 		if (isFalling()) {
+			getAssignedTask().interruptTask();
 			return;
 		}
 		List<Cube> neighbs = (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()));
@@ -2291,10 +2322,12 @@ public class Unit {
 	public void workAt(int[] workTarget) throws IllegalWorkPositionException{
 
 		if (isFalling()) {
+			getAssignedTask().interruptTask();
 			return;
 		}
 		
 		if (!isValidWorkLocation(workTarget)){
+			getAssignedTask().interruptTask();
 			throw new IllegalWorkPositionException(workTarget);
 		}
 		
@@ -2573,14 +2606,17 @@ public class Unit {
 	 */
 	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
 		if (isFalling) {
+			getAssignedTask().interruptTask();
 			return;
 		}
 		if ( (this != other) && (!other.isTerminated()) ) {
 			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
+				getAssignedTask().interruptTask();
 				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
 			}	
 			
 			if (this.getFaction() == other.getFaction()){
+				getAssignedTask().interruptTask();
 				throw new IllegalFightFactionException(this.getFaction());
 			}
 				

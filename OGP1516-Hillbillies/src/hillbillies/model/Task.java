@@ -154,10 +154,10 @@ public class Task {
 		
 
 		
-/*		for (Statement el : getActivitiesReq().getStatements()) {
-			System.out.print(el + ": " + activitiesMap.get(el) + "-"); 
-		}
-		System.out.println();*/
+//		for (Statement el : getActivitiesReq().getStatements()) {
+//			System.out.print(el + ": " + activitiesMap.get(el) + "-"); 
+//		}
+//		System.out.println();
 		
 		Sequence sequence = (Sequence) getActivitiesReq();
 		
@@ -169,11 +169,10 @@ public class Task {
 				}
 				Sequence result = activity.execute(assignedUnit,selectedCube);
 				if (result != null) {
-					int i = getActivitiesReq().getStatements().indexOf(activity);
+					int i = getActivitiesReq().getStatements().indexOf(activity); //index of current activity
 					getActivitiesReq().getStatements().remove(i);
-					// FOR "WHILE": TODO: verbeteren
-					int j = 0;
-					int k = 0;
+					int j = 0; //counter for size of statements to add
+					int k = 0; //counter for amount of added statements
 					while (j < result.getStatements().size()) {
 						   if (!getActivitiesReq().getStatements().contains(result.getStatements().get(j))) {
 							   getActivitiesReq().getStatements().add(i+k, result.getStatements().get(j));
@@ -190,14 +189,13 @@ public class Task {
 				return;
 			}
 		}
-		
 	}
 	
 	
 	private void breakWhile() {
 		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			if (activity instanceof While) {
-				finishedLastActivity();
+				getAssignedUnit().startNewPending();
 				return;
 			}
 			activitiesMap.put(activity, true);
@@ -218,7 +216,7 @@ public class Task {
 		schedulersForTask.remove(scheduler);
 	}
 
-	public void finishedLastActivity() {
+	protected void finishedLastActivity() {
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
 				activitiesMap.put(activity, true);

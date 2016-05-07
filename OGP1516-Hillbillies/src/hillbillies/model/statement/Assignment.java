@@ -43,7 +43,7 @@ public class Assignment extends Statement {
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
 		unit.getAssignedTask().addVariable(getVariableName(), getValue(), sourceLocation);
-		unit.getAssignedTask().finishedLastActivity();
+		unit.startNewPending();
 		return null;
 	}
 
