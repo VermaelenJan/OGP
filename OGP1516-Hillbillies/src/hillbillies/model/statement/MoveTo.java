@@ -6,6 +6,8 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
 import hillbillies.model.expression.IPosition;
+import hillbillies.model.expression.LiteralPosition;
+import hillbillies.model.expression.ReadVariable;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -33,7 +35,6 @@ public class MoveTo extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit,int[] selectedCube){
-		
 		unit.moveTo((int[]) getPosition().evaluate(unit, selectedCube)); 
 		return null;
 	}
@@ -41,6 +42,7 @@ public class MoveTo extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getPosition() instanceof IPosition && getPosition().isWellFormed(task, calledBy);
+		return (getPosition() instanceof IPosition || getPosition() instanceof ReadVariable) &&
+				getPosition().isWellFormed(task, calledBy) ;
 	}
 }

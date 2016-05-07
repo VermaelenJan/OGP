@@ -30,6 +30,7 @@ public class Task {
 		setSelectedCube(selectedCube);
 		setActivities(activities);
 		schedulersForTask = new HashSet<Scheduler>();
+		
 	}
 	
 	HashMap<Statement, Boolean> activitiesMap;
@@ -250,13 +251,20 @@ public class Task {
 	}
 	
 	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
-		if (variables.containsKey(variableName)){
-			if (getVariables().get(variableName).getClass().equals(value.getClass())){ //TODO: kunt ge dan nen here ni vervangen door literal?
-				return;
+		if (getVariables() != null){
+			if (getVariables().containsKey(variableName)){
+				if (getVariables().get(variableName).getClass().equals(value.getClass())){ //TODO: kunt ge dan nen here ni vervangen door literal? kvrees ervoor ja
+					return;
+				}
+			}
+			else{
+				getVariables().put(variableName, value);
 			}
 		}
+
 		else{
-			variables.put(variableName, value);
+			variables = new HashMap<String, Expression>();
+			getVariables().put(variableName, value);
 		}
 		
 	}
