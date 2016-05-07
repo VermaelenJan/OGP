@@ -35,7 +35,8 @@ public class MoveTo extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit,int[] selectedCube){
-		unit.moveTo((int[]) getPosition().evaluate(unit, selectedCube)); 
+		IPosition pos = (IPosition) getPosition().evaluate(unit, selectedCube);
+		unit.moveTo((int[]) pos.evaluate(unit, selectedCube)); 
 		return null;
 	}
 
