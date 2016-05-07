@@ -25,7 +25,7 @@ public class FriendUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Unit unit, int[] selectedCube, Task task) {
+	public Unit evaluate(Unit unit, int[] selectedCube) {
 		Unit friendUnit = null;
 		for (Unit currUnit: unit.getWorld().getAllUnits()){
 			if ((friendUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <

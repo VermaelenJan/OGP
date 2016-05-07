@@ -53,8 +53,8 @@ public class NextToPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
-		return getNeighbouring(unit, (int[])getPosition().evaluate(unit, selectedCube, task));
+	public int[] evaluate(Unit unit, int[] selectedCube) {
+		return getNeighbouring(unit, (int[])getPosition().evaluate(unit, selectedCube));
 	}
 
 	@Override

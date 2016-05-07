@@ -28,15 +28,15 @@ public class Follow extends Statement {
 	}
 
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		Unit followUnit = (Unit) getFollowUnit().evaluate(unit, selectedCube, task);
+	public Sequence execute(Unit unit, int[] selectedCube) {
+		Unit followUnit = (Unit) getFollowUnit().evaluate(unit, selectedCube);
 		int followUnitX = followUnit.getOccupiedCube()[0];
 		int followUnitY = followUnit.getOccupiedCube()[1];
 		int followUnitZ = followUnit.getOccupiedCube()[2];
 
 		if (unit.getPositionObj().getNeighbouringCubesIncludingOwn(unit.getOccupiedCube()).contains
 				(unit.getWorld().getCube(followUnitX, followUnitY, followUnitZ))) {
-			task.finishedLastActivity();
+			unit.getAssignedTask().finishedLastActivity();
 		}
 				
 		List<Statement> list = new ArrayList<>();

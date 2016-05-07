@@ -167,7 +167,7 @@ public class Task {
 					breakWhile();
 					return;
 				}
-				Sequence result = activity.execute(assignedUnit,selectedCube, this);
+				Sequence result = activity.execute(assignedUnit,selectedCube);
 				if (result != null) {
 					int i = getActivitiesReq().getStatements().indexOf(activity);
 					getActivitiesReq().getStatements().remove(i);

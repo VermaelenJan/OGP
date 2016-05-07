@@ -58,7 +58,7 @@ public class LiteralPosition extends Expression implements IPosition{
 	}
 
 	@Override
-	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
+	public int[] evaluate(Unit unit, int[] selectedCube) {
 		int[] position = {getX(), getY(), getZ()};
 		return position;
 	}

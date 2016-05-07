@@ -24,10 +24,10 @@ public class IsPassable extends Expression implements IBool {
 	}
 	
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		int x = ((int[])getPosition().evaluate(unit, selectedCube, task))[0];
-		int y = ((int[])getPosition().evaluate(unit, selectedCube, task))[1];
-		int z = ((int[])getPosition().evaluate(unit, selectedCube, task))[2];
+	public Boolean evaluate(Unit unit, int[] selectedCube) {
+		int x = ((int[])getPosition().evaluate(unit, selectedCube))[0];
+		int y = ((int[])getPosition().evaluate(unit, selectedCube))[1];
+		int z = ((int[])getPosition().evaluate(unit, selectedCube))[2];
 		return unit.getWorld().getCubeType(x, y, z).isPassableTerrain();
 	}
 

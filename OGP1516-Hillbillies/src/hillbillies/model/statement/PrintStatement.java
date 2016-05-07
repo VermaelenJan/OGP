@@ -31,7 +31,7 @@ public class PrintStatement extends Statement {
 	private Expression value;
 
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
+	public Sequence execute(Unit unit, int[] selectedCube) {
 		System.out.println(getValue().toString());
 		unit.getAssignedTask().finishedLastActivity();
 		return null;

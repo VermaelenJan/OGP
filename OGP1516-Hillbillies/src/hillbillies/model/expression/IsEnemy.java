@@ -24,8 +24,8 @@ public class IsEnemy extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return unit.getFaction() != ((Unit) getEnemyUnit().evaluate(unit, selectedCube, task)).getFaction();
+	public Boolean evaluate(Unit unit, int[] selectedCube) {
+		return unit.getFaction() != ((Unit) getEnemyUnit().evaluate(unit, selectedCube)).getFaction();
 	}
 
 	@Override

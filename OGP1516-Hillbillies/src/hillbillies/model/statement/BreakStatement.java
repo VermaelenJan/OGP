@@ -19,7 +19,7 @@ public class BreakStatement extends Statement {
 	}
 
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
+	public Sequence execute(Unit unit, int[] selectedCube) {
 		return null;
 	}
 

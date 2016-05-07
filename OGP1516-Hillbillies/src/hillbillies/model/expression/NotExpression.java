@@ -29,8 +29,8 @@ public class NotExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return !(Boolean)getExpression().evaluate(unit, selectedCube, task);
+	public Boolean evaluate(Unit unit, int[] selectedCube) {
+		return !(Boolean)getExpression().evaluate(unit, selectedCube);
 	}
 
 	@Override

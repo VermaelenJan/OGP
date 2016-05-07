@@ -30,8 +30,8 @@ public class Work extends Statement {
 	}
 	
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task){
-		unit.workAt((int[]) getPosition().evaluate(unit, selectedCube, task));
+	public Sequence execute(Unit unit, int[] selectedCube){
+		unit.workAt((int[]) getPosition().evaluate(unit, selectedCube));
 		return null;
 	}
 

@@ -29,8 +29,8 @@ public class ReadVariable extends Expression{
 	}
 
 	@Override
-	public Expression evaluate(Unit unit, int[] selectedCube, Task task) {
-		return task.readVariable(variableName);
+	public Expression evaluate(Unit unit, int[] selectedCube) {
+		return unit.getAssignedTask().readVariable(variableName);
 	}
 
 	@Override

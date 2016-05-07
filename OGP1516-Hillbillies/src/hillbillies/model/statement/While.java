@@ -45,9 +45,9 @@ public class While extends Statement {
 	
 
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
+	public Sequence execute(Unit unit, int[] selectedCube) {
 		
-		if ((Boolean) getCondition().evaluate(unit, selectedCube, task)){
+		if ((Boolean) getCondition().evaluate(unit, selectedCube)){
 			if (getBody() instanceof Sequence) {
 				List<Statement> list = new ArrayList<>();
 				list.addAll(((Sequence) getBody()).getStatements());

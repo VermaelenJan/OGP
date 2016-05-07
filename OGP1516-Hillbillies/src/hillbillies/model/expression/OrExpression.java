@@ -40,8 +40,8 @@ public class OrExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return (((Boolean)getLeft().evaluate(unit, selectedCube, task)) || ((Boolean)getRight().evaluate(unit, selectedCube, task)));
+	public Boolean evaluate(Unit unit, int[] selectedCube) {
+		return (((Boolean)getLeft().evaluate(unit, selectedCube)) || ((Boolean)getRight().evaluate(unit, selectedCube)));
 	}
 
 	@Override

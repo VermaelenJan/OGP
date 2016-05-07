@@ -15,7 +15,7 @@ public class WorkshopPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
+	public int[] evaluate(Unit unit, int[] selectedCube) {
 		Cube cube = null;
 		double[] cubeMiddle = null;
 		for (int x = 0; x<unit.getWorld().getNbCubesX(); x++){

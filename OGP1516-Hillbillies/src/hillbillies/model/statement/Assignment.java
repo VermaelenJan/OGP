@@ -41,9 +41,9 @@ public class Assignment extends Statement {
 	private Expression value;
 
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		task.addVariable(getVariableName(), getValue(), sourceLocation);
-		unit.getAssignedTask().finishedLastActivity(); // TODO overal task vervangen door unit.getasssignedTask
+	public Sequence execute(Unit unit, int[] selectedCube) {
+		unit.getAssignedTask().addVariable(getVariableName(), getValue(), sourceLocation);
+		unit.getAssignedTask().finishedLastActivity();
 		return null;
 	}
 

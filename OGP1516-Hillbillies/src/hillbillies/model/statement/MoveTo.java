@@ -32,9 +32,9 @@ public class MoveTo extends Statement {
 	private Expression position;
 	
 	@Override
-	public Sequence execute(Unit unit,int[] selectedCube, Task task){
+	public Sequence execute(Unit unit,int[] selectedCube){
 		
-		unit.moveTo((int[]) getPosition().evaluate(unit, selectedCube, task)); 
+		unit.moveTo((int[]) getPosition().evaluate(unit, selectedCube)); 
 		return null;
 	}
 

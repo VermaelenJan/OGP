@@ -55,8 +55,8 @@ public class If extends Statement {
 	private Statement elseBody;
 	
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		if ((Boolean) getCondition().evaluate(unit, selectedCube, task)) {
+	public Sequence execute(Unit unit, int[] selectedCube) {
+		if ((Boolean) getCondition().evaluate(unit, selectedCube)) {
 			if (getIfBody() instanceof Sequence) {
 				return (Sequence) getIfBody();
 			}

@@ -24,8 +24,8 @@ public class IsAlive extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube, Task task) {
-		return !((Unit)getAliveUnit().evaluate(unit, selectedCube, task)).isTerminated();
+	public Boolean evaluate(Unit unit, int[] selectedCube) {
+		return !((Unit)getAliveUnit().evaluate(unit, selectedCube)).isTerminated();
 	}
 
 	@Override

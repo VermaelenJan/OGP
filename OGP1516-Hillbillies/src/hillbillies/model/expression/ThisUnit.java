@@ -24,7 +24,7 @@ public class ThisUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Unit unit, int[] selectedCube, Task task) {
+	public Unit evaluate(Unit unit, int[] selectedCube) {
 		return unit;
 	}
 

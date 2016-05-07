@@ -24,7 +24,7 @@ public class SelectedPosition extends Expression {
 	}
 
 	@Override
-	public int[] evaluate(Unit unit, int[] selectedCube, Task task) {
+	public int[] evaluate(Unit unit, int[] selectedCube) {
 		return selectedCube;
 	}
 

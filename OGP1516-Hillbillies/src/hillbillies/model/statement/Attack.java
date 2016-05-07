@@ -26,9 +26,9 @@ public class Attack extends Statement {
 	}
 	
 	@Override
-	public Sequence execute(Unit unit, int[] selectedCube, Task task) {
-		unit.attack((Unit)getAttackUnit().evaluate(unit, selectedCube, task));
-		((Unit)getAttackUnit().evaluate(unit, selectedCube, task)).defend(unit);
+	public Sequence execute(Unit unit, int[] selectedCube) {
+		unit.attack((Unit)getAttackUnit().evaluate(unit, selectedCube));
+		((Unit)getAttackUnit().evaluate(unit, selectedCube)).defend(unit);
 		return null;
 	}
 
