@@ -78,6 +78,7 @@ public class If extends Statement {
 				}
 			}
 			else {
+				unit.startNewPending(); //TODO: werkte dees nog ni?? (deze regel toegevoegd)
 				return null;
 			}
 		}
