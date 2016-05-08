@@ -36,6 +36,9 @@ public class IsEnemy extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getEnemyUnit() instanceof IUnitExpression && getEnemyUnit().isWellFormed(task, calledBy);
+		return (getEnemyUnit() instanceof IUnitExpression ||
+				(getEnemyUnit() instanceof ReadVariable
+						&& (getEnemyUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+						)) && getEnemyUnit().isWellFormed(task, calledBy);
 	}
 }

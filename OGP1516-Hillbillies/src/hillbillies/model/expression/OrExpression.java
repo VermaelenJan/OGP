@@ -47,8 +47,14 @@ public class OrExpression extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getLeft() instanceof IBool && getLeft().isWellFormed(task, calledBy) &&
-				getRight() instanceof IBool && getRight().isWellFormed(task, calledBy);
+		return (getLeft() instanceof IBool ||
+					(getLeft() instanceof ReadVariable
+						&& (getLeft().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+					)) && getLeft().isWellFormed(task, calledBy) &&
+				(getRight() instanceof IBool ||
+					(getRight() instanceof ReadVariable
+						&& (getRight().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+					)) && getRight().isWellFormed(task, calledBy);
 	}
 
 }

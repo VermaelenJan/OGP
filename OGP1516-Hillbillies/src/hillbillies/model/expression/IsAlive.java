@@ -36,6 +36,9 @@ public class IsAlive extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getAliveUnit() instanceof IUnitExpression && getAliveUnit().isWellFormed(task, calledBy);
+		return (getAliveUnit() instanceof IUnitExpression ||
+				(getAliveUnit() instanceof ReadVariable
+					&& (getAliveUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+				)) && getAliveUnit().isWellFormed(task, calledBy);
 	}
 }

@@ -86,10 +86,14 @@ public class If extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return (getCondition() instanceof IBool && getCondition().isWellFormed(task, calledBy) &&
+		return (getCondition() instanceof IBool ||
+					(getCondition() instanceof ReadVariable
+						&& (getCondition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+					)) && getCondition().isWellFormed(task, calledBy)
+				&&
 				(getIfBody() instanceof Sequence || getIfBody() instanceof Statement) &&
 				getIfBody().isWellFormed(task, calledBy) && (getElseBody() == null || 
 				((getElseBody() instanceof Sequence || getElseBody() instanceof Statement)) &&
-				getElseBody().isWellFormed(task, calledBy)));
+				getElseBody().isWellFormed(task, calledBy));
 	}
 }

@@ -42,5 +42,4 @@ public class PrintStatement extends Statement {
 		calledBy.add(this);
 		return getValue().isWellFormed(task, calledBy);
 	}
-
 }

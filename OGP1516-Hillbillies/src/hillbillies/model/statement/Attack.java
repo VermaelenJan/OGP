@@ -6,6 +6,7 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
 import hillbillies.model.expression.IUnitExpression;
+import hillbillies.model.expression.ReadVariable;
 import hillbillies.part3.programs.SourceLocation;
 
 public class Attack extends Statement {
@@ -35,6 +36,9 @@ public class Attack extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return (getAttackUnit() instanceof IUnitExpression) && (getAttackUnit().isWellFormed(task, calledBy));
+		return (getAttackUnit() instanceof IUnitExpression ||
+					(getAttackUnit() instanceof ReadVariable
+						&& (getAttackUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+					)) && getAttackUnit().isWellFormed(task, calledBy);
 	}
 }

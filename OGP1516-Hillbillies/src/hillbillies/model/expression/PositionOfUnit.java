@@ -36,6 +36,9 @@ public class PositionOfUnit extends Expression implements IPosition {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getExpUnit() instanceof IUnitExpression && getExpUnit().isWellFormed(task, calledBy);
+		return (getExpUnit() instanceof IUnitExpression ||
+				(getExpUnit() instanceof ReadVariable
+					&& (getExpUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+				)) && getExpUnit().isWellFormed(task, calledBy);
 	}
 }

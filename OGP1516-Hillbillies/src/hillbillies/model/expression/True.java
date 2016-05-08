@@ -32,5 +32,4 @@ public class True extends Expression implements IBool {
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
 	}
-
 }

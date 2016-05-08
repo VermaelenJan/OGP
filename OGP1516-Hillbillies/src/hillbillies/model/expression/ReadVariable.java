@@ -29,13 +29,12 @@ public class ReadVariable extends Expression{
 	}
 
 	@Override
-	public Expression evaluate(Unit unit, int[] selectedCube) {
+	public Expression evaluate(Unit unit, int[] selectedCube) { // TODO:e valuate in while: w:=x p:=w use p
 		return unit.getAssignedTask().readVariable(variableName);
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-//		return task.getVariables().containsKey(variableName); //TODO: ge had misschien gelijk hier :p ma test het dubbel als ge wilt
-		return true;
+		return task.getVariables().containsKey(variableName); //TODO: testen
 	}
 }

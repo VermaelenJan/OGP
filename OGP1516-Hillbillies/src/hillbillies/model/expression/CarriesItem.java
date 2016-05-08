@@ -37,6 +37,9 @@ public class CarriesItem extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getCarryingUnit() instanceof IUnitExpression && this.carryingUnit.isWellFormed(task, calledBy);
+		return (getCarryingUnit() instanceof IUnitExpression ||
+				(getCarryingUnit() instanceof ReadVariable
+					&& (getCarryingUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+				)) && getCarryingUnit().isWellFormed(task, calledBy);
 	}
 }

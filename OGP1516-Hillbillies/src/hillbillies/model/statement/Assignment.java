@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
+import hillbillies.model.expression.IBool;
+import hillbillies.model.expression.IPosition;
+import hillbillies.model.expression.IUnitExpression;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -49,6 +52,30 @@ public class Assignment extends Statement {
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-		return true;
+		if (!task.getVariables().containsKey(getVariableName())) {
+			return true;
+		}
+		else if (equalTypes(task.getVariables().get(getVariableName()), getValue())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private Boolean equalTypes( Expression expr1, Expression expr2){ //TODO: als een van de twee (of beide) nen read is ==> de evaluate gebruiken
+		if (expr1 instanceof IBool && expr2 instanceof IBool){
+			return true;
+		}
+		else if(expr1 instanceof IPosition && expr2 instanceof IPosition) {
+			return true;
+		}
+		else if(expr1 instanceof IUnitExpression && expr2 instanceof IUnitExpression){
+			return true;
+		}
+		else{
+			return false;
+		}
+		
 	}
 }

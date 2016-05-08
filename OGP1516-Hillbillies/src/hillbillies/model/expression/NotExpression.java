@@ -36,7 +36,10 @@ public class NotExpression extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getExpression() instanceof IBool && getExpression().isWellFormed(task, calledBy);
+		return (getExpression() instanceof IBool ||
+				(getExpression() instanceof ReadVariable
+					&& (getExpression().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+				)) && getExpression().isWellFormed(task, calledBy);
 	}
 
 }

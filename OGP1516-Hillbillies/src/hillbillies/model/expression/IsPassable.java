@@ -39,7 +39,10 @@ public class IsPassable extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getPosition() instanceof IPosition && getPosition().isWellFormed(task, calledBy);
+		return (getPosition() instanceof IPosition ||
+				(getPosition() instanceof ReadVariable
+					&& (getPosition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IPosition)
+					)) && getPosition().isWellFormed(task, calledBy);
 	}
 
 }

@@ -8,6 +8,7 @@ import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
 import hillbillies.model.expression.IUnitExpression;
 import hillbillies.model.expression.LiteralPosition;
+import hillbillies.model.expression.ReadVariable;
 import hillbillies.part3.programs.SourceLocation;
 
 public class Follow extends Statement {
@@ -49,7 +50,10 @@ public class Follow extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return (getFollowUnit() instanceof IUnitExpression && getFollowUnit().isWellFormed(task, calledBy));
+		return (getFollowUnit() instanceof IUnitExpression || 
+					(getFollowUnit() instanceof ReadVariable
+						&& (getFollowUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+					)) && getFollowUnit().isWellFormed(task, calledBy);
 	}
 
 }

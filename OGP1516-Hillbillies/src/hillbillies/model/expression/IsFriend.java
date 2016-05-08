@@ -36,6 +36,9 @@ public class IsFriend extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		return getFriendUnit() instanceof IUnitExpression && getFriendUnit().isWellFormed(task, calledBy);
+		return (getFriendUnit() instanceof IUnitExpression ||
+				(getFriendUnit() instanceof ReadVariable
+						&& (getFriendUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+					)) && getFriendUnit().isWellFormed(task, calledBy);
 	}
 }

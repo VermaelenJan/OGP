@@ -6,6 +6,7 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
 import hillbillies.model.expression.IBool;
+import hillbillies.model.expression.ReadVariable;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -70,7 +71,10 @@ public class While extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		Boolean temp = (getCondition() instanceof IBool && getCondition().isWellFormed(task, calledBy));
+		Boolean temp = (getCondition() instanceof IBool ||
+				(getCondition() instanceof ReadVariable
+					&& (getCondition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+					)) && getCondition().isWellFormed(task, calledBy);
 		if (getBody() instanceof Sequence) {
 			for (Statement statement : ((Sequence) getBody()).getStatements()) {
 				if (! statement.isWellFormed(task, calledBy)) {
