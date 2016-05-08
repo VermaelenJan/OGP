@@ -1087,7 +1087,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public boolean isTerminated(){
-		return this.isTerminated; //TODO: remove unit everywhere!!!!
+		return this.isTerminated; //TODO: remove unit everywhere!!!! ---- WTF BEDOELDE IK/GIJ HIER????
 	}
 
 	/**
@@ -1257,7 +1257,7 @@ public class Unit {
 	
 	public void startNewPending() {
 		System.out.println("time to pend " + this.timeToPend);
-		this.timeToPend = 0.001; //TODO: in consts?
+		this.timeToPend = ConstantsUtils.PEND_TIME;
 	}
 
 	/**
@@ -1266,11 +1266,11 @@ public class Unit {
 	 * @param dt
 	 *		The time step which the game time is advanced.
 	 * @effect Increment the since the end of the last time resting with the given dt.
-	 * @effect if the time since the last time resting is greater than 180, the unit starts resting.
+	 * @effect if the time since the last time resting is greater than the automatic rest time, the unit starts resting.
 	 */
 	private void advanceTimeNotResting(double dt) {
 		setTimeSinceRest(getTimeSinceRest() + (float)dt);
-		if (getTimeSinceRest() > 180){
+		if (getTimeSinceRest() > ConstantsUtils.AUTO_REST_TIME){
 			startResting();
 		}
 	}
@@ -1395,7 +1395,7 @@ public class Unit {
 			}
 		}
 	}
-	
+	 //TODO: doc, alles van worktypes enzo is weg :p
 	/**
 	 * Advance the time working with the given time step dt.
 	 * 
@@ -1438,7 +1438,7 @@ public class Unit {
 			return;
 		}
 		
-		else if (this.carriedObject != null && workCube.getCubeType().isPassableTerrain()) { //TODO 
+		else if (this.carriedObject != null && workCube.getCubeType().isPassableTerrain()) {
 			double [] currentWorkTarget = {workTarget[0]+0.5,workTarget[1]+0.5,workTarget[2]+0.5};
 			dropObject(currentWorkTarget);
 			updateExperience(10);
@@ -1451,7 +1451,7 @@ public class Unit {
 				&& (world.getLogAtCube(workTarget) != null) ) {
 
 			Boulder currBoulder = world.getBoulderAtCube(workTarget);
-			Log currLog = world.getLogAtCube(workTarget); // could be other boulder/log but doesnt matter?
+			Log currLog = world.getLogAtCube(workTarget);
 			if (currBoulder != null && currLog != null) {
 				improveEquipment(currBoulder,currLog);
 				updateExperience(10);
@@ -2416,7 +2416,6 @@ public class Unit {
 	 * 		| result == (isWorking() && !isActualMoving() && workType == 5 ) 		
 	 */
 	public boolean isWorkingShow(){ 
-		//return (isWorking() && !isActualMoving() && workType == 5 ); TODO 
 		return (isWorking());
 	}
 	
@@ -2450,11 +2449,6 @@ public class Unit {
 	 * Variable registering the time remaining to work.
 	 */
 	private float timeRemainderToWork = 0;
-	
-	/**
-	 * Variable registering the workType.
-	 */
-	//private int workType; //TODO 
 	
 	/**
 	 * Variable registering the workTarget of this unit.
@@ -2539,7 +2533,7 @@ public class Unit {
 		object.terminate();
 		setFreeWeight(getWeight()+object.getWeight());
 	}
-	// TODO
+
 	/**
 	 * The unit drops its object. 
 	 * 

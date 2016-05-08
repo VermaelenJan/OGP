@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
-
+//TODO: alles van read en assign goed testen
 public class ReadVariable extends Expression{
 	
 	public ReadVariable(String variableName, SourceLocation sourceLocation) {
@@ -35,6 +35,6 @@ public class ReadVariable extends Expression{
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-		return task.getVariables().containsKey(variableName); //TODO: testen
+		return task.getVariables().containsKey(variableName);
 	}
 }

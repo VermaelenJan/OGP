@@ -9,11 +9,11 @@ import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
 
-//TODO: interrupt task when not possible to execute (vanuit unit)
-//TODO: rekening houden met dt = 0.001
+//TODO: interrupt task when not possible to execute (vanuit unit) already done, iets vergeten? mee nakijken
+//TODO: rekening houden met dt = 0.001 already done, testen!
 //TODO: lambda expressions?
 //TODO: printen fixen/bekijken
-//TODO: oude todo's snappen
+//TODO: veels te veels testen's
 
 /**
  * A class of ...
@@ -161,7 +161,7 @@ public class Task {
 		
 		Sequence sequence = (Sequence) getActivitiesReq();
 		
-		for (Statement activity : sequence.getStatements()){ //TODO: goed nakijken
+		for (Statement activity : sequence.getStatements()){
 			if (! (activitiesMap.get(activity))) {
 				if (activity instanceof BreakStatement) {
 					breakWhile();

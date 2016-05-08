@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Model;
-import hillbillies.model.expression.Expression;
 
 /**
  * A class of ...
@@ -90,7 +89,7 @@ public class Scheduler {
 	}
 	
 	@SuppressWarnings("unused")
-	private List<Task> getAllTasksWithCond(Expression cond) {
+	private List<Task> getAllTasksWithCond(/*TODO*/) {
 		List<Task> result = new ArrayList<>();
 		for (Task task: tasks) {
 			if (true) {

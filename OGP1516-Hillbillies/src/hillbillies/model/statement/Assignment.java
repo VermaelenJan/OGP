@@ -8,6 +8,7 @@ import hillbillies.model.expression.Expression;
 import hillbillies.model.expression.IBool;
 import hillbillies.model.expression.IPosition;
 import hillbillies.model.expression.IUnitExpression;
+import hillbillies.model.expression.ReadVariable;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -55,7 +56,7 @@ public class Assignment extends Statement {
 		if (!task.getVariables().containsKey(getVariableName())) {
 			return true;
 		}
-		else if (equalTypes(task.getVariables().get(getVariableName()), getValue())) {
+		else if (equalTypes(task.getVariables().get(getVariableName()), getValue(), task)) {
 			return true;
 		}
 		else {
@@ -63,7 +64,14 @@ public class Assignment extends Statement {
 		}
 	}
 	
-	private Boolean equalTypes( Expression expr1, Expression expr2){ //TODO: als een van de twee (of beide) nen read is ==> de evaluate gebruiken
+	private Boolean equalTypes( Expression expr1, Expression expr2, Task task){
+		if (expr1 instanceof ReadVariable) {
+			expr1 = ((ReadVariable)expr1).evaluate(task.getAssignedUnit(), task.getSelectedCube());
+		}
+		if (expr2 instanceof ReadVariable) {
+			expr2 = ((ReadVariable)expr2).evaluate(task.getAssignedUnit(), task.getSelectedCube());
+		}
+		
 		if (expr1 instanceof IBool && expr2 instanceof IBool){
 			return true;
 		}
@@ -76,6 +84,5 @@ public class Assignment extends Statement {
 		else{
 			return false;
 		}
-		
 	}
 }

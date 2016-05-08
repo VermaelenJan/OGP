@@ -71,4 +71,9 @@ public final class ConstantsUtils {
 	 * Variable registering the maximum number of factions in a world.
 	 */
 	static final int MAX_FACTIONS = 5;
+	
+	//TODO: doc
+	static final double PEND_TIME = 0.001;
+	
+	static final int AUTO_REST_TIME = 180;
 }
