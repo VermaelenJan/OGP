@@ -4,5 +4,5 @@ activities :
 	
 	w := (10, 10, 10);
 	w := enemy;
-	moveTo w;
+	moveTo next_to position_of w;
 	work here;

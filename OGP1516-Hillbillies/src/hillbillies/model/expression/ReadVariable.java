@@ -34,6 +34,8 @@ public class ReadVariable extends Expression{
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-		return task.getVariables().containsKey(variableName);
+		//return task.getVariables().containsKey(variableName); TODO: hoe vaak gaan we hier nog aan zitten, tis zoals we int begin dachten:
+																	// ge variable zit er hier nog niet in.... oplossing? (zie andere TODO in moveTo)
+		return true;
 	}
 }

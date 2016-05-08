@@ -1,0 +1,6 @@
+name: "ownTasks"
+priority : 3
+activities :
+	w := (10, 10, 10);
+	moveTo w;
+	work here;

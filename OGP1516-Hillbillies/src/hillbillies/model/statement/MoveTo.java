@@ -43,6 +43,7 @@ public class MoveTo extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
+		System.out.println(getPosition().evaluate(task, task.getSelectedCube())); //TODO: == null   oplossing? (assigns al bij isWellFormed doen?) + andere TODO in read
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
 						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)

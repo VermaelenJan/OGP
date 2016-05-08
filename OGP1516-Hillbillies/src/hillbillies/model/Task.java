@@ -271,7 +271,7 @@ public class Task {
 			ArrayList<java.lang.Object> calledBy = new ArrayList<java.lang.Object>();
 			calledBy.add(this);
 			if (!activity.isWellFormed(this, calledBy)) {
-				System.out.println("iswellformed fout");
+				System.out.println("iswellformed fout: " + activity);
 				return false;
 			}
 		}
