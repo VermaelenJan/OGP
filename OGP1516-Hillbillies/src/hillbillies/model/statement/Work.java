@@ -31,7 +31,7 @@ public class Work extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube){
-		unit.workAt((int[]) getPosition().evaluate(unit, selectedCube));
+		unit.workAt((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
 		return null;
 	}
 
@@ -40,7 +40,7 @@ public class Work extends Statement {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable
-						&& (getPosition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IPosition)
+						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
 					)) && getPosition().isWellFormed(task, calledBy);
 	}
 }

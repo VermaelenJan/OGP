@@ -24,8 +24,8 @@ public class IsAlive extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube) {
-		return !((Unit)getAliveUnit().evaluate(unit, selectedCube)).isTerminated();
+	public Boolean evaluate(Task task, int[] selectedCube) {
+		return !((Unit)getAliveUnit().evaluate(task, selectedCube)).isTerminated();
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class IsAlive extends Expression implements IBool {
 		calledBy.add(this);
 		return (getAliveUnit() instanceof IUnitExpression ||
 				(getAliveUnit() instanceof ReadVariable
-					&& (getAliveUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+					&& (getAliveUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 				)) && getAliveUnit().isWellFormed(task, calledBy);
 	}
 }

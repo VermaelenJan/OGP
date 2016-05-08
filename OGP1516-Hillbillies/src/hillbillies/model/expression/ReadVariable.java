@@ -3,7 +3,6 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
-import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 //TODO: alles van read en assign goed testen
 public class ReadVariable extends Expression{
@@ -29,8 +28,8 @@ public class ReadVariable extends Expression{
 	}
 
 	@Override
-	public Expression evaluate(Unit unit, int[] selectedCube) { // TODO:e valuate in while: w:=x p:=w use p
-		return unit.getAssignedTask().readVariable(variableName);
+	public Expression evaluate(Task task, int[] selectedCube) { // TODO:evaluate in while: w:=x p:=w use p
+		return task.readVariable(variableName);
 	}
 
 	@Override

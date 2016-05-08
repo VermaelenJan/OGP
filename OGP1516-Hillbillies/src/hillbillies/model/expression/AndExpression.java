@@ -3,7 +3,6 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
-import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class AndExpression extends Expression implements IBool {
@@ -39,8 +38,8 @@ public class AndExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube) {
-		return (((Boolean)getLeft().evaluate(unit, selectedCube)) && ((Boolean)getRight().evaluate(unit, selectedCube)));
+	public Boolean evaluate(Task task, int[] selectedCube) {
+		return (((Boolean)getLeft().evaluate(task, selectedCube)) && ((Boolean)getRight().evaluate(task, selectedCube)));
 	}
 
 	@Override
@@ -48,11 +47,11 @@ public class AndExpression extends Expression implements IBool {
 		calledBy.add(this);
 		return (getLeft() instanceof IBool ||
 					(getLeft() instanceof ReadVariable
-						&& (getLeft().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+						&& (getLeft().evaluate(task, task.getSelectedCube()) instanceof IBool)
 					)) && getLeft().isWellFormed(task, calledBy) &&
 				(getRight() instanceof IBool ||
 					(getRight() instanceof ReadVariable
-						&& (getRight().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+						&& (getRight().evaluate(task, task.getSelectedCube()) instanceof IBool)
 					)) && getRight().isWellFormed(task, calledBy);
 	}
 

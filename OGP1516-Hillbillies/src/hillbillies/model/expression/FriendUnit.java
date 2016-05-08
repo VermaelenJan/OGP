@@ -25,12 +25,12 @@ public class FriendUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Unit unit, int[] selectedCube) {
+	public Unit evaluate(Task task, int[] selectedCube) {
 		Unit friendUnit = null;
-		for (Unit currUnit: unit.getWorld().getAllUnits()){
-			if ((friendUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <
-										Position.getDistanceBetween(friendUnit.getLocation(), unit.getLocation()))
-					&& currUnit.getFaction() == unit.getFaction() && currUnit != unit) {
+		for (Unit currUnit: task.getAssignedUnit().getWorld().getAllUnits()){
+			if ((friendUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
+										Position.getDistanceBetween(friendUnit.getLocation(), task.getAssignedUnit().getLocation()))
+					&& currUnit.getFaction() == task.getAssignedUnit().getFaction() && currUnit != task.getAssignedUnit()) {
 				friendUnit = currUnit;
 			}
 		}

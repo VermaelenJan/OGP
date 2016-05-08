@@ -28,8 +28,8 @@ public class Attack extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		unit.attack((Unit)getAttackUnit().evaluate(unit, selectedCube));
-		((Unit)getAttackUnit().evaluate(unit, selectedCube)).defend(unit);
+		unit.attack((Unit)getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube));
+		((Unit)getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube)).defend(unit);
 		return null;
 	}
 
@@ -38,7 +38,7 @@ public class Attack extends Statement {
 		calledBy.add(this);
 		return (getAttackUnit() instanceof IUnitExpression ||
 					(getAttackUnit() instanceof ReadVariable
-						&& (getAttackUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+						&& (getAttackUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 					)) && getAttackUnit().isWellFormed(task, calledBy);
 	}
 }

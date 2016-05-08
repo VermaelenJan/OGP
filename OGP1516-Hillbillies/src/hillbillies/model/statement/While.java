@@ -48,7 +48,7 @@ public class While extends Statement {
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
 		
-		if ((Boolean) getCondition().evaluate(unit, selectedCube)){
+		if ((Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube)){
 			if (getBody() instanceof Sequence) {
 				List<Statement> list = new ArrayList<>();
 				list.addAll(((Sequence) getBody()).getStatements());
@@ -73,7 +73,7 @@ public class While extends Statement {
 		calledBy.add(this);
 		Boolean temp = (getCondition() instanceof IBool ||
 				(getCondition() instanceof ReadVariable
-					&& (getCondition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+					&& (getCondition().evaluate(task, task.getSelectedCube()) instanceof IBool)
 					)) && getCondition().isWellFormed(task, calledBy);
 		if (getBody() instanceof Sequence) {
 			for (Statement statement : ((Sequence) getBody()).getStatements()) {

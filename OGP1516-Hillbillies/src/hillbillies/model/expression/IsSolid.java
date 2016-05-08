@@ -3,7 +3,6 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
-import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class IsSolid extends Expression implements IBool {
@@ -24,11 +23,11 @@ public class IsSolid extends Expression implements IBool {
 	}
 	
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube) {
-		int x = ((int[])getPosition().evaluate(unit, selectedCube))[0];
-		int y = ((int[])getPosition().evaluate(unit, selectedCube))[1];
-		int z = ((int[])getPosition().evaluate(unit, selectedCube))[2];
-		return !unit.getWorld().getCubeType(x, y, z).isPassableTerrain();
+	public Boolean evaluate(Task task, int[] selectedCube) {
+		int x = ((int[])getPosition().evaluate(task, selectedCube))[0];
+		int y = ((int[])getPosition().evaluate(task, selectedCube))[1];
+		int z = ((int[])getPosition().evaluate(task, selectedCube))[2];
+		return !task.getAssignedUnit().getWorld().getCubeType(x, y, z).isPassableTerrain();
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class IsSolid extends Expression implements IBool {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 				(getPosition() instanceof ReadVariable
-					&& (getPosition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IPosition)
+					&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
 				)) && getPosition().isWellFormed(task, calledBy);
 	}
 }

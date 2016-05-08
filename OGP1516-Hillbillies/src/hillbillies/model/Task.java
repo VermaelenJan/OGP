@@ -14,6 +14,8 @@ import hillbillies.part3.programs.SourceLocation;
 //TODO: lambda expressions?
 //TODO: printen fixen/bekijken
 //TODO: veels te veels testen's
+//TODO: wat doen met dubbele selected's?
+//TODO: wat eig met: moveTo101010 als hij in grot zit?
 
 /**
  * A class of ...
@@ -29,6 +31,7 @@ public class Task {
 		setSelectedCube(selectedCube);
 		setActivities(activities);
 		schedulersForTask = new HashSet<Scheduler>();
+		this.variables = new HashMap<String, Expression>();
 		
 	}
 	

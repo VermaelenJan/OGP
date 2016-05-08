@@ -1,7 +1,7 @@
 package hillbillies.model.expression;
 
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 
 public interface IBool {
-	public abstract Boolean evaluate(Unit unit, int[] selectedCube);
+	public abstract Boolean evaluate(Task task, int[] selectedCube);
 }

@@ -24,9 +24,9 @@ public class CarriesItem extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube) {
-		return ((Unit) getCarryingUnit().evaluate(unit, selectedCube)).isCarryingBoulder() ||
-				((Unit) getCarryingUnit().evaluate(unit, selectedCube)).isCarryingLog();
+	public Boolean evaluate(Task task, int[] selectedCube) {
+		return ((Unit) getCarryingUnit().evaluate(task, selectedCube)).isCarryingBoulder() ||
+				((Unit) getCarryingUnit().evaluate(task, selectedCube)).isCarryingLog();
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class CarriesItem extends Expression implements IBool {
 		calledBy.add(this);
 		return (getCarryingUnit() instanceof IUnitExpression ||
 				(getCarryingUnit() instanceof ReadVariable
-					&& (getCarryingUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+					&& (getCarryingUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 				)) && getCarryingUnit().isWellFormed(task, calledBy);
 	}
 }

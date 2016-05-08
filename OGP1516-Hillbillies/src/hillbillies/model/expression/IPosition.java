@@ -1,6 +1,6 @@
 package hillbillies.model.expression;
 
-import hillbillies.model.Unit;
+import hillbillies.model.Task;
 
 /**
  * A ...
@@ -9,5 +9,5 @@ import hillbillies.model.Unit;
  * @version 1.0
  */
 public interface IPosition {
-	public abstract int[] evaluate(Unit unit, int[] selectedCube);
+	public abstract int[] evaluate(Task task, int[] selectedCube);
 }

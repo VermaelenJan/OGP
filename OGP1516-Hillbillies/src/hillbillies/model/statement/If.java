@@ -56,7 +56,7 @@ public class If extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		if ((Boolean) getCondition().evaluate(unit, selectedCube)) {
+		if ((Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube)) {
 			if (getIfBody() instanceof Sequence) {
 				return (Sequence) getIfBody();
 			}
@@ -89,7 +89,7 @@ public class If extends Statement {
 		calledBy.add(this);
 		return (getCondition() instanceof IBool ||
 					(getCondition() instanceof ReadVariable
-						&& (getCondition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+						&& (getCondition().evaluate(task, task.getSelectedCube()) instanceof IBool)
 					)) && getCondition().isWellFormed(task, calledBy)
 				&&
 				(getIfBody() instanceof Sequence || getIfBody() instanceof Statement) &&

@@ -69,7 +69,7 @@ public class Scheduler {
 	private void sortTasksOnPriority() {
 		Collections.sort(getAllTasks(), new Comparator<Task> () {
 			@Override
-			public int compare(Task task1, Task task2) { // Het is wel local class ma ni alles van eric zijne slide staat erin mabon
+			public int compare(Task task1, Task task2) { //TODO: Het is wel local class ma ni alles van eric zijne slide staat erin mabon
 				return Integer.compare(task2.getPriority(), task1.getPriority());
 			}
 		});

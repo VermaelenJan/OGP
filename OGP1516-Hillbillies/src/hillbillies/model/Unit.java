@@ -1239,7 +1239,6 @@ public class Unit {
 		this.timeToPend = time;
 		if (this.timeToPend <= 0) {
 			getAssignedTask().finishedLastActivity();
-			System.out.println("pending done");
 		}
 	}
 
@@ -1256,7 +1255,6 @@ public class Unit {
 	private double timeToPend;
 	
 	public void startNewPending() {
-		System.out.println("time to pend " + this.timeToPend);
 		this.timeToPend = ConstantsUtils.PEND_TIME;
 	}
 

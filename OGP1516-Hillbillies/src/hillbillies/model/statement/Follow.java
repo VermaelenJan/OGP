@@ -30,7 +30,7 @@ public class Follow extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		Unit followUnit = (Unit) getFollowUnit().evaluate(unit, selectedCube);
+		Unit followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube);
 		int followUnitX = followUnit.getOccupiedCube()[0];
 		int followUnitY = followUnit.getOccupiedCube()[1];
 		int followUnitZ = followUnit.getOccupiedCube()[2];
@@ -52,7 +52,7 @@ public class Follow extends Statement {
 		calledBy.add(this);
 		return (getFollowUnit() instanceof IUnitExpression || 
 					(getFollowUnit() instanceof ReadVariable
-						&& (getFollowUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+						&& (getFollowUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 					)) && getFollowUnit().isWellFormed(task, calledBy);
 	}
 

@@ -3,7 +3,6 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
-import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -12,7 +11,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
-public class SelectedPosition extends Expression {
+public class SelectedPosition extends Expression implements IPosition {
 
 	public SelectedPosition(SourceLocation sourceLocation) {
 		super(sourceLocation);
@@ -24,7 +23,7 @@ public class SelectedPosition extends Expression {
 	}
 
 	@Override
-	public int[] evaluate(Unit unit, int[] selectedCube) {
+	public int[] evaluate(Task task, int[] selectedCube) {
 		return selectedCube;
 	}
 

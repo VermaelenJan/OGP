@@ -25,12 +25,12 @@ public class EnemyUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Unit unit, int[] selectedCube) {
+	public Unit evaluate(Task task, int[] selectedCube) {
 		Unit enemyUnit = null;
-		for (Unit currUnit: unit.getWorld().getAllUnits()){
-			if ((enemyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), unit.getLocation()) <
-										Position.getDistanceBetween(enemyUnit.getLocation(), unit.getLocation()))
-					&& currUnit.getFaction() != unit.getFaction()) {
+		for (Unit currUnit: task.getAssignedUnit().getWorld().getAllUnits()){
+			if ((enemyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
+										Position.getDistanceBetween(enemyUnit.getLocation(), task.getAssignedUnit().getLocation()))
+					&& currUnit.getFaction() != task.getAssignedUnit().getFaction()) {
 				enemyUnit = currUnit;
 			}
 		}

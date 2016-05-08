@@ -3,7 +3,6 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
-import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -58,7 +57,7 @@ public class LiteralPosition extends Expression implements IPosition{
 	}
 
 	@Override
-	public int[] evaluate(Unit unit, int[] selectedCube) {
+	public int[] evaluate(Task task, int[] selectedCube) {
 		int[] position = {getX(), getY(), getZ()};
 		return position;
 	}

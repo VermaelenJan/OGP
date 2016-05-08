@@ -3,7 +3,6 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
-import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class NotExpression extends Expression implements IBool {
@@ -29,8 +28,8 @@ public class NotExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube) {
-		return !(Boolean)getExpression().evaluate(unit, selectedCube);
+	public Boolean evaluate(Task task, int[] selectedCube) {
+		return !(Boolean)getExpression().evaluate(task, selectedCube);
 	}
 
 	@Override
@@ -38,7 +37,7 @@ public class NotExpression extends Expression implements IBool {
 		calledBy.add(this);
 		return (getExpression() instanceof IBool ||
 				(getExpression() instanceof ReadVariable
-					&& (getExpression().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IBool)
+					&& (getExpression().evaluate(task, task.getSelectedCube()) instanceof IBool)
 				)) && getExpression().isWellFormed(task, calledBy);
 	}
 

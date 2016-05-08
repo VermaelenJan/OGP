@@ -24,8 +24,8 @@ public class IsEnemy extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Unit unit, int[] selectedCube) {
-		return unit.getFaction() != ((Unit) getEnemyUnit().evaluate(unit, selectedCube)).getFaction();
+	public Boolean evaluate(Task task, int[] selectedCube) {
+		return task.getAssignedUnit().getFaction() != ((Unit) getEnemyUnit().evaluate(task, selectedCube)).getFaction();
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class IsEnemy extends Expression implements IBool {
 		calledBy.add(this);
 		return (getEnemyUnit() instanceof IUnitExpression ||
 				(getEnemyUnit() instanceof ReadVariable
-						&& (getEnemyUnit().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IUnitExpression)
+						&& (getEnemyUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 						)) && getEnemyUnit().isWellFormed(task, calledBy);
 	}
 }

@@ -53,8 +53,8 @@ public class NextToPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Unit unit, int[] selectedCube) {
-		return getNeighbouring(unit, (int[])getPosition().evaluate(unit, selectedCube));
+	public int[] evaluate(Task task, int[] selectedCube) {
+		return getNeighbouring(task.getAssignedUnit(), (int[])getPosition().evaluate(task, selectedCube));
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class NextToPosition extends Expression implements IPosition {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
-						&& (getPosition().evaluate(task.getAssignedUnit(), task.getSelectedCube()) instanceof IPosition)
+						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
 					)) && getPosition().isWellFormed(task, calledBy);
 	}
 
