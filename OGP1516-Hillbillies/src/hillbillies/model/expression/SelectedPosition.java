@@ -18,11 +18,6 @@ public class SelectedPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public String toString() {
-		return "Selected cube";
-	}
-
-	@Override
 	public int[] evaluate(Task task, int[] selectedCube) {
 		return selectedCube;
 	}
@@ -30,5 +25,11 @@ public class SelectedPosition extends Expression implements IPosition {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

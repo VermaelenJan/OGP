@@ -22,10 +22,6 @@ public class NotExpression extends Expression implements IBool {
 		return this.expression;
 	}
 
-	@Override
-	public String toString() {
-		return "Not " + getExpression().toString();
-	}
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
@@ -39,6 +35,12 @@ public class NotExpression extends Expression implements IBool {
 				(getExpression() instanceof ReadVariable
 					&& (getExpression().evaluate(task, task.getSelectedCube()) instanceof IBool)
 				)) && getExpression().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

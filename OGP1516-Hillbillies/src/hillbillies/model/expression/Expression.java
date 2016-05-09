@@ -27,8 +27,8 @@ public abstract class Expression {
 		this.sourceLocation = sourceLocation;
 	}
 	
-	@Override
-	public abstract String toString();
+	
+	public abstract String toString(Task task, int[] selectedCube);
 	
 	public abstract Object evaluate(Task task, int[] selectedCube);
 	

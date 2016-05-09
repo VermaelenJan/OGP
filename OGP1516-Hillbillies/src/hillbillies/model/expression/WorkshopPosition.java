@@ -42,12 +42,13 @@ public class WorkshopPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public String toString() {
-		return "WorkshopPosition";
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		return true;
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-		return true;
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

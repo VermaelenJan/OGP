@@ -22,10 +22,6 @@ public class ReadVariable extends Expression{
 
 	private String variableName;
 	
-	@Override
-	public String toString() {
-		return getVariableName(); 
-	}
 
 	@Override
 	public Expression evaluate(Task task, int[] selectedCube) { 
@@ -38,5 +34,10 @@ public class ReadVariable extends Expression{
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return task.getVariables().containsKey(variableName);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		return getVariableName();
 	}
 }

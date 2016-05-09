@@ -18,11 +18,6 @@ public class HerePosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public String toString() {
-		return "Here";
-	}
-
-	@Override
 	public int[] evaluate(Task task, int[] selectedCube) {
 		return task.getAssignedUnit().getOccupiedCube();
 	}
@@ -30,5 +25,11 @@ public class HerePosition extends Expression implements IPosition {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -51,10 +51,10 @@ public class LiteralPosition extends Expression implements IPosition{
 		return this.z;
 	}
 
-	@Override
-	public String toString() {
-		return "X: " + getX() + " Y: " + getY() + " Z: " + getZ();
-	}
+	//@Override
+	//public String toString() {
+	//	return "X: " + getX() + " Y: " + getY() + " Z: " + getZ();
+	//}
 
 	@Override
 	public int[] evaluate(Task task, int[] selectedCube) {
@@ -65,5 +65,11 @@ public class LiteralPosition extends Expression implements IPosition{
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

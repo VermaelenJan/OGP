@@ -29,16 +29,17 @@ public class PositionOfUnit extends Expression implements IPosition {
 	}
 
 	@Override
-	public String toString() {
-		return "Position of " + getExpUnit().toString();
-	}
-
-	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
 		return (getExpUnit() instanceof IUnitExpression ||
 				(getExpUnit() instanceof ReadVariable
 					&& (getExpUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 				)) && getExpUnit().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

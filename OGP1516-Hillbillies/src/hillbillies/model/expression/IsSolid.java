@@ -31,16 +31,17 @@ public class IsSolid extends Expression implements IBool {
 	}
 
 	@Override
-	public String toString() {
-		return "Is solid" + getPosition().toString();
-	}
-
-	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 				(getPosition() instanceof ReadVariable
 					&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
 				)) && getPosition().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

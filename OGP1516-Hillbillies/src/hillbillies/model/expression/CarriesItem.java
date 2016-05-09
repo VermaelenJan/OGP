@@ -29,10 +29,6 @@ public class CarriesItem extends Expression implements IBool {
 				((Unit) getCarryingUnit().evaluate(task, selectedCube)).isCarryingLog();
 	}
 
-	@Override
-	public String toString() {
-		return "Is carrying " + this.carryingUnit.toString() ;
-	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
@@ -41,5 +37,11 @@ public class CarriesItem extends Expression implements IBool {
 				(getCarryingUnit() instanceof ReadVariable
 					&& (getCarryingUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 				)) && getCarryingUnit().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

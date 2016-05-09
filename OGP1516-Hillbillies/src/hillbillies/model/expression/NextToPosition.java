@@ -31,10 +31,6 @@ public class NextToPosition extends Expression implements IPosition {
 		return this.position;
 	}
 
-	@Override
-	public String toString() {
-		return "Next to position";
-	}
 
 	private static int[] getNeighbouring(Unit unit, int[] target) {
 		List<hillbillies.model.Cube> cubes = unit.getPositionObj().getNeighbouringCubes(target);
@@ -67,6 +63,12 @@ public class NextToPosition extends Expression implements IPosition {
 					(getPosition() instanceof ReadVariable 
 						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
 					)) && getPosition().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

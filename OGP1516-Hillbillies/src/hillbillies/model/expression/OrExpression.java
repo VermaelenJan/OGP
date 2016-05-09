@@ -33,12 +33,6 @@ public class OrExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public String toString() {
-		return getLeft().toString() + " or " + getRight().toString();
-
-	}
-
-	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
 		return (((Boolean)getLeft().evaluate(task, selectedCube)) || ((Boolean)getRight().evaluate(task, selectedCube)));
 	}
@@ -54,6 +48,12 @@ public class OrExpression extends Expression implements IBool {
 					(getRight() instanceof ReadVariable
 						&& (getRight().evaluate(task, task.getSelectedCube()) instanceof IBool)
 					)) && getRight().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

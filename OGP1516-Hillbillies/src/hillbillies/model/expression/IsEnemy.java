@@ -29,16 +29,17 @@ public class IsEnemy extends Expression implements IBool {
 	}
 
 	@Override
-	public String toString() {
-		return "Is enemy " + getEnemyUnit().toString();
-	}
-
-	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
 		return (getEnemyUnit() instanceof IUnitExpression ||
 				(getEnemyUnit() instanceof ReadVariable
 						&& (getEnemyUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 						)) && getEnemyUnit().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -29,16 +29,17 @@ public class IsAlive extends Expression implements IBool {
 	}
 
 	@Override
-	public String toString() {
-		return "Is alive " + getAliveUnit().toString();
-	}
-
-	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
 		return (getAliveUnit() instanceof IUnitExpression ||
 				(getAliveUnit() instanceof ReadVariable
 					&& (getAliveUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 				)) && getAliveUnit().isWellFormed(task, calledBy);
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

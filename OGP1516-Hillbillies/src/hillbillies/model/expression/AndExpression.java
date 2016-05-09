@@ -33,7 +33,7 @@ public class AndExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public String toString() {
+	public String toString(Task task,int[] selectedCube) {
 		return getLeft().toString() + " and " + getRight().toString();
 	}
 

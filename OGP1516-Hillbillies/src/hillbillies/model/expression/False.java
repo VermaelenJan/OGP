@@ -20,11 +20,6 @@ public class False extends Expression implements IBool {
 		super(sourceLocation);
 	}
 
-	@Override
-	public String toString() {
-		return "False";
-		
-	}
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
@@ -34,5 +29,11 @@ public class False extends Expression implements IBool {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

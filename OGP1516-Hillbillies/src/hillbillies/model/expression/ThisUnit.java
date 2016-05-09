@@ -19,11 +19,6 @@ public class ThisUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public String toString() {
-		return "This unit"; 
-	}
-
-	@Override
 	public Unit evaluate(Task task, int[] selectedCube) {
 		return task.getAssignedUnit();
 	}
@@ -31,5 +26,11 @@ public class ThisUnit extends Expression implements IUnitExpression {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

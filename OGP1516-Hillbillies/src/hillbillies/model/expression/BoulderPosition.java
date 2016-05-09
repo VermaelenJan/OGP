@@ -25,13 +25,16 @@ public class BoulderPosition extends Expression implements IPosition {
 		return boulder.getOccupiedCube();
 	}
 
-	@Override
-	public String toString() {
-		return "BoulderPosition";
-	}
+
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
+	}
+
+	@Override
+	public String toString(Task task, int[] selectedCube) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
