@@ -10,12 +10,8 @@ import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
 
 //TODO: interrupt task when not possible to execute (vanuit unit) already done, iets vergeten? mee nakijken
-//TODO: rekening houden met dt = 0.001 already done, testen!
 //TODO: lambda expressions?
 //TODO: printen fixen/bekijken
-//TODO: veels te veels testen's
-//TODO: wat doen met dubbele selected's?
-//TODO: wat eig met: moveTo101010 als hij in grot zit?
 
 /**
  * A class of ...
@@ -154,14 +150,12 @@ public class Task {
 	}
 	
 	public void executeTask(){
-		
 
 		
 //		for (Statement el : getActivitiesReq().getStatements()) {
 //			System.out.print(el + ": " + activitiesMap.get(el) + "-"); 
 //		}
 //		System.out.println();
-		
 		Sequence sequence = (Sequence) getActivitiesReq();
 		
 		for (Statement activity : sequence.getStatements()){
@@ -272,9 +266,11 @@ public class Task {
 			calledBy.add(this);
 			if (!activity.isWellFormed(this, calledBy)) {
 				System.out.println("iswellformed fout: " + activity);
+				getVariables().clear();
 				return false;
 			}
 		}
+		getVariables().clear();
 		System.out.println("iswellformed juist");
 		return true;
 	}

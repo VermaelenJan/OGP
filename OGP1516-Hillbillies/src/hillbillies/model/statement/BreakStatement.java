@@ -20,7 +20,7 @@ public class BreakStatement extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		return null;
+		throw new RuntimeException();
 	}
 
 	@Override

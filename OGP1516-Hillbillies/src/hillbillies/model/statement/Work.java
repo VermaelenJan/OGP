@@ -31,7 +31,16 @@ public class Work extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube){
-		unit.workAt((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
+		if (getPosition() instanceof IPosition){
+			unit.workAt((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
+		}
+		else if (getPosition() instanceof ReadVariable){
+			unit.workAt((int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube)).
+					evaluate(unit.getAssignedTask(), selectedCube));
+		}
+		else {
+			throw new RuntimeException();
+		}
 		return null;
 	}
 

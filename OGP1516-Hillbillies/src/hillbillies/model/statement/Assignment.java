@@ -2,6 +2,8 @@ package hillbillies.model.statement;
 
 import java.util.ArrayList;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -19,7 +21,7 @@ import hillbillies.part3.programs.SourceLocation;
  */
 public class Assignment extends Statement {
 
-	public Assignment(String variableName, Expression value,SourceLocation sourceLocation) { //TODO: TYPE!!!
+	public Assignment(String variableName, Expression value,SourceLocation sourceLocation) {
 		super(sourceLocation);
 		setVariableName(variableName);
 		setValue(value);
@@ -53,10 +55,13 @@ public class Assignment extends Statement {
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+
 		if (!task.getVariables().containsKey(getVariableName())) {
+			task.addVariable(getVariableName(), getValue(), getSourceLocation()); // TODO if else, while probs
 			return true;
 		}
 		else if (equalTypes(task.getVariables().get(getVariableName()), getValue(), task)) {
+			task.addVariable(getVariableName(), getValue(), getSourceLocation());
 			return true;
 		}
 		else {
@@ -65,6 +70,7 @@ public class Assignment extends Statement {
 	}
 	
 	private Boolean equalTypes( Expression expr1, Expression expr2, Task task){
+		
 		if (expr1 instanceof ReadVariable) {
 			expr1 = ((ReadVariable)expr1).evaluate(task, task.getSelectedCube());
 		}

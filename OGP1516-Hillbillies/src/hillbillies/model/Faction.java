@@ -169,7 +169,7 @@ public class Faction {
 		}
 	}
 	
-	// TODO doc
+
 	protected void removeUnit(Unit unit){
 		unitsOfFaction.remove(unit);
 	}

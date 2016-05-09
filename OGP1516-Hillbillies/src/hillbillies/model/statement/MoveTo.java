@@ -2,6 +2,10 @@ package hillbillies.model.statement;
 
 import java.util.ArrayList;
 
+import javax.management.RuntimeErrorException;
+
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -33,17 +37,26 @@ public class MoveTo extends Statement {
 	private Expression position;
 	
 	@Override
-	public Sequence execute(Unit unit,int[] selectedCube){ //TODO: commit b35a24e2bebf95302422c1c7b0ccd90025a2ea57: ik was precies toch ni akkoord haha
-		//IPosition pos = (IPosition) getPosition().evaluate(unit, selectedCube);
-		//unit.moveTo((int[]) pos.evaluate(unit, selectedCube)); 
-		unit.moveTo((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
+	public Sequence execute(Unit unit,int[] selectedCube){ 
+		System.out.println(unit);
+		System.out.println(unit.getAssignedTask().getVariables().size());
+		if (getPosition() instanceof IPosition){
+			unit.moveTo((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
+		}
+		else if (getPosition() instanceof ReadVariable){
+			unit.moveTo((int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube)).
+					evaluate(unit.getAssignedTask(), selectedCube));
+		}
+		else {
+			throw new RuntimeException();
+		}
 		return null;
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		System.out.println(getPosition().evaluate(task, task.getSelectedCube())); //TODO: == null   oplossing? (assigns al bij isWellFormed doen?) + andere TODO in read
+		System.out.println(getPosition().evaluate(task, task.getSelectedCube()));
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
 						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)

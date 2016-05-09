@@ -2,6 +2,8 @@ package hillbillies.model.statement;
 
 import java.util.ArrayList;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -28,8 +30,20 @@ public class Attack extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		unit.attack((Unit)getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube));
-		((Unit)getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube)).defend(unit);
+		Unit tempAttackUnit = null;
+		if (getAttackUnit() instanceof IUnitExpression){
+			tempAttackUnit = (Unit) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube);
+		}
+		else if (getAttackUnit() instanceof ReadVariable){
+			tempAttackUnit = (Unit) ((IUnitExpression) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube)).
+					evaluate(unit.getAssignedTask(), selectedCube);
+		}
+		else{
+			throw new RuntimeException();
+		}
+		unit.attack(tempAttackUnit);
+		tempAttackUnit.defend(unit);
+		
 		return null;
 	}
 

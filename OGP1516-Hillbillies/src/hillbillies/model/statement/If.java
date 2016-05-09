@@ -56,7 +56,15 @@ public class If extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		if ((Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube)) {
+		Boolean tempBool = false;
+		if (getCondition() instanceof IBool){
+			tempBool = (Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube);
+		}
+		else if (getCondition() instanceof ReadVariable){
+			tempBool = (Boolean) ((IBool) getCondition().evaluate(unit.getAssignedTask(), selectedCube)).
+					evaluate(unit.getAssignedTask(), selectedCube);
+		}
+		if (tempBool) {
 			if (getIfBody() instanceof Sequence) {
 				return (Sequence) getIfBody();
 			}
@@ -78,7 +86,7 @@ public class If extends Statement {
 				}
 			}
 			else {
-				unit.startNewPending(); //TODO: werkte dees nog ni?? (deze regel toegevoegd)
+				unit.startNewPending(); 
 				return null;
 			}
 		}

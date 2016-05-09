@@ -3,6 +3,8 @@ package hillbillies.model.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -30,7 +32,19 @@ public class Follow extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		Unit followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube);
+		Unit followUnit = null;
+		
+		if (getFollowUnit() instanceof IUnitExpression){
+			followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube);
+		}
+		else if (getFollowUnit() instanceof ReadVariable){
+			followUnit = (Unit) ((IUnitExpression) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube)).
+					evaluate(unit.getAssignedTask(), selectedCube);
+		}
+		else{
+			throw new RuntimeException();
+		}
+		
 		int followUnitX = followUnit.getOccupiedCube()[0];
 		int followUnitY = followUnit.getOccupiedCube()[1];
 		int followUnitZ = followUnit.getOccupiedCube()[2];

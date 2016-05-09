@@ -3,6 +3,9 @@ package hillbillies.model;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
@@ -1087,7 +1090,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public boolean isTerminated(){
-		return this.isTerminated; //TODO: remove unit everywhere!!!! ---- WTF BEDOELDE IK/GIJ HIER????
+		return this.isTerminated;
 	}
 
 	/**
@@ -2100,12 +2103,16 @@ public class Unit {
 	public void moveTo(int[] endTarget) throws IllegalPositionException {
 	
 		if (isFalling()) {
-			getAssignedTask().interruptTask();
+			if (getAssignedTask() != null) {
+				getAssignedTask().interruptTask();
+			}
 			return;
 		}
 
 		if (!world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()) {
-			getAssignedTask().interruptTask();
+			if (getAssignedTask() != null) {
+				getAssignedTask().interruptTask();
+			}
 			throw new IllegalPositionException(new double[] {(double) endTarget[0]+0.5, (double) endTarget[1]+0.5, (double) endTarget[2]+0.5});
 		}
 				
@@ -2173,6 +2180,11 @@ public class Unit {
 				queue = new HashMap<Cube, Integer>();
 				currentLvl = 0;
 				moveTo(endTarget);
+			}
+		}
+		else {
+			if (getAssignedTask() != null) {
+				getAssignedTask().interruptTask();
 			}
 		}
 		
@@ -2243,7 +2255,8 @@ public class Unit {
 	 */
 	public void work(){
 		if (isFalling()) {
-			getAssignedTask().interruptTask();
+			if (getAssignedTask() != null) {
+				getAssignedTask().interruptTask();			}
 			return;
 		}
 		List<Cube> neighbs = (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()));
@@ -2320,12 +2333,16 @@ public class Unit {
 	public void workAt(int[] workTarget) throws IllegalWorkPositionException{
 
 		if (isFalling()) {
-			getAssignedTask().interruptTask();
+			if (getAssignedTask() != null) {
+				getAssignedTask().interruptTask();
+			}
 			return;
 		}
 		
 		if (!isValidWorkLocation(workTarget)){
-			getAssignedTask().interruptTask();
+			if (getAssignedTask() != null) {
+				getAssignedTask().interruptTask();
+			}
 			throw new IllegalWorkPositionException(workTarget);
 		}
 		
@@ -2598,17 +2615,23 @@ public class Unit {
 	 */
 	public void attack(Unit other) throws IllegalFightFactionException, IllegalAttackPosititonException {
 		if (isFalling) {
-			getAssignedTask().interruptTask();
+			if (getAssignedTask() != null) {
+				getAssignedTask().interruptTask();
+			}
 			return;
 		}
 		if ( (this != other) && (!other.isTerminated()) ) {
 			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
-				getAssignedTask().interruptTask();
+				if (getAssignedTask() != null) {
+					getAssignedTask().interruptTask();
+				}
 				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
 			}	
 			
 			if (this.getFaction() == other.getFaction()){
-				getAssignedTask().interruptTask();
+				if (getAssignedTask() != null) {
+					getAssignedTask().interruptTask();
+				}
 				throw new IllegalFightFactionException(this.getFaction());
 			}
 				

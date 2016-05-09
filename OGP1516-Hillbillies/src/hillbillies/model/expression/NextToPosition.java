@@ -3,6 +3,7 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
 
 import hillbillies.model.ConstantsUtils;
 import hillbillies.model.Task;
@@ -54,7 +55,12 @@ public class NextToPosition extends Expression implements IPosition {
 
 	@Override
 	public int[] evaluate(Task task, int[] selectedCube) {
-		return getNeighbouring(task.getAssignedUnit(), (int[])getPosition().evaluate(task, selectedCube));
+		if (task.getAssignedUnit() != null) {
+			return getNeighbouring(task.getAssignedUnit(), (int[])getPosition().evaluate(task, selectedCube));
+		}
+		else { // task is not assigned yet
+			return new int[]{-1, -1, -1};
+		}
 	}
 
 	@Override
