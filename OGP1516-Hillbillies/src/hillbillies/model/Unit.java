@@ -3,9 +3,6 @@ package hillbillies.model;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import org.stringtemplate.v4.compiler.STParser.ifstat_return;
-
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
