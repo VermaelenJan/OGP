@@ -3,5 +3,6 @@ priority : 3
 activities :
 	w := (10, 10, 10);
 	p:= w;
-	moveTo p;
+	q := p;
+	moveTo q;
 	work here;
