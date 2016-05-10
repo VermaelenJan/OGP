@@ -1,7 +1,7 @@
 package hillbillies.model.statement;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -32,7 +32,18 @@ public class PrintStatement extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		System.out.println(getValue().toString());
+		if (getValue().evaluate(unit.getAssignedTask(), selectedCube) instanceof Boolean) {
+			System.out.println(getValue().evaluate(unit.getAssignedTask(), selectedCube)); 
+		}
+		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube) instanceof int[]) {
+			System.out.println(Arrays.toString((int[]) getValue().evaluate(unit.getAssignedTask(), selectedCube)));
+		}
+		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube) instanceof Unit) {
+			System.out.println(((Unit) getValue().evaluate(unit.getAssignedTask(), selectedCube)).getName());
+		}
+		else {
+			throw new RuntimeException();
+		}
 		unit.startNewPending();
 		return null;
 	}

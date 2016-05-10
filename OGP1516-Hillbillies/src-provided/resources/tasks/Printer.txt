@@ -1,0 +1,9 @@
+name: "printer"
+priority : 1000
+activities : 	print (is_friend enemy);
+				print (is_friend friend);
+				print (is_friend this);
+				print (is_enemy this);
+				print (here);
+				print (friend);
+			 

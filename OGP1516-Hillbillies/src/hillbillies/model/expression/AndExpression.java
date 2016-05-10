@@ -33,11 +33,6 @@ public class AndExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public String toString(Task task,int[] selectedCube) {
-		return getLeft().toString() + " and " + getRight().toString();
-	}
-
-	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
 		return (((Boolean)getLeft().evaluate(task, selectedCube)) && ((Boolean)getRight().evaluate(task, selectedCube)));
 	}

@@ -25,19 +25,14 @@ public class ReadVariable extends Expression{
 
 	@Override
 	public Expression evaluate(Task task, int[] selectedCube) { 
-		if (task.readVariable(variableName) instanceof ReadVariable) {
-			return (Expression) task.readVariable(variableName).evaluate(task, selectedCube);
+		if (task.readVariable(getVariableName()) instanceof ReadVariable) {
+			return (Expression) task.readVariable(getVariableName()).evaluate(task, selectedCube);
 		}
-		return task.readVariable(variableName);
+		return task.readVariable(getVariableName());
 	}
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-		return task.getVariables().containsKey(variableName);
-	}
-
-	@Override
-	public String toString(Task task, int[] selectedCube) {
-		return getVariableName();
+		return task.getVariables().containsKey(getVariableName());
 	}
 }

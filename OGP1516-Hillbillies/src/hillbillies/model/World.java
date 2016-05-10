@@ -491,7 +491,7 @@ public class World {
 	private Unit createRandomUnit() {
 		Position positionObj = new Position(this);
 
-		Unit unit = new Unit(positionObj.getRandomPosition(),"Name",
+		Unit unit = new Unit(positionObj.getRandomPosition(),"Unit'" + String.valueOf((char)(ConstantsUtils.random.nextInt(26)+1+64)),
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24) ,
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24),
 				ConstantsUtils.INIT_MIN_VAL+ConstantsUtils.random.nextInt(ConstantsUtils.INIT_MAX_VAL-24), 

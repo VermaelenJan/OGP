@@ -26,10 +26,7 @@ public abstract class Expression {
 	protected void setSourceLocation(SourceLocation sourceLocation){
 		this.sourceLocation = sourceLocation;
 	}
-	
-	
-	public abstract String toString(Task task, int[] selectedCube);
-	
+		
 	public abstract Object evaluate(Task task, int[] selectedCube);
 	
 	public abstract Boolean isWellFormed(Task task,  ArrayList<Object> calledBy);

@@ -36,10 +36,4 @@ public class PositionOfUnit extends Expression implements IPosition {
 					&& (getExpUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 				)) && getExpUnit().isWellFormed(task, calledBy);
 	}
-
-	@Override
-	public String toString(Task task, int[] selectedCube) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

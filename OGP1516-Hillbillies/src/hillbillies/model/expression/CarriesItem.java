@@ -38,10 +38,4 @@ public class CarriesItem extends Expression implements IBool {
 					&& (getCarryingUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
 				)) && getCarryingUnit().isWellFormed(task, calledBy);
 	}
-
-	@Override
-	public String toString(Task task, int[] selectedCube) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

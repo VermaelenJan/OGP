@@ -33,8 +33,6 @@ public class MoveTo extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit,int[] selectedCube){ 
-		System.out.println(unit);
-		System.out.println(unit.getAssignedTask().getVariables().size());
 		if (getPosition() instanceof IPosition){
 			unit.moveTo((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
 		}
@@ -51,7 +49,6 @@ public class MoveTo extends Statement {
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		calledBy.add(this);
-		System.out.println(getPosition().evaluate(task, task.getSelectedCube()));
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
 						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)

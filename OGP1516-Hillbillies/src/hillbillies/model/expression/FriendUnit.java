@@ -36,11 +36,4 @@ public class FriendUnit extends Expression implements IUnitExpression {
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
 	}
-
-	@Override
-	public String toString(Task task, int[] selectedCube) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

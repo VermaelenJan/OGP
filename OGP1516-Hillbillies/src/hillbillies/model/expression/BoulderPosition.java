@@ -31,10 +31,4 @@ public class BoulderPosition extends Expression implements IPosition {
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
 		return true;
 	}
-
-	@Override
-	public String toString(Task task, int[] selectedCube) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -38,10 +38,4 @@ public class IsSolid extends Expression implements IBool {
 					&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
 				)) && getPosition().isWellFormed(task, calledBy);
 	}
-
-	@Override
-	public String toString(Task task, int[] selectedCube) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
