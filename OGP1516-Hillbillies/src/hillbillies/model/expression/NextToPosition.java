@@ -49,9 +49,17 @@ public class NextToPosition extends Expression implements IPosition {
 	@Override
 	public int[] evaluate(Task task, int[] selectedCube) {
 		if (task.getAssignedUnit() != null) {
-			return getNeighbouring(task.getAssignedUnit(), (int[])getPosition().evaluate(task, selectedCube));
+			if (getPosition() instanceof IPosition) {
+				return getNeighbouring(task.getAssignedUnit(), (int[])getPosition().evaluate(task, selectedCube));
+			}
+			else if (getPosition() instanceof ReadVariable) {
+				return getNeighbouring(task.getAssignedUnit(), (int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube));
+			}
+			else {
+				throw new RuntimeException();
+			}
 		}
-		else { // task is not assigned yet
+		else { // task is not assigned yet (should only be accessed by isWellFormed)
 			return new int[]{-1, -1, -1};
 		}
 	}

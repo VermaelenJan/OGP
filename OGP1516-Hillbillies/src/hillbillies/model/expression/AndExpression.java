@@ -1,7 +1,6 @@
 package hillbillies.model.expression;
 
 import java.util.ArrayList;
-
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -34,7 +33,28 @@ public class AndExpression extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		return (((Boolean)getLeft().evaluate(task, selectedCube)) && ((Boolean)getRight().evaluate(task, selectedCube)));
+		Boolean leftBool;
+		if (getLeft() instanceof ReadVariable) {
+			leftBool = (Boolean) ((Expression) getLeft().evaluate(task, selectedCube)).evaluate(task, selectedCube);
+		}
+		else if (getLeft() instanceof IBool) {
+			leftBool = (Boolean) getLeft().evaluate(task, selectedCube);
+		}
+		else {
+			throw new RuntimeException();
+		}
+		
+		Boolean rightBool;
+		if (getRight() instanceof ReadVariable) {
+			rightBool = (Boolean) ((Expression) getRight().evaluate(task, selectedCube)).evaluate(task, selectedCube); 
+		}
+		else if (getRight() instanceof IBool) {
+			rightBool = (Boolean) getRight().evaluate(task, selectedCube);
+		}
+		else {
+			throw new RuntimeException();
+		}
+		return (leftBool && rightBool);
 	}
 
 	@Override

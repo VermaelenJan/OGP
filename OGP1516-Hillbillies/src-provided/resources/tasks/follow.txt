@@ -1,0 +1,4 @@
+name: "follow"
+priority : 3
+activities :
+	follow any;

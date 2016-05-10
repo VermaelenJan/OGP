@@ -19,14 +19,12 @@ public class AnyUnit extends Expression implements IUnitExpression {
 		super(sourceLocation);
 	}
 
-
-
 	@Override
 	public Unit evaluate(Task task, int[] selectedCube) {
 		Unit anyUnit = null;
-		for (Unit currUnit: task.getAssignedUnit().getWorld().getAllUnits() ){
-			if (anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
-										Position.getDistanceBetween(anyUnit.getLocation(), task.getAssignedUnit().getLocation())
+		for (Unit currUnit: task.getAssignedUnit().getWorld().getAllUnits()){
+			if ((anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
+										Position.getDistanceBetween(anyUnit.getLocation(), task.getAssignedUnit().getLocation()))
 				&& currUnit != task.getAssignedUnit()) {
 				anyUnit = currUnit;
 			}

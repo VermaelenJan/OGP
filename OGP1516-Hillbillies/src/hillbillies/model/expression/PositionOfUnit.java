@@ -25,7 +25,17 @@ public class PositionOfUnit extends Expression implements IPosition {
 	
 	@Override
 	public int[] evaluate(Task task, int[] selectedCube) {
-		return ((Unit)getExpUnit().evaluate(task, selectedCube)).getOccupiedCube();
+		Unit unit;
+		if (getExpUnit() instanceof ReadVariable) {
+			unit = (Unit) ((Expression) getExpUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
+		}
+		else if (getExpUnit() instanceof IUnitExpression) {
+			unit = (Unit) getExpUnit().evaluate(task, selectedCube);
+		}
+		else {
+			throw new RuntimeException();
+		}
+		return unit.getOccupiedCube();
 	}
 
 	@Override

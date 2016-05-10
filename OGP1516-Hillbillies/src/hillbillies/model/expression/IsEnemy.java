@@ -28,7 +28,16 @@ public class IsEnemy extends Expression implements IBool {
 		if (getEnemyUnit().evaluate(task, selectedCube) == null) {
 			return null;
 		}
-		return task.getAssignedUnit().getFaction() != ((Unit) getEnemyUnit().evaluate(task, selectedCube)).getFaction();
+		if (getEnemyUnit() instanceof ReadVariable) {
+			return task.getAssignedUnit().getFaction() != 
+					((Unit) ((Expression) getEnemyUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube)).getFaction();
+		}
+		else if (getEnemyUnit() instanceof IUnitExpression) {
+			return task.getAssignedUnit().getFaction() != ((Unit) getEnemyUnit().evaluate(task, selectedCube)).getFaction();
+		}
+		else {
+			throw new RuntimeException();
+		}
 	}
 
 	@Override

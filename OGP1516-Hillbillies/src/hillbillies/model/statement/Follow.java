@@ -29,7 +29,7 @@ public class Follow extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		Unit followUnit = null;
+		Unit followUnit;
 		
 		if (getFollowUnit() instanceof IUnitExpression){
 			followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube);
@@ -40,6 +40,11 @@ public class Follow extends Statement {
 		}
 		else{
 			throw new RuntimeException();
+		}
+
+		if (followUnit == null) {
+			unit.getAssignedTask().interruptTask();
+			return null;
 		}
 		
 		int followUnitX = followUnit.getOccupiedCube()[0];
@@ -52,7 +57,7 @@ public class Follow extends Statement {
 		}
 				
 		List<Statement> list = new ArrayList<>();
-		list.add(new MoveTo( new LiteralPosition(followUnitX, followUnitY,followUnitZ, sourceLocation), sourceLocation));
+		list.add(new MoveTo(new LiteralPosition(followUnitX, followUnitY,followUnitZ, sourceLocation), sourceLocation));
 		
 		list.add(new Follow(getFollowUnit(), sourceLocation));
 		return new Sequence(list, sourceLocation); 

@@ -25,7 +25,17 @@ public class IsAlive extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		return !((Unit)getAliveUnit().evaluate(task, selectedCube)).isTerminated();
+		Unit unit;
+		if (getAliveUnit() instanceof ReadVariable) {
+			unit = (Unit) ((Expression) getAliveUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
+		}
+		else if (getAliveUnit() instanceof IUnitExpression) {
+			unit = (Unit) getAliveUnit().evaluate(task, selectedCube);
+		}
+		else {
+			throw new RuntimeException();
+		}
+		return !unit.isTerminated();
 	}
 
 	@Override

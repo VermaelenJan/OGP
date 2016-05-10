@@ -1,0 +1,17 @@
+name: "ownTasks"
+priority : 3
+activities :	w:= this; 
+				while is_friend w
+					do
+						w:= any;
+					done
+					
+				print is_enemy w;
+				
+				while is_enemy w
+					do
+						w:= any;
+					done
+					
+				print is_friend w; 
+			 

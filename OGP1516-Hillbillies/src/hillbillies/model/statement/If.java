@@ -56,13 +56,16 @@ public class If extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		Boolean tempBool = false;
+		Boolean tempBool;
 		if (getCondition() instanceof IBool){
 			tempBool = (Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube);
 		}
 		else if (getCondition() instanceof ReadVariable){
 			tempBool = (Boolean) ((IBool) getCondition().evaluate(unit.getAssignedTask(), selectedCube)).
 					evaluate(unit.getAssignedTask(), selectedCube);
+		}
+		else {
+			throw new RuntimeException();
 		}
 		if (tempBool) {
 			if (getIfBody() instanceof Sequence) {

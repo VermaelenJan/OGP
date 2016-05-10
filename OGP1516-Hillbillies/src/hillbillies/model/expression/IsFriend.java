@@ -28,7 +28,16 @@ public class IsFriend extends Expression implements IBool {
 		if (getFriendUnit().evaluate(task, selectedCube) == null) {
 			return null;
 		}
-		return task.getAssignedUnit().getFaction() == ((Unit) getFriendUnit().evaluate(task, selectedCube)).getFaction();
+		if (getFriendUnit() instanceof ReadVariable) {
+			return task.getAssignedUnit().getFaction() == 
+					((Unit) ((Expression) getFriendUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube)).getFaction();
+		}
+		else if (getFriendUnit() instanceof IUnitExpression) {
+			return task.getAssignedUnit().getFaction() == ((Unit) getFriendUnit().evaluate(task, selectedCube)).getFaction();
+		}
+		else {
+			throw new RuntimeException();
+		}
 	}
 
 

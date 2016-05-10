@@ -24,9 +24,22 @@ public class IsSolid extends Expression implements IBool {
 	
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		int x = ((int[])getPosition().evaluate(task, selectedCube))[0];
-		int y = ((int[])getPosition().evaluate(task, selectedCube))[1];
-		int z = ((int[])getPosition().evaluate(task, selectedCube))[2];
+		int x;
+		int y;
+		int z;
+		if (getPosition() instanceof ReadVariable) {
+			x = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube))[0];
+			y = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube))[1];
+			z = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube))[2];
+		}
+		else if (getPosition() instanceof IPosition) {
+			x = ((int[])getPosition().evaluate(task, selectedCube))[0];
+			y = ((int[])getPosition().evaluate(task, selectedCube))[1];
+			z = ((int[])getPosition().evaluate(task, selectedCube))[2];
+		}
+		else {
+			throw new RuntimeException();
+		}
 		return !task.getAssignedUnit().getWorld().getCubeType(x, y, z).isPassableTerrain();
 	}
 

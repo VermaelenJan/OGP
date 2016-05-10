@@ -1237,7 +1237,7 @@ public class Unit {
 	
 	private void setTimeActPending(double time) {
 		this.timeToPend = time;
-		if (this.timeToPend <= 0) {
+		if (this.timeToPend <= 0 && getAssignedTask() != null) {
 			getAssignedTask().finishedLastActivity();
 		}
 	}
