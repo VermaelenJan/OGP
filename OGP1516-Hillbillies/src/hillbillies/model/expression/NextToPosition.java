@@ -43,7 +43,9 @@ public class NextToPosition extends Expression implements IPosition {
 		if (validCubes.size() > 0) {
 			return validCubes.get(ConstantsUtils.random.nextInt(validCubes.size())).getCubePosition();
 		}
-		else throw new RuntimeException();
+		else {
+			return null;
+		}
 	}
 
 	@Override
@@ -59,7 +61,7 @@ public class NextToPosition extends Expression implements IPosition {
 				throw new RuntimeException();
 			}
 		}
-		else { // task is not assigned yet (should only be accessed by isWellFormed)
+		else { // task is not assigned yet (should only be accessed for isWellFormed)
 			return new int[]{-1, -1, -1};
 		}
 	}

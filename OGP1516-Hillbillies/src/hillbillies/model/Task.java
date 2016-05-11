@@ -12,7 +12,7 @@ import hillbillies.part3.programs.SourceLocation;
 //TODO: interrupt task when not possible to execute (vanuit unit) already done, iets vergeten? mee nakijken
 //TODO: lambda expressions?
 //TODO: dt van 0.001 fixen
-//TODO: al onze eigen taal checken voor als er nullpointer binnenkomt (cfr follow any als er geen andere units zijn)
+//TODO: al onze eigen taal checken voor als er null binnenkomt (cfr follow any als er geen andere units zijn)
 
 /**
  * A class of ...

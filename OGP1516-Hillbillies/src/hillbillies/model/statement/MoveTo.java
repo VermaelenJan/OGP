@@ -33,16 +33,24 @@ public class MoveTo extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit,int[] selectedCube){ 
+		int[] targetPos;
 		if (getPosition() instanceof IPosition){
-			unit.moveTo((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
+			targetPos = (int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube);
 		}
 		else if (getPosition() instanceof ReadVariable){
-			unit.moveTo((int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube)).
-					evaluate(unit.getAssignedTask(), selectedCube));
+			targetPos = (int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube)).
+					evaluate(unit.getAssignedTask(), selectedCube);
 		}
 		else {
 			throw new RuntimeException();
 		}
+		
+		if (targetPos == null) {
+			unit.getAssignedTask().interruptTask();
+			return null;
+		}
+		
+		unit.moveTo(targetPos);
 		return null;
 	}
 

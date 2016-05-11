@@ -1,0 +1,4 @@
+name: "goto (10, 10, 10)"
+priority : 5
+activities : 	w:= (10, 10, 10);
+				moveTo w;

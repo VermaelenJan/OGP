@@ -38,6 +38,12 @@ public class Attack extends Statement {
 		else{
 			throw new RuntimeException();
 		}
+		
+		if (tempAttackUnit == null) {
+			unit.getAssignedTask().interruptTask();
+			return null;
+		}
+		
 		unit.attack(tempAttackUnit);
 		tempAttackUnit.defend(unit);
 		
