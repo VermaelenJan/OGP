@@ -24,6 +24,6 @@ public class SelectedPosition extends Expression implements IPosition {
 
 	@Override
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
-		return true;
+		return task.getSelectedCube() != null;
 	}
 }
