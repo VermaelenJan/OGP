@@ -750,7 +750,9 @@ public class UnitTest {
 		int prevToughness = unit.getToughness();
 		
 		unit.workAt(unit.getOccupiedCube());
-		smallWorld.advanceTime(0);
+		for (int i = 0; i<=200; i++) {
+			smallWorld.advanceTime(0.1);
+		}
 		
 		assertEquals(prevExp + 10, unit.getExperience());
 		
@@ -796,7 +798,9 @@ public class UnitTest {
 		
 		unit.workAt(unit.getOccupiedCube());
 		
-		smallWorld.advanceTime(0);
+		for (int i = 0; i<=200; i++) {
+			smallWorld.advanceTime(0.1);
+		}
 		
 		assertEquals(prevExp+10, unit.getExperience());
 		prevExp = unit.getExperience();
@@ -807,18 +811,12 @@ public class UnitTest {
 		
 		unit.workAt(new int[] {0, 0, 0});
 		
-		smallWorld.advanceTime(0.1);
-		
-		assertTrue(unit.isActualMoving());
-		assertEquals(prevExp, unit.getExperience());
-		
-		while (unit.isActualMoving()) {
+		for (int i = 0; i<=200; i++) {
 			smallWorld.advanceTime(0.1);
 		}
-		
-		smallWorld.advanceTime(0);
+
 		assertFalse(unit.isCarryingBoulder());
-		assertEquals(prevExp + 10 + 1, unit.getExperience());
+		assertEquals(prevExp + 10, unit.getExperience());
 		assertEquals(1, smallWorld.getBouldersWorld().size());
 	}
 	
@@ -853,7 +851,9 @@ public class UnitTest {
 		
 		unit.workAt(unit.getOccupiedCube());
 		
-		smallWorld.advanceTime(0);
+		for (int i = 0; i<=200; i++) {
+			smallWorld.advanceTime(0.1);
+		}
 		
 		assertEquals(prevExp + 10, unit.getExperience());
 		prevExp = unit.getExperience();
@@ -863,18 +863,11 @@ public class UnitTest {
 		
 		unit.workAt(new int[] {0, 0, 0});
 		
-		smallWorld.advanceTime(0.1);
-		
-		assertTrue(unit.isActualMoving());
-		assertEquals(prevExp, unit.getExperience());
-		
-		while (unit.isActualMoving()) {
+		for (int i = 0; i<=200; i++) {
 			smallWorld.advanceTime(0.1);
 		}
-		
-		smallWorld.advanceTime(0.01);
 		assertFalse(unit.isCarryingLog());
-		assertEquals(prevExp + 10 + 1, unit.getExperience());
+		assertEquals(prevExp + 10, unit.getExperience());
 		assertEquals(1, smallWorld.getLogsWorld().size());
 	}
 	
@@ -1054,7 +1047,9 @@ public class UnitTest {
 		}
 
 		unit.workAt(unit.getOccupiedCube());
-		smallWorld.advanceTime(0);
+		for (int i = 0; i<=200; i++) {
+			smallWorld.advanceTime(0.1);
+		}
 		assertTrue(unit.isCarryingBoulder());
 		
 		smallWorld.setCubeType(1, 1, 16, CubeType.AIR);
