@@ -2,9 +2,6 @@ package hillbillies.model.expression;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.stringtemplate.v4.compiler.STParser.ifstat_return;
-
 import hillbillies.model.ConstantsUtils;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
