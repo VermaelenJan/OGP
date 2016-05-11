@@ -26,7 +26,6 @@ public class NotExpression extends Expression implements IBool {
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
 		if (getExpression().evaluate(task, selectedCube) == null) {
-			task.interruptTask();
 			return false;
 		}
 		Boolean tempBool;

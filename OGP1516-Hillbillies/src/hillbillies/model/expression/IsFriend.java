@@ -25,20 +25,22 @@ public class IsFriend extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		if (getFriendUnit().evaluate(task, selectedCube) == null) {
-			task.interruptTask();
-			return false;
-		}
-		if (getFriendUnit() instanceof ReadVariable) {
-			return task.getAssignedUnit().getFaction() == 
-					((Unit) ((Expression) getFriendUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube)).getFaction();
+		Unit friendUnit;
+
+		if (getFriendUnit() instanceof ReadVariable) { 
+			friendUnit = (Unit) ((Expression) getFriendUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
 		}
 		else if (getFriendUnit() instanceof IUnitExpression) {
-			return task.getAssignedUnit().getFaction() == ((Unit) getFriendUnit().evaluate(task, selectedCube)).getFaction();
+			friendUnit = (Unit) getFriendUnit().evaluate(task, selectedCube);
 		}
 		else {
 			throw new RuntimeException();
 		}
+		
+		if (friendUnit == null) {
+			return false;
+		}
+		return task.getAssignedUnit().getFaction() == friendUnit.getFaction();
 	}
 
 

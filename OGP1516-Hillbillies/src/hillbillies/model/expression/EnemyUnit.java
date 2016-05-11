@@ -23,13 +23,8 @@ public class EnemyUnit extends Expression implements IUnitExpression {
 	@Override
 	public Unit evaluate(Task task, int[] selectedCube) {
 		Unit enemyUnit = null;
-		for (Unit currUnit: task
-				.
-				getAssignedUnit()
-				.
-				getWorld()
-				.
-				getAllUnits()){
+		for (Unit currUnit: task.
+				getAssignedUnit().getWorld().getAllUnits()){
 			if ((enemyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
 										Position.getDistanceBetween(enemyUnit.getLocation(), task.getAssignedUnit().getLocation()))
 					&& currUnit.getFaction() != task.getAssignedUnit().getFaction()) {

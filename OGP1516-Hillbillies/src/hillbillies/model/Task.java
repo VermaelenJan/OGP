@@ -10,8 +10,6 @@ import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
 
 //TODO: lambda expressions?
-//TODO: al onze eigen taal checken voor als er null binnenkomt (cfr follow any als er geen andere units zijn)
-
 /**
  * A class of ...
  * 

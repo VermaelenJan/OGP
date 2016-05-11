@@ -25,20 +25,22 @@ public class IsEnemy extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		if (getEnemyUnit().evaluate(task, selectedCube) == null) {
-			task.interruptTask();
-			return false;
-		}
-		if (getEnemyUnit() instanceof ReadVariable) {
-			return task.getAssignedUnit().getFaction() != 
-					((Unit) ((Expression) getEnemyUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube)).getFaction();
+		Unit enemyUnit;
+
+		if (getEnemyUnit() instanceof ReadVariable) { //TODO: deze stijl van == null overal gebruiken!!!
+			enemyUnit = (Unit) ((Expression) getEnemyUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
 		}
 		else if (getEnemyUnit() instanceof IUnitExpression) {
-			return task.getAssignedUnit().getFaction() != ((Unit) getEnemyUnit().evaluate(task, selectedCube)).getFaction();
+			enemyUnit = (Unit) getEnemyUnit().evaluate(task, selectedCube);
 		}
 		else {
 			throw new RuntimeException();
 		}
+		
+		if (enemyUnit == null) {
+			return false;
+		}
+		return task.getAssignedUnit().getFaction() == enemyUnit.getFaction();
 	}
 
 	@Override
