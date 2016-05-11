@@ -22,7 +22,12 @@ public class LogPosition extends Expression implements IPosition {
 				log = currLog;
 			}
 		}
-		return log.getOccupiedCube();
+		if (log == null){
+			return null;
+		}
+		else{
+			return log.getOccupiedCube();
+		}
 	}
 
 	@Override

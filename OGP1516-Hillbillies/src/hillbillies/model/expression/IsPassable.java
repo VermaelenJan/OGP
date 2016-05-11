@@ -2,6 +2,8 @@ package hillbillies.model.expression;
 
 import java.util.ArrayList;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -24,6 +26,10 @@ public class IsPassable extends Expression implements IBool {
 	
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
+		if (getPosition().evaluate(task, selectedCube) == null){
+			task.interruptTask();
+			return false;
+		}
 		int x;
 		int y;
 		int z;

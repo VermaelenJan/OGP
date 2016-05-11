@@ -2,6 +2,8 @@ package hillbillies.model.expression;
 
 import java.util.ArrayList;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -25,6 +27,10 @@ public class CarriesItem extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
+		if (getCarryingUnit().evaluate(task, selectedCube) == null) {
+			task.interruptTask();
+			return false;
+		}
 		Unit unit;
 		if (getCarryingUnit() instanceof ReadVariable) {
 			unit = (Unit) ((Expression) getCarryingUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);

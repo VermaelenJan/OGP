@@ -2,6 +2,8 @@ package hillbillies.model.statement;
 
 import java.util.ArrayList;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.*;
@@ -31,16 +33,24 @@ public class Work extends Statement {
 	
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube){
+		int[] targetPos;
 		if (getPosition() instanceof IPosition){
-			unit.workAt((int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube));
+			targetPos = (int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube);
 		}
 		else if (getPosition() instanceof ReadVariable){
-			unit.workAt((int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube)).
-					evaluate(unit.getAssignedTask(), selectedCube));
+			targetPos = (int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube)).
+					evaluate(unit.getAssignedTask(), selectedCube);
 		}
 		else {
 			throw new RuntimeException();
 		}
+		
+		if (targetPos == null) {
+			unit.getAssignedTask().interruptTask();
+			return null;
+		}
+		
+		unit.workAt(targetPos);
 		return null;
 	}
 

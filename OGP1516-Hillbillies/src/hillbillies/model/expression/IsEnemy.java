@@ -26,7 +26,8 @@ public class IsEnemy extends Expression implements IBool {
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
 		if (getEnemyUnit().evaluate(task, selectedCube) == null) {
-			return null;
+			task.interruptTask();
+			return false;
 		}
 		if (getEnemyUnit() instanceof ReadVariable) {
 			return task.getAssignedUnit().getFaction() != 

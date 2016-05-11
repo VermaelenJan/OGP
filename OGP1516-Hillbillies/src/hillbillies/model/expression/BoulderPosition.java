@@ -22,7 +22,12 @@ public class BoulderPosition extends Expression implements IPosition {
 				boulder = currBoulder;
 			}
 		}
-		return boulder.getOccupiedCube();
+		if (boulder == null){
+			return null;
+		}
+		else{
+			return boulder.getOccupiedCube();
+		}
 	}
 
 

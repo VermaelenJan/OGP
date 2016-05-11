@@ -26,7 +26,8 @@ public class IsFriend extends Expression implements IBool {
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
 		if (getFriendUnit().evaluate(task, selectedCube) == null) {
-			return null;
+			task.interruptTask();
+			return false;
 		}
 		if (getFriendUnit() instanceof ReadVariable) {
 			return task.getAssignedUnit().getFaction() == 

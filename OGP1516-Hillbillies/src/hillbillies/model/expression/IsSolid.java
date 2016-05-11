@@ -24,6 +24,10 @@ public class IsSolid extends Expression implements IBool {
 	
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
+		if (getPosition().evaluate(task, selectedCube) == null){
+			task.interruptTask();
+			return false;
+		}
 		int x;
 		int y;
 		int z;

@@ -2,6 +2,9 @@ package hillbillies.model.statement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.expression.Expression;
@@ -40,6 +43,9 @@ public class PrintStatement extends Statement {
 		}
 		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube) instanceof Unit) {
 			System.out.println(((Unit) getValue().evaluate(unit.getAssignedTask(), selectedCube)).getName());
+		}
+		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube) == null){
+			System.out.println("null");
 		}
 		else {
 			throw new RuntimeException();

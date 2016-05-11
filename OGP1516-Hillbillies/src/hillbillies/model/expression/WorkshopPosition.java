@@ -1,7 +1,6 @@
 package hillbillies.model.expression;
 
 import java.util.ArrayList;
-
 import hillbillies.model.Cube;
 import hillbillies.model.Position;
 import hillbillies.model.Task;
@@ -38,7 +37,13 @@ public class WorkshopPosition extends Expression implements IPosition {
 				}
 			}
 		}
-		return cube.getCubePosition(); 
+		if (cube == null){
+			return null;
+		}
+		else{
+			return cube.getCubePosition(); 
+
+		}
 	}
 
 	@Override
