@@ -47,6 +47,7 @@ public class While extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
+
 		Boolean tempBool = false;
 		if (getCondition() instanceof IBool){
 			tempBool = (Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube);
@@ -56,16 +57,19 @@ public class While extends Statement {
 					evaluate(unit.getAssignedTask(), selectedCube);
 		}		
 		if (tempBool){
+
 			if (getBody() instanceof Sequence) {
 				List<Statement> list = new ArrayList<>();
 				list.addAll(((Sequence) getBody()).getStatements());
 				list.add(new While(getCondition(), getBody(), getSourceLocation()));
+
 				return new Sequence(list, sourceLocation);
 			}
 			else {
 				List<Statement> list = new ArrayList<>();
 				list.add(getBody());
 				list.add(new While(getCondition(), getBody(), getSourceLocation()));
+
 				return new Sequence(list, sourceLocation);
 			} 
 		}

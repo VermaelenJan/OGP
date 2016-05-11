@@ -3,6 +3,9 @@ package hillbillies.model;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import be.kuleuven.cs.som.annotate.Basic;
 // import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
@@ -1102,6 +1105,10 @@ public class Unit {
 	 * @effect If the unit carries an object, the unit drops the object.
 	 */
 	protected void terminate() {
+		if (getAssignedTask() != null) {
+			assignedTask.interruptTask();
+		}
+		
 		if (this.carriedObject != null) {
 			dropObject();
 		}
@@ -1178,7 +1185,6 @@ public class Unit {
 	 * 			The given dt is not a valid advanceTime duration.
 	 */
 	public void advanceTime(double dt) throws IllegalAdvanceTimeException, IllegalWorkPositionException {
-
 		if (!this.isTerminated()) {
 			if (this.hitpoints <= 0) {
 				setHitpoints(0);
@@ -1189,9 +1195,7 @@ public class Unit {
 				throw new IllegalAdvanceTimeException(dt);
 			}
 			
-			if (isActPending()) {
-				setTimeActPending(getTimeActPending() - dt);
-			}
+			setTimePending(dt);
 			
 			if (! isResting()) {
 				advanceTimeNotResting(dt);
@@ -1235,27 +1239,25 @@ public class Unit {
 		}
 	}
 	
-	private void setTimeActPending(double time) {
+	private void setTimePending(double time) {
 		this.timeToPend = time;
-		if (this.timeToPend <= 0 && getAssignedTask() != null) {
-			getAssignedTask().finishedLastActivity();
-		}
 	}
 
-
-	private double getTimeActPending() {
+	private double getTimePending() {
 		return this.timeToPend;
-	}
-
-
-	private boolean isActPending() {
-		return this.timeToPend > 0;
 	}
 	
 	private double timeToPend;
 	
 	public void startNewPending() {
-		this.timeToPend = ConstantsUtils.PEND_TIME;
+
+		if (getTimePending() > 0){
+			setTimePending(getTimePending()-ConstantsUtils.PEND_TIME);
+			getAssignedTask().finishedLastActivity();
+			if (getAssignedTask() != null) {
+				getAssignedTask().executeTask();
+			}
+		}
 	}
 
 	/**
@@ -3191,7 +3193,7 @@ public class Unit {
 		if (getAssignedTask() == null) {
 			Task newTask = faction.getScheduler().getHightestUnassignedPriorityTask();
 			if (newTask != null) {
-				newTask.assignTo(this);
+				newTask.assignTo(this);	
 			}
 			else {
 				switch (ConstantsUtils.random.nextInt(4)) {
@@ -3204,6 +3206,7 @@ public class Unit {
 		}
 		else {
 			getAssignedTask().executeTask();
+			
 		}
 	}
 	

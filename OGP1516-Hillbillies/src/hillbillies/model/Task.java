@@ -9,9 +9,7 @@ import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
 
-//TODO: interrupt task when not possible to execute (vanuit unit) already done, iets vergeten? mee nakijken
 //TODO: lambda expressions?
-//TODO: dt van 0.001 fixen
 //TODO: al onze eigen taal checken voor als er null binnenkomt (cfr follow any als er geen andere units zijn)
 
 /**
@@ -151,7 +149,7 @@ public class Task {
 	}
 	
 	public void executeTask(){
-
+		
 		
 //		for (Statement el : getActivitiesReq().getStatements()) {
 //			System.out.print(el + ": " + activitiesMap.get(el) + "-"); 
@@ -165,7 +163,7 @@ public class Task {
 					breakWhile();
 					return;
 				}
-				Sequence result = activity.execute(assignedUnit,selectedCube);
+				Sequence result = activity.execute(getAssignedUnit(),getSelectedCube());
 				if (result != null) {
 					int i = getActivitiesReq().getStatements().indexOf(activity); //index of current activity
 					getActivitiesReq().getStatements().remove(i);
@@ -214,7 +212,7 @@ public class Task {
 		schedulersForTask.remove(scheduler);
 	}
 
-	protected void finishedLastActivity() {
+	public void finishedLastActivity() {
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
 				activitiesMap.put(activity, true);
@@ -223,6 +221,9 @@ public class Task {
 		}
 		if (activitiesMap.get(getActivitiesReq().getStatements().get(getActivitiesReq().getStatements().size()-1))) {
 			finishTask();
+		}
+		else{
+			executeTask();// TODO executetaks
 		}
 	}
 	
