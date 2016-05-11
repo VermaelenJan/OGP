@@ -222,9 +222,6 @@ public class Task {
 		if (activitiesMap.get(getActivitiesReq().getStatements().get(getActivitiesReq().getStatements().size()-1))) {
 			finishTask();
 		}
-		else{
-			executeTask();// TODO executetaks
-		}
 	}
 	
 	private void finishTask() {
