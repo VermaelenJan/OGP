@@ -24,10 +24,8 @@ public class CarriesItem extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		if (getCarryingUnit().evaluate(task, selectedCube) == null) {
-			return false;
-		}
 		Unit unit;
+		
 		if (getCarryingUnit() instanceof ReadVariable) {
 			unit = (Unit) ((Expression) getCarryingUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
 		}
@@ -36,6 +34,9 @@ public class CarriesItem extends Expression implements IBool {
 		}
 		else {
 			throw new RuntimeException();
+		}
+		if (unit == null) {
+			return false;
 		}
 		return unit.isCarryingBoulder() || unit.isCarryingLog();
 	}

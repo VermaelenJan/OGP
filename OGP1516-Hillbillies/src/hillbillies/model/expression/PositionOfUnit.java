@@ -25,10 +25,8 @@ public class PositionOfUnit extends Expression implements IPosition {
 	
 	@Override
 	public int[] evaluate(Task task, int[] selectedCube) {
-		if (getExpUnit().evaluate(task, selectedCube) == null) {
-			return null;
-		}
 		Unit unit;
+		
 		if (getExpUnit() instanceof ReadVariable) {
 			unit = (Unit) ((Expression) getExpUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
 		}
@@ -37,6 +35,9 @@ public class PositionOfUnit extends Expression implements IPosition {
 		}
 		else {
 			throw new RuntimeException();
+		}
+		if (unit == null) {
+			return null;
 		}
 		return unit.getOccupiedCube();
 	}

@@ -2,6 +2,8 @@ package hillbillies.model.expression;
 
 import java.util.ArrayList;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -34,9 +36,7 @@ public class OrExpression extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		if (getLeft().evaluate(task, selectedCube) == null || getRight().evaluate(task, selectedCube) == null) {
-			return false;
-		}
+
 		Boolean leftBool;
 		if (getLeft() instanceof ReadVariable) {
 			leftBool = (Boolean) ((Expression) getLeft().evaluate(task, selectedCube)).evaluate(task, selectedCube);
@@ -57,6 +57,10 @@ public class OrExpression extends Expression implements IBool {
 		}
 		else {
 			throw new RuntimeException();
+		}
+		
+		if (leftBool == null || rightBool == null){
+			return false;
 		}
 		return leftBool || rightBool;
 	}

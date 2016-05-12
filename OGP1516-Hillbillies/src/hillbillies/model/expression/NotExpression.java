@@ -2,6 +2,7 @@ package hillbillies.model.expression;
 
 import java.util.ArrayList;
 
+
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -25,9 +26,7 @@ public class NotExpression extends Expression implements IBool {
 
 	@Override
 	public Boolean evaluate(Task task, int[] selectedCube) {
-		if (getExpression().evaluate(task, selectedCube) == null) {
-			return false;
-		}
+
 		Boolean tempBool;
 		if (getExpression() instanceof IBool){
 			tempBool = (Boolean) getExpression().evaluate(task, selectedCube);
@@ -38,6 +37,10 @@ public class NotExpression extends Expression implements IBool {
 		else {
 			throw new RuntimeException();
 		}
+		if (tempBool == null){
+			return false;
+		}
+		
 		return !tempBool;
 	}
 
