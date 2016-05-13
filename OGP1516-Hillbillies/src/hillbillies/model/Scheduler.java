@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import be.kuleuven.cs.som.annotate.Model;
 
@@ -99,14 +101,8 @@ public class Scheduler {
 		return this.tasks;
 	}
 	
-	@SuppressWarnings("unused")
-	private List<Task> getAllTasksWithCond(/*TODO Lambda expressions*/) {
-		List<Task> result = new ArrayList<>();
-		for (Task task: tasks) {
-			if (true) {
-				
-			}
-		}
-		return result;
+	public List<Task> getAllTasksWithCond(Predicate<Task> lambda) {
+		List<Task> satisfiedTasks = (List<Task>) getAllTasks().stream().filter(lambda).collect(Collectors.toList());
+		return satisfiedTasks;
 	}
 }
