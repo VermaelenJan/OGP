@@ -1,10 +1,6 @@
 package hillbillies.model.expression;
 
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-
-import org.stringtemplate.v4.compiler.STParser.ifstat_return;
-
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
@@ -37,7 +33,7 @@ public class AndExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) { // TODO selectedCube verwijderen
 		Boolean leftBool;
 		if (getLeft() instanceof ReadVariable) {
 			leftBool = (Boolean) ((Expression) getLeft().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
