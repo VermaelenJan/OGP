@@ -2,6 +2,7 @@ package hillbillies.model.expression;
 
 import java.util.ArrayList;
 import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class IsPassable extends Expression implements IBool {
@@ -22,35 +23,38 @@ public class IsPassable extends Expression implements IBool {
 	}
 	
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube) {
-		if (getPosition().evaluate(task, selectedCube) == null){
+	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+		if (getPosition().evaluate(task, selectedCube, possibleUnit) == null ||
+				(getPosition() instanceof ReadVariable && ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).
+						evaluate(task, selectedCube, possibleUnit) == null)){
 			return false;
 		}
 		int x;
 		int y;
 		int z;
 		if (getPosition() instanceof ReadVariable) {
-			x = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube))[0];
-			y = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube))[1];
-			z = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube))[2];
+			x = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit))[0];
+			y = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit))[1];
+			z = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit))[2];
 		}
 		else if (getPosition() instanceof IPosition) {
-			x = ((int[])getPosition().evaluate(task, selectedCube))[0];
-			y = ((int[])getPosition().evaluate(task, selectedCube))[1];
-			z = ((int[])getPosition().evaluate(task, selectedCube))[2];
+			x = ((int[])getPosition().evaluate(task, selectedCube, possibleUnit))[0];
+			y = ((int[])getPosition().evaluate(task, selectedCube, possibleUnit))[1];
+			z = ((int[])getPosition().evaluate(task, selectedCube, possibleUnit))[2];
 		}
 		else {
 			throw new RuntimeException();
 		}
-		return task.getAssignedUnit().getWorld().getCubeType(x, y, z).isPassableTerrain();
+
+		return possibleUnit.getWorld().getCubeType(x, y, z).isPassableTerrain();
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 				(getPosition() instanceof ReadVariable
-					&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
-					)) && getPosition().isWellFormed(task, calledBy);
+					&& (getPosition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IPosition)
+					)) && getPosition().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

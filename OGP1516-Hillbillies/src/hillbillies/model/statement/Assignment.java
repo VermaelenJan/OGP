@@ -51,13 +51,13 @@ public class Assignment extends Statement {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 
 		if (!task.getVariables().containsKey(getVariableName())) {
-			task.addVariable(getVariableName(), getValue(), getSourceLocation()); // TODO if else, while probs
+			task.addVariable(getVariableName(), getValue(), getSourceLocation()); 
 			return true;
 		}
-		else if (equalTypes(task.getVariables().get(getVariableName()), getValue(), task)) {
+		else if (equalTypes(task.getVariables().get(getVariableName()), getValue(), task, possibleUnit)) {
 			task.addVariable(getVariableName(), getValue(), getSourceLocation());
 			return true;
 		}
@@ -66,13 +66,13 @@ public class Assignment extends Statement {
 		}
 	}
 	
-	private Boolean equalTypes( Expression expr1, Expression expr2, Task task){
+	private Boolean equalTypes( Expression expr1, Expression expr2, Task task, Unit possibleUnit){
 		
 		if (expr1 instanceof ReadVariable) {
-			expr1 = ((ReadVariable)expr1).evaluate(task, task.getSelectedCube());
+			expr1 = ((ReadVariable)expr1).evaluate(task, task.getSelectedCube(), possibleUnit);
 		}
 		if (expr2 instanceof ReadVariable) {
-			expr2 = ((ReadVariable)expr2).evaluate(task, task.getSelectedCube());
+			expr2 = ((ReadVariable)expr2).evaluate(task, task.getSelectedCube(), possibleUnit);
 		}
 		
 		if (expr1 instanceof IBool && expr2 instanceof IBool){

@@ -28,5 +28,5 @@ public abstract class Statement {
 	
 	public abstract Sequence execute(Unit unit,int[] selectedCube);
 	
-	public abstract Boolean isWellFormed(Task task, ArrayList<Object> calledBy);
+	public abstract Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit);
 }

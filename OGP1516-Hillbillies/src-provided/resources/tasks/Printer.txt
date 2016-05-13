@@ -4,6 +4,8 @@ activities : 	print (is_friend enemy);
 				print (is_friend friend);
 				print (is_friend this);
 				print (is_enemy this);
+				print (is_enemy enemy);
 				print (here);
 				print (friend);
+				print (this);
 			 

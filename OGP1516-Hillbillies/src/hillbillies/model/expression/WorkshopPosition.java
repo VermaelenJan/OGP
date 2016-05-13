@@ -14,8 +14,8 @@ public class WorkshopPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube) {
-		Unit unit = task.getAssignedUnit();
+	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+		Unit unit = possibleUnit;
 		Cube cube = null;
 		double[] cubeMiddle = null;
 		for (int x = 0; x<unit.getWorld().getNbCubesX(); x++){
@@ -47,7 +47,7 @@ public class WorkshopPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return true;
 	}
 }

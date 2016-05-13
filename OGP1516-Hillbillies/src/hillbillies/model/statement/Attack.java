@@ -29,11 +29,11 @@ public class Attack extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube) {
 		Unit tempAttackUnit = null;
 		if (getAttackUnit() instanceof IUnitExpression){
-			tempAttackUnit = (Unit) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube);
+			tempAttackUnit = (Unit) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else if (getAttackUnit() instanceof ReadVariable){
-			tempAttackUnit = (Unit) ((IUnitExpression) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube)).
-					evaluate(unit.getAssignedTask(), selectedCube);
+			tempAttackUnit = (Unit) ((IUnitExpression) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube, unit)).
+					evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else{
 			throw new RuntimeException();
@@ -51,11 +51,11 @@ public class Attack extends Statement {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getAttackUnit() instanceof IUnitExpression ||
 					(getAttackUnit() instanceof ReadVariable
-						&& (getAttackUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
-					)) && getAttackUnit().isWellFormed(task, calledBy);
+						&& (getAttackUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+					)) && getAttackUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

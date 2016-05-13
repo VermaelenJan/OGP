@@ -24,14 +24,14 @@ public class PositionOfUnit extends Expression implements IPosition {
 	}
 	
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube) {
+	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Unit unit;
 		
 		if (getExpUnit() instanceof ReadVariable) {
-			unit = (Unit) ((Expression) getExpUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
+			unit = (Unit) ((Expression) getExpUnit().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
 		}
 		else if (getExpUnit() instanceof IUnitExpression) {
-			unit = (Unit) getExpUnit().evaluate(task, selectedCube);
+			unit = (Unit) getExpUnit().evaluate(task, selectedCube, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -43,11 +43,11 @@ public class PositionOfUnit extends Expression implements IPosition {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getExpUnit() instanceof IUnitExpression ||
 				(getExpUnit() instanceof ReadVariable
-					&& (getExpUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
-				)) && getExpUnit().isWellFormed(task, calledBy);
+					&& (getExpUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+				)) && getExpUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

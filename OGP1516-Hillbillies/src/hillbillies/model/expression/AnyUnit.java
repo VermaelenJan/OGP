@@ -20,12 +20,12 @@ public class AnyUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Task task, int[] selectedCube) {
+	public Unit evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Unit anyUnit = null;
-		for (Unit currUnit: task.getAssignedUnit().getWorld().getAllUnits()){
-			if ((anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
-										Position.getDistanceBetween(anyUnit.getLocation(), task.getAssignedUnit().getLocation()))
-				&& currUnit != task.getAssignedUnit()) {
+		for (Unit currUnit: possibleUnit.getWorld().getAllUnits()){
+			if ((anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), possibleUnit.getLocation()) <
+										Position.getDistanceBetween(anyUnit.getLocation(), possibleUnit.getLocation()))
+				&& currUnit != possibleUnit) {
 				anyUnit = currUnit;
 			}
 		}
@@ -33,7 +33,7 @@ public class AnyUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return true;
 	}
 }

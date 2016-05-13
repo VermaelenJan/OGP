@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import hillbillies.model.Log;
 import hillbillies.model.Position;
 import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class LogPosition extends Expression implements IPosition {
@@ -14,11 +15,11 @@ public class LogPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube) {
+	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Log log = null;
-		for (Log currLog: task.getAssignedUnit().getWorld().getLogsWorld()){
-			if (log == null || Position.getDistanceBetween(currLog.getLocation(), task.getAssignedUnit().getLocation()) <
-										Position.getDistanceBetween(log.getLocation(), task.getAssignedUnit().getLocation())) {
+		for (Log currLog: possibleUnit.getWorld().getLogsWorld()){
+			if (log == null || Position.getDistanceBetween(currLog.getLocation(), possibleUnit.getLocation()) <
+										Position.getDistanceBetween(log.getLocation(), possibleUnit.getLocation())) {
 				log = currLog;
 			}
 		}
@@ -31,7 +32,7 @@ public class LogPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return true;
 	}
 }

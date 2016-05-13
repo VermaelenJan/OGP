@@ -32,16 +32,16 @@ public class PrintStatement extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		if (getValue().evaluate(unit.getAssignedTask(), selectedCube) instanceof Boolean) {
-			System.out.println(getValue().evaluate(unit.getAssignedTask(), selectedCube)); 
+		if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) instanceof Boolean) {
+			System.out.println(getValue().evaluate(unit.getAssignedTask(), selectedCube, unit)); 
 		}
-		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube) instanceof int[]) {
-			System.out.println(Arrays.toString((int[]) getValue().evaluate(unit.getAssignedTask(), selectedCube)));
+		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) instanceof int[]) {
+			System.out.println(Arrays.toString((int[]) getValue().evaluate(unit.getAssignedTask(), selectedCube, unit)));
 		}
-		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube) instanceof Unit) {
-			System.out.println(((Unit) getValue().evaluate(unit.getAssignedTask(), selectedCube)).getName());
+		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) instanceof Unit) {
+			System.out.println(((Unit) getValue().evaluate(unit.getAssignedTask(), selectedCube, unit)).getName());
 		}
-		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube) == null){
+		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) == null){
 			System.out.println("null");
 		}
 		else {
@@ -52,8 +52,8 @@ public class PrintStatement extends Statement {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
-		return getValue().isWellFormed(task, calledBy);
+		return getValue().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

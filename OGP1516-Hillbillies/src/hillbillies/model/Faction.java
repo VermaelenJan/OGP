@@ -30,7 +30,7 @@ public class Faction {
 	protected Faction(World world){
 		this.world = world;
 		world.addFaction(this);
-		this.scheduler = new Scheduler();
+		this.scheduler = new Scheduler(this);
 	}
 	
 	/**

@@ -16,9 +16,20 @@ import be.kuleuven.cs.som.annotate.Model;
  * @version 1.0
  */
 public class Scheduler {
-	public Scheduler() {
+	public Scheduler(Faction faction) {
 		tasks = new ArrayList<Task>();
+		setFaction(faction);
 	}
+	
+	protected Faction getFaction(){
+		return this.faction;
+	}
+	
+	private void setFaction(Faction faction){
+		this.faction = faction;
+	}
+	
+	private Faction faction;
 	
 	List<Task> tasks;
 	
@@ -89,7 +100,7 @@ public class Scheduler {
 	}
 	
 	@SuppressWarnings("unused")
-	private List<Task> getAllTasksWithCond(/*TODO*/) {
+	private List<Task> getAllTasksWithCond(/*TODO Lambda expressions*/) {
 		List<Task> result = new ArrayList<>();
 		for (Task task: tasks) {
 			if (true) {

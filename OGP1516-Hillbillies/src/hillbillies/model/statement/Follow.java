@@ -32,11 +32,11 @@ public class Follow extends Statement {
 		Unit followUnit;
 		
 		if (getFollowUnit() instanceof IUnitExpression){
-			followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube);
+			followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else if (getFollowUnit() instanceof ReadVariable){
-			followUnit = (Unit) ((IUnitExpression) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube)).
-					evaluate(unit.getAssignedTask(), selectedCube);
+			followUnit = (Unit) ((IUnitExpression) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube, unit)).
+					evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else{
 			throw new RuntimeException();
@@ -64,12 +64,12 @@ public class Follow extends Statement {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getFollowUnit() instanceof IUnitExpression || 
 					(getFollowUnit() instanceof ReadVariable
-						&& (getFollowUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
-					)) && getFollowUnit().isWellFormed(task, calledBy);
+						&& (getFollowUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+					)) && getFollowUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 
 }

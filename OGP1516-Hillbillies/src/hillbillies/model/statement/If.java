@@ -58,11 +58,11 @@ public class If extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube) {
 		Boolean tempBool;
 		if (getCondition() instanceof IBool){
-			tempBool = (Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube);
+			tempBool = (Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else if (getCondition() instanceof ReadVariable){
-			tempBool = (Boolean) ((IBool) getCondition().evaluate(unit.getAssignedTask(), selectedCube)).
-					evaluate(unit.getAssignedTask(), selectedCube);
+			tempBool = (Boolean) ((IBool) getCondition().evaluate(unit.getAssignedTask(), selectedCube, unit)).
+					evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else {
 			throw new RuntimeException();
@@ -96,16 +96,36 @@ public class If extends Statement {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
-		return (getCondition() instanceof IBool ||
-					(getCondition() instanceof ReadVariable
-						&& (getCondition().evaluate(task, task.getSelectedCube()) instanceof IBool)
-					)) && getCondition().isWellFormed(task, calledBy)
-				&&
-				(getIfBody() instanceof Sequence || getIfBody() instanceof Statement) &&
-				getIfBody().isWellFormed(task, calledBy) && (getElseBody() == null || 
-				((getElseBody() instanceof Sequence || getElseBody() instanceof Statement)) &&
-				getElseBody().isWellFormed(task, calledBy));
+		if (! (getCondition() instanceof IBool || ((getCondition() instanceof ReadVariable)
+				&& (getCondition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IBool))
+				&& getCondition().isWellFormed(task, calledBy, possibleUnit))) {
+			return false;
+		}
+		Boolean tempBool;
+		if (getCondition() instanceof IBool) {
+			tempBool = (boolean) getCondition().evaluate(task, task.getSelectedCube(), possibleUnit);
+		}
+		else if (getCondition() instanceof ReadVariable) {
+			tempBool = (boolean) ((Expression) getCondition().evaluate(task, task.getSelectedCube(), possibleUnit)).
+					evaluate(task, task.getSelectedCube(), possibleUnit);
+		}
+		else {
+			throw new RuntimeException();
+		}
+		if (tempBool){
+			return (getIfBody() instanceof Sequence || getIfBody() instanceof Statement) &&
+			getIfBody().isWellFormed(task, calledBy, possibleUnit);
+		}
+		else{
+			if (getElseBody() == null) {
+				return true;
+			}
+			else {
+				return (getElseBody() instanceof Sequence || getElseBody() instanceof Statement) &&
+				getElseBody().isWellFormed(task, calledBy, possibleUnit);
+			}
+		}
 	}
 }

@@ -49,32 +49,29 @@ public class NextToPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube) {
-		if (getPosition().evaluate(task, selectedCube) == null){
+	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+		if (getPosition().evaluate(task, selectedCube, possibleUnit) == null){
 			return null;
 		}
-		if (task.getAssignedUnit() != null) {
-			if (getPosition() instanceof IPosition) {
-				return getNeighbouring(task.getAssignedUnit(), (int[])getPosition().evaluate(task, selectedCube));
-			}
-			else if (getPosition() instanceof ReadVariable) {
-				return getNeighbouring(task.getAssignedUnit(), (int[]) ((Expression) getPosition().evaluate(task, selectedCube)).evaluate(task, selectedCube));
-			}
-			else {
-				throw new RuntimeException();
-			}
+		if (getPosition() instanceof IPosition) {
+			return getNeighbouring(possibleUnit, (int[])getPosition().evaluate(task, selectedCube, possibleUnit));
 		}
-		else { // task is not assigned yet (should only be accessed for isWellFormed)
-			return new int[]{-1, -1, -1};
+		else if (getPosition() instanceof ReadVariable) {
+			return getNeighbouring(possibleUnit, (int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).
+					evaluate(task, selectedCube, possibleUnit));
+		}
+		else {
+			throw new RuntimeException();
 		}
 	}
+	
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
-						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
-					)) && getPosition().isWellFormed(task, calledBy);
+						&& (getPosition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IPosition)
+					)) && getPosition().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

@@ -19,12 +19,12 @@ public class ThisUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Task task, int[] selectedCube) {
-		return task.getAssignedUnit();
+	public Unit evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+		return possibleUnit;
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return true;
 	}
 }

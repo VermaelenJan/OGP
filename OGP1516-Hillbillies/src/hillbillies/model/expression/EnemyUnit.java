@@ -21,13 +21,12 @@ public class EnemyUnit extends Expression implements IUnitExpression {
 
 
 	@Override
-	public Unit evaluate(Task task, int[] selectedCube) {
+	public Unit evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Unit enemyUnit = null;
-		for (Unit currUnit: task.
-				getAssignedUnit().getWorld().getAllUnits()){
-			if ((enemyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
-										Position.getDistanceBetween(enemyUnit.getLocation(), task.getAssignedUnit().getLocation()))
-					&& currUnit.getFaction() != task.getAssignedUnit().getFaction()) {
+		for (Unit currUnit: possibleUnit.getWorld().getAllUnits()){
+			if ((enemyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), possibleUnit.getLocation()) <
+										Position.getDistanceBetween(enemyUnit.getLocation(), possibleUnit.getLocation()))
+					&& currUnit.getFaction() != possibleUnit.getFaction()) {
 				enemyUnit = currUnit;
 			}
 		}
@@ -35,7 +34,7 @@ public class EnemyUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return true;
 	}
 }

@@ -24,14 +24,14 @@ public class IsFriend extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube) {
+	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Unit friendUnit;
 
 		if (getFriendUnit() instanceof ReadVariable) { 
-			friendUnit = (Unit) ((Expression) getFriendUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
+			friendUnit = (Unit) ((Expression) getFriendUnit().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
 		}
 		else if (getFriendUnit() instanceof IUnitExpression) {
-			friendUnit = (Unit) getFriendUnit().evaluate(task, selectedCube);
+			friendUnit = (Unit) getFriendUnit().evaluate(task, selectedCube, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -40,16 +40,17 @@ public class IsFriend extends Expression implements IBool {
 		if (friendUnit == null) {
 			return false;
 		}
-		return task.getAssignedUnit().getFaction() == friendUnit.getFaction();
+
+		return possibleUnit.getFaction() == friendUnit.getFaction();
 	}
 
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getFriendUnit() instanceof IUnitExpression ||
 				(getFriendUnit() instanceof ReadVariable
-						&& (getFriendUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
-					)) && getFriendUnit().isWellFormed(task, calledBy);
+						&& (getFriendUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+					)) && getFriendUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

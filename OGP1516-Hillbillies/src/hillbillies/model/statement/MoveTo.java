@@ -32,14 +32,14 @@ public class MoveTo extends Statement {
 	private Expression position;
 	
 	@Override
-	public Sequence execute(Unit unit,int[] selectedCube){ 
+	public Sequence execute(Unit unit, int[] selectedCube){ 
 		int[] targetPos;
 		if (getPosition() instanceof IPosition){
-			targetPos = (int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube);
+			targetPos = (int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else if (getPosition() instanceof ReadVariable){
-			targetPos = (int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube)).
-					evaluate(unit.getAssignedTask(), selectedCube);
+			targetPos = (int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube, unit)).
+					evaluate(unit.getAssignedTask(), selectedCube, unit);
 		}
 		else {
 			throw new RuntimeException();
@@ -55,11 +55,11 @@ public class MoveTo extends Statement {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
-						&& (getPosition().evaluate(task, task.getSelectedCube()) instanceof IPosition)
-					)) && getPosition().isWellFormed(task, calledBy);
+						&& (getPosition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IPosition)
+					)) && getPosition().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

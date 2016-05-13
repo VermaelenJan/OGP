@@ -3,6 +3,7 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 /**
@@ -18,12 +19,12 @@ public class SelectedPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube) {
+	public int[] evaluate(Task task, int[] selectedCube,Unit possibleUnit) {
 		return selectedCube;
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return task.getSelectedCube() != null;
 	}
 }

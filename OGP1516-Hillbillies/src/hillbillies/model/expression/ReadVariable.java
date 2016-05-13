@@ -3,6 +3,7 @@ package hillbillies.model.expression;
 import java.util.ArrayList;
 
 import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class ReadVariable extends Expression{
@@ -24,15 +25,15 @@ public class ReadVariable extends Expression{
 	
 
 	@Override
-	public Expression evaluate(Task task, int[] selectedCube) { 
+	public Expression evaluate(Task task, int[] selectedCube, Unit possibleUnit) { 
 		if (task.readVariable(getVariableName()) instanceof ReadVariable) {
-			return (Expression) task.readVariable(getVariableName()).evaluate(task, selectedCube);
+			return (Expression) task.readVariable(getVariableName()).evaluate(task, selectedCube, possibleUnit);
 		}
 		return task.readVariable(getVariableName());
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return task.getVariables().containsKey(getVariableName());
 	}
 }

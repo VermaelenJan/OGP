@@ -24,7 +24,7 @@ public class BreakStatement extends Statement {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		for (Object el : calledBy) {
 			if (el instanceof While) {
 				return true;

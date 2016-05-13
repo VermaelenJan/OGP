@@ -1392,7 +1392,7 @@ public class Unit {
 			}
 		}
 	}
-	 //TODO: doc, alles van worktypes enzo is weg :p
+	 
 	/**
 	 * Advance the time working with the given time step dt.
 	 * 

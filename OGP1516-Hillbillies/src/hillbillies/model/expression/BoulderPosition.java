@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import hillbillies.model.Boulder;
 import hillbillies.model.Position;
 import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
 public class BoulderPosition extends Expression implements IPosition {
@@ -14,11 +15,11 @@ public class BoulderPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube) {
+	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Boulder boulder = null;
-		for (Boulder currBoulder: task.getAssignedUnit().getWorld().getBouldersWorld()){
-			if (boulder == null || Position.getDistanceBetween(currBoulder.getLocation(), task.getAssignedUnit().getLocation()) <
-										Position.getDistanceBetween(boulder.getLocation(), task.getAssignedUnit().getLocation())) {
+		for (Boulder currBoulder: possibleUnit.getWorld().getBouldersWorld()){
+			if (boulder == null || Position.getDistanceBetween(currBoulder.getLocation(), possibleUnit.getLocation()) <
+										Position.getDistanceBetween(boulder.getLocation(), possibleUnit.getLocation())) {
 				boulder = currBoulder;
 			}
 		}
@@ -33,7 +34,7 @@ public class BoulderPosition extends Expression implements IPosition {
 
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return true;
 	}
 }

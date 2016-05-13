@@ -20,12 +20,12 @@ public class FriendUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Task task, int[] selectedCube) {
+	public Unit evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Unit friendUnit = null;
-		for (Unit currUnit: task.getAssignedUnit().getWorld().getAllUnits()){
-			if ((friendUnit == null || Position.getDistanceBetween(currUnit.getLocation(), task.getAssignedUnit().getLocation()) <
-										Position.getDistanceBetween(friendUnit.getLocation(), task.getAssignedUnit().getLocation()))
-					&& currUnit.getFaction() == task.getAssignedUnit().getFaction() && currUnit != task.getAssignedUnit()) {
+		for (Unit currUnit: possibleUnit.getWorld().getAllUnits()){
+			if ((friendUnit == null || Position.getDistanceBetween(currUnit.getLocation(), possibleUnit.getLocation()) <
+										Position.getDistanceBetween(friendUnit.getLocation(), possibleUnit.getLocation()))
+					&& currUnit.getFaction() == possibleUnit.getFaction() && currUnit != possibleUnit) {
 				friendUnit = currUnit;
 			}
 		}
@@ -33,7 +33,7 @@ public class FriendUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		return true;
 	}
 }

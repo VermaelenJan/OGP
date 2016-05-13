@@ -23,14 +23,14 @@ public class CarriesItem extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube) {
+	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
 		Unit unit;
 		
 		if (getCarryingUnit() instanceof ReadVariable) {
-			unit = (Unit) ((Expression) getCarryingUnit().evaluate(task, selectedCube)).evaluate(task, selectedCube);
+			unit = (Unit) ((Expression) getCarryingUnit().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
 		}
 		else if (getCarryingUnit() instanceof IUnitExpression) {
-			unit = (Unit) getCarryingUnit().evaluate(task, selectedCube);
+			unit = (Unit) getCarryingUnit().evaluate(task, selectedCube, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -43,11 +43,11 @@ public class CarriesItem extends Expression implements IBool {
 
 
 	@Override
-	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		return (getCarryingUnit() instanceof IUnitExpression ||
 				(getCarryingUnit() instanceof ReadVariable
-					&& (getCarryingUnit().evaluate(task, task.getSelectedCube()) instanceof IUnitExpression)
-				)) && getCarryingUnit().isWellFormed(task, calledBy);
+					&& (getCarryingUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+				)) && getCarryingUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

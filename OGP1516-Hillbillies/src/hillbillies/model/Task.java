@@ -9,7 +9,7 @@ import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
 
-//TODO: lambda expressions?
+
 /**
  * A class of ...
  * 
@@ -258,16 +258,18 @@ public class Task {
 	}
 	
 	public Boolean isWellFormed() {
-		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
-			ArrayList<java.lang.Object> calledBy = new ArrayList<java.lang.Object>();
-			calledBy.add(this);
-			if (!activity.isWellFormed(this, calledBy)) {
-				System.out.println("iswellformed fout: " + activity);
-				getVariables().clear();
-				return false;
+		for (Scheduler tempScheduler : (getSchedulersForTask())){
+			for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
+				ArrayList<java.lang.Object> calledBy = new ArrayList<java.lang.Object>();
+				calledBy.add(this);
+				if (!activity.isWellFormed(this, calledBy, tempScheduler.getFaction().getUnits().iterator().next())) {
+					System.out.println("iswellformed fout: " + activity);
+					getVariables().clear();
+					return false;
+				}
 			}
+			getVariables().clear();
 		}
-		getVariables().clear();
 		System.out.println("iswellformed juist");
 		return true;
 	}

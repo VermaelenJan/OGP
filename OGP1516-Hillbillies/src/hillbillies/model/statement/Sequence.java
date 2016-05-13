@@ -42,10 +42,10 @@ public class Sequence extends Statement {
 		}
 
 		@Override
-		public Boolean isWellFormed(Task task, ArrayList<Object> calledBy) {
+		public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 			calledBy.add(this);
 			for (Statement statement : getStatements()) {
-				if (! statement.isWellFormed(task, calledBy)) {
+				if (! statement.isWellFormed(task, calledBy,possibleUnit)) {
 					return false;
 				}
 			}
