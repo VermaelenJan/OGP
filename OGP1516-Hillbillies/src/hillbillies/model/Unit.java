@@ -1498,7 +1498,7 @@ public class Unit {
 		
 		else {
 			if (getAssignedTask() != null) {
-				this.assignedTask.finishedLastActivity();
+				this.assignedTask.interruptTask();
 			}
 		}
 		

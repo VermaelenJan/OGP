@@ -1,4 +1,5 @@
 name: "ownTasks"
 priority : 3
-activities : print (is_friend enemy);
+activities : 	print (is_friend enemy);
+				print (is_friend friend);
 			 

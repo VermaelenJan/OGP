@@ -54,6 +54,8 @@ public class Scheduler {
 		if (task.isAssigned()) {
 			task.getAssignedUnit().stopTask();
 			task.getAssignedUnit().removeTask();
+			task.setAssignedUnit(null);
+
 		}
 		getAllTasks().remove(task);
 		task.removeSchedulerForTask(this);
@@ -88,7 +90,7 @@ public class Scheduler {
 		});
 	}
 	
-	protected Task getHightestUnassignedPriorityTask() {
+	public Task getHightestUnassignedPriorityTask() {
 		for (Task task : getAllTasks()) {
 			if (!task.isAssigned() && task.isWellFormed()) {
 				return task;

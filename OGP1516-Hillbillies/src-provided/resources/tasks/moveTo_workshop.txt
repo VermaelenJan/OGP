@@ -1,0 +1,4 @@
+name: "operate workshop"
+priority : -100
+activities : w := workshop;
+	moveTo w;

@@ -24,9 +24,12 @@ public class Task {
 		setSelectedCube(selectedCube);
 		setActivities(activities);
 		schedulersForTask = new HashSet<Scheduler>();
-		this.variables = new HashMap<String, Expression>();
+		this.variables = new HashMap<String, Expression>();//TODO: setter maken (en gebruiken)
+		this.originalActivities = activities;//TODO: setter en getter maken (en gebruiken)
 		
 	}
+	
+	private Statement originalActivities;
 	
 	HashMap<Statement, Boolean> activitiesMap;
 	
@@ -56,7 +59,7 @@ public class Task {
 	
 	// ACTIVITY
 	
-	public Statement getActivities(){
+	protected Statement getActivities(){
 		return this.activitiesReq;
 	}
 	
@@ -124,14 +127,19 @@ public class Task {
 	private Unit assignedUnit;
 	
 	protected void assignTo(Unit unit) throws RuntimeException {
-		unit.assignTask(this);
-		setAssignedUnit(unit);
-		
+
+		List<Scheduler> temp = new ArrayList<>();
 		for (Scheduler scheduler : getSchedulersForTask()) {
-			if (scheduler != assignedUnit.getFaction().getScheduler()) {
-				scheduler.removeTask(this);
+			if (scheduler != unit.getFaction().getScheduler()) {
+				temp.add(scheduler);
 			}
 		}
+		for (Scheduler scheduler : temp) {
+			scheduler.removeTask(this);
+		}
+		
+		unit.assignTask(this);
+		setAssignedUnit(unit);
 	}
 	
 	public Unit getAssignedUnit() {
@@ -223,8 +231,8 @@ public class Task {
 	}
 	
 	private void finishTask() {
+		assignedUnit.removeTask();
 		assignedUnit.getFaction().getScheduler().removeTask(this);
-		this.assignedUnit.removeTask();
 	}
 	
 	protected void reAssignTaskInSchedulers() {
@@ -237,10 +245,13 @@ public class Task {
 		this.assignedUnit.removeTask();
 		setAssignedUnit(null);
 		reAssignTaskInSchedulers();
-		for (Statement activity : activitiesMap.keySet()) {
-			activitiesMap.put(activity, false);
+		setActivities(originalActivities);
+		if (getPriority() == 0) {
+			setPriority(-1);
 		}
-		setPriority(getPriority()-Math.abs(getPriority()/2));
+		else {
+			setPriority(getPriority() - 1);
+		}
 	}
 	
 	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {

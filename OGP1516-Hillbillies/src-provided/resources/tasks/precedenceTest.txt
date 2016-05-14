@@ -4,7 +4,7 @@ activities : print (true && false) ;
 			 moveTo (0,12,8); 
 			 moveTo here;
 			 if true || false
-			 	then work here;
+			 	then work (0,12,7);
 			 fi
 			 if ! ((false && true) && true)
 			 	then moveTo (10,10,10);
