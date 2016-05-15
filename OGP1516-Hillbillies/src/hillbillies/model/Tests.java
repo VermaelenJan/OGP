@@ -3,6 +3,7 @@ package hillbillies.model;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import hillbillies.tests.TaskFactory.TaskFactoryTest;
 import hillbillies.tests.boulder.BoulderTest;
 import hillbillies.tests.facade.Part2TestPartial;
 import hillbillies.tests.facade.Part3TestPartial;
@@ -18,6 +19,6 @@ import hillbillies.tests.world.WorldTest;
 */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {UnitTest.class, WorldTest.class, BoulderTest.class, LogTest.class,
+@Suite.SuiteClasses( {UnitTest.class, WorldTest.class, BoulderTest.class, LogTest.class, TaskFactoryTest.class,
 						Part2TestPartial.class, Part3TestPartial.class, SchedulerTest.class, TaskTest.class} )
 public class Tests {}
