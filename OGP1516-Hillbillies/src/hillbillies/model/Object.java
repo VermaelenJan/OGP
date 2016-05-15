@@ -6,9 +6,8 @@ import be.kuleuven.cs.som.annotate.*;
  * A class of objects that can occur and used by units in a world.
  * 
  * @invar  Each object can have its weight as weight.
- *       | canHaveAsWeight(this.getWeight())
- * @invar  The world of each unit must be effective for every unit.
- * 		 | world != null
+ * @invar  The world of each object must be effective for every object.
+ * @invar  The position of each object must be a valid position.
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
@@ -23,8 +22,8 @@ public abstract class Object {
 	 * @param location
 	 * 		The location for this new object.
 	 * @effect The world of this new object is set to the given world.
-	 * @effect The weight of this new unit is set to a random weight between 10 and 50.
-	 * @effect The location of this new unit is set to the given location.
+	 * @effect The weight of this new object is set to a random weight between 10 and 50.
+	 * @effect The location of this new object is set to the given location.
 	 */
 	protected Object(World world, double[] location){
 		positionObj = new Position(world);

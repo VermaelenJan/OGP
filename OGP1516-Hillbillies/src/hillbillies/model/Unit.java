@@ -125,7 +125,7 @@ public class Unit {
 		setExperience(0);
 		
 		positionObj = new Position(world);
-		positionObj.setLocation(location); //
+		positionObj.setLocation(location); 
 		}
 	
 	
@@ -272,7 +272,7 @@ public class Unit {
 	 * 			(with the flag on false).
 	 * 			| setWeight(weight,false)
 	 */
-	@Raw
+	@Raw 
 	public void setWeight(int weight) {
 		setWeight(weight, false);
 	}
@@ -370,6 +370,7 @@ public class Unit {
 	 * 			| if (weight < (getStrength()+getAgility())/2)
 	 * 			|	then (new.getWeight() == (getStrength()+getAgility())/2) 
 	 */
+	@Raw @Model
 	private void setFreeWeight(int weight){
 		
 				
@@ -615,7 +616,7 @@ public class Unit {
 	 * @effect The new toughness of this unit is set to the given toughness, with the restrictions for a not-newly created unit.
 	 * 			| setToughness(toughness,false)
 	 */
-	@Raw
+	@Raw @Model
 	public void setToughness(int toughness) {
 		setToughness(toughness, false);
 	}
@@ -720,7 +721,7 @@ public class Unit {
 	 * 		   	smaller than the maximum hitpoints.
  	 *       	| result == ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()))
 	 */
-	@Raw 
+	@Raw
 	private boolean isValidHitpoints(double hitpoints){
 		return ((hitpoints >= 0) && (hitpoints <= getMaxHitpointsStamina()));
 	}
@@ -828,6 +829,7 @@ public class Unit {
 	/**
 	 * Return the experience of this unit.
 	 */
+	@Basic @Raw
 	public int getExperience(){
 		return this.experience;
 	}
@@ -841,6 +843,7 @@ public class Unit {
 	 * 		the given experience.
 	 * 		| new.getExperience() == experience
 	 */
+	@Raw
 	private void setExperience(int experience){
 		if (experience < 0){
 			this.experience = 0;
@@ -877,7 +880,7 @@ public class Unit {
 	 * @param experience
 	 * 		The experience the unit has gain.
 	 *
-	 *@effect For every 10 experience of the given experience points, a random attribute 
+	 * @effect For every 10 experience of the given experience points, a random attribute 
 	 *		(i.e strength,agility or toughness) will be increased by 1.
 	 *			| for (nbTimes10Exp)
 	 *			|	then increaseRandomAttributeBy1()
@@ -954,6 +957,7 @@ public class Unit {
 	 * Check whether this unit can have the given world as its world.
 	 * 
 	 * @return True if and only if the given world is effective.
+	 * 		| result = this.world != null
 	 */
 	@Raw
 	protected boolean hasWorld(){
@@ -1093,13 +1097,22 @@ public class Unit {
 	/**
 	 * Terminate this unit.
 	 * 
-	 * @post this unit is terminated.
-	 * 		| new.isTerminated()
-	 * @effect If this unit has a faction, check whether the faction
-	 * 		is effective.
-	 * 		| if (faction != null)
-	 * 		|	then faction.checkTerminate()
+	 * @effect If the unit has an assigned task, the task is interrupted.
+	 * 		| if (getAssignedTask() != null) 
+	 * 		| 	then assignedTask.interruptTask()
 	 * @effect If the unit carries an object, the unit drops the object.
+	 * 		| if (this.carriedObject != null)
+	 * 		|   then dropObject()
+	 * @post The unit is terminated.
+	 * 		| this.terminated == true
+	 * @effect If this unit has a faction, the unit is removed from 
+	 * 		its faction and check whether the faction
+	 * 		is still effective after removal of the unit.
+	 * 		| if (faction != null)
+	 * 		|	then faction.removeUnit(this)
+	 * 		|        faction.checkTerminate()
+	 * 
+
 	 */
 	protected void terminate() {
 		if (getAssignedTask() != null) {
@@ -1138,7 +1151,7 @@ public class Unit {
 	// CUBE
 	
 	/**
-	 * Return The coordinates of the occupying cube of this unit.
+	 * Return the coordinates of the occupying cube of this unit.
 	 * 
 	 * @return The occupied cube location of the positionobject of this unit.
 	 * 		| result == positionObj.getOccupiedCube()
@@ -1147,15 +1160,21 @@ public class Unit {
 	public int[] getOccupiedCube() {
 		return positionObj.getOccupiedCube();
 	}
+	
+	/**
+	 * Return the positionobject of this unit.
+	 */
+	@Basic @Raw 
+	public Position getPositionObj(){
+		return this.positionObj;
+	}
 
 	/**
 	 * Variable registering the positionobject of this unit.
 	 */
 	private Position positionObj;
 	
-	public Position getPositionObj(){
-		return this.positionObj;
-	}
+
 	
 	
 	// ADVANCE TIME
@@ -1167,9 +1186,12 @@ public class Unit {
 	 *		The time step which the game time is advanced.
 	 * @effect If the unit is not terminated and if the hitpoints are equal to or below 0, the hitpoints
 	 * 		are set 0 and the unit terminates.
+	 * @effect If the unit is not terminated, the time pending is set to the given dt.
 	 * @effect If the unit is not terminated and not resting, advance time not resting.
-	 * @effect If the unit is not terminated is falling or the location of the positionobject of this unit is not a valid unit
+	 * @effect If the unit is not terminated and is falling or the location of the positionobject of this unit is not a valid unit
 	 * 		location, the unit falls and is not sprinting and advance time falling.
+	 * @effect If the unit is not terminated and is falling or the location of the positionobject of this unit is not a valid unit
+	 * 		location, and if the unit has an assigned task, the task is interrupted. 
 	 * @effect If the unit is not terminated and if the unit is attacking, advance time attacking.
 	 * @effect If the unit is not terminated and resting and its location of its positionobject is at the middle in the z direction
 	 * 			of a cube, advance time resting.
@@ -1201,7 +1223,7 @@ public class Unit {
 			if (isFalling() || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
 				setFalling(true); 
 				if (getAssignedTask() != null) {
-					assignedTask.interruptTask();
+					getAssignedTask().interruptTask();
 				}
 				stopSprinting();
 				advanceTimeFalling(dt);
@@ -1236,27 +1258,6 @@ public class Unit {
 		}
 	}
 	
-	private void setTimePending(double time) {
-		this.timeToPend = time;
-	}
-
-	private double getTimePending() {
-		return this.timeToPend;
-	}
-	
-	private double timeToPend;
-	
-	public void startNewPending() {
-
-		if (getTimePending() > 0){
-			setTimePending(getTimePending()-ConstantsUtils.PEND_TIME);
-			getAssignedTask().finishedLastActivity();
-			if (getAssignedTask() != null) {
-				getAssignedTask().executeTask();
-			}
-		}
-	}
-
 	/**
 	 * Advance the time not resting with the given time step dt.
 	 * 
@@ -1287,7 +1288,10 @@ public class Unit {
 	 * 		of the cube in z direction, the unit falls to the current
 	 * 		occupying cube, to the middle in z direction.
 	 * @effect If the unit is above a cube of solid terrain, and if the unit is at the middle of
-	 * 		of the cube in z direction, the unit stops falling.
+	 * 		the cube in z direction, the unit stops falling.
+	 * @effect If the unit is above a cube of solid terrain, and if the unit is at the middle of 
+	 * 		the cube in z direction, and if the unit is not at the middle of the cube, the target
+	 * 		of the unit is set to the middle of the cube.
 	 *
 	 */
 	private void advanceTimeFalling(double dt){
@@ -1337,6 +1341,9 @@ public class Unit {
 	 * @effect The unit stops resting.
 	 * @effect If the time attacking is smaller or equal to 0,
 	 * 		the attack is set to 0.
+	 * @effect If the time attacking is smaller or equal to 0,
+	 * 		and if the unit has an assigned task, the last activity of 
+	 * 		the task is finished.
 	 */
 	private void advanceTimeAttacking(double dt) {
 		stopWorking();
@@ -1346,7 +1353,7 @@ public class Unit {
 		if (getAttackTime()<= 0){
 			setAttackTime(0);
 			if (getAssignedTask() != null) {
-				this.assignedTask.finishedLastActivity();
+				getAssignedTask().finishedLastActivity();
 			}
 		}
 	}
@@ -1399,34 +1406,31 @@ public class Unit {
 	 * @param dt
 	 *		The time step which the game time is advanced.
 	 * @effect The time time remainder to work is decremented with the given time step dt.
-	 * @effect If the worktype is equal to 1 and if the unit is not moving, the time remaining
-	 * 		to work is set to 0, the unit drops its object, the experience is updated with 10
-	 * 		points and the worktype is set to 0.
-	 * @effect If the worktype is equal to 1 and if the unit is moving, the time remainder to 
-	 * 		work is set to a very large number, and advance time moving with the given time step dt.
-	 * @effect If the worktype is equal to 2 and if the unit is not moving, the time remaining to 
-	 * 		work is set to 0, the worktype is set to 0, and if there is a boulder and a log at
-	 * 		the worktarget, the unit improves its equipment with a boulder and a log, and updates
-	 * 		its experience with 10 points.
-	 * @effect If the worktype is equal to 2 and if the unit is moving, the time remainder to 
-	 * 		work is set to a very large number, and advance time moving with the given time step dt.
-	 * @effect If the worktype is equal to 3 and if the unit is not moving, the time remaining to 
-	 * 		work is set to 0, the worktype is set to 0, and if there is a boulder at
-	 * 		the worktarget, the unit picks up a boulder, and updates its experience with 10 points.
-	 * @effect If the worktype is equal to 3 and if the unit is moving, the time remainder to 
-	 * 		work is set to a very large number, and advance time moving with the given time step dt.
-	 * @effect If the worktype is equal to 4 and if the unit is not moving, the time remaining to 
-	 * 		work is set to 0, the worktype is set to 0, and if there is a log at
-	 * 		the worktarget, the unit picks up a log, and updates its experience with 10 points.
-	 * @effect If the worktype is equal to 4 and if the unit is moving, the time remainder to 
-	 * 		work is set to a very large number, and advance time moving with the given time step dt.
-	 * @effect If the time remaining to work is smaller or equal to 0, the unit stops working.
-	 * @effect If the time remaining to work is smaller or equal to 0 and the the worktype is equal 
-	 * 		to 5, the cube at the worktarget caves in, the unit updates its experience with 10 points,
-	 * 		and the worktype is set to 0.
-	 * @effect If the worktype is equal to 0, the unit stops working.
-	 * @note The meaning of the different worktypes are explained in the documentation of the function 
-	 * 		workAt below.
+	 * @effect If the unit is carrying an object and the worktarget is passable terrain, 
+	 * 		the unit drops the object at the worktarget, the experience is updated with 10.
+	 * @effect If the unit is carrying an object and the worktarget is passable terrain, and 
+	 * 		if the unit has an assigned task, the last activity of the task is finished.
+	 * @effect If the worktarget is a workshop and if there is a boulder at the worktarget and 
+	 * 		a log at the worktarget, the unit improves its equipment with the boulder and the log
+	 * 		and the experience is updated with 10.
+	 * @effect If the worktarget is a workshop and if there is a boulder at the worktarget and 
+	 * 		a log at the worktarget, and if the unit has an assigned task, the last activity of 
+	 * 		the task is finished.
+	 * @effect If there is a boulder at the worktarget, the unit picks up the boulder and updates
+	 * 		its experience with 10.
+	 * @effect If there is a boulder at the worktarget and if the unit has an assigned task, the 
+	 * 		last activity of the task is finished.
+	 * @effect If there is a log at the worktarget, the unit picks up the log and updates
+	 * 		its experience with 10.
+	 * @effect If there is a log at the worktarget and if the unit has an assigned task, the 
+	 * 		last activity of the task is finished.
+	 * @effect If the worktarget is of wood or rock , and if the unit is not carrying an object, 
+	 * 		the world caves in at the worktarget and the experience of the unit updates with 10.
+	 * @effect If the worktarget is of wood or rock , and if the unit is not carrying an object, 
+	 * 		and if the unit has an assigned task, the last activity of the task is finished.
+	 * @effect If the unit has an assigned task, the task is interrupted.
+	 * @effect The time remaining to work is set to 0.
+	 * @effect The unit stops working.
 	 */
 	private void advanceTimeWorking(double dt) throws IllegalWorkPositionException {
 		setTimeRemainderToWork(getTimeRemainderToWork()-(float)dt);
@@ -1440,7 +1444,7 @@ public class Unit {
 			dropObject(currentWorkTarget);
 			updateExperience(10);
 			if (getAssignedTask() != null) {
-				this.assignedTask.finishedLastActivity();
+				getAssignedTask().finishedLastActivity();
 			}
 		}
 		
@@ -1453,7 +1457,7 @@ public class Unit {
 				improveEquipment(currBoulder,currLog);
 				updateExperience(10);
 				if (getAssignedTask() != null) {
-					this.assignedTask.finishedLastActivity();
+					getAssignedTask().finishedLastActivity();
 				}
 			}
 
@@ -1466,7 +1470,7 @@ public class Unit {
 				pickUpObject(currBoulder);
 				updateExperience(10);
 				if (getAssignedTask() != null) {
-					this.assignedTask.finishedLastActivity();
+					getAssignedTask().finishedLastActivity();
 				}
 			}
 
@@ -1498,7 +1502,7 @@ public class Unit {
 		
 		else {
 			if (getAssignedTask() != null) {
-				this.assignedTask.interruptTask();
+				getAssignedTask().interruptTask();
 			}
 		}
 		
@@ -1526,12 +1530,14 @@ public class Unit {
 	}
 	
 	/**
-	 * The unit arrives at his target.
+	 * The unit arrives at its target.
 	 * 
 	 * @effect The unit stops moving.
 	 * @effect The unit updates its experience with 1 points.
 	 * @effect If the unit has a global target to move to, the unit moves
 	 * 		to its global target.
+	 * @effect If the unit has reached its global target, and the unit has an 
+	 * 		assigned task, the last activity of the task is finished.
 	 */
 	private void advanceTimeMovingArrived() {
 		stopMoving();
@@ -1627,6 +1633,60 @@ public class Unit {
 	@Model
 	private static boolean isValidAdvanceTime(double dt){
 		return ((dt >=0)&&(dt <= 0.2));
+	}
+	
+	
+	/**
+	 * Set the time pending to the given time.
+	 * 
+	 * @param time
+	 * 		The time to set for the pending time.
+	 * @post The new pending time is equal to the given time.
+	 * 		| new.getTimePending() == time
+	 */
+	private void setTimePending(double time) {
+		this.timeToPend = time;
+	}
+
+	/**
+	 * Return the time pending.
+	 * 
+	 * @return the time pending.
+	 * 		| result == timeToPend
+	 */
+	private double getTimePending() {
+		return this.timeToPend;
+	}
+	
+	/**
+	 * Variable registering the time to pend.
+	 */
+	private double timeToPend;
+	
+	/**
+	 * Start a new pending time.
+	 * 
+	 * @effect If the time pending is greater than zero, the new time pending is set to the 
+	 * 		old time pending minus the the pend_time (0.001) and the current activity of the
+	 * 		assigned task is finished.
+	 * 		| if (getTimePending() > 0)
+	 * 		| 	then setTimePending(getTimePending()-ConstantsUtils.PEND_TIME)
+	 * 		|		 getAssignedTask().finishedLastActivity()
+	 * @effect If the time pending is greater than zero and if this unit has an assigned task,
+	 * 		the assigned task is executed.
+	 * 		| if (getTimePending() > 0)
+	 * 		|   if (getAssignedTask() != null)
+	 * 		|		then getAssignedTask.executeTask()
+	 */
+	public void startNewPending() {
+
+		if (getTimePending() > 0){
+			setTimePending(getTimePending()-ConstantsUtils.PEND_TIME);
+			getAssignedTask().finishedLastActivity();
+			if (getAssignedTask() != null) {
+				getAssignedTask().executeTask();
+			}
+		}
 	}
 	
 	
@@ -1940,9 +2000,24 @@ public class Unit {
 	 * 		The movement of the unit in the z direction.
 	 * @param calledBy_moveTo
 	 * 		Boolean for defining the function called by the function MoveTo.
+	 * @effect If the given dx, dy and dz movement is not a valid move to adjacent movement, 
+	 * 		and if unit has an assigned task, the assigned task is interrupted.
+	 * 		|  if (! isValidAdjacentMovement(dx,dy,dz))
+	 * 		|    if (assignedTask != null)
+	 * 		|      then  assignedTask.interruptTask()
 	 * @effect If the unit is moving and the unit has rested long enough to have recovered one hitpoint
 	 * 		and the unit is not interupted by resting or working during a movement to a global target,
 	 * 		the units stops resting and stops working.
+	 * 		| if (isMoving() && !interruptRWPermission && canHaveRecoverdOneHp())
+	 * 		|	then stopWorking()
+	 * 		|	     stopResting()
+	 * @effect If the unit is at the middle of a cube and the unit is not moving and the new 
+	 * 		target with dx, dy and dz is an illegal position, and if the unit has an assigned
+	 * 		task, the task is interrupted.
+	 * 		|  if (positionObj.isAtMiddleOfCube() || !isMoving())
+	 * 		| 		if (! positionObj.isValidUnitPositionDouble(currentTarget))
+	 * 		|			if (assignedTask != null)
+	 * 		|				then assignedTask.interruptTask()
 	 * @effect If the movement in x,y and z direction is not zero,and the unit is at the middle
 	 * 		of a cube and the unit is not moving, the unit starts moving towards
 	 * 		the new current target, equal to the cube position of the current cube plus the dx, 
@@ -1988,8 +2063,8 @@ public class Unit {
 
 			
 			if (! positionObj.isValidUnitPositionDouble(currentTarget)){	
-				if (assignedTask != null) {
-					assignedTask.interruptTask();
+				if (getAssignedTask() != null) {
+					getAssignedTask().interruptTask();
 				}
 				throw new IllegalPositionException(currentTarget);
 			}
@@ -2060,14 +2135,23 @@ public class Unit {
 	 * 
 	 * @param endTarget
 	 * 		The end target to move to.
-	 * 
-	 * @throws IllegalPositionException
-	 * 		The cubetype of the target is not passible terrain.
-	 * 		| !world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()
-	 * 
+	 * @effect If the unit is falling and if the unit has an assigned task, the assigned
+	 * 		task is interrupted.
+	 * 		| if (isFalling())
+	 * 		|    if (getAssignedTask() != null)
+	 * 		|      then getAssignedTask().interruptTask()
+	 * @effect If the given endTarget is not passable terrain and if the unit has an assigned 
+	 * 		task, the assigned task is interrupted.
+	 * 		|  if (!world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain())
+	 * 		|    if (getAssignedTask() != null)
+	 * 		|       then getAssignedTask().interruptTask()
 	 * @note: The unit will not start moving if the unit is currently falling, neither if
 	 * 			endTarget equals the current cube.
-	 * 
+	 * @effect If the current location of the unit is not equal to the target, and the unit has 
+	 * 		an assigned task, a new pending is started.
+	 * 		| if (endTarget == currentCubeLocation)
+	 * 		| 	if (getAssignedTask() != null)
+	 * 		| 		then startNewPending()	
 	 * @effect The global target is set to the endtarget.
 	 * 		| globalTarget == endTarget
 	 * @post The cube of the position of the endTarget is put in the map queue, with as value
@@ -2098,9 +2182,15 @@ public class Unit {
 	 * 		| 		then queue.isEmpty()
 	 * 		|			 currentLvl == 0
 	 * 		|			 moveTo(EndTarget)
+	 * @effect If the unit has an assigned task, the assigned task is interrupted.
+	 * 		| if (getAssignedTask() != null)
+	 * 		|	then getAssignedTask().interruptTask()
 	 * @effect Clear the queue and set the current level of the path finding on 0.
 	 * 		| queue.isEmpty()
 	 * 		| currentLvl == 0
+	 * @throws IllegalPositionException
+	 * 		The cubetype of the target is not passible terrain.
+	 * 		| !world.getCubeType(endTarget[0], endTarget[1], endTarget[2]).isPassableTerrain()
 	 */
 	public void moveTo(int[] endTarget) throws IllegalPositionException {
 	
@@ -2219,7 +2309,8 @@ public class Unit {
 	// FALLING
 	
 	/**
-	 * Set falling of this unit to the given boolean
+	 * Set falling of this unit to the given boolean.
+	 * 
 	 * @post The new state of falling of this unit is equal to the given boolean.
 	 *		| new.isFalling() == bool
 	 */
@@ -2242,7 +2333,6 @@ public class Unit {
 	 */
 	private boolean isFalling;
 
-	private Cube workCube;
 	
 	
 	// WORKING
@@ -2250,6 +2340,11 @@ public class Unit {
 	/**
 	 * The unit works at a random neighbouring cube or at its occupying cube.
 	 * 
+	 * @effect If the unit is falling and if the unit has an assigned task, 
+	 * 		the assigned task of the unit is interrupted.
+	 * 		| if (isFalling())
+	 * 		|   if (getAssignedTask != null)
+	 * 		| 		then getAssignedTask.interruptedTask()
 	 * @effect The unit starts working at one of the neighbouring cubes if possible.
 	 * 		| workAt(random Neighbouringcube.getCubePosition())
 	 * @note this function is used in default behaviour.
@@ -2274,60 +2369,23 @@ public class Unit {
 	 * 		The cube at which the unit starts working.
 	 * 
 	 * @note: The unit will not start working if the unit is currently falling.
-	 * 
+	 * @effect If the unit is falling and if the unit has an assigned task, 
+	 * 		the assigned task of the unit is interrupted.
+	 * 		| if (isFalling())
+	 * 		|   if (getAssignedTask != null)
+	 * 		| 		then getAssignedTask.interruptedTask()
+	 * @effect If the workTarget is not a valid workLocation and if the unit has an assigned task, 
+	 * 		the assigned task of the unit is interrupted.
+	 * 		| if (!isValidWorkLocation(workTarget))
+	 * 		|   if (getAssignedTask != null)
+	 * 		| 		then getAssignedTask.interruptedTask()
 	 * @post The new workTarget of this unit is equal to the given workTarget.
 	 * 		| new.workTarget == workTarget
-	 *
-	 * @effect If the unit is carrying an object, the unit moves to the workTarget,
-	 * 		the worktype is set to 1 and the unit starts working.
-	 * 		| if (this.carriedObject != null)
-	 * 		|	then moveTo(workTarget)
-	 * 		|		 this.worktype == 1
-	 * 		|        startWorking()
-	 * @note Worktype 1 means that the unit is carrying a boulder and will drop it at the 
-	 * 		given target cube.
-	 * @effect If the cubeType of the target is equal to a workshop, and there is a boulder and a 
-	 * 		a log at the cube of the target, the worktype is set to 2, the unit moves to the workTarget
-	 * 		and the unit starts working.
-	 * 		the worktype is set to 1 and the unit starts working.
-	 * 		| if ( (targetCube.getCubeType() == CubeType.WORKSHOP) && (world.getBoulderAtCube(workTarget) != null)
-	 * 		|    && (world.getLogAtCube(workTarget) != null) )
-	 * 		|	then this.worktype == 2
-	 * 		|		 moveTo(workTarget)
-	 * 		|        startWorking()	
-	 * @note Worktype 2 means that the target cube is a workshop and a boulder and a log are available on that cube.
-	 * @effect If there is a boulder at the cube of the workTarget, the worktype is set to 3 and the unit moves to 
-	 * 		the workTarget and the unit starts working.
-	 * 		| if ( world.getBoulderAtCube(workTarget) != null)
-	 * 		|	then this.worktype == 3
-	 * 		|		 moveTo(workTarget)
-	 * 		|        startWorking()	
-	 * @note Worktype 3 means that there is a boulder at the workTarget and the unit moves to the workTarget to pick
-	 * 		the boulder up.
-	 * @effect If there is a log at the cube of the workTarget, the worktype is set to 4 and the unit moves to 
-	 * 		the workTarget and the unit starts working.
-	 * 		| if ( world.getLogAtCube(workTarget) != null)
-	 * 		|	then this.worktype == 4
-	 * 		|		 moveTo(workTarget)
-	 * 		|        startWorking()	
-	 * @note Worktype 4 means that there is a log at the workTarget and the unit moves to the workTarget to pick
-	 * 		the boulder up.
-	 * @effect If the cubetype of the workTarget is equal to wood and if the unit does not carry an object, the worktype
-	 * 		is set to 5 and the unit starts working and the units orientation is set to the workTarget.
-	 * 		| if ((world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.WOOD
-	 * 		|    && this.carriedObject == null)
-	 * 		| 	then this.workType == 5
-	 * 		|		 startWorking()
-	 * 		|        setOrientationTo({workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5})
-	 * @effect If the cubetype of the workTarget is equal to wood and if the unit does not carry an object, the worktype
-	 * 		is set to 5 and the unit starts working and the units orientation is set to the workTarget.
-	 * 		| if ((world.getCubeType(workTarget[0],workTarget[1],workTarget[2]) == CubeType.ROCK
-	 * 		|    && this.carriedObject == null)
-	 * 		| 	then this.workType == 5
-	 * 		|		 startWorking()
-	 * 		|        setOrientationTo({workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5})
-	 * @note Worktype 5 means that the cube of the workTarget collapses and leaves a boulder or a log, depending
-	 * 		if the cube was rock or wood.
+	 * @post The new workCube of this unit is set to the cube with the location 
+	 * 		of the given workTarget.
+	 * 		| new.workCube == world.getCube(workTarget[0],workTarget[1],workTarget[2])
+	 * @effect The orientation of the unit is set to the center of the workCube.
+	 * 		| setOrientationTo(workTarget[0]+0.5 ,workTarget[1]+0.5 ,workTarget[2]+0.5)
 	 * @throws IllegalWorkPositionException
 	 * 		The workTarget is not a valid work position for this unit.
 	 * 		| !(isValidWorkPosition)
@@ -2360,6 +2418,12 @@ public class Unit {
 		setOrientationTo(targetCenter);
 		
 	}
+	
+	
+	/**
+	 * Variable registering the cube to work on for this unit.
+	 */
+	private Cube workCube;
 	
 	/**
 	 * Check whether the given workTarget is a valid location for this unit to work on.
@@ -2572,6 +2636,12 @@ public class Unit {
 		this.carriedObject = null;
 	}
 	
+	/**
+	 * Drop the object at the the location of this unit.
+	 * 
+	 * @effect Drop the object of this unit to the location of this unit.
+	 * 		|  dropObject(this.getLocation())
+	 */
 	protected void dropObject(){
 		dropObject(this.getLocation());
 	}
@@ -2590,12 +2660,32 @@ public class Unit {
 	 * @param other
 	 * 		 	Unit to attack.
 	 * @note The unit will never attack whilst falling.
+	 * @effect If the unit is falling and if the unit has an assigned task, 
+	 * 		the assigned task of the unit is interrupted.
+	 * 		| if (isFalling())
+	 * 		|   if (getAssignedTask != null)
+	 * 		| 		then getAssignedTask.interruptedTask()
+	 * @effect If the unit is not equal to the unit to attack and if the unit to attack
+	 * 		is not terminated and if the other unit is on a valid attack position for this
+	 * 		unit, and if this unit has an assigned task, the assigned task is interrupted.
+	 * 		| if ((this != other) &&  (!other.isTerminated()))
+	 *		|    if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube()))
+	 * 		|   	if (getAssignedTask != null)
+	 * 		| 			then getAssignedTask.interruptedTask()
+	 * @effect If the unit is not equal to the unit to attack and if the unit to attack
+	 * 		is not terminated and if the unit to attack is of the same faction 
+	 * 		as this unit, and if this unit has an assigned task, the assigned task is interrupted.
+	 * 		| if ((this != other) &&  (!other.isTerminated()))
+	 *		|    if (this.getFaction() == other.getFaction())
+	 * 		|   	if (getAssignedTask != null)
+	 * 		| 			then getAssignedTask.interruptedTask()
 	 * @effect If the unit is not equal to the unit to attack and if the unit to attack
 	 * 		is not terminated and if the unit is resting, the unit stops resting.
 	 * 		| if ((this != other) &&  (!other.isTerminated()))
 	 * 		|	if (this.isResting())
 	 * 		|		then this.stopResting()
-	 * @effect If the unit is not equal to the unit to attack, the unit stops working.
+	 * @effect If the unit is not equal to the unit to attack and if the unit to attack
+	 * 		is not terminated, the unit stops working.
 	 * 		| if ((this != other) &&  (!other.isTerminated()))
 	 * 		|	then this.stopWorking()
 	 * @effect If the unit is not equal to the unit to attack, and if the unit to attack
@@ -2717,6 +2807,12 @@ public class Unit {
 	 * 		the unit is not falling, the unit stops working.
 	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
 	 * 		|	then this.stopWorking()
+	 * @effect If the faction of this unit is not equal to the faction of the other unit and
+	 * 		the unit is not falling, and if the unit has an assigned task, the assinged task
+	 * 		is interrupted.
+	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
+	 * 		|	if (getAssignedTask() != null)
+	 * 		|		then getAssignedTask().interruptTask()
 	 *  If the faction of the unit is not equal to the faction of the other unit,
 	 *  and the unit is not falling, the possibility to dodge is 0.2 times this units agility,
 	 * 	divided by the other units agility.
@@ -2909,16 +3005,25 @@ public class Unit {
 	 * The unit starts resting.
 	 * 
 	 * @effect If the hitpoints of the unit are not equal to the maximum hitpoints or the stamina is not equal
-	 * 		to the maximum stamina, the new time resting for the unit is set to 0, the unit stops working,
-	 * 		the unit is resting, the new initial hitpoints when starting to rest are set to the current hitpoints
-	 * 		and the new initial stamina when starting to rest is set to the current stamina.
+	 * 		to the maximum stamina, the new time resting for the unit is set to 0, the unit stops working.
 	 * 		| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
 	 * 		|	 ( (getStamina() != getMaxHitpointsStamina()) ))
 	 * 		|	then (setTimeResting(0)
 	 * 		|		&& stopWorking()
-	 * 		|		&& new.isResting() == true
-	 * 		|		&& setStartRestHitpoints(getHitpoints())
-	 * 		|		&& setStartRestStamina(getStamina()))
+	 * @effect If the hitpoints of the unit are not equal to the maximum hitpoints or the stamina is not equal
+	 * 		to the maximum stamina,and if the unit has an assigned task, the assigned task is interrupted.
+	 * 		| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
+	 * 		|	 ( (getStamina() != getMaxHitpointsStamina()) ))		
+	 * 		|		if (getAssignedTask() != null)
+	 * 		|			then getAssignedTask().interruptTask()
+	 * @effect If the hitpoints of the unit are not equal to the maximum hitpoints or the stamina is not equal
+	 * 		to the maximum stamina , the unit is resting, the new initial hitpoints when starting to rest
+	 * 		 are set to the current hitpoints and the new initial stamina when starting to rest is set to the current stamina.
+	 * 		| if ( (getHitpoints() != getMaxHitpointsStamina()) || 
+	 * 		|	 ( (getStamina() != getMaxHitpointsStamina()) ))		
+	 * 		|		this.resting = true 
+	 * 		|       && setStartRestHitpoints(getHitpoints)
+	 * 		|		&& setStartRestStamina(getStamina)
 	 * 
 	 */
 	@Model
@@ -2930,7 +3035,7 @@ public class Unit {
 			if (getAssignedTask() != null) {
 				assignedTask.interruptTask();
 			}
-
+			
 			this.resting = true;
 			setStartRestHitpoints((int) getHitpoints());
 			setStartRestStamina((int) getStamina());
@@ -3189,6 +3294,9 @@ public class Unit {
 	 * 			if possible.
 	 * 			| if (possibleTask[3])
 	 * 			|	then attackPotentialEnemy()
+	 * @effect  If the unit has an assigned task, the assigned task is executed.
+	 * 			| if (getAssignedTask() != null)
+	 * 			| 	then getAssignedTask.executeTask()
 	 */
 	@Model
 	private void newDefaultBehaviour(){
@@ -3218,31 +3326,68 @@ public class Unit {
 	 */
 	private boolean defaultBehaviour = false;
 	
+	
+	/**
+	 * Return the assigned task of this unit.
+	 */
+	public Task getAssignedTask() {
+		return assignedTask;
+	}
+	
+	/**
+	 * Stop the task the unit is currently executing.
+	 * 
+	 * @effect The unit stops working.
+	 * 		| stopWorking()
+	 * @effect The unit stops moving.
+	 * 		| stopMoving()
+	 */
 	protected void stopTask() {
 		stopWorking();
 		stopMoving();
 	}
 
-	private Task assignedTask;
-	
+	/**
+	 * Assign the given task to this unit.
+	 * 
+	 * @param task
+	 * 		The task to assign to this unit.
+	 * @effect If the unit has not yet an assigned task,
+	 * 		the given task is assigned to this unit.
+	 * 		| if (getAssignedTask() == null)
+	 * 		| 	then setAssignedTask(task)
+	 */
 	protected void assignTask(Task task) {
-		if (this.assignedTask == null) {
+		if (getAssignedTask() == null) {
 			setAssignedTask(task);
 		}
 		else {
 			throw new RuntimeException();
 		}
 	}
-
+	
+	/**
+	 * Remove the task of this unit.
+	 * 
+	 * @effect Set the assigned task of this unit on null.
+	 * 		| setAssignedTask(null)
+	 */
 	protected void removeTask() {
 		setAssignedTask(null);
 	}
 	
-	public Task getAssignedTask() {
-		return assignedTask;
-	}
-	
+	/**
+	 * Set the assigned task of this unit to the given task. 
+	 * 
+	 * @param task
+	 * 		The task to set to the assigned task.
+	 * @post The new assigned task of this unit is equal to the given task.
+	 * 		| new.getAssignedTask() == task
+	 */
 	private void setAssignedTask(Task task){
 		this.assignedTask = task;
 	}
+	
+
+	private Task assignedTask;
 }

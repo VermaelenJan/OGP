@@ -12,6 +12,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * 
  * @invar Each faction must have proper units.
  * @invar Each faction must have an effective world.
+ * @invar Each faction must have an effective scheduler.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
@@ -26,6 +27,8 @@ public class Faction {
 	 * @post The world of this new faction is equal to the given world.
 	 * @post This new faction has no units yet.
 	 * @effect This faction is added to the given world.
+	 * @post A new scheduler is initialized for this faction and 
+	 * 		this faction is added as faction of the new scheduler.
 	 */
 	protected Faction(World world){
 		this.world = world;
@@ -119,7 +122,7 @@ public class Faction {
 			}
 		}
 		return nbUnits;
-		// If we only want  terminated and non terminated units
+		// If we only want terminated and non terminated units
 		//return getUnits().size();
 	}
 	
@@ -169,7 +172,13 @@ public class Faction {
 		}
 	}
 	
-
+	/**
+	 * Remove the given unit from the set of units of this faction.
+	 * 
+	 * @param unit
+	 * 		The unit to be removed.
+	 * @post This faction no longer has the given unit as one of its units.
+	 */
 	protected void removeUnit(Unit unit){
 		unitsOfFaction.remove(unit);
 	}
@@ -179,9 +188,17 @@ public class Faction {
 	 */
 	private boolean isTerminated;
 	
-	private Scheduler scheduler;
 	
+	/**
+	 * Get the scheduler of this faction.
+	 */
+	@Basic @Raw
 	public Scheduler getScheduler() {
 		return this.scheduler;
 	}
+	
+	/**
+	 * Variable registering the scheduler for this faction.
+	 */
+	private Scheduler scheduler;
 }

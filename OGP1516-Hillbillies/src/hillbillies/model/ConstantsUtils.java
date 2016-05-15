@@ -3,6 +3,7 @@ package hillbillies.model;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Model;
+import be.kuleuven.cs.som.annotate.Value;
 
 /**
  * A class with constants used in this project.
@@ -10,6 +11,7 @@ import be.kuleuven.cs.som.annotate.Model;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
+@Value
 public final class ConstantsUtils {
 	
 

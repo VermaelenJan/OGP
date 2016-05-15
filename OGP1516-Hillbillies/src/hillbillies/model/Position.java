@@ -15,7 +15,7 @@ import hillbillies.model.exceptions.IllegalPositionException;
 /**
  * A class of positions related to units and objects in a world.
  * 
- * @invar Each position must have an effective world.
+ * @invar Each positionobject must have an effective world.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.5
@@ -24,14 +24,40 @@ import hillbillies.model.exceptions.IllegalPositionException;
 public class Position {
 	
 	/**
-	 * Initialize this new position with the given world.
+	 * Initialize this new positionobject with the given world.
 	 * 
 	 * @param world
-	 * 		The world for this new position.
+	 * 		The world for this new positionobject.
+	 * @post The new world of this positionobject is equal to the given world.
 	 */
 	protected Position(World world){
-		this.world = world;	
+		setWorld(world);	
 	}
+	
+	/**
+	 * Return the world of this positionobject.
+	 */
+	@Basic @Raw
+	protected World getWorld(){
+		return this.world;
+	}
+	
+	/**
+	 * Set the world of this positionobject to the given world.
+	 * 
+	 * @param world
+	 * 		The world to set.
+	 * @post The new world of this positionobject is equal to the given world.
+	 */
+	@Raw
+	private final void setWorld(World world){
+		this.world = world;
+	}
+	
+	/**
+	 * Variable registering the world of this position.
+	 */
+	private World world;
 	
 	/**
 	 * Return the location of this positionobject in its world.
@@ -380,14 +406,18 @@ public class Position {
 			setFreeLocation(currMiddleCube);
 		}
 	}
-	
+
 	/**
-	 * Variable registering the world of this position.
+	 * Return the direct distance between two locations.
+	 * 
+	 * @param location1
+	 * 		The first location of the distance to check between two locations.
+	 * @param location2
+	 * 		The second location of the distance to check between two locations.
+	 * @return The direct absolute distance between the two given locations.
 	 */
-	private World world;
-	
-	public static double getDistanceBetween(double[] one, double[] two){
-		double[] difference = {one[0] - two[0], one[1] - two[1], one[2]- two[2]};
+	public static double getDistanceBetween(double[] location1, double[] location2){
+		double[] difference = {location1[0] - location2[0], location1[1] - location2[1], location1[2]- location2[2]};
 		return Math.sqrt(Math.pow(difference[0], 2) + Math.pow(difference[1], 2) + Math.pow(difference[2], 2));
 	}
 
