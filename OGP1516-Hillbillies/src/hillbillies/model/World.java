@@ -10,7 +10,6 @@ import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
-
 /**
  * A class of worlds in which units can conduct activities.
  * 
