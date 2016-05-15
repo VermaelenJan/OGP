@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
 import hillbillies.model.Cube;
 import hillbillies.model.CubeType;
@@ -20,12 +22,13 @@ import hillbillies.model.expression.Expression;
 import hillbillies.model.expression.LiteralPosition;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.programs.TaskParser;
-import ogp.framework.util.ModelException;
 
 public class SchedulerTest {
+	
+	private static World world;
 
-	@Test
-	public void testSchedulerWithTask() throws ModelException {
+	@Before
+	public void setUp() throws Exception {
 		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
 		Cube[][][] cubes = new Cube[3][3][3];
 		for (int xIndex = 0; xIndex<cubes.length; xIndex++) {
@@ -45,9 +48,14 @@ public class SchedulerTest {
 		int[] pos3 = {1, 1, 2};
 		cubes[1][1][2] = new Cube(pos3, CubeType.WOOD);
 		int[] pos4 = {1, 1, 0};
-		cubes[2][2][2] = new Cube(pos4, CubeType.WORKSHOP);
+		cubes[1][1][0] = new Cube(pos4, CubeType.WORKSHOP);
 
-		World world = new World(cubes, defaultTerrainChangeListener);
+		world = new World(cubes, defaultTerrainChangeListener);
+	}
+	
+	@Test
+	public void testSchedulerWithTask() {
+		
 		Unit unit = new Unit(new int[] { 0, 0, 0 }, "Test", 50, 50, 50, 50, world);
 		unit.startDefaultBehaviour();
 		Faction faction = unit.getFaction();
@@ -90,29 +98,8 @@ public class SchedulerTest {
 	}
 	
 	@Test
-	public void testAddAndRemoveTask() throws ModelException {
-		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
-		Cube[][][] cubes = new Cube[3][3][3];
-		for (int xIndex = 0; xIndex<cubes.length; xIndex++) {
-			for (int yIndex = 0; yIndex<cubes[0].length; yIndex++) {
-				for (int zIndex = 0; zIndex<cubes[0][0].length; zIndex++) {
-					int[] position = {xIndex, yIndex, zIndex};
-					Cube cube = new Cube(position, CubeType.AIR);
-					cubes[xIndex][yIndex][zIndex] = cube;
-				}	
-			}	
-		}
-
-		int[] pos1 = {1, 1, 0};
-		cubes[1][1][0] = new Cube(pos1, CubeType.ROCK);
-		int[] pos2 = {1, 1, 1};
-		cubes[1][1][1] = new Cube(pos2, CubeType.ROCK);
-		int[] pos3 = {1, 1, 2};
-		cubes[1][1][2] = new Cube(pos3, CubeType.WOOD);
-		int[] pos4 = {1, 1, 0};
-		cubes[2][2][2] = new Cube(pos4, CubeType.WORKSHOP);
-
-		World world = new World(cubes, defaultTerrainChangeListener);
+	public void testAddAndRemoveTask() {
+		
 		Unit unit = new Unit(new int[] { 0, 0, 0 }, "Test", 50, 50, 50, 50, world);
 		Faction faction = unit.getFaction();
 		Scheduler scheduler = faction.getScheduler();
@@ -157,29 +144,8 @@ public class SchedulerTest {
 	}
 	
 	@Test
-	public void testMultipleSchedulersOneTask() throws ModelException {
-		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
-		Cube[][][] cubes = new Cube[3][3][3];
-		for (int xIndex = 0; xIndex<cubes.length; xIndex++) {
-			for (int yIndex = 0; yIndex<cubes[0].length; yIndex++) {
-				for (int zIndex = 0; zIndex<cubes[0][0].length; zIndex++) {
-					int[] position = {xIndex, yIndex, zIndex};
-					Cube cube = new Cube(position, CubeType.AIR);
-					cubes[xIndex][yIndex][zIndex] = cube;
-				}	
-			}	
-		}
-
-		int[] pos1 = {1, 1, 0};
-		cubes[1][1][0] = new Cube(pos1, CubeType.ROCK);
-		int[] pos2 = {1, 1, 1};
-		cubes[1][1][1] = new Cube(pos2, CubeType.ROCK);
-		int[] pos3 = {1, 1, 2};
-		cubes[1][1][2] = new Cube(pos3, CubeType.WOOD);
-		int[] pos4 = {1, 1, 0};
-		cubes[2][2][2] = new Cube(pos4, CubeType.WORKSHOP);
-
-		World world = new World(cubes, defaultTerrainChangeListener);
+	public void testMultipleSchedulersOneTask() {
+		
 		Unit unit1 = new Unit(new int[] { 0, 0, 0 }, "Test", 50, 50, 50, 50, world);
 		Unit unit2 = new Unit(new int[] { 0, 0, 0 }, "Test", 50, 50, 50, 50, world);
 
@@ -208,9 +174,36 @@ public class SchedulerTest {
 		assertEquals(unit1, task.getAssignedUnit());
 	}
 
+	@Test
+	public void testgetTaskWithCondition() {
+
+		Unit unit = new Unit(new int[] { 0, 0, 0 }, "Test", 50, 50, 50, 50, world);
+		
+		Faction faction = unit.getFaction();
+		Scheduler scheduler = faction.getScheduler();
+		int[] loc = new int[] {1, 1, 1};
+		List<Task> tasks1 = TaskParser.parseTasksFromString(
+				"name: \"move task\"\npriority: -1\nactivities: moveTo selected;", new TaskFactory(),
+				Collections.singletonList(loc));
+
+		List<Task> tasks2 = TaskParser.parseTasksFromString(
+				"name: \"work task\"\npriority: 100\nactivities: work here;", new TaskFactory(),
+				Collections.singletonList(loc));
 
 
-	private static void advanceTimeFor(World world, double time, double step) throws ModelException {
+		Task task1 = tasks1.get(0);
+		Task task2 = tasks2.get(0);
+		
+		scheduler.addTask(task1);
+		scheduler.addTask(task2);
+		
+		assertEquals(2, scheduler.getAllTasksWithCond((Task p) -> p.getPriority() > -2).size());
+		assertEquals(1, scheduler.getAllTasksWithCond((Task p) -> p.getPriority() > 10).size());
+		assertEquals(task2, scheduler.getAllTasksWithCond((Task p) -> p.getPriority() > 10).get(0));
+		assertEquals(0, scheduler.getAllTasksWithCond((Task p) -> p.isAssigned()).size());
+	}
+
+	private static void advanceTimeFor(World world, double time, double step) {
 		int n = (int) (time / step);
 		for (int i = 0; i < n; i++)
 			world.advanceTime(step);

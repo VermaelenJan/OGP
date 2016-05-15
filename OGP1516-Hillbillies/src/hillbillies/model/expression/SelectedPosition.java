@@ -19,8 +19,8 @@ public class SelectedPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
-		return selectedCube;
+	public int[] evaluate(Task task, Unit possibleUnit) {
+		return task.getSelectedCube();
 	}
 
 	@Override

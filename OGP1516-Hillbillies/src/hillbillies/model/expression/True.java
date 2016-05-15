@@ -19,7 +19,7 @@ public class True extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public Boolean evaluate(Task task, Unit possibleUnit) {
 		return true;
 	}
 

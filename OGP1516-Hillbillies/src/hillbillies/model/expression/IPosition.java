@@ -10,5 +10,5 @@ import hillbillies.model.Unit;
  * @version 1.0
  */
 public interface IPosition {
-	public abstract int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit);
+	public abstract int[] evaluate(Task task, Unit possibleUnit);
 }

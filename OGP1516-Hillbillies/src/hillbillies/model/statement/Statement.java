@@ -26,7 +26,7 @@ public abstract class Statement {
 		this.sourceLocation = sourceLocation;
 	}
 	
-	public abstract Sequence execute(Unit unit,int[] selectedCube);
+	public abstract Sequence execute(Unit unit, int[] selectedCube);
 	
 	public abstract Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit);
 }

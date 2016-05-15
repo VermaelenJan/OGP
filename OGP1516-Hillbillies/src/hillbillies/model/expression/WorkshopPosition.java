@@ -14,7 +14,7 @@ public class WorkshopPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public int[] evaluate(Task task, Unit possibleUnit) {
 		Unit unit = possibleUnit;
 		Cube cube = null;
 		double[] cubeMiddle = null;

@@ -49,16 +49,16 @@ public class NextToPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
-		if (getPosition().evaluate(task, selectedCube, possibleUnit) == null){
+	public int[] evaluate(Task task, Unit possibleUnit) {
+		if (getPosition().evaluate(task, possibleUnit) == null){
 			return null;
 		}
 		if (getPosition() instanceof IPosition) {
-			return getNeighbouring(possibleUnit, (int[])getPosition().evaluate(task, selectedCube, possibleUnit));
+			return getNeighbouring(possibleUnit, (int[])getPosition().evaluate(task, possibleUnit));
 		}
 		else if (getPosition() instanceof ReadVariable) {
-			return getNeighbouring(possibleUnit, (int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).
-					evaluate(task, selectedCube, possibleUnit));
+			return getNeighbouring(possibleUnit, (int[]) ((Expression) getPosition().evaluate(task, possibleUnit)).
+					evaluate(task, possibleUnit));
 		}
 		else {
 			throw new RuntimeException();
@@ -71,7 +71,7 @@ public class NextToPosition extends Expression implements IPosition {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
-						&& (getPosition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IPosition)
+						&& (getPosition().evaluate(task, possibleUnit) instanceof IPosition)
 					)) && getPosition().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

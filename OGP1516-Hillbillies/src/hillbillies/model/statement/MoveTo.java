@@ -35,11 +35,11 @@ public class MoveTo extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube){ 
 		int[] targetPos;
 		if (getPosition() instanceof IPosition){
-			targetPos = (int[]) getPosition().evaluate(unit.getAssignedTask(), selectedCube, unit);
+			targetPos = (int[]) getPosition().evaluate(unit.getAssignedTask(), unit);
 		}
 		else if (getPosition() instanceof ReadVariable){
-			targetPos = (int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), selectedCube, unit)).
-					evaluate(unit.getAssignedTask(), selectedCube, unit);
+			targetPos = (int[])((IPosition)  getPosition().evaluate(unit.getAssignedTask(), unit)).
+					evaluate(unit.getAssignedTask(), unit);
 		}
 		else {
 			throw new RuntimeException();
@@ -59,7 +59,7 @@ public class MoveTo extends Statement {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 					(getPosition() instanceof ReadVariable 
-						&& (getPosition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IPosition)
+						&& (getPosition().evaluate(task, possibleUnit) instanceof IPosition)
 					)) && getPosition().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

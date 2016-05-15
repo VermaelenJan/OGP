@@ -32,11 +32,11 @@ public class Follow extends Statement {
 		Unit followUnit;
 		
 		if (getFollowUnit() instanceof IUnitExpression){
-			followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube, unit);
+			followUnit = (Unit) getFollowUnit().evaluate(unit.getAssignedTask(), unit);
 		}
 		else if (getFollowUnit() instanceof ReadVariable){
-			followUnit = (Unit) ((IUnitExpression) getFollowUnit().evaluate(unit.getAssignedTask(), selectedCube, unit)).
-					evaluate(unit.getAssignedTask(), selectedCube, unit);
+			followUnit = (Unit) ((IUnitExpression) getFollowUnit().evaluate(unit.getAssignedTask(), unit)).
+					evaluate(unit.getAssignedTask(), unit);
 		}
 		else{
 			throw new RuntimeException();
@@ -68,7 +68,7 @@ public class Follow extends Statement {
 		calledBy.add(this);
 		return (getFollowUnit() instanceof IUnitExpression || 
 					(getFollowUnit() instanceof ReadVariable
-						&& (getFollowUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+						&& (getFollowUnit().evaluate(task, possibleUnit) instanceof IUnitExpression)
 					)) && getFollowUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 

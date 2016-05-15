@@ -15,7 +15,7 @@ public class LogPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public int[] evaluate(Task task, Unit possibleUnit) {
 		Log log = null;
 		for (Log currLog: possibleUnit.getWorld().getLogsWorld()){
 			if (log == null || Position.getDistanceBetween(currLog.getLocation(), possibleUnit.getLocation()) <

@@ -23,14 +23,14 @@ public class CarriesItem extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public Boolean evaluate(Task task, Unit possibleUnit) {
 		Unit unit;
 		
 		if (getCarryingUnit() instanceof ReadVariable) {
-			unit = (Unit) ((Expression) getCarryingUnit().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
+			unit = (Unit) ((Expression) getCarryingUnit().evaluate(task, possibleUnit)).evaluate(task, possibleUnit);
 		}
 		else if (getCarryingUnit() instanceof IUnitExpression) {
-			unit = (Unit) getCarryingUnit().evaluate(task, selectedCube, possibleUnit);
+			unit = (Unit) getCarryingUnit().evaluate(task, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -47,7 +47,7 @@ public class CarriesItem extends Expression implements IBool {
 		calledBy.add(this);
 		return (getCarryingUnit() instanceof IUnitExpression ||
 				(getCarryingUnit() instanceof ReadVariable
-					&& (getCarryingUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+					&& (getCarryingUnit().evaluate(task, possibleUnit) instanceof IUnitExpression)
 				)) && getCarryingUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

@@ -24,14 +24,14 @@ public class IsAlive extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public Boolean evaluate(Task task, Unit possibleUnit) {
 		Unit unit;
 		
 		if (getAliveUnit() instanceof ReadVariable) {
-			unit = (Unit) ((Expression) getAliveUnit().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
+			unit = (Unit) ((Expression) getAliveUnit().evaluate(task, possibleUnit)).evaluate(task, possibleUnit);
 		}
 		else if (getAliveUnit() instanceof IUnitExpression) {
-			unit = (Unit) getAliveUnit().evaluate(task, selectedCube, possibleUnit);
+			unit = (Unit) getAliveUnit().evaluate(task, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -47,7 +47,7 @@ public class IsAlive extends Expression implements IBool {
 		calledBy.add(this);
 		return (getAliveUnit() instanceof IUnitExpression ||
 				(getAliveUnit() instanceof ReadVariable
-					&& (getAliveUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+					&& (getAliveUnit().evaluate(task, possibleUnit) instanceof IUnitExpression)
 				)) && getAliveUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

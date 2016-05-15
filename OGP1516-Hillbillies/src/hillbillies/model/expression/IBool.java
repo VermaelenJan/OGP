@@ -4,5 +4,5 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 
 public interface IBool {
-	public abstract Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit);
+	public abstract Boolean evaluate(Task task, Unit possibleUnit);
 }

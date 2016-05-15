@@ -47,7 +47,7 @@ public class UnitTest {
 		testUnit = new Unit(ValidLocation, ValidName, 60, 50, 70, 90, smallWorld);
 	}
 	
-	public World createSmallWorld() {
+	private World createSmallWorld() {
 		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
 		Cube[][][] worldCubes = new Cube[5][5][5];
 		for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
@@ -65,8 +65,20 @@ public class UnitTest {
 		int[] pos2 = {0, 3, 3};
 		Cube cube2 = new Cube(pos2, CubeType.ROCK);
 		worldCubes[0][3][3] = cube2;
-		smallWorld = new World(worldCubes, defaultTerrainChangeListener);
-		return smallWorld;
+		World temp = new World(worldCubes, defaultTerrainChangeListener);
+		return temp;
+	}
+	
+	@Test
+	public void getAndSetWorldTest() throws Exception {
+		int[] location = {0, 2, 4};
+		Unit unit = new Unit(location, ValidName, 0, 0, 0, 0, smallWorld);
+		assertEquals(unit.getWorld(), smallWorld);
+		World newSmallWorld = createSmallWorld();
+		assertNotEquals(smallWorld, newSmallWorld);
+		unit.setWorld(newSmallWorld);
+		assertNotEquals(smallWorld, unit.getWorld());
+		assertEquals(newSmallWorld, unit.getWorld());
 	}
 	
 	// Position tests

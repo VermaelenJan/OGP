@@ -27,7 +27,7 @@ public class WorldTest {
 
 	}
 
-	public World createSmallWorld() {
+	private World createSmallWorld() {
 		DefaultTerrainChangeListener defaultTerrainChangeListener = new DefaultTerrainChangeListener();
 		Cube[][][] worldCubes = new Cube[10][11][12];
 		for (int xIndex = 0; xIndex<worldCubes.length; xIndex++) {
@@ -59,7 +59,6 @@ public class WorldTest {
 
 	@Test
 	public void constructor() {
-		
 		assertEquals(10, smallWorld.getNbCubesX());
 		assertEquals(11, smallWorld.getNbCubesY());
 		assertEquals(12, smallWorld.getNbCubesZ());
@@ -69,7 +68,6 @@ public class WorldTest {
 		assertTrue(smallWorld.getCubeType(0, 3, 3) == CubeType.WOOD);
 		assertTrue(smallWorld.getCubeType(0, 1, 3) == CubeType.WORKSHOP);
 		assertTrue(smallWorld.getCubeType(0, 2, 2) == CubeType.AIR);
-		
 	}
 	
 	

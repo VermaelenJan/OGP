@@ -29,11 +29,11 @@ public class Attack extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube) {
 		Unit tempAttackUnit = null;
 		if (getAttackUnit() instanceof IUnitExpression){
-			tempAttackUnit = (Unit) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube, unit);
+			tempAttackUnit = (Unit) getAttackUnit().evaluate(unit.getAssignedTask(), unit);
 		}
 		else if (getAttackUnit() instanceof ReadVariable){
-			tempAttackUnit = (Unit) ((IUnitExpression) getAttackUnit().evaluate(unit.getAssignedTask(), selectedCube, unit)).
-					evaluate(unit.getAssignedTask(), selectedCube, unit);
+			tempAttackUnit = (Unit) ((IUnitExpression) getAttackUnit().evaluate(unit.getAssignedTask(), unit)).
+					evaluate(unit.getAssignedTask(), unit);
 		}
 		else{
 			throw new RuntimeException();
@@ -55,7 +55,7 @@ public class Attack extends Statement {
 		calledBy.add(this);
 		return (getAttackUnit() instanceof IUnitExpression ||
 					(getAttackUnit() instanceof ReadVariable
-						&& (getAttackUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+						&& (getAttackUnit().evaluate(task, possibleUnit) instanceof IUnitExpression)
 					)) && getAttackUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

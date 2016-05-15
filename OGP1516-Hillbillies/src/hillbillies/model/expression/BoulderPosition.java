@@ -15,7 +15,7 @@ public class BoulderPosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public int[] evaluate(Task task, Unit possibleUnit) {
 		Boulder boulder = null;
 		for (Boulder currBoulder: possibleUnit.getWorld().getBouldersWorld()){
 			if (boulder == null || Position.getDistanceBetween(currBoulder.getLocation(), possibleUnit.getLocation()) <

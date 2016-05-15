@@ -23,24 +23,24 @@ public class IsSolid extends Expression implements IBool {
 	}
 	
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
-		if (getPosition().evaluate(task, selectedCube, possibleUnit) == null ||
-				(getPosition() instanceof ReadVariable && ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).
-						evaluate(task, selectedCube, possibleUnit) == null)){
+	public Boolean evaluate(Task task, Unit possibleUnit) {
+		if (getPosition().evaluate(task, possibleUnit) == null ||
+				(getPosition() instanceof ReadVariable && ((Expression) getPosition().evaluate(task, possibleUnit)).
+						evaluate(task, possibleUnit) == null)){
 			return false;
 		}
 		int x;
 		int y;
 		int z;
 		if (getPosition() instanceof ReadVariable) {
-			x = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit))[0];
-			y = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit))[1];
-			z = ((int[]) ((Expression) getPosition().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit))[2];
+			x = ((int[]) ((Expression) getPosition().evaluate(task, possibleUnit)).evaluate(task, possibleUnit))[0];
+			y = ((int[]) ((Expression) getPosition().evaluate(task, possibleUnit)).evaluate(task, possibleUnit))[1];
+			z = ((int[]) ((Expression) getPosition().evaluate(task, possibleUnit)).evaluate(task, possibleUnit))[2];
 		}
 		else if (getPosition() instanceof IPosition) {
-			x = ((int[])getPosition().evaluate(task, selectedCube, possibleUnit))[0];
-			y = ((int[])getPosition().evaluate(task, selectedCube, possibleUnit))[1];
-			z = ((int[])getPosition().evaluate(task, selectedCube, possibleUnit))[2];
+			x = ((int[])getPosition().evaluate(task, possibleUnit))[0];
+			y = ((int[])getPosition().evaluate(task, possibleUnit))[1];
+			z = ((int[])getPosition().evaluate(task, possibleUnit))[2];
 		}
 		else {
 			throw new RuntimeException();
@@ -53,7 +53,7 @@ public class IsSolid extends Expression implements IBool {
 		calledBy.add(this);
 		return (getPosition() instanceof IPosition ||
 				(getPosition() instanceof ReadVariable
-					&& (getPosition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IPosition)
+					&& (getPosition().evaluate(task, possibleUnit) instanceof IPosition)
 				)) && getPosition().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

@@ -69,10 +69,10 @@ public class Assignment extends Statement {
 	private Boolean equalTypes( Expression expr1, Expression expr2, Task task, Unit possibleUnit){
 		
 		if (expr1 instanceof ReadVariable) {
-			expr1 = ((ReadVariable)expr1).evaluate(task, task.getSelectedCube(), possibleUnit);
+			expr1 = ((ReadVariable)expr1).evaluate(task, possibleUnit);
 		}
 		if (expr2 instanceof ReadVariable) {
-			expr2 = ((ReadVariable)expr2).evaluate(task, task.getSelectedCube(), possibleUnit);
+			expr2 = ((ReadVariable)expr2).evaluate(task, possibleUnit);
 		}
 		
 		if (expr1 instanceof IBool && expr2 instanceof IBool){

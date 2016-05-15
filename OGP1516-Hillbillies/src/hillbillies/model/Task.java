@@ -24,9 +24,17 @@ public class Task {
 		setSelectedCube(selectedCube);
 		setActivities(activities);
 		schedulersForTask = new HashSet<Scheduler>();
-		this.variables = new HashMap<String, Expression>();//TODO: setter maken (en gebruiken)
-		this.originalActivities = activities;//TODO: setter en getter maken (en gebruiken)
+		setVariables(new HashMap<String, Expression>());
+		setOriginalActivities(activities);
 		
+	}
+	
+	private void setOriginalActivities(Statement activities) {
+		this.originalActivities = activities;
+	}
+	
+	private Statement getOriginalActivities() {
+		return this.originalActivities;
 	}
 	
 	private Statement originalActivities;
@@ -245,7 +253,7 @@ public class Task {
 		this.assignedUnit.removeTask();
 		setAssignedUnit(null);
 		reAssignTaskInSchedulers();
-		setActivities(originalActivities);
+		setActivities(getOriginalActivities());
 		if (getPriority() == 0) {
 			setPriority(-1);
 		}
@@ -263,6 +271,10 @@ public class Task {
 	}
 	
 	HashMap<String, Expression> variables;
+	
+	private void setVariables(HashMap<String, Expression> variables) {
+		this.variables = variables;
+	}
 	
 	public HashMap<String, Expression> getVariables(){
 		return this.variables;

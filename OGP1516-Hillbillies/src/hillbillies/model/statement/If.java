@@ -58,11 +58,11 @@ public class If extends Statement {
 	public Sequence execute(Unit unit, int[] selectedCube) {
 		Boolean tempBool;
 		if (getCondition() instanceof IBool){
-			tempBool = (Boolean) getCondition().evaluate(unit.getAssignedTask(), selectedCube, unit);
+			tempBool = (Boolean) getCondition().evaluate(unit.getAssignedTask(), unit);
 		}
 		else if (getCondition() instanceof ReadVariable){
-			tempBool = (Boolean) ((IBool) getCondition().evaluate(unit.getAssignedTask(), selectedCube, unit)).
-					evaluate(unit.getAssignedTask(), selectedCube, unit);
+			tempBool = (Boolean) ((IBool) getCondition().evaluate(unit.getAssignedTask(), unit)).
+					evaluate(unit.getAssignedTask(), unit);
 		}
 		else {
 			throw new RuntimeException();
@@ -99,17 +99,17 @@ public class If extends Statement {
 	public Boolean isWellFormed(Task task, ArrayList<Object> calledBy, Unit possibleUnit) {
 		calledBy.add(this);
 		if (! (getCondition() instanceof IBool || ((getCondition() instanceof ReadVariable)
-				&& (getCondition().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IBool))
+				&& (getCondition().evaluate(task, possibleUnit) instanceof IBool))
 				&& getCondition().isWellFormed(task, calledBy, possibleUnit))) {
 			return false;
 		}
 		Boolean tempBool;
 		if (getCondition() instanceof IBool) {
-			tempBool = (boolean) getCondition().evaluate(task, task.getSelectedCube(), possibleUnit);
+			tempBool = (boolean) getCondition().evaluate(task, possibleUnit);
 		}
 		else if (getCondition() instanceof ReadVariable) {
-			tempBool = (boolean) ((Expression) getCondition().evaluate(task, task.getSelectedCube(), possibleUnit)).
-					evaluate(task, task.getSelectedCube(), possibleUnit);
+			tempBool = (boolean) ((Expression) getCondition().evaluate(task, possibleUnit)).
+					evaluate(task, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();

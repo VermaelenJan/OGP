@@ -28,7 +28,7 @@ public abstract class Expression {
 		this.sourceLocation = sourceLocation;
 	}
 		
-	public abstract Object evaluate(Task task, int[] selectedCube, Unit possibleUnit);
+	public abstract Object evaluate(Task task, Unit possibleUnit);
 	
 	public abstract Boolean isWellFormed(Task task,  ArrayList<Object> calledBy, Unit possibleUnit);
 }

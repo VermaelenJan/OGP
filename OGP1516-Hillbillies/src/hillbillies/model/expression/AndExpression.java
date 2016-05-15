@@ -33,13 +33,13 @@ public class AndExpression extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) { // TODO selectedCube verwijderen
+	public Boolean evaluate(Task task, Unit possibleUnit) {
 		Boolean leftBool;
 		if (getLeft() instanceof ReadVariable) {
-			leftBool = (Boolean) ((Expression) getLeft().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
+			leftBool = (Boolean) ((Expression) getLeft().evaluate(task, possibleUnit)).evaluate(task, possibleUnit);
 		}
 		else if (getLeft() instanceof IBool) {
-			leftBool = (Boolean) getLeft().evaluate(task, selectedCube, possibleUnit);
+			leftBool = (Boolean) getLeft().evaluate(task, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -47,10 +47,10 @@ public class AndExpression extends Expression implements IBool {
 		
 		Boolean rightBool;
 		if (getRight() instanceof ReadVariable) {
-			rightBool = (Boolean) ((Expression) getRight().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit); 
+			rightBool = (Boolean) ((Expression) getRight().evaluate(task, possibleUnit)).evaluate(task, possibleUnit); 
 		}
 		else if (getRight() instanceof IBool) {
-			rightBool = (Boolean) getRight().evaluate(task, selectedCube, possibleUnit);
+			rightBool = (Boolean) getRight().evaluate(task, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -67,11 +67,11 @@ public class AndExpression extends Expression implements IBool {
 		calledBy.add(this);
 		return (getLeft() instanceof IBool ||
 					(getLeft() instanceof ReadVariable
-						&& (getLeft().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IBool)
+						&& (getLeft().evaluate(task, possibleUnit) instanceof IBool)
 					)) && getLeft().isWellFormed(task, calledBy,possibleUnit) &&
 				(getRight() instanceof IBool ||
 					(getRight() instanceof ReadVariable
-						&& (getRight().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IBool)
+						&& (getRight().evaluate(task, possibleUnit) instanceof IBool)
 					)) && getRight().isWellFormed(task, calledBy, possibleUnit);
 	}
 

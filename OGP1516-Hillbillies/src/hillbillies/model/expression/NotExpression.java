@@ -26,14 +26,14 @@ public class NotExpression extends Expression implements IBool {
 
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public Boolean evaluate(Task task, Unit possibleUnit) {
 
 		Boolean tempBool;
 		if (getExpression() instanceof IBool){
-			tempBool = (Boolean) getExpression().evaluate(task, selectedCube, possibleUnit);
+			tempBool = (Boolean) getExpression().evaluate(task, possibleUnit);
 		}
 		else if (getExpression() instanceof ReadVariable){
-			tempBool = (Boolean) ((IBool) getExpression().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube,possibleUnit);
+			tempBool = (Boolean) ((IBool) getExpression().evaluate(task, possibleUnit)).evaluate(task, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -50,7 +50,7 @@ public class NotExpression extends Expression implements IBool {
 		calledBy.add(this);
 		return (getExpression() instanceof IBool ||
 				(getExpression() instanceof ReadVariable
-					&& (getExpression().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IBool)
+					&& (getExpression().evaluate(task, possibleUnit) instanceof IBool)
 				)) && getExpression().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

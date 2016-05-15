@@ -24,14 +24,14 @@ public class IsFriend extends Expression implements IBool {
 	}
 
 	@Override
-	public Boolean evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public Boolean evaluate(Task task, Unit possibleUnit) {
 		Unit friendUnit;
 
 		if (getFriendUnit() instanceof ReadVariable) { 
-			friendUnit = (Unit) ((Expression) getFriendUnit().evaluate(task, selectedCube, possibleUnit)).evaluate(task, selectedCube, possibleUnit);
+			friendUnit = (Unit) ((Expression) getFriendUnit().evaluate(task, possibleUnit)).evaluate(task, possibleUnit);
 		}
 		else if (getFriendUnit() instanceof IUnitExpression) {
-			friendUnit = (Unit) getFriendUnit().evaluate(task, selectedCube, possibleUnit);
+			friendUnit = (Unit) getFriendUnit().evaluate(task, possibleUnit);
 		}
 		else {
 			throw new RuntimeException();
@@ -50,7 +50,7 @@ public class IsFriend extends Expression implements IBool {
 		calledBy.add(this);
 		return (getFriendUnit() instanceof IUnitExpression ||
 				(getFriendUnit() instanceof ReadVariable
-						&& (getFriendUnit().evaluate(task, task.getSelectedCube(), possibleUnit) instanceof IUnitExpression)
+						&& (getFriendUnit().evaluate(task, possibleUnit) instanceof IUnitExpression)
 					)) && getFriendUnit().isWellFormed(task, calledBy, possibleUnit);
 	}
 }

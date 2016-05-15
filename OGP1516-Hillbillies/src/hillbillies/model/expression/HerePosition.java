@@ -19,7 +19,7 @@ public class HerePosition extends Expression implements IPosition {
 	}
 
 	@Override
-	public int[] evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public int[] evaluate(Task task, Unit possibleUnit) {
 		return possibleUnit.getOccupiedCube();
 	}
 

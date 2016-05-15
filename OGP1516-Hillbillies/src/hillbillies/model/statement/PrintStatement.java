@@ -32,16 +32,16 @@ public class PrintStatement extends Statement {
 
 	@Override
 	public Sequence execute(Unit unit, int[] selectedCube) {
-		if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) instanceof Boolean) {
-			System.out.println(getValue().evaluate(unit.getAssignedTask(), selectedCube, unit)); 
+		if (getValue().evaluate(unit.getAssignedTask(), unit) instanceof Boolean) {
+			System.out.println(getValue().evaluate(unit.getAssignedTask(), unit)); 
 		}
-		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) instanceof int[]) {
-			System.out.println(Arrays.toString((int[]) getValue().evaluate(unit.getAssignedTask(), selectedCube, unit)));
+		else if (getValue().evaluate(unit.getAssignedTask(), unit) instanceof int[]) {
+			System.out.println(Arrays.toString((int[]) getValue().evaluate(unit.getAssignedTask(), unit)));
 		}
-		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) instanceof Unit) {
-			System.out.println(((Unit) getValue().evaluate(unit.getAssignedTask(), selectedCube, unit)).getName());
+		else if (getValue().evaluate(unit.getAssignedTask(), unit) instanceof Unit) {
+			System.out.println(((Unit) getValue().evaluate(unit.getAssignedTask(), unit)).getName());
 		}
-		else if (getValue().evaluate(unit.getAssignedTask(), selectedCube, unit) == null){
+		else if (getValue().evaluate(unit.getAssignedTask(), unit) == null){
 			System.out.println("null");
 		}
 		else {

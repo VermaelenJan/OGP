@@ -20,7 +20,7 @@ public class AnyUnit extends Expression implements IUnitExpression {
 	}
 
 	@Override
-	public Unit evaluate(Task task, int[] selectedCube, Unit possibleUnit) {
+	public Unit evaluate(Task task, Unit possibleUnit) {
 		Unit anyUnit = null;
 		for (Unit currUnit: possibleUnit.getWorld().getAllUnits()){
 			if ((anyUnit == null || Position.getDistanceBetween(currUnit.getLocation(), possibleUnit.getLocation()) <
