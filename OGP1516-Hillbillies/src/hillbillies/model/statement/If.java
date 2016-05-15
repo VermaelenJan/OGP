@@ -1,6 +1,7 @@
 package hillbillies.model.statement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
@@ -90,7 +91,7 @@ public class If extends Statement {
 			}
 			else {
 				unit.startNewPending(); 
-				return null;
+				return new Sequence(Collections.emptyList(), sourceLocation);
 			}
 		}
 	}

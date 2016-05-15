@@ -1969,6 +1969,9 @@ public class Unit {
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
 																					IllegalAdjacentPositionException{
 		if (! isValidAdjacentMovement(dx,dy,dz)){
+			if (assignedTask != null) {
+				assignedTask.interruptTask();
+			}
 			throw new IllegalAdjacentPositionException(dx,dy,dz);
 		}
 		
@@ -1984,7 +1987,10 @@ public class Unit {
 										(double)(currentCube[2]+ dz + ConstantsUtils.CUBE_LENGTH/2)};
 
 			
-			if (! positionObj.isValidUnitPositionDouble(currentTarget)){			
+			if (! positionObj.isValidUnitPositionDouble(currentTarget)){	
+				if (assignedTask != null) {
+					assignedTask.interruptTask();
+				}
 				throw new IllegalPositionException(currentTarget);
 			}
 			if (! (dx == 0 && dy == 0 && dz ==0)) {

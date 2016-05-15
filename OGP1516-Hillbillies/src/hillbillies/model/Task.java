@@ -73,15 +73,10 @@ public class Task {
 	
 	private void setActivities(Statement activities){
 
-		if (! (activities instanceof Sequence)) {
-			List<Statement> list = new ArrayList<>();
-			list.add(activities);
+		List<Statement> list = new ArrayList<>();
+		list.add(activities);
 
-			setActivitiesReq((new Sequence(list, activities.sourceLocation)));
-		}
-		else {
-			setActivitiesReq((Sequence) activities);
-		}
+		setActivitiesReq((new Sequence(list, activities.sourceLocation)));
 		
 		setActivitiesReq(removeNestedSeq(getActivitiesReq()));
 		
@@ -90,6 +85,7 @@ public class Task {
 		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			activitiesMap.put(activity, false);
 		}
+		
 	}
 	
 	private Sequence removeNestedSeq(Sequence activitiesSequence) {
@@ -166,11 +162,16 @@ public class Task {
 		
 		
 //		for (Statement el : getActivitiesReq().getStatements()) {
-//			System.out.print(el + ": " + activitiesMap.get(el) + "-"); 
+//			System.out.print(el + ": " + activitiesMap.get(el) + " - "); 
 //		}
 //		System.out.println();
+//		
+//		for (Statement el : activitiesMap.keySet()) {
+//			System.out.print(el.toString() + "  " + activitiesMap.get(el).toString() + " - ");
+//		}
+//		System.out.println();
+
 		Sequence sequence = (Sequence) getActivitiesReq();
-		
 		for (Statement activity : sequence.getStatements()){
 			if (! (activitiesMap.get(activity))) {
 				if (activity instanceof BreakStatement) {
