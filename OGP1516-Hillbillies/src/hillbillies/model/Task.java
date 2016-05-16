@@ -202,9 +202,18 @@ public class Task {
 	}
 	
 	/**
+	 * Remove the nested sequences in the given sequence and return a sequence with all 
+	 * the activities.
 	 * 
 	 * @param activitiesSequence
-	 * @return
+	 * 		The sequence to remove the nested sequences in.
+	 * @effect if an activity of a sequence is also a sequence, the sequence is 
+	 * 		removed from the newly created list with activities and al the activities
+	 * 		of the removed sequence are placed in the list.
+	 * 		| if newlistofactivities.get(activity) instanceof Sequence
+	 * 		|  then newlistofactivities.remove(activity)
+	 * 		| 		newlistofactivities.addAll(activity, (removeNestedSeq(newlistofactivities.remove(activity).getStatements())))
+	 * 		| return new Sequence(newlistofactivities, newlistofactivities.getSourceLocation())
 	 */
 	private Sequence removeNestedSeq(Sequence activitiesSequence) {
 		if (activitiesSequence instanceof Sequence) {
@@ -224,25 +233,64 @@ public class Task {
 		}
 	}
 	
+	/**
+	 * Variable registering the active activities of this task.
+	 */
 	private Sequence activitiesReq;
 
 	
-
-
 	// SELECTED CUBE
 	
+	/**
+	 * Get the selected cube of this task.
+	 */
 	public int[] getSelectedCube(){
 		return this.selectedCube;
 	}
 	
+	/**
+	 * Set the selected cube of this task to the given selected cube.
+	 * 
+	 * @param selectedCube
+	 * 		The selected cube to set for this task.
+	 * @post The new selected cube for this task is equal to the given selected cube.
+	 * 		| new.getSelectedCube() == selectedCube
+	 */
 	private void setSelectedCube(int[] selectedCube){
 		this.selectedCube = selectedCube;
 	}
 	
+	/**
+	 * Variable registering the selectedCube for this task.
+	 */
 	private int[] selectedCube;	
 	
-	private Unit assignedUnit;
+	// ASSIGNED UNIT
+
+	/**
+	 * Get the assigned unit for this task.
+	 */
+	public Unit getAssignedUnit() {
+		return this.assignedUnit;
+	}
 	
+	/**
+	 * Assign this task to the given unit.
+	 * 
+	 * @param unit
+	 * 		The unit to assign the task to.
+	 * @effect If the faction of the unit, its scheduler is not in the 
+	 * 		the set of schedulers of this task, this task is removed from 
+	 * 		those schedulers.
+	 * 		| for each scheduler in getSchedulersForTask():
+	 * 		|	if (scheduler != unit.getFaction.getScheduler()
+	 * 		|		scheduler.removeTask(this)
+	 * @effect This is assigned to the given unit.
+	 * 		| unit.assigneTask(this)
+	 * @effect The assigned unit of this task is set to the given unit.
+	 * 		| setAssignedUnit(unit)
+	 * @throws RuntimeException // TODO runtime omschrijven?
+	 */
 	protected void assignTo(Unit unit) throws RuntimeException {
 
 		List<Scheduler> temp = new ArrayList<>();
@@ -259,17 +307,34 @@ public class Task {
 		setAssignedUnit(unit);
 	}
 	
-	public Unit getAssignedUnit() {
-		return this.assignedUnit;
-	}
-	
+	/**
+	 * Set the assigned unit of this task to the given unit.
+	 * 
+	 * @param unit
+	 * 		The unit to set for the assigned unit of this task.
+	 * @post The new assigned unit of this task is equal to the given unit.
+	 * 		| new.getAssignedUnit() == unit
+	 */
 	protected void setAssignedUnit(Unit unit){
 		this.assignedUnit = unit;
 	}
 	
+	/**
+	 * Checks whether or not there is an assigned unit for this task.
+	 * 
+	 * @return True if and only if the assigned unit is effective.
+	 * 		| result == (getAssignedUnit() != null)
+	 */
 	public boolean isAssigned() {
-		return this.assignedUnit != null;
+		return getAssignedUnit() != null;
 	}
+	
+	/**
+	 * Variable registering the assigned unit for this task.
+	 */
+	private Unit assignedUnit;
+	
+	
 	
 	public void executeTask(){
 		
@@ -315,7 +380,18 @@ public class Task {
 		}
 	}
 	
-	
+	/**
+	 * Break the while statement.
+	 * 
+	 * @effect For all the activities in this task, if an activity is a while statement,
+	 * 		the assigned unit of this task starts a new pending. The value of the activity
+	 * 		in the activitiesmap is set on true, which means that the activities are marked 
+	 * 		as done. TODO klopt toch he?
+	 * 		| for each activity in getActivitiesReq().getStatements():
+	 * 		|	if (activity instanceof While)
+	 * 		|		then getAssignedUnit().startNewPending()
+	 * 		| activitiesMap.put(activity,true)
+	 */
 	private void breakWhile() {
 		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			if (activity instanceof While) {
@@ -326,19 +402,43 @@ public class Task {
 		}
 	}
 
-	private Set<Scheduler> schedulersForTask;
-	
+	/**
+	 * Get a set with al the schedulers for this task.
+	 */
 	public Set<Scheduler> getSchedulersForTask() {
 		return schedulersForTask;
 	}
 	
+	/**
+	 * Add the given scheduler to the set of scheduler for this task.
+	 * 
+	 * @param scheduler
+	 * 		The scheduler to add to the schedulers of this task.
+	 * @pre The given scheduler is effective.
+	 * 		| scheduler != null
+	 * @post this set of schedulers has the given scheduler as one of its schedulers.
+	 * 		| new.getSchedulersForTask().contains(scheduler)
+	 */
 	protected void addSchedulerForTask(Scheduler scheduler) {
+		assert (scheduler != null);
 		schedulersForTask.add(scheduler);
 	}
 	
+	/**
+	 * Remove the given scheduler from the set of scheduler from this task.
+	 * 
+	 * @param scheduler
+	 * 		The scheduler to be removed.
+	 * @post The set of schedulers for this task no longer has the given 
+	 * 		scheduler as one of its schedulers.
+	 * 		| ! new.schedulersForTask.contains(scheduler)
+	 */
 	protected void removeSchedulerForTask(Scheduler scheduler) {
 		schedulersForTask.remove(scheduler);
 	}
+	
+
+	private Set<Scheduler> schedulersForTask;
 
 	public void finishedLastActivity() {
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
