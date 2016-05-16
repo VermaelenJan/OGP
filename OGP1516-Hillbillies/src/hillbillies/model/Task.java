@@ -11,13 +11,41 @@ import hillbillies.part3.programs.SourceLocation;
 
 
 /**
- * A class of ...
+ * A class of tasks that belong to one or more schedulers.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
  */
 public class Task {
 
+	/**
+	 * Initialize this new task with the given name, priority, activities and eventual selected cubes.
+	 * 
+	 * @param name
+	 * 		The name for this new task.
+	 * @param priority
+	 * 		The priority for this new task.
+	 * @param activities
+	 * 		The activities for this new task.
+	 * @param selectedCube
+	 * 		The selected cube for this new task.
+	 * @effect The name of this new task is set to the given name.
+	 * 		| setName(name)
+	 * @effect The priority of this new task is set to the given priority.
+	 * 		| setPriority(priority)
+	 * @effect The selected cube for this new task is set to the given selected cube.
+	 * 		| setSelectedCube(selectedCube)
+	 * @effect The activities for this new task are set to the given activities.
+	 * 		| setActivities(activities)
+	 * @effect A new set of schedulers for this task.
+	 * 		| schedulersForTask = new HashSet<Scheduler>()
+	 * @effect A new empty hashmap with as key a variable name and as value an expression is
+	 * 		set as the new variables map of this task.
+	 * 		| setVariables(new HashMap<String, Expression>())
+	 * @effect The original activities for this new task are set to the given activities.
+	 * 		| setOriginalActivities(activities)  		
+	 * 
+	 */
 	protected Task(String name, int priority, Statement activities, int[] selectedCube ){
 		setName(name);
 		setPriority(priority);
@@ -26,51 +54,137 @@ public class Task {
 		schedulersForTask = new HashSet<Scheduler>();
 		setVariables(new HashMap<String, Expression>());
 		setOriginalActivities(activities);
-		
 	}
 	
-	private void setOriginalActivities(Statement activities) {
-		this.originalActivities = activities;
-	}
+	// ORIGINAL ACTIVITIES
 	
+	/**
+	 * Get the original activities of this task.
+	 */
 	private Statement getOriginalActivities() {
 		return this.originalActivities;
 	}
 	
+	/**
+	 * Set the original activities of this task to the given activities.
+	 * 
+	 * @param activities
+	 * 		The activities to set.
+	 * 
+	 * @post The new original activities for this task are equal to the given activities.
+	 * 	| new.getOriginalActivities() == activities
+	 */
+	private void setOriginalActivities(Statement activities) {
+		this.originalActivities = activities;
+	}
+
+	/**
+	 * Variable registering the original activities of this task.
+	 */
 	private Statement originalActivities;
 	
-	HashMap<Statement, Boolean> activitiesMap;
+
 	
 	// NAME  
+	/**
+	 * Get the name of this task.
+	 */
 	public String getName(){
 		return this.name;
 	}
 	
+	/**
+	 * Set the name of this task to the given name.
+	 * 
+	 * @param name
+	 * 		the name to set.
+	 * @post The new name of this task is equal to the given name.
+	 * 		| new.getName() == name
+	 */
 	private void setName(String name){
 		this.name = name;
 	}
 	
+	/**
+	 * Variable registering the name of this task.
+	 */
 	private String name;
 
 	
 	// PRIORITY
+	
+	/**
+	 * Get the priority of this task.
+	 */
 	public int getPriority(){
 		return this.priority;
 	}
-
+	
+	/**
+	 * Set the priority of this task to the given priority.
+	 * 
+	 * @param priority
+	 * 		The priority to set.
+	 * @post The new priority of this task is equal to the given priority.
+	 * 		| new.getPriority() == priority
+	 */
 	protected void setPriority(int priority){
 		this.priority = priority;
 	}
 	
+	/**
+	 * Variable registering the priority of this task.
+	 */
 	private int priority;
 
 	
 	// ACTIVITY
 	
+	/**
+	 * Get the active activities of this task.
+	 * @note return type is a statement.
+	 */
 	protected Statement getActivities(){
 		return this.activitiesReq;
 	}
 	
+	/**
+	 * Get the active activities of this task.
+	 * @note return type is a sequence.
+	 */
+	private Sequence getActivitiesReq(){
+		return this.activitiesReq;
+	}
+	
+	/**
+	 * Set the active activities of this task to the given activities.
+	 * @note param activities is a sequence.
+	 * 
+	 * @param activitiesReq
+	 * 		The activities to set.
+	 * 
+	 * The new active activities for this task are equal to the given activities.
+	 * 		new.getActivitiesReq() == activitiesReq
+	 */
+	private void setActivitiesReq(Sequence activitiesReq){
+		this.activitiesReq = activitiesReq;
+	}
+	
+	/**
+	 * Set the active activities of this task with the given activities.
+	 * @note added as a sequence to activitiesReq
+	 * 
+	 * @param activities
+	 * 		The activities to set.
+	 * @effect a new sequence with a list of the given activities and the sourcelocation of the given
+	 * 		activities is set to the active activities of this task.
+	 * 		| setActivitiesReq((new Sequence(list, activities.sourceLocation)));
+	 * @effect Remove the nested sequences of activities from the active activities of this task.
+	 * 		| setActivitiesReq(removeNestedSeq(getActivitiesReq()));
+	 * @effect a new map with every activity as key and a boolean on false as value.
+	 * 		| for each activity in getActivitiesREq().getStatements
+	 * 		|	activitiesMap.put(activity, false)
+	 */
 	private void setActivities(Statement activities){
 
 		List<Statement> list = new ArrayList<>();
@@ -85,9 +199,13 @@ public class Task {
 		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
 			activitiesMap.put(activity, false);
 		}
-		
 	}
 	
+	/**
+	 * 
+	 * @param activitiesSequence
+	 * @return
+	 */
 	private Sequence removeNestedSeq(Sequence activitiesSequence) {
 		if (activitiesSequence instanceof Sequence) {
 			int i = 0;
@@ -107,14 +225,9 @@ public class Task {
 	}
 	
 	private Sequence activitiesReq;
+
 	
-	private void setActivitiesReq(Sequence activitiesReq){
-		this.activitiesReq = activitiesReq;
-	}
-	
-	private Sequence getActivitiesReq(){
-		return this.activitiesReq;
-	}
+
 
 	// SELECTED CUBE
 	
@@ -238,6 +351,9 @@ public class Task {
 			finishTask();
 		}
 	}
+	
+	
+	HashMap<Statement, Boolean> activitiesMap;
 	
 	private void finishTask() {
 		assignedUnit.removeTask();
