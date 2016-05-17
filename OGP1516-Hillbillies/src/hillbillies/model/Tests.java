@@ -3,13 +3,13 @@ package hillbillies.model;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import hillbillies.tests.TaskFactory.TaskFactoryTest;
 import hillbillies.tests.boulder.BoulderTest;
 import hillbillies.tests.facade.Part2TestPartial;
 import hillbillies.tests.facade.Part3TestPartial;
 import hillbillies.tests.log.LogTest;
 import hillbillies.tests.scheduler.SchedulerTest;
 import hillbillies.tests.task.TaskTest;
+import hillbillies.tests.taskFactory.TaskFactoryTest;
 import hillbillies.tests.unit.UnitTest;
 import hillbillies.tests.world.WorldTest;
 
