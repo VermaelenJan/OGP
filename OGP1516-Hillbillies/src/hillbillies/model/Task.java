@@ -335,7 +335,19 @@ public class Task {
 	private Unit assignedUnit;
 	
 	
-	
+	/**
+	 * Execute this task.
+	 * 
+	 * @effect For all the activities in this task, if the activity is not yet executed, and if 
+	 * 		the activity is a break statement, break the current while loop.
+	 * 		| for each activity in getActivitiesReq().getStatements()
+	 * 		|	if (!activitiesMap.get(activity))
+	 * 		|		if (activity instanceof BreakStatement)
+	 * 		|			then breakWhile()
+	 * 
+	 * @effect For all the activities in this task, if the activity is not yet executed, and if 
+	 * 		the executed activity is not null
+	 */
 	public void executeTask(){
 		
 		
@@ -437,9 +449,23 @@ public class Task {
 		schedulersForTask.remove(scheduler);
 	}
 	
-
+	/**
+	 * Variable registering a set of schedulers for this task.
+	 */
 	private Set<Scheduler> schedulersForTask;
 
+	/**
+	 * Finish the last activity that the unit was executing in this task.
+	 * 
+	 * @post The last activity that was being executed is set on finished. 
+	 * 		(i.e in the activitiesMap which keeps booleans for finished activities,
+	 * 		the boolean of that activity is set on false)
+	 * 		| for the first activity in in activities map which value is false:
+	 * 		|  	activitiesMap.put(activity, true)
+	 * @effect If the last activity of the task is done, the task is finished.
+	 * 		| if(activitiesMap.get(lastActivity) == true (so activity is executed already)
+	 * 		|	then finishTask()
+	 */
 	public void finishedLastActivity() {
 		for (Statement activity : ((Sequence) activitiesReq).getStatements()) {
 			if (activitiesMap.get(activity) == false) {
@@ -452,22 +478,53 @@ public class Task {
 		}
 	}
 	
-	
+	/**
+	 * Variable registering a map with statements as key en booleans as values to keep 
+	 * track of the activities in the task are already executed.
+	 */
 	HashMap<Statement, Boolean> activitiesMap;
 	
+	/**
+	 * Finish this task.
+	 * 
+	 * @effect Remove this task as assigned task from the assigned unit of this task.
+	 * 		| assignedUnit.removeTask()
+	 * @effect Remove the task from the scheduler of the faction of the assigned unit of this task.
+	 * 		| assignedUnit.getFaction().getScheduler().removeTask(this)
+	 */
 	private void finishTask() {
 		assignedUnit.removeTask();
 		assignedUnit.getFaction().getScheduler().removeTask(this);
 	}
 	
+	/**
+	 * Re-assign this task to al the schedulers for this task.
+	 * 		| for each scheduler in getSchedulersForTask()
+	 * 		|	scheduler.addTask(this)
+	 */
 	protected void reAssignTaskInSchedulers() {
 		for (Scheduler scheduler : getSchedulersForTask()) {
 			scheduler.addTask(this);
 		}
 	}
 	
+	/**
+	 * Interrupt this task from executing.
+	 * 
+	 * @effect The task is removed from the assigned unit of this task.
+	 * 		| getAssignedUnit().removeTask()
+	 * @effect Remove the assigned unit of this task.
+	 * 		| setAssignedUnit(null)
+	 * @effect Re assign this task to all the schedulers for this task.
+	 * 		| reAssignTaskInSchedulers()
+	 * @effect Set the activities of this task to the original activities 
+	 * 		of this task with al the activities not executed.
+	 * 		| setActivities(getOriginalActivities())
+	 * @effect Decrease the priority with 1.
+	 * 		| setPriority(getPriority() -1)
+	 */
 	public void interruptTask() {
-		this.assignedUnit.removeTask();
+		getAssignedUnit().removeTask();
 		setAssignedUnit(null);
 		reAssignTaskInSchedulers();
 		setActivities(getOriginalActivities());
@@ -479,24 +536,80 @@ public class Task {
 		}
 	}
 	
-	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
-		getVariables().put(variableName, value);
-	}
-	
-	public Expression readVariable(String variableName) {
-		return getVariables().get(variableName);
-	}
-	
-	HashMap<String, Expression> variables;
-	
-	private void setVariables(HashMap<String, Expression> variables) {
-		this.variables = variables;
-	}
-	
+	/**
+	 * Get the map of variables of this task.
+	 */
 	public HashMap<String, Expression> getVariables(){
 		return this.variables;
 	}
 	
+	/**
+	 * Set the variables of this task to the given map of variables.
+	 * 
+	 * @param variables
+	 * 		The map of variables to set.
+	 * 
+	 * @post the new variables of this task are equal to the given empty map of variables.
+	 * 		| new.getVariables() == variables
+	 */
+	private void setVariables(HashMap<String, Expression> variables) {
+		this.variables = variables;
+	}
+	
+	/**
+	 * Add a variable to the map of variables of this task.
+	 * 
+	 * @param variableName
+	 * 		The name of the variable to add.
+	 * @param value
+	 * 		The expression of this variable.
+	 * @param sourceLocation
+	 * 		The sourcelocation of this varaible.
+	 * @effect The variable is put in the map of variables of this task with key the variable name
+	 * 		and value the expression of this variable.
+	 * 		| getVariables().put(variableName, value)
+	 */
+	public void addVariable(String variableName, Expression value, SourceLocation sourceLocation) {
+		getVariables().put(variableName, value);
+	}
+	
+	/**
+	 * Get the expression of the variable with the given variable name.
+	 * 
+	 * @param variableName
+	 * 		The variable name to get the expression of.
+	 * @return	The expression of the variable with the given variable name.
+	 * 		| result == getVariables().get(variableName)
+	 */
+	public Expression readVariable(String variableName) {
+		return getVariables().get(variableName);
+	}
+	
+	/**
+	 * Map registering the variables of this task with as key a string for the name of the variable
+	 * 	and as value an expression.
+	 */
+	HashMap<String, Expression> variables;
+	
+
+	/**
+	 * Checks whether or not this task is well formed.
+	 * 
+	 * @return For each scheduler in all the schedulers of this task, for each activity in this task,
+	 * 		if the activity is not well formed, then false and all the variables are removed. 
+	 * 		| for each scheduler in getSchedulersForTask():
+	 * 		|	for each activities in getActivitiesReq().getStatements()
+	 * 		|		if (! acitivy.isWellFormed()
+	 * 		|			result == false
+	 * 		|			getVariables().clear()
+	 * @return For each scheduler in all the schedulers of this task, for each activity in this task,
+	 * 		if all the activities are well formed, then true and all the variables are removed.
+	 * 		| for each scheduler in getSchedulersForTask():
+	 * 		|	for each activities in getActivitiesReq().getStatements()
+	 * 		|		if every acitivy.isWellFormed()
+	 * 		|			result == true
+	 * 		|			getVariables().clear()
+	 */
 	public Boolean isWellFormed() {
 		for (Scheduler tempScheduler : (getSchedulersForTask())){
 			for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
