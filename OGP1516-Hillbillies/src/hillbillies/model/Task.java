@@ -289,7 +289,7 @@ public class Task {
 	 * 		| unit.assigneTask(this)
 	 * @effect The assigned unit of this task is set to the given unit.
 	 * 		| setAssignedUnit(unit)
-	 * @throws RuntimeException // TODO runtime omschrijven?
+	 * @throws RuntimeException a runtime exception can be thrown.
 	 */
 	protected void assignTo(Unit unit) throws RuntimeException {
 
@@ -344,9 +344,28 @@ public class Task {
 	 * 		|	if (!activitiesMap.get(activity))
 	 * 		|		if (activity instanceof BreakStatement)
 	 * 		|			then breakWhile()
-	 * 
 	 * @effect For all the activities in this task, if the activity is not yet executed, and if 
-	 * 		the executed activity is not null
+	 * 		the activity to execute is not null, remove the current activity from the list of activities,
+	 * 		and add the statements of the removed activity to the list of statements of this task.
+	 * 		| for each activity in getActivitiesReq().getStatements()
+	 * 		|		if (!activitiesMap.get(activity)
+	 * 		|			if (activity.execute() != null)
+	 * 		|				getActivitiesReq().getStatements().remove(activity)
+	 * 		|				getActivitiesReq.getStatements().add(activity.execute().getStatements())
+	 * @effect For all the activities in this task, if the activity is not yet executed, and if 
+	 * 		the activity to execute is not null, remove the activity from the activitiesMap.
+	 * 		| for each activity in getActivitiesReq().getStatements()
+	 * 		|		if (!activitiesMap.get(activity)
+	 * 		|			activitiesMap.remove(activity)
+	 * @effect For all activities in this task, if the activity is not yet executed, and if the activity
+	 * 		to execute is not null, mark the individual statements of the 
+	 * 		|	activity as executed in the map activitiesMap.
+	 * 		| for each activity in getActivitiesReq().getStatements()
+	 * 		|		if (!activitiesMap.get(activity)
+	 * 		|			if (activity.execute() != null)
+	 * 		|				for each statement in activity.execute().getStatements()
+	 * 		|					activitiesMap.put(statement,false)				
+	 * 
 	 */
 	public void executeTask(){
 		
