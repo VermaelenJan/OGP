@@ -8,9 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
@@ -93,7 +91,7 @@ public class Scheduler {
 	 * 		| for each task in given tasks:
 	 * 		| addTask(task)
 	 */
-	private void addTasks(Collection<Task> tasks) {
+	public void addTasks(Collection<Task> tasks) {
 		for (Task task : tasks) {
 			addTask(task);
 		}
@@ -146,7 +144,7 @@ public class Scheduler {
 	 * 		| for each task in given tasks:
 	 * 		| removeTask(task)
 	 */
-	private void removeTasks(Collection<Task> tasks ) {
+	public void removeTasks(Collection<Task> tasks ) {
 		for (Task task : tasks) {
 			removeTask(task);
 		}

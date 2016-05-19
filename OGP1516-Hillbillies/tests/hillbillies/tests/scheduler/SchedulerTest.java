@@ -131,6 +131,10 @@ public class SchedulerTest {
 		ArrayList<Task> tempArray = new ArrayList<Task>();
 		tempArray.add(tasks1.get(0)); tempArray.add(tasks2.get(0));
 		assertTrue(scheduler.areTasksPartOf(tempArray));
+		scheduler.removeTasks(tempArray);
+		assertFalse(scheduler.areTasksPartOf(tempArray));
+		scheduler.addTasks(tempArray);
+		assertTrue(scheduler.areTasksPartOf(tempArray));
 		
 		assertEquals(scheduler.getHightestUnassignedPriorityTask(), tasks2.get(0));
 		Iterator<Task> iter = scheduler.getIterator();

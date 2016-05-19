@@ -6,9 +6,7 @@ import java.util.List;
 
 
 import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
-import be.kuleuven.cs.som.annotate.Value;
 import hillbillies.model.exceptions.IllegalPositionException;
 
 
