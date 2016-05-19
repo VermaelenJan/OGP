@@ -10,7 +10,6 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalValueException extends RuntimeException {
 
-
 	/**
 	 * 
 	 * Initialize this new illegal value exception with given value.

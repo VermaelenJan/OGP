@@ -10,12 +10,6 @@ import hillbillies.model.expression.IUnitExpression;
 import hillbillies.model.expression.ReadVariable;
 import hillbillies.part3.programs.SourceLocation;
 
-/**
- * A class of ...
- * 
- * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.0
- */
 public class Assignment extends Statement {
 
 	public Assignment(String variableName, Expression value,SourceLocation sourceLocation) {

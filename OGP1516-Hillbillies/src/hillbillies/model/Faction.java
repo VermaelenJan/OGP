@@ -15,7 +15,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar Each faction must have an effective scheduler.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.0
+ * @version 1.1
  */
 public class Faction {
 	
@@ -58,7 +58,7 @@ public class Faction {
 	 */
 	@Basic @Raw
 	protected boolean hasAsUnit(@Raw Unit unit){
-		return unitsOfFaction.contains(unit);
+		return getUnits().contains(unit);
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class Faction {
 	 *         the faction to which they are attached.
 	 */
 	protected boolean hasProperUnit(){
-		for (Unit unit : unitsOfFaction){
+		for (Unit unit : getUnits()){
 			if (!canHaveAsUnit(unit))
 				return false;
 			if (unit.getFaction() != this)
@@ -105,7 +105,7 @@ public class Faction {
 	 */
 	protected void addUnit(Unit unit){
 		assert ((unit != null) && (unit.getFaction() == this));
-		unitsOfFaction.add(unit);
+		getUnits().add(unit);
 	}
 	
 	/**
@@ -122,8 +122,6 @@ public class Faction {
 			}
 		}
 		return nbUnits;
-		// If we only want terminated and non terminated units
-		//return getUnits().size();
 	}
 	
 
@@ -167,7 +165,7 @@ public class Faction {
 	 * @post If this faction does not consist of a unit anymore, the faction is terminated.
 	 */
 	protected void checkTerminate() {
-		if (unitsOfFaction.size() == 0){
+		if (getUnits().size() == 0){
 			terminate();
 		}
 	}
@@ -180,7 +178,7 @@ public class Faction {
 	 * @post This faction no longer has the given unit as one of its units.
 	 */
 	protected void removeUnit(Unit unit){
-		unitsOfFaction.remove(unit);
+		getUnits().remove(unit);
 	}
 	
 	/**

@@ -16,7 +16,7 @@ import hillbillies.util.ConnectedToBorder;
  * @invar Each cube of a world must be either wood, rock, air or workshop.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.0
+ * @version 1.1
  */
 public class World {
 	

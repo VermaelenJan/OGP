@@ -9,8 +9,6 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalNameException extends RuntimeException {
 	
-
-	
 	/**
 	 * 
 	 * Initialize this new illegal name exception with the given name.

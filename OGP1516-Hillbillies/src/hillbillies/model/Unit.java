@@ -48,7 +48,7 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
  * 		 | faction != null
  *       
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.1
+ * @version 2.1
  *
  */
 public class Unit {
@@ -1342,7 +1342,7 @@ public class Unit {
 	 * @effect If the time attacking is smaller or equal to 0,
 	 * 		the attack is set to 0.
 	 * @effect If the time attacking is smaller or equal to 0,
-	 * 		and if the unit has an assigned task, the last activity of 
+	 * 		and if the unit has an assigned task, the current activity of 
 	 * 		the task is finished.
 	 */
 	private void advanceTimeAttacking(double dt) {
@@ -1406,15 +1406,18 @@ public class Unit {
 	 * @param dt
 	 *		The time step which the game time is advanced.
 	 * @effect The time time remainder to work is decremented with the given time step dt.
+	 * 
+	 * When the time remainder reaches zero:
+	 * 
 	 * @effect If the unit is carrying an object and the worktarget is passable terrain, 
 	 * 		the unit drops the object at the worktarget, the experience is updated with 10.
 	 * @effect If the unit is carrying an object and the worktarget is passable terrain, and 
-	 * 		if the unit has an assigned task, the last activity of the task is finished.
+	 * 		if the unit has an assigned task, the current activity of the task is finished.
 	 * @effect If the worktarget is a workshop and if there is a boulder at the worktarget and 
 	 * 		a log at the worktarget, the unit improves its equipment with the boulder and the log
 	 * 		and the experience is updated with 10.
 	 * @effect If the worktarget is a workshop and if there is a boulder at the worktarget and 
-	 * 		a log at the worktarget, and if the unit has an assigned task, the last activity of 
+	 * 		a log at the worktarget, and if the unit has an assigned task, the current activity of 
 	 * 		the task is finished.
 	 * @effect If there is a boulder at the worktarget, the unit picks up the boulder and updates
 	 * 		its experience with 10.
@@ -1427,8 +1430,10 @@ public class Unit {
 	 * @effect If the worktarget is of wood or rock , and if the unit is not carrying an object, 
 	 * 		the world caves in at the worktarget and the experience of the unit updates with 10.
 	 * @effect If the worktarget is of wood or rock , and if the unit is not carrying an object, 
-	 * 		and if the unit has an assigned task, the last activity of the task is finished.
-	 * @effect If the unit has an assigned task, the task is interrupted.
+	 * 		and if the unit has an assigned task, the current activity of the task is finished.
+	 * 
+	 * @effect If the unit has an assigned task, and none of the above were effective, the task is interrupted.
+	 * 
 	 * @effect The time remaining to work is set to 0.
 	 * @effect The unit stops working.
 	 */
@@ -1537,7 +1542,7 @@ public class Unit {
 	 * @effect If the unit has a global target to move to, the unit moves
 	 * 		to its global target.
 	 * @effect If the unit has reached its global target, and the unit has an 
-	 * 		assigned task, the last activity of the task is finished.
+	 * 		assigned task, the current activity of the task is finished.
 	 */
 	private void advanceTimeMovingArrived() {
 		stopMoving();
@@ -1673,7 +1678,7 @@ public class Unit {
 	 * 		| 	then setTimePending(getTimePending()-ConstantsUtils.PEND_TIME)
 	 * 		|		 getAssignedTask().finishedLastActivity()
 	 * @effect If the time pending is greater than zero and if this unit has an assigned task,
-	 * 		the assigned task is executed.
+	 * 		the next activity of the assigned task is executed.
 	 * 		| if (getTimePending() > 0)
 	 * 		|   if (getAssignedTask() != null)
 	 * 		|		then getAssignedTask.executeTask()
@@ -2808,7 +2813,7 @@ public class Unit {
 	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
 	 * 		|	then this.stopWorking()
 	 * @effect If the faction of this unit is not equal to the faction of the other unit and
-	 * 		the unit is not falling, and if the unit has an assigned task, the assinged task
+	 * 		the unit is not falling, and if the unit has an assigned task, the assigned task
 	 * 		is interrupted.
 	 * 		| if (this.getFaction() != other.getFaction() && !this.isFalling())
 	 * 		|	if (getAssignedTask() != null)
@@ -3294,7 +3299,7 @@ public class Unit {
 	 * 			if possible.
 	 * 			| if (possibleTask[3])
 	 * 			|	then attackPotentialEnemy()
-	 * @effect  If the unit has an assigned task, the assigned task is executed.
+	 * @effect  If the unit has an assigned task, the next activity of the assigned task is executed.
 	 * 			| if (getAssignedTask() != null)
 	 * 			| 	then getAssignedTask.executeTask()
 	 */
@@ -3316,8 +3321,7 @@ public class Unit {
 			}
 		}
 		else {
-			getAssignedTask().executeTask();
-			
+			getAssignedTask().executeTask();	
 		}
 	}
 	

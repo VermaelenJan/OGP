@@ -14,7 +14,7 @@ import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
- * A class of scheduler which belong to a faction.
+ * A class of schedulers which belong to a faction.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 1.0
@@ -66,17 +66,17 @@ public class Scheduler {
 	 * 
 	 * @param task
 	 * 		The task to be added.
+	 * 
+	 * If the scheduler does not contain the task yet:
 	 * @post The number of tasks of this scheduler is incremented by 1.
 	 * 		| new.getAllTasks.size() == getAllTasks.size() + 1
-	 * @post This scheduler has the given task as its very last task.
-	 * 		| new.tasks.get(getAllTasks().size()+1) == task
-	 * @post The scheduler is set as one of the scheduler for the given task.
+	 * @post The scheduler is set as one of the schedulers for the given task.
 	 * 		| new.task.getSchedulersForTask().contains(this)
 	 * @effect Sort the tasks on priority .
 	 * 		| sortTasksOnPriority()
 	 */
 	public void addTask(Task task) {
-		if (!tasks.contains(task)) {
+		if (!getAllTasks().contains(task)) {
 			getAllTasks().add(task);
 		}
 		task.addSchedulerForTask(this);
@@ -197,10 +197,11 @@ public class Scheduler {
 	}
 	
 	/**
-	 * Sort all the tasks on priority from high priority to low priority. // TODO hoe moet da hier met die 2 klassen:p
+	 * Sort all the tasks on priority from high priority to low priority.
 	 * 
 	 * @effect Sort the tasks.
 	 * 		|Collections.sort(getAllTasks(), new Comparator<Task> ()
+	 * @post All the tasks are sorted on decreasing priority
 	 */
 	private void sortTasksOnPriority() {
 		Collections.sort(getAllTasks(), new Comparator<Task> () {

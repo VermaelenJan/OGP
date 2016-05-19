@@ -10,9 +10,6 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalAdjacentPositionException extends RuntimeException{
 	
-
-
-	
 	/**
 	 * 
 	 * Initialize this new illegal adjacent position exception with the given operands.

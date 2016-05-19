@@ -11,8 +11,6 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalPositionException extends RuntimeException {
 	
-
-	
 	/**
 	 * 
 	 * Initialize this new illegal position exception with the given location.

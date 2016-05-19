@@ -9,7 +9,7 @@ import be.kuleuven.cs.som.annotate.Value;
  * A class with constants used in this project.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.0
+ * @version 1.1
  */
 @Value
 public final class ConstantsUtils {

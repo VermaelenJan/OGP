@@ -18,7 +18,7 @@ import hillbillies.model.exceptions.IllegalPositionException;
  * @invar Each positionobject must have an effective world.
  * 
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
- * @version 1.5
+ * @version 2.0
  */
 @Value
 public class Position {

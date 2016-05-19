@@ -176,12 +176,12 @@ public class Task {
 	 * 
 	 * @param activities
 	 * 		The activities to set.
-	 * @effect a new sequence with a list of the given activities and the sourcelocation of the given
+	 * @effect A new sequence with a list of the given activities and the sourceLocation of the given
 	 * 		activities is set to the active activities of this task.
 	 * 		| setActivitiesReq((new Sequence(list, activities.sourceLocation)));
 	 * @effect Remove the nested sequences of activities from the active activities of this task.
 	 * 		| setActivitiesReq(removeNestedSeq(getActivitiesReq()));
-	 * @effect a new map with every activity as key and a boolean on false as value.
+	 * @effect A new map with every activity as key and a boolean on false as value.
 	 * 		| for each activity in getActivitiesREq().getStatements
 	 * 		|	activitiesMap.put(activity, false)
 	 */
@@ -279,19 +279,17 @@ public class Task {
 	 * 
 	 * @param unit
 	 * 		The unit to assign the task to.
-	 * @effect If the faction of the unit, its scheduler is not in the 
-	 * 		the set of schedulers of this task, this task is removed from 
-	 * 		those schedulers.
+	 * @effect The task is removed from the schedulers not equal to
+	 * 		the one of the faction of the given unit,
 	 * 		| for each scheduler in getSchedulersForTask():
 	 * 		|	if (scheduler != unit.getFaction.getScheduler()
 	 * 		|		scheduler.removeTask(this)
-	 * @effect This is assigned to the given unit.
+	 * @effect This task is assigned to the given unit.
 	 * 		| unit.assigneTask(this)
 	 * @effect The assigned unit of this task is set to the given unit.
 	 * 		| setAssignedUnit(unit)
-	 * @throws RuntimeException a runtime exception can be thrown.
 	 */
-	protected void assignTo(Unit unit) throws RuntimeException {
+	protected void assignTo(Unit unit) {
 
 		List<Scheduler> temp = new ArrayList<>();
 		for (Scheduler scheduler : getSchedulersForTask()) {
@@ -344,39 +342,29 @@ public class Task {
 	 * 		|	if (!activitiesMap.get(activity))
 	 * 		|		if (activity instanceof BreakStatement)
 	 * 		|			then breakWhile()
-	 * @effect For all the activities in this task, if the activity is not yet executed, and if 
-	 * 		the activity to execute is not null, remove the current activity from the list of activities,
-	 * 		and add the statements of the removed activity to the list of statements of this task.
+	 * @effect The first of all the activities in this task, not yet executed, is executed.
+	 * 			If the execution yields in a result, the current activity is removed
+	 * 			from the list of activities (and from the map), and the statements of
+	 * 			the result are added to the list (and map) of statements of this task.
 	 * 		| for each activity in getActivitiesReq().getStatements()
 	 * 		|		if (!activitiesMap.get(activity)
 	 * 		|			if (activity.execute() != null)
 	 * 		|				getActivitiesReq().getStatements().remove(activity)
+	 * 		|				activitiesMap.remove(activity)
 	 * 		|				getActivitiesReq.getStatements().add(activity.execute().getStatements())
-	 * @effect For all the activities in this task, if the activity is not yet executed, and if 
-	 * 		the activity to execute is not null, remove the activity from the activitiesMap.
-	 * 		| for each activity in getActivitiesReq().getStatements()
-	 * 		|		if (!activitiesMap.get(activity)
-	 * 		|			activitiesMap.remove(activity)
-	 * @effect For all activities in this task, if the activity is not yet executed, and if the activity
-	 * 		to execute is not null, mark the individual statements of the 
-	 * 		|	activity as executed in the map activitiesMap.
-	 * 		| for each activity in getActivitiesReq().getStatements()
-	 * 		|		if (!activitiesMap.get(activity)
-	 * 		|			if (activity.execute() != null)
 	 * 		|				for each statement in activity.execute().getStatements()
-	 * 		|					activitiesMap.put(statement,false)				
+	 * 		|					activitiesMap.put(statement,false)			
 	 * 
 	 */
 	public void executeTask(){
-		
-		
+// Debug purposes:
 //		for (Statement el : getActivitiesReq().getStatements()) {
 //			System.out.print(el + ": " + activitiesMap.get(el) + " - "); 
 //		}
 //		System.out.println();
 //		
 //		for (Statement el : activitiesMap.keySet()) {
-//			System.out.print(el.toString() + "  " + activitiesMap.get(el).toString() + " - ");
+//			System.out.print(el.toString() + ":  " + activitiesMap.get(el).toString() + " - ");
 //		}
 //		System.out.println();
 
@@ -414,10 +402,10 @@ public class Task {
 	/**
 	 * Break the while statement.
 	 * 
-	 * @effect For all the activities in this task, if an activity is a while statement,
-	 * 		the assigned unit of this task starts a new pending. The value of the activity
-	 * 		in the activitiesmap is set on true, which means that the activities are marked 
-	 * 		as done. TODO klopt toch he?
+	 * @effect For all the activities in this task, up to the first while statement,
+	 * 		the value of the activity in the activitiesmap is set on true 
+	 * 		(which means that the activities are marked as done).
+	 * 		Next, the unit starts a new pending time.
 	 * 		| for each activity in getActivitiesReq().getStatements():
 	 * 		|	if (activity instanceof While)
 	 * 		|		then getAssignedUnit().startNewPending()
@@ -434,7 +422,7 @@ public class Task {
 	}
 
 	/**
-	 * Get a set with al the schedulers for this task.
+	 * Get a set with all the schedulers for this task.
 	 */
 	public Set<Scheduler> getSchedulersForTask() {
 		return schedulersForTask;
@@ -478,7 +466,7 @@ public class Task {
 	 * 
 	 * @post The last activity that was being executed is set on finished. 
 	 * 		(i.e in the activitiesMap which keeps booleans for finished activities,
-	 * 		the boolean of that activity is set on false)
+	 * 		the boolean of that activity is set on true)
 	 * 		| for the first activity in in activities map which value is false:
 	 * 		|  	activitiesMap.put(activity, true)
 	 * @effect If the last activity of the task is done, the task is finished.
@@ -534,10 +522,10 @@ public class Task {
 	 * 		| getAssignedUnit().removeTask()
 	 * @effect Remove the assigned unit of this task.
 	 * 		| setAssignedUnit(null)
-	 * @effect Re assign this task to all the schedulers for this task.
+	 * @effect Re-assign this task to all the schedulers for this task.
 	 * 		| reAssignTaskInSchedulers()
 	 * @effect Set the activities of this task to the original activities 
-	 * 		of this task with al the activities not executed.
+	 * 		of this task with all the activities not executed.
 	 * 		| setActivities(getOriginalActivities())
 	 * @effect Decrease the priority with 1.
 	 * 		| setPriority(getPriority() -1)
@@ -583,7 +571,7 @@ public class Task {
 	 * @param value
 	 * 		The expression of this variable.
 	 * @param sourceLocation
-	 * 		The sourcelocation of this varaible.
+	 * 		The sourceLocation of this variable.
 	 * @effect The variable is put in the map of variables of this task with key the variable name
 	 * 		and value the expression of this variable.
 	 * 		| getVariables().put(variableName, value)
@@ -615,19 +603,17 @@ public class Task {
 	 * Checks whether or not this task is well formed.
 	 * 
 	 * @return For each scheduler in all the schedulers of this task, for each activity in this task,
-	 * 		if the activity is not well formed, then false and all the variables are removed. 
+	 * 		if the activity is not well formed, then false. 
 	 * 		| for each scheduler in getSchedulersForTask():
 	 * 		|	for each activities in getActivitiesReq().getStatements()
 	 * 		|		if (! acitivy.isWellFormed()
 	 * 		|			result == false
-	 * 		|			getVariables().clear()
 	 * @return For each scheduler in all the schedulers of this task, for each activity in this task,
-	 * 		if all the activities are well formed, then true and all the variables are removed.
+	 * 		if all the activities are well formed, then true.
 	 * 		| for each scheduler in getSchedulersForTask():
 	 * 		|	for each activities in getActivitiesReq().getStatements()
 	 * 		|		if every acitivy.isWellFormed()
 	 * 		|			result == true
-	 * 		|			getVariables().clear()
 	 */
 	public Boolean isWellFormed() {
 		for (Scheduler tempScheduler : (getSchedulersForTask())){
@@ -635,14 +621,12 @@ public class Task {
 				ArrayList<java.lang.Object> calledBy = new ArrayList<java.lang.Object>();
 				calledBy.add(this);
 				if (!activity.isWellFormed(this, calledBy, tempScheduler.getFaction().getUnits().iterator().next())) {
-					System.out.println("iswellformed fout: " + activity);
 					getVariables().clear();
 					return false;
 				}
 			}
 			getVariables().clear();
 		}
-		System.out.println("iswellformed juist");
 		return true;
 	}
 }

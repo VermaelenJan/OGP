@@ -10,7 +10,6 @@ import be.kuleuven.cs.som.annotate.Immutable;
  */
 public class IllegalAttackPosititonException extends RuntimeException {
 	
-
 	/**
 	 * 
 	 * Initialize this new illegal attack position exception with the given location.
