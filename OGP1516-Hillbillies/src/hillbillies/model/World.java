@@ -6,6 +6,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.exceptions.IllegalValueException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
@@ -63,6 +64,7 @@ public class World {
 	 * @effect If any of the cubes is solid terrain and that cube is not connected to the border
 	 * 		directly or via other solid cubes, the cube caves in.
 	 */
+	@Raw
 	private void updateConnectedTerrain() {
 		for (int xIndex = 0; xIndex<getNbCubesX(); xIndex++) {
 			for (int yIndex = 0; yIndex<getNbCubesY(); yIndex++) {
@@ -97,6 +99,7 @@ public class World {
 	 * @effect The cube at x,y and z position is set in worldcubes to the given cubetype.
 	 * @effect The terrain is updated.
 	 */
+	@Raw
 	public void setCubeType(int x,int y, int z, CubeType cubeType){
 		if (cubeType.isPassableTerrain() && !this.getCubeType(x, y, z).isPassableTerrain()){
 			CTBTool.changeSolidToPassable(x, y, z);
@@ -176,6 +179,7 @@ public class World {
 	 * @effect With a chance of 25% , if the cubetype was wood, there is a new log
 	 * 		on the x,y and z position.
 	 */
+	@Raw
 	protected void caveIn(int x,int y,int z){
 		
 		CubeType cubeType = getCubeType(x, y, z);
@@ -269,6 +273,7 @@ public class World {
 	/**
 	 * Return a set with all the boulders of this world.
 	 */
+	@Basic
 	protected Set<Boulder> getBoulders(){
 		return boulders;
 	}
@@ -315,6 +320,7 @@ public class World {
 	/**
 	 * Return a set with all the logs of this world.
 	 */
+	@Basic
 	protected Set<Log> getLogs(){
 		return logs;
 	}
@@ -361,6 +367,7 @@ public class World {
 	/**
 	 * Return a set with all the factions.
 	 */
+	@Basic
 	private Set<Faction> getAllFactions(){
 		return factions;
 	}

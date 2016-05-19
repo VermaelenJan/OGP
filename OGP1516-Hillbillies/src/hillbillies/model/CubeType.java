@@ -25,7 +25,6 @@ public enum CubeType {
 	 * @post   The type for this new cubetype is equal to the
 	 *         given type.
 	 */
-	@Raw 
 	CubeType(String type) {
 		this.setType(type);
 	}
@@ -41,7 +40,7 @@ public enum CubeType {
 	/**
 	 * Get the type of this cubetype.
 	 */
-	@Basic 
+	@Basic @Raw
 	public String getType() {
 		return type;
 	}
@@ -53,6 +52,7 @@ public enum CubeType {
 	 * @post
 	 * 		The new type for this cubetype is equal to the given type.
 	 */
+	@Raw
 	private void setType(String type) {
 		this.type = type;
 	}

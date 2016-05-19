@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import be.kuleuven.cs.som.annotate.Basic;
-// import be.kuleuven.cs.som.annotate.Immutable;
-import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.exceptions.IllegalAdjacentPositionException;
 import hillbillies.model.exceptions.IllegalAdvanceTimeException;
@@ -108,7 +106,6 @@ public class Unit {
 	 * 			The given name is not a valid name for a unit.	
 	 * 			| ! isValidName(name)
 	 */
-	@Model
 	public Unit(int[] CubeLocation, String name, int weight, int strength, int agility, int toughness, World world)
 																throws IllegalPositionException, IllegalNameException {
 		double[] location = {CubeLocation[0]+ConstantsUtils.CUBE_LENGTH/2, CubeLocation[1]+
@@ -224,7 +221,7 @@ public class Unit {
 	 *							&&	(Character.isUpperCase(name.charAt(0))) 
 	 *							&&  (areValidCharacters(name)) )			
 	 */
-	@Model
+	@Raw
 	private static boolean isValidName(String name){
 		return ((name.length() >= 2) && (Character.isUpperCase(name.charAt(0))) && (areValidCharacters(name)));
 	}
@@ -238,7 +235,7 @@ public class Unit {
 	 * 		   	| result == (for char in name
 	 *						 ( char.isLetter ||  (char == ' ')  || (char == ' " ') || (char == ' ' ')))
 	 */
-	@Model
+	@Raw
 	private static boolean areValidCharacters(String name){
 		for (char c : name.toCharArray()){
 			if ( (! Character.isLetter(c)) && (! (c == ' ') ) && (! (c == '"')) && (! (c == '\'')) )
@@ -322,7 +319,7 @@ public class Unit {
 	 * 			| if (weight < (getStrength()+getAgility())/2)
 	 * 			|	then (new.getWeight() == (getStrength()+getAgility())/2)
 	 */	
-	@Raw @Model
+	@Raw
 	private void setWeight(int weight, boolean flag){
 		int currMinVal;
 		int currMaxVal;
@@ -370,7 +367,7 @@ public class Unit {
 	 * 			| if (weight < (getStrength()+getAgility())/2)
 	 * 			|	then (new.getWeight() == (getStrength()+getAgility())/2) 
 	 */
-	@Raw @Model
+	@Raw
 	private void setFreeWeight(int weight){
 		
 				
@@ -461,7 +458,7 @@ public class Unit {
 	 *				 then setWeight(getWeight()-carriedObject.getWeight())
 	 *					  setFreeWeight(getWeight()+carriedObject.getWeight())
 	 */
-	@Raw @Model
+	@Raw
 	private void setStrength(int strength, boolean flag){
 		int currMinVal;
 		int currMaxVal;
@@ -563,7 +560,7 @@ public class Unit {
 	 *				 then setWeight(getWeight()-carriedObject.getWeight())
 	 *					  setFreeWeight(getWeight()+carriedObject.getWeight())
 	 */
-	@Raw @Model
+	@Raw
 	private void setAgility(int agility, boolean flag){
 		int currMinVal;
 		int currMaxVal;
@@ -616,7 +613,7 @@ public class Unit {
 	 * @effect The new toughness of this unit is set to the given toughness, with the restrictions for a not-newly created unit.
 	 * 			| setToughness(toughness,false)
 	 */
-	@Raw @Model
+	@Raw
 	public void setToughness(int toughness) {
 		setToughness(toughness, false);
 	}
@@ -656,7 +653,7 @@ public class Unit {
 	 * 			| if (toughness > currMaxVal)
 	 * 			|		then (new.getToughness() == currMaxVal) 
 	 */
-	@Raw @Model
+	@Raw 
 	private void setToughness(int toughness, boolean flag){
 		int currMinVal;
 		int currMaxVal;
@@ -783,7 +780,7 @@ public class Unit {
 	 * @post The new stamina of this unit is equal to the given stamina.
 	 *         | new.getStamina() == stamina
 	 */
-	@Raw @Model
+	@Raw
 	private void setStamina(double stamina){
 		assert isValidStamina(stamina);
 		this.stamina = stamina;
@@ -813,7 +810,7 @@ public class Unit {
 	 * @post The new orientation of this unit is set to the given orientation modulo 2*PI, made positive.
 	 *      	  | new.getOrientation() == orientation%(2*PI)
 	 */
-	@Raw @Model
+	@Raw
 	private void setOrientation(double orientation){
 		this.orientation = (((orientation%(2*Math.PI))+2*Math.PI)%(2*Math.PI));
 	}
@@ -1635,7 +1632,6 @@ public class Unit {
 	 * @return True if and only if dt is greater or equal to 0 and smaller or equal to 0.2.
 	 * 		| result == ((dt >=0)&&(dt <= 0.2))
 	 */
-	@Model
 	private static boolean isValidAdvanceTime(double dt){
 		return ((dt >=0)&&(dt <= 0.2));
 	}
@@ -1659,6 +1655,7 @@ public class Unit {
 	 * @return the time pending.
 	 * 		| result == timeToPend
 	 */
+	@Basic
 	private double getTimePending() {
 		return this.timeToPend;
 	}
@@ -1704,7 +1701,6 @@ public class Unit {
 	 * 		   divided by 100.
 	 * 		   | result == 1.5*(getStrength()+getAgility())/(200*getWeight()/100)
 	 */
-	@Model
 	private double getBaseSpeed(){
 		return 1.5*(getStrength()+getAgility())/(2*getWeight());
 	}
@@ -1726,7 +1722,6 @@ public class Unit {
 	 * 			is equal to the z coordinate of the target location.
 	 * 			| result == getBaseSpeed()			
 	 */
-	@Model
 	private double getWalkingSpeed(double targetZ){
 		if (positionObj.getLocation()[2]-targetZ < 0){
 			return 0.5*getBaseSpeed();
@@ -1757,7 +1752,6 @@ public class Unit {
 	 * 			|            velocity*(target[y]-getLocation()[y])/distance,
 	 * 			|            velocity*(target[z]-getLocation()[z])/distance )		
 	 */
-	@Model
 	private double[] getCurrentSpeed() {
 		double distance = getDistanceToTarget();
 
@@ -1852,6 +1846,7 @@ public class Unit {
 	 * @return The state of sprinting of this unit.
 	 * 		   | result == sprinting
 	 */
+	@Basic
 	public boolean isSprinting(){
 		return sprinting;
 	}
@@ -1893,7 +1888,6 @@ public class Unit {
 	 * 		| if (!isAttacking())
 	 * 		|	then new.isMoving == true.
 	 */
-	@Model 
 	private void startMoving(){
 		if ( ! interruptRWPermission && isResting() && (canHaveRecoverdOneHp())){
 			stopResting();
@@ -1913,7 +1907,6 @@ public class Unit {
 	 * @post The new state of moving of the unit is false.
 	 * 		| new.isMoving == false				
 	 */
-	@Model 
 	private void stopMoving(){
 		this.isMoving = false;
 	}
@@ -1925,7 +1918,7 @@ public class Unit {
 	 * @return True if and only if the unit is moving.
 	 * 		| result == isMoving			
 	 */
-	@Basic @Model
+	@Basic
 	private boolean isMoving(){
 		return isMoving;
 	}
@@ -1945,7 +1938,6 @@ public class Unit {
 	 * 		| result == ((target[x]-getLocation()[x])^2+ (target[y] - getLocation()[y])^2 + 
 	 * 		| (target[z]-getLocation()[z])^2)^(1/2)			 
 	 */
-	@Model
 	private double getDistanceToTarget() {
 		if (target == null) {
 			return 0;
@@ -1965,7 +1957,6 @@ public class Unit {
 	 * 		the current speed.
 	 * 		| result == (getDistanceToTarget() < dt*getCurrentSpeedMag())
 	 */
-	@Model
 	private boolean arrived(double dt){
 		return (getDistanceToTarget() <= dt*getCurrentSpeedMag());	
 	}
@@ -2045,7 +2036,6 @@ public class Unit {
 	 * 		| ! isValidAdjacentMovement(dx,dy,dz)
 	 * 			
 	 */
-	@Model
 	private void moveToAdjacent(int dx,int dy,int dz, boolean calledBy_moveTo) throws IllegalPositionException,
 																					IllegalAdjacentPositionException{
 		if (! isValidAdjacentMovement(dx,dy,dz)){
@@ -2329,6 +2319,7 @@ public class Unit {
 	 * @return True if and only if the unit is falling.
 	 * 		| result == isFalling
 	 */
+	@Basic
 	private boolean isFalling(){
 		return this.isFalling;
 	}
@@ -2458,7 +2449,6 @@ public class Unit {
 	 * 		|	then ((new.isWorking() == true)
 	 * 		|		&& (setTimeRemainderToWork(500/getStrength())))
 	 */
-	@Model
 	private void startWorking(){
 		if ( isResting() && (canHaveRecoverdOneHp())){
 			stopResting();
@@ -2478,7 +2468,6 @@ public class Unit {
 	 * @post The unit is not working.
 	 * 		| new.isWorking() == false
 	 */
-	@Model
 	private void stopWorking(){
 		this.working = false;
 
@@ -2501,6 +2490,7 @@ public class Unit {
 	 * 		actually moving and the worktype is equal to 5.
 	 * 		| result == (isWorking() && !isActualMoving() && workType == 5 ) 		
 	 */
+	@Basic
 	public boolean isWorkingShow(){ 
 		return (isWorking());
 	}
@@ -2513,7 +2503,6 @@ public class Unit {
 	/**
 	 * Return the time remaining to work of this unit.
 	 */
-	@Model 
 	private float getTimeRemainderToWork(){
 		return timeRemainderToWork;
 	}
@@ -2526,7 +2515,6 @@ public class Unit {
 	 * @post The new time remaining to work of this unit is equal to the given time.
 	 *      | new.getTimeRemainderToWork() == time	
 	 */
-	@Model
 	private void setTimeRemainderToWork(float time){
 		this.timeRemainderToWork = time;
 	}
@@ -2756,7 +2744,6 @@ public class Unit {
 	 * 				 &&(this.getOccupiedCube()[y] - attackCubePosition[y] <= 1)
 	 * 				 &&(this.getOccupiedCube()[z] - attackCubePosition[z] <= 1))
 	 */
-	@Model
 	private boolean isValidAttackPosition(int[] attackCubePosition){
 		return((Math.abs(this.positionObj.getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
 				(Math.abs(this.positionObj.getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
@@ -2773,7 +2760,6 @@ public class Unit {
 	 * @effect Set the orientation of the other unit in the direction of this unit.
 	 * 		| other.setOrientationTo(this.positionObj.getLocation())
 	 */
-	@Model  
 	private void setOrientationInFight(Unit other) {
 		this.setOrientationTo(other.positionObj.getLocation());
 		other.setOrientationTo(this.positionObj.getLocation());
@@ -2791,7 +2777,6 @@ public class Unit {
 	 * 			| this.setOrientation(arctangents(target[y]-this.getLocation()[y],
 	 * 			|	target[x]-this.getLocation()[x])
 	 */
-	@Model
 	private void setOrientationTo(double[] target) {
 		double orientUnitThis = Math.atan2(target[1]-this.positionObj.getLocation()[1],
 				target[0]-this.positionObj.getLocation()[0]);
@@ -2963,7 +2948,6 @@ public class Unit {
 	 * @post The new attack time of this unit is equal to the given time.
 	 * 		| new.getAttackTime() == time			
 	 */
-	@Model
 	private void setAttackTime(float time){
 		this.attackTime = time;
 	}
@@ -2971,7 +2955,7 @@ public class Unit {
 	/**
 	 * Return the attack time of this unit.
 	 */
-	@Basic @Model
+	@Basic
 	private float getAttackTime(){
 		return this.attackTime;
 	}
@@ -3031,7 +3015,6 @@ public class Unit {
 	 * 		|		&& setStartRestStamina(getStamina)
 	 * 
 	 */
-	@Model
 	private void startResting(){
 		if ( (getHitpoints() != getMaxHitpointsStamina()) || ( (getStamina() != getMaxHitpointsStamina()) )){
 			setTimeResting(0);
@@ -3063,7 +3046,6 @@ public class Unit {
 	 * @effect The new time that the unit has rested is equal to a large value.
 	 * 			| setTimeResting(MAX_VALUE)
 	 */
-	@Model
 	private void stopResting(){
 		if (! canHaveRecoverdOneHp()){
 			setHitpoints(getStartRestHitpoints());
@@ -3087,7 +3069,6 @@ public class Unit {
 	 * @post The new time since rest is equal to the given time.
 	 * 			| new.getTimeSinceRest() == time
 	 */
-	@Model
 	private void setTimeSinceRest(float time){
 		this.timeSinceRest = time;
 	}
@@ -3095,7 +3076,7 @@ public class Unit {
 	/**
 	 * Return the time since the ending of the last rest.
 	 */
-	@Model
+	@Basic
 	private float getTimeSinceRest(){
 		return this.timeSinceRest;
 	}
@@ -3113,7 +3094,6 @@ public class Unit {
 	 * @post The new time that the unit is resting is equal to the given time.
 	 * 			| new.getTimeResting() == time
 	 */
-	@Model
 	private void setTimeResting(float time) {
 		this.timeResting = time;
 	}
@@ -3121,7 +3101,7 @@ public class Unit {
 	/**
 	 * Return the time this unit is resting.
 	 */
-	@Basic @Model
+	@Basic
 	private float getTimeResting() {
 		return this.timeResting;
 	}
@@ -3139,7 +3119,6 @@ public class Unit {
 	 * @post The new periodic reset time is equal to the given time.
 	 *			| new.getTimePeriodicRest() == time
 	 */
-	@Model
 	private void setTimePeriodicRest(float time){
 		this.periodicRest = time;
 	}
@@ -3147,7 +3126,7 @@ public class Unit {
 	/**
 	 * Return the periodic rest of this unit.
 	 */
-	@Basic @Model
+	@Basic
 	private float getTimePeriodicRest(){
 		return this.periodicRest;
 	}
@@ -3164,7 +3143,6 @@ public class Unit {
 	 * 			equal the time for the unit to recover one hitpoint.
 	 * 			| result == (getTimeResting >= ( 1/((getToughness()/200.0)/0.2)))
 	 */
-	@Model
 	private boolean canHaveRecoverdOneHp(){
 		return (getTimeResting() >= ((double) 1/(((double) getToughness()/200.0)/0.2)));
 
@@ -3173,7 +3151,7 @@ public class Unit {
 	/**
 	 * Return the initial hitpoints on the moment the unit started resting.
 	 */
-	@Basic @Model
+	@Basic
 	private int getStartRestHitpoints(){
 		return this.startRestHitpoints;
 	}
@@ -3187,7 +3165,6 @@ public class Unit {
 	 * 			| new.getStartRestHitpoints() == hitpoints
 	 * 			
 	 */
-	@Model
 	private void setStartRestHitpoints(int hitpoints){
 		if (hitpoints < getMaxHitpointsStamina()){
 			this.startRestHitpoints = hitpoints;
@@ -3206,7 +3183,7 @@ public class Unit {
 	/**
 	 * Return the initial stamina on the moment the unit started resting.
 	 */
-	@Basic @Model
+	@Basic
 	private int getStartRestStamina(){
 		return this.startRestStamina;
 	}
@@ -3219,7 +3196,6 @@ public class Unit {
 	 * @post The new initial stamina when the unit started resting are equal to the given stamina.
 	 * 			| new.getStartRestStamina() == stamina	
 	 */
-	@Model
 	private void setStartRestStamina(int stamina){
 		if (stamina < getMaxHitpointsStamina()) {
 			this.startRestStamina = stamina;
@@ -3303,7 +3279,6 @@ public class Unit {
 	 * 			| if (getAssignedTask() != null)
 	 * 			| 	then getAssignedTask.executeTask()
 	 */
-	@Model
 	private void newDefaultBehaviour(){
 
 		if (getAssignedTask() == null) {
@@ -3334,6 +3309,7 @@ public class Unit {
 	/**
 	 * Return the assigned task of this unit.
 	 */
+	@Basic
 	public Task getAssignedTask() {
 		return assignedTask;
 	}

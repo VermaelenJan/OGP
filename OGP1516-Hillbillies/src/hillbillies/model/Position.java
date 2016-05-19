@@ -20,7 +20,6 @@ import hillbillies.model.exceptions.IllegalPositionException;
  * @author Maxime Pittomvils (r0580882) and Jan Vermaelen (r0591389)
  * @version 2.0
  */
-@Value
 public class Position {
 	
 	/**
@@ -62,7 +61,7 @@ public class Position {
 	/**
 	 * Return the location of this positionobject in its world.
 	 */
-	@Basic @Raw
+	@Raw
 	protected double[] getLocation() {
 		double[] position = {this.xPos, this.yPos, this.zPos};
 		return(position);
@@ -81,7 +80,6 @@ public class Position {
 	/**
 	 * Return the location of the cube below the occupying cube of this positionobject in the world.
 	 */
-	@Model
 	protected int[] getCubeBelow(){
 		int [] occupiedCube = getOccupiedCube();
 		int [] cubeBelow = {occupiedCube[0],occupiedCube[1],(occupiedCube[2]-1)};
@@ -97,7 +95,7 @@ public class Position {
 	 * @throws IllegalPositionException
 	 * 		The given location is not a valid unit location for this positionobject.
 	 */
-	@Raw @Model 
+	@Raw
 	protected void setLocation(double[] location) throws IllegalPositionException {
 		if (!isValidUnitPositionDouble(location))
 			throw new IllegalPositionException(location);	
@@ -115,7 +113,7 @@ public class Position {
 	 * 		The given location is not a valid location for this positionobject 
 	 * 			(i.e. solid terrain or located outside of the world).
 	 */
-	@Raw @Model 
+	@Raw
 	protected void setFreeLocation(double[] location) throws IllegalPositionException {
 		if (!(isInBoundariesDouble(location) && 
 				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()))
@@ -146,7 +144,7 @@ public class Position {
 	 * @return True if and only if the given location is in the boundaries of the world and there is 
 	 * 		a solid terrain cube (or the bottom of the world) below the given location.
 	 */
-	@Raw @Model
+	@Raw
 	protected boolean isValidLocationInWorld(double[] location) {
 		return ( isInBoundariesDouble(location) && isValidZPosition());
 	}
@@ -159,7 +157,7 @@ public class Position {
 	 * @return True if and only if the double precision x,y,z coordinates of the given location are 
 	 * 		between 0 and respectively the maximum x,y,z coordinates of the world.
 	 */
-	@Raw @Model
+	@Raw
 	protected boolean isInBoundariesDouble(double[] location){
 		return ((location[0] < world.getNbCubesX()) && (location[1] < world.getNbCubesY()) &&
 				(location[2] < world.getNbCubesZ()) && (location[0] >= 0) && (location[1] >= 0) && (location[2] >= 0));
@@ -173,7 +171,7 @@ public class Position {
 	 * @return True if and only if the integer x,y,z coordinates of the given location are 
 	 * 		between 0 and respectively the maximum x,y,z coordinates of the world.
 	 */
-	@Raw @Model
+	@Raw
 	protected boolean isInBoundariesInt(int[] location) {
 		double[] loc = {(double) location[0], (double) location[1], (double) location[2]};
 		return isInBoundariesDouble(loc);
@@ -187,7 +185,7 @@ public class Position {
 	 * 		given location is passable terrain, and a neighbouring cube of the cube at the given location is 
 	 * 		of solid terrain.
 	 */
-	@Raw @Model
+	@Raw
 	protected boolean isValidUnitPositionDouble(double[] location){
 		if (isInBoundariesDouble(location) && 
 				world.getCubeType((int) location[0], (int) location[1], (int) location[2]).isPassableTerrain()){
@@ -329,7 +327,6 @@ public class Position {
 	 * @effect the location of the positionobject is set to a random location with
 	 * 		the restrictions of the valid dodging places.
 	 */
-	@Model 
 	protected void setRandomDodgedLocation(){
 		try {
 			setFreeLocation(getRandomDodgePosition(getLocation()));
@@ -347,7 +344,6 @@ public class Position {
 	 * 		x and y coordinate of the given location, and the same z coordinate as
 	 * 		the z coordinate of the given location.
 	 */
-	@Model
 	protected double[] getRandomDodgePosition(double[] currLoc){
 		double[] newLoc = {currLoc[0]+ (ConstantsUtils.random.nextDouble()*2-1), currLoc[1] + 
 				(ConstantsUtils.random.nextDouble()*2-1), currLoc[2]};
@@ -364,7 +360,6 @@ public class Position {
 	 * @return A random location in the boundaries of the world of this positionobject,
 	 * 		if the location is a valid position.
 	 */
-	@Model
 	protected int[] getRandomPosition(){
 		
 		int[] randLoc = {ConstantsUtils.random.nextInt(world.getNbCubesX()), 

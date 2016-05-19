@@ -51,6 +51,7 @@ public class Scheduler {
 	 * @post The new faction of this scheduler is equal to the given faction.
 	 * 		| new.getFaction() == faction
 	 */
+	@Raw
 	private void setFaction(Faction faction){
 		this.faction = faction;
 	}
@@ -92,7 +93,6 @@ public class Scheduler {
 	 * 		| for each task in given tasks:
 	 * 		| addTask(task)
 	 */
-	@Model
 	private void addTasks(Collection<Task> tasks) {
 		for (Task task : tasks) {
 			addTask(task);
@@ -146,7 +146,6 @@ public class Scheduler {
 	 * 		| for each task in given tasks:
 	 * 		| removeTask(task)
 	 */
-	@Model
 	private void removeTasks(Collection<Task> tasks ) {
 		for (Task task : tasks) {
 			removeTask(task);

@@ -2,4 +2,8 @@ name: "ownTasks"
 priority : 3
 activities : 	print (is_friend enemy);
 				print (is_friend friend);
+				print (is_passable (10, 10, 10));
+				print (is_solid (0,5,5));
+				print (is_alive this);
+				print (is_enemy any);
 			 

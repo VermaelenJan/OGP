@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.expression.*;
 import hillbillies.model.statement.*;
 import hillbillies.part3.programs.SourceLocation;
@@ -61,6 +64,7 @@ public class Task {
 	/**
 	 * Get the original activities of this task.
 	 */
+	@Basic @Raw
 	private Statement getOriginalActivities() {
 		return this.originalActivities;
 	}
@@ -74,6 +78,7 @@ public class Task {
 	 * @post The new original activities for this task are equal to the given activities.
 	 * 	| new.getOriginalActivities() == activities
 	 */
+	@Raw
 	private void setOriginalActivities(Statement activities) {
 		this.originalActivities = activities;
 	}
@@ -89,6 +94,7 @@ public class Task {
 	/**
 	 * Get the name of this task.
 	 */
+	@Basic @Raw
 	public String getName(){
 		return this.name;
 	}
@@ -101,6 +107,7 @@ public class Task {
 	 * @post The new name of this task is equal to the given name.
 	 * 		| new.getName() == name
 	 */
+	@Raw
 	private void setName(String name){
 		this.name = name;
 	}
@@ -116,6 +123,7 @@ public class Task {
 	/**
 	 * Get the priority of this task.
 	 */
+	@Basic @Raw
 	public int getPriority(){
 		return this.priority;
 	}
@@ -128,6 +136,7 @@ public class Task {
 	 * @post The new priority of this task is equal to the given priority.
 	 * 		| new.getPriority() == priority
 	 */
+	@Raw
 	protected void setPriority(int priority){
 		this.priority = priority;
 	}
@@ -152,6 +161,7 @@ public class Task {
 	 * Get the active activities of this task.
 	 * @note return type is a sequence.
 	 */
+	@Basic @Raw
 	private Sequence getActivitiesReq(){
 		return this.activitiesReq;
 	}
@@ -185,6 +195,7 @@ public class Task {
 	 * 		| for each activity in getActivitiesREq().getStatements
 	 * 		|	activitiesMap.put(activity, false)
 	 */
+	@Raw
 	private void setActivities(Statement activities){
 
 		List<Statement> list = new ArrayList<>();
@@ -244,6 +255,7 @@ public class Task {
 	/**
 	 * Get the selected cube of this task.
 	 */
+	@Basic @Raw
 	public int[] getSelectedCube(){
 		return this.selectedCube;
 	}
@@ -256,6 +268,7 @@ public class Task {
 	 * @post The new selected cube for this task is equal to the given selected cube.
 	 * 		| new.getSelectedCube() == selectedCube
 	 */
+	@Raw 
 	private void setSelectedCube(int[] selectedCube){
 		this.selectedCube = selectedCube;
 	}
@@ -270,6 +283,7 @@ public class Task {
 	/**
 	 * Get the assigned unit for this task.
 	 */
+	@Basic @Raw
 	public Unit getAssignedUnit() {
 		return this.assignedUnit;
 	}
@@ -313,6 +327,7 @@ public class Task {
 	 * @post The new assigned unit of this task is equal to the given unit.
 	 * 		| new.getAssignedUnit() == unit
 	 */
+	@Raw
 	protected void setAssignedUnit(Unit unit){
 		this.assignedUnit = unit;
 	}
@@ -559,6 +574,7 @@ public class Task {
 	 * @post the new variables of this task are equal to the given empty map of variables.
 	 * 		| new.getVariables() == variables
 	 */
+	@Raw
 	private void setVariables(HashMap<String, Expression> variables) {
 		this.variables = variables;
 	}
