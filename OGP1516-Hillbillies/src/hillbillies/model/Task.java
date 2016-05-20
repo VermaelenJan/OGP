@@ -199,7 +199,7 @@ public class Task {
 		
 		activitiesMap = new HashMap<Statement, Boolean>();
 
-		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
+		for (Statement activity : getActivitiesReq().getStatements()) {
 			activitiesMap.put(activity, false);
 		}
 	}
