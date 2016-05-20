@@ -151,14 +151,6 @@ public class Task {
 	
 	/**
 	 * Get the active activities of this task.
-	 * @note return type is a statement.
-	 */
-	protected Statement getActivities(){
-		return this.activitiesReq;
-	}
-	
-	/**
-	 * Get the active activities of this task.
 	 * @note return type is a sequence.
 	 */
 	@Basic @Raw
@@ -383,7 +375,7 @@ public class Task {
 //		}
 //		System.out.println();
 
-		Sequence sequence = (Sequence) getActivitiesReq();
+		Sequence sequence = getActivitiesReq();
 		for (Statement activity : sequence.getStatements()){
 			if (! (activitiesMap.get(activity))) {
 				if (activity instanceof BreakStatement) {
@@ -427,7 +419,7 @@ public class Task {
 	 * 		| activitiesMap.put(activity,true)
 	 */
 	private void breakWhile() {
-		for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
+		for (Statement activity : getActivitiesReq().getStatements()) {
 			if (activity instanceof While) {
 				getAssignedUnit().startNewPending();
 				return;
@@ -633,7 +625,7 @@ public class Task {
 	 */
 	public Boolean isWellFormed() {
 		for (Scheduler tempScheduler : (getSchedulersForTask())){
-			for (Statement activity : ((Sequence) getActivitiesReq()).getStatements()) {
+			for (Statement activity : getActivitiesReq().getStatements()) {
 				ArrayList<java.lang.Object> calledBy = new ArrayList<java.lang.Object>();
 				calledBy.add(this);
 				if (!activity.isWellFormed(this, calledBy, tempScheduler.getFaction().getUnits().iterator().next())) {
