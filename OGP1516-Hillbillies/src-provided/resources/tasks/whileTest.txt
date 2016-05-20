@@ -1,8 +1,12 @@
 name: "ownTasks"
 priority : 3
-activities : moveTo (0,12,8); 
+activities : moveTo (0,0,2); 
 			while true
 				do
-					work (0, 12, 8);
+					moveTo (10, 10, 10);
+					w:= (0, 12, 8);
+					z:= (0, 12, 7);
+					moveTo w;
+					work z;
 				done
 			 

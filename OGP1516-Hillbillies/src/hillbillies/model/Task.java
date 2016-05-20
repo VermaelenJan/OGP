@@ -219,21 +219,18 @@ public class Task {
 	 * 		| return new Sequence(newlistofactivities, newlistofactivities.getSourceLocation())
 	 */
 	private Sequence removeNestedSeq(Sequence activitiesSequence) {
-		if (activitiesSequence instanceof Sequence) {
-			int i = 0;
-			List<Statement> result = ((Sequence) activitiesSequence).getStatements();
-			while (i < result.size()) {
-				if (result.get(i) instanceof Sequence) {
-					Sequence toAdd = (Sequence) result.remove(i);
-					result.addAll(i, (removeNestedSeq(toAdd)).getStatements());
-				}
-			i++;
+		List<Statement> result = activitiesSequence.getStatements();
+		int i = 0;
+		while (i < result.size()) {
+			if (result.get(i) instanceof Sequence) {
+				Sequence sequenceToAdd = (Sequence) result.remove(i);
+				List<Statement> statementsToAdd = removeNestedSeq(sequenceToAdd).getStatements();
+				result.addAll(i, statementsToAdd);
+				i+=statementsToAdd.size();
 			}
-			return new Sequence(result, activitiesSequence.getSourceLocation());
+			else i++;
 		}
-		else {
-			return activitiesSequence;
-		}
+		return new Sequence(result, activitiesSequence.getSourceLocation());
 	}
 	
 	/**
