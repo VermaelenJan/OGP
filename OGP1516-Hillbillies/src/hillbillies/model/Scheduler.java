@@ -246,7 +246,7 @@ public class Scheduler {
 	 * 		| result == getAllTasks().stream().filter(lambda)
 	 */
 	public List<Task> getAllTasksWithCond(Predicate<Task> lambda) {
-		List<Task> satisfiedTasks = (List<Task>) getAllTasks().stream().filter(lambda).collect(Collectors.toList());
+		List<Task> satisfiedTasks = getAllTasks().stream().filter(lambda).collect(Collectors.toList());
 		return satisfiedTasks;
 	}
 	
