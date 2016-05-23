@@ -43,6 +43,8 @@ public class World {
 		this.worldZ = worldCubes[0][0].length;
 		this.terrainChangeListener = terrainChangeListener;
 		this.CTBTool = new ConnectedToBorder(worldX,worldY,worldZ);
+		boulders = new HashSet<Boulder>();
+		logs = new HashSet<Log>();
 		
 		for (int xIndex = 0; xIndex<worldX; xIndex++) {
 			for (int yIndex = 0; yIndex<worldY; yIndex++) {
@@ -55,8 +57,6 @@ public class World {
 		}
 		updateConnectedTerrain();
 	}
-	
-	
 	
 	/**
 	 * Update the solid terrain for all cubes.
@@ -312,7 +312,7 @@ public class World {
 	/**
 	 * @invar Each boulder referenced in this set is effective.
 	 */
-	Set<Boulder> boulders = new HashSet<Boulder>();
+	Set<Boulder> boulders;
 	
 	
 	// LOGS
@@ -359,7 +359,7 @@ public class World {
 	/**
 	 * @invar Each log referenced in this set is effective.
 	 */
-	Set<Log> logs = new HashSet<Log>();
+	Set<Log> logs;
 
 	
 	// FACTION 
