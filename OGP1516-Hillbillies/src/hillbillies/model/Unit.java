@@ -122,7 +122,7 @@ public class Unit {
 		setExperience(0);
 		
 		positionObj = new Position(world);
-		positionObj.setLocation(location); 
+		getPositionObj().setLocation(location); 
 		}
 	
 	
@@ -985,16 +985,16 @@ public class Unit {
 	@Raw
 	public void setWorld(World world){
 		if (hasWorld()) {
-			double[] prevPos = positionObj.getLocation();
+			double[] prevPos = getPositionObj().getLocation();
 			this.world = world;
 			world.addUnit(this);
-			this.positionObj = new Position(world);
+			positionObj = new Position(world);
 			try {
-				positionObj.setLocation(prevPos);
+				getPositionObj().setLocation(prevPos);
 			} catch (IllegalPositionException e) {
-				int[] randomCube = positionObj.getRandomPosition();
+				int[] randomCube = getPositionObj().getRandomPosition();
 				double[] randomPos = {randomCube[0]+0.5, randomCube[1]+0.5, randomCube[2]+0.5};
-				positionObj.setLocation(randomPos);
+				getPositionObj().setLocation(randomPos);
 			}
 		}
 		else {
@@ -1142,7 +1142,7 @@ public class Unit {
 	 */
 	@Raw
 	public double[] getLocation() {
-		return positionObj.getLocation();
+		return getPositionObj().getLocation();
 	}
 	
 	// CUBE
@@ -1155,7 +1155,7 @@ public class Unit {
 	 */
 	@Raw
 	public int[] getOccupiedCube() {
-		return positionObj.getOccupiedCube();
+		return getPositionObj().getOccupiedCube();
 	}
 	
 	/**
@@ -1217,7 +1217,7 @@ public class Unit {
 				advanceTimeNotResting(dt);
 			}
 	
-			if (isFalling() || !positionObj.isValidUnitPositionDouble(positionObj.getLocation())){
+			if (isFalling() || !getPositionObj().isValidUnitPositionDouble(getPositionObj().getLocation())){
 				setFalling(true); 
 				if (getAssignedTask() != null) {
 					getAssignedTask().interruptTask();
@@ -1229,7 +1229,7 @@ public class Unit {
 			else if (isAttacking()){
 				advanceTimeAttacking(dt);
 			}
-			else if (isResting() && positionObj.isAtMiddleZOfCube()){ 
+			else if (isResting() && getPositionObj().isAtMiddleZOfCube()){ 
 				advanceTimeResting(dt);
 			}		
 
@@ -1293,13 +1293,13 @@ public class Unit {
 	 */
 	private void advanceTimeFalling(double dt){
 		
-		int prevZPos = positionObj.getOccupiedCube()[2];
+		int prevZPos = getPositionObj().getOccupiedCube()[2];
 
-		if (!positionObj.isValidZPosition()){
-			positionObj.fall(dt,positionObj.getCubeBelow());
+		if (!getPositionObj().isValidZPosition()){
+			getPositionObj().fall(dt,getPositionObj().getCubeBelow());
 			
-			if (positionObj.getOccupiedCube()[2] != prevZPos){ 
-				int nbZLvls = prevZPos - positionObj.getOccupiedCube()[2];
+			if (getPositionObj().getOccupiedCube()[2] != prevZPos){ 
+				int nbZLvls = prevZPos - getPositionObj().getOccupiedCube()[2];
 				double newHitpoints = getHitpoints()-10*nbZLvls;
 				if (newHitpoints > 0 && newHitpoints < getMaxHitpointsStamina()) {
 					setHitpoints(newHitpoints);
@@ -1314,14 +1314,14 @@ public class Unit {
 		}
 		
 		else {
-			if (!positionObj.isAtMiddleZOfCube()){
-				positionObj.fall(dt,positionObj.getOccupiedCube());
+			if (!getPositionObj().isAtMiddleZOfCube()){
+				getPositionObj().fall(dt,getPositionObj().getOccupiedCube());
 			}
 			else {
 				setFalling(false);
-				if (!positionObj.isAtMiddleOfCube()){
-					double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
-					if (!Arrays.equals(positionObj.getLocation(), back)) {
+				if (!getPositionObj().isAtMiddleOfCube()){
+					double[] back = {getPositionObj().getOccupiedCube()[0]+0.5, getPositionObj().getOccupiedCube()[1]+0.5, getPositionObj().getOccupiedCube()[2]+0.5,};
+					if (!Arrays.equals(getPositionObj().getLocation(), back)) {
 						this.target = back;
 					}
 				}
@@ -1544,15 +1544,15 @@ public class Unit {
 	private void advanceTimeMovingArrived() {
 		stopMoving();
 		try {
-			positionObj.setLocation(target);
+			getPositionObj().setLocation(target);
 		} catch (IllegalPositionException e) {} //Exception will never be thrown.
 		
 		updateExperience(1);
 		
 		if (!(globalTarget == null) &&
-				!((positionObj.getOccupiedCube()[0] == globalTarget[0]) &&
-				(positionObj.getOccupiedCube()[1] == globalTarget[1]) &&
-				(positionObj.getOccupiedCube()[2] == globalTarget[2]) ) ) {
+				!((getPositionObj().getOccupiedCube()[0] == globalTarget[0]) &&
+				(getPositionObj().getOccupiedCube()[1] == globalTarget[1]) &&
+				(getPositionObj().getOccupiedCube()[2] == globalTarget[2]) ) ) {
 			try {
 				interruptRWPermission = true;
 				moveTo(globalTarget);
@@ -1583,15 +1583,15 @@ public class Unit {
 	 * 			unit is moving in.
 	 */
 	private void advanceTimeMovingNotArrived(double dt) {
-		double[] newLoc = {positionObj.getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
-				positionObj.getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
-				positionObj.getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
+		double[] newLoc = {getPositionObj().getLocation()[0]+ this.getCurrentSpeed()[0]*dt,
+				getPositionObj().getLocation()[1]+ this.getCurrentSpeed()[1]*dt,
+				getPositionObj().getLocation()[2]+ this.getCurrentSpeed()[2]*dt};
 		try {
-			positionObj.setLocation(newLoc);
+			getPositionObj().setLocation(newLoc);
 		} catch (IllegalPositionException e) {
-			if (!positionObj.isAtMiddleOfCube()){
-				double[] back = {positionObj.getOccupiedCube()[0]+0.5, positionObj.getOccupiedCube()[1]+0.5, positionObj.getOccupiedCube()[2]+0.5,};
-				if (!Arrays.equals(positionObj.getLocation(), back)) {
+			if (!getPositionObj().isAtMiddleOfCube()){
+				double[] back = {getPositionObj().getOccupiedCube()[0]+0.5, getPositionObj().getOccupiedCube()[1]+0.5, getPositionObj().getOccupiedCube()[2]+0.5,};
+				if (!Arrays.equals(getPositionObj().getLocation(), back)) {
 					this.target = back;
 				}
 			}
@@ -1723,10 +1723,10 @@ public class Unit {
 	 * 			| result == getBaseSpeed()			
 	 */
 	private double getWalkingSpeed(double targetZ){
-		if (positionObj.getLocation()[2]-targetZ < 0){
+		if (getPositionObj().getLocation()[2]-targetZ < 0){
 			return 0.5*getBaseSpeed();
 		}
-		else if (positionObj.getLocation()[2]- targetZ > 0){
+		else if (getPositionObj().getLocation()[2]- targetZ > 0){
 			return 1.2*getBaseSpeed();
 		}
 		else{
@@ -1763,9 +1763,9 @@ public class Unit {
 			velocity = getWalkingSpeed(target[2]);
 		}
 		
-		double[] currentSpeed= {velocity*(target[0]-positionObj.getLocation()[0])/distance, 
-								velocity*(target[1]-positionObj.getLocation()[1])/distance, 
-								velocity*(target[2]-positionObj.getLocation()[2])/distance};
+		double[] currentSpeed= {velocity*(target[0]-getPositionObj().getLocation()[0])/distance, 
+								velocity*(target[1]-getPositionObj().getLocation()[1])/distance, 
+								velocity*(target[2]-getPositionObj().getLocation()[2])/distance};
 		return currentSpeed;
 	}
 	
@@ -1870,8 +1870,8 @@ public class Unit {
 	 * 
 	 */
 	public boolean isActualMoving(){
-		return (((isMoving() && !(positionObj.isAtMiddleOfCube() && isWorking())) && 
-				!(positionObj.isAtMiddleZOfCube() && isResting())) || isFalling());
+		return (((isMoving() && !(getPositionObj().isAtMiddleOfCube() && isWorking())) && 
+				!(getPositionObj().isAtMiddleZOfCube() && isResting())) || isFalling());
 	}
 	
 	/**
@@ -1942,9 +1942,9 @@ public class Unit {
 		if (target == null) {
 			return 0;
 		}
-		double distance = Math.sqrt(Math.pow((target[0]-positionObj.getLocation()[0]),2)
-				+ Math.pow((target[1]-positionObj.getLocation()[1]),2)
-				+ Math.pow((target[2]-positionObj.getLocation()[2]),2));
+		double distance = Math.sqrt(Math.pow((target[0]-getPositionObj().getLocation()[0]),2)
+				+ Math.pow((target[1]-getPositionObj().getLocation()[1]),2)
+				+ Math.pow((target[2]-getPositionObj().getLocation()[2]),2));
 		return distance;
 	}
 	
@@ -2050,14 +2050,14 @@ public class Unit {
 			stopResting();
 		}
 		
-		if (positionObj.isAtMiddleOfCube() || !isMoving()) {
-			int[] currentCube = positionObj.getOccupiedCube();
+		if (getPositionObj().isAtMiddleOfCube() || !isMoving()) {
+			int[] currentCube = getPositionObj().getOccupiedCube();
 			double[] currentTarget = {	(double)(currentCube[0]+ dx + ConstantsUtils.CUBE_LENGTH/2), 
 										(double)(currentCube[1]+ dy + ConstantsUtils.CUBE_LENGTH/2),
 										(double)(currentCube[2]+ dz + ConstantsUtils.CUBE_LENGTH/2)};
 
 			
-			if (! positionObj.isValidUnitPositionDouble(currentTarget)){	
+			if (! getPositionObj().isValidUnitPositionDouble(currentTarget)){	
 				if (getAssignedTask() != null) {
 					getAssignedTask().interruptTask();
 				}
@@ -2115,10 +2115,10 @@ public class Unit {
 	 * 		| 		then queue.put(cube,n_0+1)
 	 */
 	private void search(int[] location, int n_0){
-		for (Cube cube : positionObj.getNeighbouringCubes(location)){
+		for (Cube cube : getPositionObj().getNeighbouringCubes(location)){
 			int[] cubeLoc = cube.getCubePosition();
 			if (cube.getCubeType().isPassableTerrain() &&
-					positionObj.isValidUnitPositionInt(cubeLoc) &&
+					getPositionObj().isValidUnitPositionInt(cubeLoc) &&
 						!queue.containsKey(cube)){
 				queue.put(cube,n_0+1);
 			}
@@ -2203,7 +2203,7 @@ public class Unit {
 			throw new IllegalPositionException(new double[] {(double) endTarget[0]+0.5, (double) endTarget[1]+0.5, (double) endTarget[2]+0.5});
 		}
 				
-		int[] currentCubeLoc = positionObj.getOccupiedCube();
+		int[] currentCubeLoc = getPositionObj().getOccupiedCube();
 		Cube currentCube = world.getCube(currentCubeLoc[0], currentCubeLoc[1], currentCubeLoc[2]);
 		
 		if (Arrays.equals(endTarget, currentCubeLoc)){
@@ -2242,14 +2242,14 @@ public class Unit {
 		if (expandingQueue) {
 			Cube nextCube = null;
 			
-			for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+			for (Cube cube : getPositionObj().getNeighbouringCubes(currentCubeLoc)){
 				if (queue.containsKey(cube) && queue.get(cube) < currentLvl){
 					currentLvl = queue.get(cube);
 					nextCube = cube;
 				}
 			}
 			if (nextCube == null) {
-				for (Cube cube : positionObj.getNeighbouringCubes(currentCubeLoc)){
+				for (Cube cube : getPositionObj().getNeighbouringCubes(currentCubeLoc)){
 					if (queue.containsKey(cube) && queue.get(cube) == currentLvl){
 						currentLvl = queue.get(cube);
 						nextCube = cube;
@@ -2352,7 +2352,7 @@ public class Unit {
 				getAssignedTask().interruptTask();			}
 			return;
 		}
-		List<Cube> neighbs = (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()));
+		List<Cube> neighbs = (getPositionObj().getNeighbouringCubesIncludingOwn(getPositionObj().getOccupiedCube()));
 		try {
 			workAt(neighbs.get(ConstantsUtils.random.nextInt(neighbs.size())).getCubePosition());
 		} catch (IllegalPositionException e) {} //cant work here
@@ -2431,7 +2431,7 @@ public class Unit {
 	 * 		| result == positionObj.isNeighBouringCube(workTarget)
 	 */
 	private boolean isValidWorkLocation(int[] workTarget){
-		return (positionObj.isNeighBouringCube(workTarget));
+		return (getPositionObj().isNeighBouringCube(workTarget));
 	}
 
 	/**
@@ -2706,11 +2706,11 @@ public class Unit {
 			return;
 		}
 		if ( (this != other) && (!other.isTerminated()) ) {
-			if (!this.isValidAttackPosition(other.positionObj.getOccupiedCube())) {
+			if (!this.isValidAttackPosition(other.getPositionObj().getOccupiedCube())) {
 				if (getAssignedTask() != null) {
 					getAssignedTask().interruptTask();
 				}
-				throw new IllegalAttackPosititonException(other.positionObj.getOccupiedCube());
+				throw new IllegalAttackPosititonException(other.getPositionObj().getOccupiedCube());
 			}	
 			
 			if (this.getFaction() == other.getFaction()){
@@ -2745,9 +2745,9 @@ public class Unit {
 	 * 				 &&(this.getOccupiedCube()[z] - attackCubePosition[z] <= 1))
 	 */
 	private boolean isValidAttackPosition(int[] attackCubePosition){
-		return((Math.abs(this.positionObj.getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
-				(Math.abs(this.positionObj.getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
-				(Math.abs(this.positionObj.getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
+		return((Math.abs(this.getPositionObj().getOccupiedCube()[0]-attackCubePosition[0]) <=1) && 
+				(Math.abs(this.getPositionObj().getOccupiedCube()[1]-attackCubePosition[1]) <=1) &&
+				(Math.abs(this.getPositionObj().getOccupiedCube()[2]-attackCubePosition[2]) <=1));	
 	}
 	
 	/**
@@ -2761,8 +2761,8 @@ public class Unit {
 	 * 		| other.setOrientationTo(this.positionObj.getLocation())
 	 */
 	private void setOrientationInFight(Unit other) {
-		this.setOrientationTo(other.positionObj.getLocation());
-		other.setOrientationTo(this.positionObj.getLocation());
+		this.setOrientationTo(other.getPositionObj().getLocation());
+		other.setOrientationTo(this.getPositionObj().getLocation());
 	}
 	
 	/**
@@ -2778,8 +2778,8 @@ public class Unit {
 	 * 			|	target[x]-this.getLocation()[x])
 	 */
 	private void setOrientationTo(double[] target) {
-		double orientUnitThis = Math.atan2(target[1]-this.positionObj.getLocation()[1],
-				target[0]-this.positionObj.getLocation()[0]);
+		double orientUnitThis = Math.atan2(target[1]-this.getPositionObj().getLocation()[1],
+				target[0]-this.getPositionObj().getLocation()[0]);
 		this.setOrientation(orientUnitThis);
 	}
 	
@@ -2870,7 +2870,7 @@ public class Unit {
 			
 			double possibilityDodge = (double)(0.2* (double) this.getAgility()/ (double) other.getAgility());
 			if (ConstantsUtils.getPossibilitySucces(possibilityDodge)){
-				this.positionObj.setRandomDodgedLocation();
+				this.getPositionObj().setRandomDodgedLocation();
 				this.setOrientationInFight(other);
 				updateExperience(20);
 		
@@ -2917,7 +2917,7 @@ public class Unit {
 	private void attackPotentialEnemy(){
 
 		for (Unit other : world.getAllUnits()){
-			for (Cube cube : (positionObj.getNeighbouringCubesIncludingOwn(positionObj.getOccupiedCube()))){
+			for (Cube cube : (getPositionObj().getNeighbouringCubesIncludingOwn(getPositionObj().getOccupiedCube()))){
 				if (Arrays.equals(other.getOccupiedCube(),cube.getCubePosition()) 
 						&& other.getFaction() != this.getFaction() && !other.isTerminated){
 					try {
@@ -3288,7 +3288,7 @@ public class Unit {
 			}
 			else {
 				switch (ConstantsUtils.random.nextInt(4)) {
-				case 0: try {moveTo(positionObj.getRandomPosition());} catch (IllegalPositionException e) {} break;
+				case 0: try {moveTo(getPositionObj().getRandomPosition());} catch (IllegalPositionException e) {} break;
 				case 1: work(); break;						//Exception will never be thrown.
 				case 2: rest(); break;
 				case 3: attackPotentialEnemy(); break;
